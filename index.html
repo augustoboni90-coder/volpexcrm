@@ -18,1291 +18,1102 @@
       --radius-lg: 16px;
       --radius-md: 10px;
     }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top, #e5edff 0, #f3f4f6 40%, #e5e7eb 100%);
-      color: var(--text);
-      display: flex;
-      justify-content: center;
-      padding: 16px;
-    }
-
-    #app {
-      width: 100%;
-      max-width: 1200px;
-      background: rgba(255,255,255,0.95);
-      border-radius: 24px;
-      border: 1px solid rgba(209,213,219,0.8);
-      box-shadow:
-        0 16px 40px rgba(15,23,42,0.10),
-        0 0 0 1px rgba(148,163,184,0.18);
-      overflow: hidden;
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 260px 1fr;
-      min-height: 640px;
-    }
-
-    @media (max-width: 900px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .sidebar {
-      padding: 18px 16px;
-      border-right: 1px solid rgba(209,213,219,0.9);
-      background: linear-gradient(180deg, #eff6ff 0%, #ffffff 40%, #f9fafb 100%);
-    }
-
-    @media (max-width: 900px) {
-      .sidebar {
-        border-right: none;
-        border-bottom: 1px solid rgba(209,213,219,0.9);
-      }
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .logo-mark {
-      width: 40px;
-      height: 40px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 20%, #fb923c, #f97316);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      box-shadow:
-        0 8px 18px rgba(249,115,22,0.5),
-        0 0 0 1px rgba(248,250,252,0.9);
-    }
-
-    .logo-text-main {
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-size: 12px;
-      color: #111827;
-    }
-
-    .logo-text-sub {
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    .nav-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: var(--muted);
-      margin: 10px 0 6px;
-    }
-
-    .nav {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      margin-bottom: 14px;
-    }
-
-    .nav-btn {
-      border-radius: 999px;
-      border: 1px solid transparent;
-      padding: 7px 10px;
-      font-size: 13px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      background: transparent;
-      color: var(--muted);
-      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.08s ease;
-    }
-
-    .nav-btn span.icon {
-      font-size: 16px;
-      width: 18px;
-      text-align: center;
-    }
-
-    .nav-btn.active {
-      background: #eff6ff;
-      border-color: #bfdbfe;
-      color: #1d4ed8;
-      transform: translateX(1px);
-      font-weight: 500;
-    }
-
-    .nav-btn:hover:not(.active) {
-      background: #f3f4ff;
-      border-color: #e5e7eb;
-      color: #1f2937;
-    }
-
-    .sync-box {
-      margin-top: 10px;
-      padding: 9px 10px;
-      border-radius: 12px;
-      border: 1px solid #bbf7d0;
-      background: #ecfdf5;
-      font-size: 11px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: #166534;
-    }
-
-    .sync-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: #22c55e;
-      box-shadow: 0 0 0 4px rgba(34,197,94,0.25);
-    }
-
-    .main {
-      padding: 16px 18px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      background: #f9fafb;
-    }
-
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .headline {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .headline-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: #111827;
-    }
-
-    .headline-sub {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .badge {
-      padding: 4px 9px;
-      border-radius: 999px;
-      border: 1px solid #bfdbfe;
-      background: #eff6ff;
-      font-size: 11px;
-      color: #1d4ed8;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .search-row {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .search-input {
-      flex: 1;
-      min-width: 200px;
-      border-radius: 999px;
-      border: 1px solid #d1d5db;
-      padding: 7px 11px;
-      font-size: 13px;
-      outline: none;
-      background: #ffffff;
-    }
-
-    .search-input::placeholder {
-      color: #9ca3af;
-    }
-
-    .btn {
-      border-radius: 999px;
-      border: 1px solid #d1d5db;
-      background: #ffffff;
-      font-size: 13px;
-      padding: 7px 12px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.08s ease;
-    }
-
-    .btn:hover {
-      background: #f3f4f6;
-      border-color: #cbd5f5;
-    }
-
-    .btn-primary {
-      background: linear-gradient(90deg, #3b82f6, #2563eb);
-      border-color: #2563eb;
-      color: #ffffff;
-      box-shadow: 0 10px 20px rgba(37,99,235,0.35);
-      font-weight: 500;
-    }
-
-    .btn-primary:hover {
-      background: linear-gradient(90deg, #2563eb, #1d4ed8);
-      transform: translateY(-1px);
-    }
-
-    .btn-danger {
-      border-color: #fecaca;
-      color: #b91c1c;
-      background: #fee2e2;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 2fr 1.1fr;
-      gap: 12px;
-      margin-top: 4px;
-    }
-
-    @media (max-width: 900px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .panel {
-      background: #ffffff;
-      border-radius: var(--radius-lg);
-      padding: 12px 12px 10px;
-      border: 1px solid #e5e7eb;
-      box-shadow:
-        0 8px 20px rgba(15,23,42,0.04);
-    }
-
-    .panel-title {
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: var(--muted);
-      margin-bottom: 3px;
-    }
-
-    .panel-sub {
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-    }
-
-    th, td {
-      padding: 6px 4px;
-      border-bottom: 1px solid #e5e7eb;
-      vertical-align: top;
-    }
-
-    th {
-      text-align: left;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: #9ca3af;
-      font-weight: 500;
-    }
-
-    tr:last-child td {
-      border-bottom: none;
-    }
-
-    .muted {
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      padding: 2px 8px;
-      border-radius: 999px;
-      border: 1px solid #d1d5db;
-      background: #f9fafb;
-      font-size: 11px;
-      color: #374151;
-    }
-
-    .chip-strong {
-      border-color: #bfdbfe;
-      background: #eff6ff;
-      color: #1d4ed8;
-    }
-
-    .tag {
-      padding: 2px 6px;
-      border-radius: 999px;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      border: 1px solid #e5e7eb;
-      color: #4b5563;
-    }
-
-    .tag-mobile { border-color:#bbf7d0; background:#ecfdf5; color:#15803d; }
-    .tag-fisso  { border-color:#bfdbfe; background:#eff6ff; color:#1d4ed8; }
-    .tag-luce   { border-color:#fde68a; background:#fffbeb; color:#92400e; }
-    .tag-gas    { border-color:#fecaca; background:#fef2f2; color:#b91c1c; }
-    .tag-tv     { border-color:#e9d5ff; background:#f5f3ff; color:#6b21a8; }
-
-    .empty {
-      padding: 16px;
-      text-align: center;
-      font-size: 12px;
-      color: var(--muted);
-      border-radius: var(--radius-md);
-      border: 1px dashed #d1d5db;
-      background: #f9fafb;
-      margin-top: 4px;
-    }
-
-    .stats-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 6px;
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 3px 8px;
-      border-radius: 999px;
-      border: 1px solid #e5e7eb;
-      background: #f9fafb;
-      font-size: 11px;
-      color: #4b5563;
-    }
-
-    .pill-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: #2563eb;
-    }
-
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(15,23,42,0.35);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      z-index: 30;
-    }
-
-    .modal {
-      width: 100%;
-      max-width: 540px;
-      background: #ffffff;
-      border-radius: 18px;
-      border: 1px solid #e5e7eb;
-      box-shadow: 0 20px 40px rgba(15,23,42,0.25);
-      padding: 14px 14px 10px;
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .modal-title-main {
-      font-size: 16px;
-      font-weight: 600;
-      color: #111827;
-    }
-
-    .modal-title-sub {
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    .modal-close {
-      border-radius: 999px;
-      width: 28px;
-      height: 28px;
-      border: 1px solid #e5e7eb;
-      background: #f9fafb;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: #4b5563;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap: 8px 10px;
-    }
-
-    @media (max-width: 600px) {
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      margin-bottom: 4px;
-    }
-
-    .field label {
-      font-size: 11px;
-      color: #4b5563;
-    }
-
-    .field input,
-    .field select {
-      border-radius: 9px;
-      border: 1px solid #d1d5db;
-      padding: 6px 8px;
-      font-size: 12px;
-      outline: none;
-      background: #f9fafb;
-    }
-
-    .field input:focus,
-    .field select:focus {
-      border-color: #2563eb;
-      background: #ffffff;
-      box-shadow: 0 0 0 1px rgba(37,99,235,0.1);
-    }
-
-    .field input::placeholder {
-      color: #9ca3af;
-    }
-
-    .modal-footer {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .toast {
-      position: fixed;
-      right: 16px;
-      bottom: 16px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      background: #16a34a;
-      color: #ecfdf5;
-      box-shadow: 0 12px 24px rgba(22,163,74,0.55);
-      z-index: 40;
-    }
-
-    .toast.error {
-      background: #dc2626;
-      box-shadow: 0 12px 24px rgba(220,38,38,0.55);
-    }
+    *{box-sizing:border-box;}
+    body{
+      margin:0;min-height:100vh;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:radial-gradient(circle at top,#e5edff 0,#f3f4f6 40%,#e5e7eb 100%);
+      color:var(--text);display:flex;justify-content:center;padding:16px;
+    }
+    #app{
+      width:100%;max-width:1200px;background:rgba(255,255,255,0.95);
+      border-radius:24px;border:1px solid rgba(209,213,219,0.8);
+      box-shadow:0 16px 40px rgba(15,23,42,0.10),0 0 0 1px rgba(148,163,184,0.18);
+      overflow:hidden;
+    }
+    .layout{display:grid;grid-template-columns:260px 1fr;min-height:640px;}
+    @media(max-width:900px){.layout{grid-template-columns:1fr;}}
+    .sidebar{
+      padding:18px 16px;border-right:1px solid rgba(209,213,219,0.9);
+      background:linear-gradient(180deg,#eff6ff 0%,#ffffff 40%,#f9fafb 100%);
+    }
+    @media(max-width:900px){.sidebar{border-right:none;border-bottom:1px solid rgba(209,213,219,0.9);}}
+    .logo{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+    .logo-mark{
+      width:40px;height:40px;border-radius:999px;
+      background:radial-gradient(circle at 30% 20%,#fb923c,#f97316);
+      display:flex;align-items:center;justify-content:center;font-size:22px;
+      box-shadow:0 8px 18px rgba(249,115,22,0.5),0 0 0 1px rgba(248,250,252,0.9);
+    }
+    .logo-text-main{font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:12px;color:#111827;}
+    .logo-text-sub{font-size:11px;color:var(--muted);}
+    .nav-label{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin:10px 0 6px;}
+    .nav{display:flex;flex-direction:column;gap:4px;margin-bottom:14px;}
+    .nav-btn{
+      border-radius:999px;border:1px solid transparent;padding:7px 10px;font-size:13px;
+      display:flex;align-items:center;gap:8px;cursor:pointer;background:transparent;
+      color:var(--muted);transition:background .15s,border-color .15s,color .15s,transform .08s;
+    }
+    .nav-btn span.icon{font-size:16px;width:18px;text-align:center;}
+    .nav-btn.active{
+      background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8;transform:translateX(1px);font-weight:500;
+    }
+    .nav-btn:hover:not(.active){background:#f3f4ff;border-color:#e5e7eb;color:#1f2937;}
+    .sync-box{
+      margin-top:10px;padding:9px 10px;border-radius:12px;border:1px solid #bbf7d0;
+      background:#ecfdf5;font-size:11px;display:flex;align-items:center;gap:8px;color:#166534;
+    }
+    .sync-dot{width:8px;height:8px;border-radius:999px;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,0.25);}
+    .main{padding:16px 18px 18px;display:flex;flex-direction:column;gap:12px;background:#f9fafb;}
+    .top-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+    .headline{display:flex;flex-direction:column;gap:2px;}
+    .headline-title{font-size:18px;font-weight:600;color:#111827;}
+    .headline-sub{font-size:12px;color:var(--muted);}
+    .badge{
+      padding:4px 9px;border-radius:999px;border:1px solid #bfdbfe;background:#eff6ff;
+      font-size:11px;color:#1d4ed8;display:inline-flex;align-items:center;gap:4px;
+    }
+    .search-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+    .search-input{
+      flex:1;min-width:200px;border-radius:999px;border:1px solid #d1d5db;
+      padding:7px 11px;font-size:13px;outline:none;background:#ffffff;
+    }
+    .search-input::placeholder{color:#9ca3af;}
+    .btn{
+      border-radius:999px;border:1px solid #d1d5db;background:#ffffff;font-size:13px;
+      padding:7px 12px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;
+      transition:background .15s,border-color .15s,box-shadow .15s,transform .08s;
+    }
+    .btn:hover{background:#f3f4f6;border-color:#cbd5f5;}
+    .btn-primary{
+      background:linear-gradient(90deg,#3b82f6,#2563eb);border-color:#2563eb;color:#ffffff;
+      box-shadow:0 10px 20px rgba(37,99,235,0.35);font-weight:500;
+    }
+    .btn-primary:hover{background:linear-gradient(90deg,#2563eb,#1d4ed8);transform:translateY(-1px);}
+    .btn-danger{border-color:#fecaca;color:#b91c1c;background:#fee2e2;}
+    .btn-ghost{background:#f9fafb;}
+    .whatsapp-btn{
+      background:#22c55e;border-color:#16a34a;color:#ffffff;
+    }
+    .whatsapp-btn:hover{background:#16a34a;border-color:#15803d;}
+    .grid{display:grid;grid-template-columns:2fr 1.1fr;gap:12px;margin-top:4px;}
+    @media(max-width:900px){.grid{grid-template-columns:1fr;}}
+    .panel{
+      background:#ffffff;border-radius:var(--radius-lg);padding:12px 12px 10px;
+      border:1px solid #e5e7eb;box-shadow:0 8px 20px rgba(15,23,42,0.04);
+    }
+    .panel-title{font-size:13px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:3px;}
+    .panel-sub{font-size:12px;color:var(--muted);margin-bottom:8px;}
+    table{width:100%;border-collapse:collapse;font-size:12px;}
+    th,td{padding:6px 4px;border-bottom:1px solid #e5e7eb;vertical-align:top;}
+    th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:#9ca3af;font-weight:500;}
+    tr:last-child td{border-bottom:none;}
+    .muted{color:var(--muted);font-size:11px;}
+    .chip{
+      display:inline-flex;align-items:center;padding:2px 8px;border-radius:999px;
+      border:1px solid #d1d5db;background:#f9fafb;font-size:11px;color:#374151;
+    }
+    .chip-strong{border-color:#bfdbfe;background:#eff6ff;color:#1d4ed8;}
+    .tag{
+      padding:2px 6px;border-radius:999px;font-size:10px;text-transform:uppercase;
+      letter-spacing:.12em;border:1px solid #e5e7eb;color:#4b5563;
+    }
+    .tag-mobile{border-color:#bbf7d0;background:#ecfdf5;color:#15803d;}
+    .tag-fisso{border-color:#bfdbfe;background:#eff6ff;color:#1d4ed8;}
+    .tag-luce{border-color:#fde68a;background:#fffbeb;color:#92400e;}
+    .tag-gas{border-color:#fecaca;background:#fef2f2;color:#b91c1c;}
+    .tag-tv{border-color:#e9d5ff;background:#f5f3ff;color:#6b21a8;}
+    .empty{
+      padding:16px;text-align:center;font-size:12px;color:var(--muted);
+      border-radius:var(--radius-md);border:1px dashed #d1d5db;background:#f9fafb;margin-top:4px;
+    }
+    .stats-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;}
+    .pill{
+      display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:999px;
+      border:1px solid #e5e7eb;background:#f9fafb;font-size:11px;color:#4b5563;
+    }
+    .pill-dot{width:6px;height:6px;border-radius:999px;background:#2563eb;}
+    .section-title{
+      font-size:12px;font-weight:600;color:#111827;margin:8px 0 4px;
+      text-transform:uppercase;letter-spacing:.11em;
+    }
+    .section-box{
+      border-radius:var(--radius-md);border:1px solid #e5e7eb;background:#f9fafb;padding:8px;margin-bottom:8px;
+    }
+    .section-controls{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;}
+    .select{
+      border-radius:999px;border:1px solid #d1d5db;background:#ffffff;
+      padding:4px 8px;font-size:11px;
+    }
+    .badge-mini{
+      padding:2px 6px;border-radius:999px;border:1px solid #e5e7eb;background:#ffffff;
+      font-size:10px;color:#4b5563;
+    }
+    .modal-backdrop{
+      position:fixed;inset:0;background:rgba(15,23,42,0.35);
+      display:flex;align-items:center;justify-content:center;padding:16px;z-index:30;
+    }
+    .modal{
+      width:100%;max-width:640px;background:#ffffff;border-radius:18px;
+      border:1px solid #e5e7eb;box-shadow:0 20px 40px rgba(15,23,42,0.25);padding:14px 14px 10px;
+    }
+    .modal-header{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px;}
+    .modal-title-main{font-size:16px;font-weight:600;color:#111827;}
+    .modal-title-sub{font-size:11px;color:var(--muted);}
+    .modal-close{
+      border-radius:999px;width:28px;height:28px;border:1px solid #e5e7eb;
+      background:#f9fafb;display:flex;align-items:center;justify-content:center;
+      cursor:pointer;color:#4b5563;
+    }
+    .form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 10px;}
+    @media(max-width:800px){.form-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+    @media(max-width:600px){.form-grid{grid-template-columns:1fr;}}
+    .field{display:flex;flex-direction:column;gap:3px;margin-bottom:4px;}
+    .field label{font-size:11px;color:#4b5563;}
+    .field input,.field select{
+      border-radius:9px;border:1px solid #d1d5db;padding:6px 8px;font-size:12px;
+      outline:none;background:#f9fafb;
+    }
+    .field input:focus,.field select:focus{
+      border-color:#2563eb;background:#ffffff;box-shadow:0 0 0 1px rgba(37,99,235,0.1);
+    }
+    .field input::placeholder{color:#9ca3af;}
+    .modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:12px;}
+    .toast{
+      position:fixed;right:16px;bottom:16px;padding:8px 12px;border-radius:999px;
+      font-size:12px;background:#16a34a;color:#ecfdf5;box-shadow:0 12px 24px rgba(22,163,74,0.55);z-index:40;
+    }
+    .toast.error{background:#dc2626;box-shadow:0 12px 24px rgba(220,38,38,0.55);}
   </style>
 </head>
 <body>
 <div id="app"></div>
 
 <script>
-  // ==============================
-  // 🔗 CONFIGURAZIONE API VOLPEX
-  // ==============================
-  const API_URL = 'https://script.google.com/macros/s/AKfycbxtaqy6Yv3fKlQB3nMrhEd0GdGAzAYzrF5VoRFzgrtRgK7nqvaxoCLF479YJtupn089/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbxtaqy6Yv3fKlQB3nMrhEd0GdGAzAYzrF5VoRFzgrtRgK7nqvaxoCLF479YJtupn089/exec';
 
-  // ==============================
-  // 🧠 STATO CENTRALE
-  // ==============================
-  const State = {
-    data: {
-      customers: [],
-      contracts: [],
-      devices: []
-    },
-    ui: {
-      tab: 'clients',     // clients | contracts | devices
-      search: '',
-      modal: null,        // null | 'client' | 'contract' | 'device'
-      editing: null,      // record in modifica
-      syncing: false
-    },
-
-    async init() {
-      try {
-        const res = await fetch(API_URL + '?type=all');
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const json = await res.json();
-        this.data = {
-          customers: Array.isArray(json.customers) ? json.customers : [],
-          contracts: Array.isArray(json.contracts) ? json.contracts : [],
-          devices: Array.isArray(json.devices) ? json.devices : []
-        };
-        localStorage.setItem('volpex_state', JSON.stringify(this.data));
-      } catch (err) {
-        console.warn('Errore caricamento remoto, uso cache locale se presente:', err);
-        const cached = localStorage.getItem('volpex_state');
-        if (cached) {
-          this.data = JSON.parse(cached);
-        }
-      }
-    },
-
-    async save() {
-      this.ui.syncing = true;
-      render();
-      try {
-        // 🔴 Importante: NESSUN "Content-Type" header
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          body: JSON.stringify(this.data)
-        });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        localStorage.setItem('volpex_state', JSON.stringify(this.data));
-        showToast('Dati sincronizzati con Volpex Sheet');
-      } catch (err) {
-        console.error('Errore salvataggio:', err);
-        showToast('Errore salvataggio su Google Sheet', 'error');
-      } finally {
-        this.ui.syncing = false;
-        render();
-      }
-    },
-
-    upsertCustomer(payload) {
-      const list = [...this.data.customers];
-      if (this.ui.editing) {
-        const idx = list.findIndex(c => c.id === this.ui.editing.id);
-        if (idx !== -1) list[idx] = { ...list[idx], ...payload };
-      } else {
-        list.unshift({
-          id: 'c_' + Date.now(),
-          ...payload
-        });
-      }
-      this.data.customers = list;
-      this.ui.modal = null;
-      this.ui.editing = null;
-      this.save();
-    },
-
-    removeCustomer(id) {
-      this.data.customers = this.data.customers.filter(c => c.id !== id);
-      this.save();
-    },
-
-    upsertContract(payload) {
-      const list = [...this.data.contracts];
-      if (this.ui.editing) {
-        const idx = list.findIndex(c => c.id === this.ui.editing.id);
-        if (idx !== -1) list[idx] = { ...list[idx], ...payload };
-      } else {
-        list.unshift({
-          id: 'ctr_' + Date.now(),
-          ...payload
-        });
-      }
-      this.data.contracts = list;
-      this.ui.modal = null;
-      this.ui.editing = null;
-      this.save();
-    },
-
-    removeContract(id) {
-      this.data.contracts = this.data.contracts.filter(c => c.id !== id);
-      this.save();
-    },
-
-    upsertDevice(payload) {
-      const list = [...this.data.devices];
-      if (this.ui.editing) {
-        const idx = list.findIndex(d => d.id === this.ui.editing.id);
-        if (idx !== -1) list[idx] = { ...list[idx], ...payload };
-      } else {
-        list.unshift({
-          id: 'dev_' + Date.now(),
-          ...payload
-        });
-      }
-      this.data.devices = list;
-      this.ui.modal = null;
-      this.ui.editing = null;
-      this.save();
-    },
-
-    removeDevice(id) {
-      this.data.devices = this.data.devices.filter(d => d.id !== id);
-      this.save();
+const State = {
+  data:{customers:[],contracts:[],devices:[]},
+  ui:{
+    tab:'clients',
+    search:'',
+    modal:null,
+    editing:null,
+    syncing:false,
+    report:{
+      birthMonth:new Date().getMonth(),
+      expiryMonth:new Date().getMonth(),
+      expiryYear:new Date().getFullYear()
     }
-  };
+  },
 
-  let toastTimeout = null;
+  async init(){
+    try{
+      const res=await fetch(API_URL+'?type=all');
+      if(!res.ok)throw new Error('HTTP '+res.status);
+      const json=await res.json();
+      this.data={
+        customers:Array.isArray(json.customers)?json.customers:[],
+        contracts:Array.isArray(json.contracts)?json.contracts:[],
+        devices:Array.isArray(json.devices)?json.devices:[]
+      };
+      localStorage.setItem('volpex_state',JSON.stringify(this.data));
+    }catch(err){
+      console.warn('Errore caricamento remoto, uso cache locale:',err);
+      const cached=localStorage.getItem('volpex_state');
+      if(cached)this.data=JSON.parse(cached);
+    }
+  },
 
-  function showToast(msg, type = 'success') {
-    const existing = document.querySelector('.toast');
-    if (existing) existing.remove();
-    const el = document.createElement('div');
-    el.className = 'toast' + (type === 'error' ? ' error' : '');
-    el.textContent = msg;
-    document.body.appendChild(el);
-    clearTimeout(toastTimeout);
-    toastTimeout = setTimeout(() => el.remove(), 2800);
+  async save(){
+    this.ui.syncing=true;render();
+    try{
+      const res=await fetch(API_URL,{method:'POST',body:JSON.stringify(this.data)});
+      if(!res.ok)throw new Error('HTTP '+res.status);
+      localStorage.setItem('volpex_state',JSON.stringify(this.data));
+      showToast('Dati sincronizzati con Volpex Sheet');
+    }catch(err){
+      console.error('Errore salvataggio:',err);
+      showToast('Errore salvataggio su Google Sheet','error');
+    }finally{
+      this.ui.syncing=false;render();
+    }
+  },
+
+  upsertCustomer(p){
+    const list=[...this.data.customers];
+    if(this.ui.editing){
+      const i=list.findIndex(c=>c.id===this.ui.editing.id);
+      if(i!==-1)list[i]={...list[i],...p};
+    }else{
+      list.unshift({id:'c_'+Date.now(),...p});
+    }
+    this.data.customers=list;
+    this.ui.modal=null;this.ui.editing=null;this.save();
+  },
+  removeCustomer(id){
+    this.data.customers=this.data.customers.filter(c=>c.id!==id);this.save();
+  },
+
+  upsertContract(p){
+    const list=[...this.data.contracts];
+    if(this.ui.editing){
+      const i=list.findIndex(c=>c.id===this.ui.editing.id);
+      if(i!==-1)list[i]={...list[i],...p};
+    }else{
+      list.unshift({id:'ctr_'+Date.now(),...p});
+    }
+    this.data.contracts=list;
+    this.ui.modal=null;this.ui.editing=null;this.save();
+  },
+  removeContract(id){
+    this.data.contracts=this.data.contracts.filter(c=>c.id!==id);this.save();
+  },
+
+  upsertDevice(p){
+    const list=[...this.data.devices];
+    if(this.ui.editing){
+      const i=list.findIndex(d=>d.id===this.ui.editing.id);
+      if(i!==-1)list[i]={...list[i],...p};
+    }else{
+      list.unshift({id:'dev_'+Date.now(),...p});
+    }
+    this.data.devices=list;
+    this.ui.modal=null;this.ui.editing=null;this.save();
+  },
+  removeDevice(id){
+    this.data.devices=this.data.devices.filter(d=>d.id!==id);this.save();
   }
+};
 
-  function esc(str) {
-    return (str ?? '').toString().replace(/[&<>"]/g, c => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;'
-    }[c]));
-  }
+let toastTimeout=null;
+function showToast(m,t='success'){
+  const ex=document.querySelector('.toast');if(ex)ex.remove();
+  const el=document.createElement('div');
+  el.className='toast'+(t==='error'?' error':'');el.textContent=m;
+  document.body.appendChild(el);
+  clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>el.remove(),2800);
+}
+function esc(s){return(s??'').toString().replace(/[&<>"]/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
 
-  // ==============================
-  // 🎨 RENDER UI
-  // ==============================
-  function render() {
-    const root = document.getElementById('app');
-    const { tab, search, modal, editing, syncing } = State.ui;
-    const { customers, contracts, devices } = State.data;
+function formatPhoneForWhatsApp(raw){
+  if(!raw)return'';
+  let s=String(raw).trim();
+  // tieni solo + e cifre
+  s=s.replace(/[^\d+]/g,'');
+  // wa.me non vuole il +
+  s=s.replace(/^\+/, '');
+  // se inizia con 0 -> Italia
+  if(s.startsWith('0')) s='39'+s.slice(1);
+  // se ha 10 cifre e non inizia con 39 -> Italia
+  if(!s.startsWith('39') && s.length===10) s='39'+s;
+  // rimuovi tutto tranne cifre
+  s=s.replace(/\D/g,'');
+  return s;
+}
 
-    const q = search.trim().toLowerCase();
+function render(){
+  const root=document.getElementById('app');
+  const {tab,search,modal,editing,syncing,report}=State.ui;
+  const {customers,contracts,devices}=State.data;
+  const q=search.trim().toLowerCase();
 
-    const filteredCustomers = !q ? customers : customers.filter(c =>
-      (c.nome || '').toLowerCase().includes(q) ||
-      (c.cognome || '').toLowerCase().includes(q) ||
-      (c.codice_fiscale || '').toLowerCase().includes(q)
-    );
+  const filteredCustomers=!q?customers:customers.filter(c=>
+    (c.nome||'').toLowerCase().includes(q)||
+    (c.cognome||'').toLowerCase().includes(q)||
+    (c.codice_fiscale||'').toLowerCase().includes(q)
+  );
+  const filteredContracts=!q?contracts:contracts.filter(c=>
+    (c.codice_fiscale||'').toLowerCase().includes(q)||
+    (c.compagnia||'').toLowerCase().includes(q)||
+    (c.nome_contratto||c.offerta||'').toLowerCase().includes(q)||
+    (c.numero_lavorato||c.numero||'').toLowerCase().includes(q)
+  );
+  const filteredDevices=!q?devices:devices.filter(d=>
+    (d.codice_fiscale||'').toLowerCase().includes(q)||
+    (d.marca||'').toLowerCase().includes(q)||
+    (d.modello||'').toLowerCase().includes(q)||
+    (d.imei||'').toLowerCase().includes(q)
+  );
 
-    const filteredContracts = !q ? contracts : contracts.filter(c =>
-      (c.codice_fiscale || '').toLowerCase().includes(q) ||
-      (c.compagnia || '').toLowerCase().includes(q) ||
-      (c.offerta || '').toLowerCase().includes(q) ||
-      (c.numero || '').toLowerCase().includes(q)
-    );
-
-    const filteredDevices = !q ? devices : devices.filter(d =>
-      (d.codice_fiscale || '').toLowerCase().includes(q) ||
-      (d.marca || '').toLowerCase().includes(q) ||
-      (d.modello || '').toLowerCase().includes(q) ||
-      (d.imei || '').toLowerCase().includes(q)
-    );
-
-    root.innerHTML = `
-      <div class="layout">
-        <aside class="sidebar">
-          <div class="logo">
-            <div class="logo-mark">🦊</div>
-            <div>
-              <div class="logo-text-main">VOLPEX CRM</div>
-              <div class="logo-text-sub">Gestione clienti e contratti</div>
-            </div>
+  root.innerHTML=`
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="logo">
+          <div class="logo-mark">🦊</div>
+          <div>
+            <div class="logo-text-main">VOLPEX CRM</div>
+            <div class="logo-text-sub">Clienti • Contratti • Device</div>
           </div>
-
-          <div class="nav-label">Vista</div>
-          <div class="nav">
-            <button class="nav-btn ${tab === 'clients' ? 'active' : ''}" data-tab="clients">
-              <span class="icon">👥</span>
-              <span>Clienti</span>
-            </button>
-            <button class="nav-btn ${tab === 'contracts' ? 'active' : ''}" data-tab="contracts">
-              <span class="icon">📄</span>
-              <span>Contratti</span>
-            </button>
-            <button class="nav-btn ${tab === 'devices' ? 'active' : ''}" data-tab="devices">
-              <span class="icon">📱</span>
-              <span>Device</span>
-            </button>
+        </div>
+        <div class="nav-label">Vista</div>
+        <div class="nav">
+          <button class="nav-btn ${tab==='clients'?'active':''}" data-tab="clients"><span class="icon">👥</span><span>Clienti</span></button>
+          <button class="nav-btn ${tab==='contracts'?'active':''}" data-tab="contracts"><span class="icon">📄</span><span>Contratti</span></button>
+          <button class="nav-btn ${tab==='devices'?'active':''}" data-tab="devices"><span class="icon">📱</span><span>Device</span></button>
+          <button class="nav-btn ${tab==='reports'?'active':''}" data-tab="reports"><span class="icon">📊</span><span>Report / Query</span></button>
+        </div>
+        <div class="nav-label">Azioni</div>
+        <div class="nav">
+          <button class="nav-btn" data-action="new-client"><span class="icon">➕</span><span>Nuovo cliente</span></button>
+          <button class="nav-btn" data-action="new-contract"><span class="icon">⚡</span><span>Nuovo contratto</span></button>
+          <button class="nav-btn" data-action="new-device"><span class="icon">📦</span><span>Aggiungi device</span></button>
+        </div>
+        <div class="sync-box">
+          <div class="sync-dot" style="opacity:${syncing?1:.45}"></div>
+          <div>
+            <div style="font-weight:500;font-size:11px;">Volpex Sheet Sync</div>
+            <div style="font-size:11px;">${syncing?'Salvataggio in corso…':'Ultima versione salvata'}</div>
           </div>
+        </div>
+      </aside>
 
-          <div class="nav-label">Azioni</div>
-          <div class="nav">
-            <button class="nav-btn" data-action="new-client">
-              <span class="icon">➕</span>
-              <span>Nuovo cliente</span>
-            </button>
-            <button class="nav-btn" data-action="new-contract">
-              <span class="icon">⚡</span>
-              <span>Nuovo contratto</span>
-            </button>
-            <button class="nav-btn" data-action="new-device">
-              <span class="icon">📦</span>
-              <span>Aggiungi device</span>
-            </button>
+      <main class="main">
+        <div class="top-bar">
+          <div class="headline">
+            <div class="headline-title">${
+              tab==='clients'?'Clienti':
+              tab==='contracts'?'Contratti':
+              tab==='devices'?'Device':'Report / Query'
+            }</div>
+            <div class="headline-sub">Vista e interrogazione dati Volpex</div>
           </div>
+          <div class="badge"><span>📊</span><span>Collegato a Google Sheets</span></div>
+        </div>
 
-          <div class="sync-box">
-            <div class="sync-dot" style="opacity:${syncing ? 1 : 0.45}"></div>
-            <div>
-              <div style="font-weight:500;font-size:11px;">Volpex Sheet Sync</div>
-              <div style="font-size:11px;">
-                ${syncing ? 'Salvataggio in corso…' : 'Ultima versione salvata'}
-              </div>
-            </div>
-          </div>
-        </aside>
+        <div class="search-row">
+          <input class="search-input" placeholder="Cerca per nome, CF, numero…" value="${esc(search)}" />
+          <button class="btn" data-action="clear-search">Pulisci</button>
+        </div>
 
-        <main class="main">
-          <div class="top-bar">
-            <div class="headline">
-              <div class="headline-title">
-                ${tab === 'clients' ? 'Clienti' : tab === 'contracts' ? 'Contratti' : 'Device'}
-              </div>
-              <div class="headline-sub">
-                Vista rapida dei dati gestiti da Volpex
-              </div>
-            </div>
-            <div class="badge">
-              <span>📊</span>
-              <span>Collegato a Google Sheets</span>
-            </div>
-          </div>
-
-          <div class="search-row">
-            <input class="search-input" placeholder="Cerca per nome, CF, numero…" value="${esc(search)}" />
-            <button class="btn" data-action="clear-search">Pulisci</button>
-          </div>
-
-          <div class="grid">
-            <section class="panel">
-              <div class="panel-title">
-                ${tab === 'clients'
-                  ? 'Elenco clienti'
-                  : tab === 'contracts'
-                    ? 'Elenco contratti'
-                    : 'Elenco device'}
-              </div>
-              <div class="panel-sub">
-                ${tab === 'clients'
-                  ? `${customers.length} clienti in anagrafica`
-                  : tab === 'contracts'
-                    ? `${contracts.length} contratti registrati`
-                    : `${devices.length} device associati`}
-              </div>
-
-              ${tab === 'clients'
-                ? renderClientsTable(filteredCustomers)
-                : tab === 'contracts'
+        <div class="grid">
+          <section class="panel">
+            <div class="panel-title">${
+              tab==='clients'?'Elenco clienti':
+              tab==='contracts'?'Elenco contratti':
+              tab==='devices'?'Elenco device':'Report dettagliati'
+            }</div>
+            <div class="panel-sub">${
+              tab==='clients'?`${customers.length} clienti in anagrafica`:
+              tab==='contracts'?`${contracts.length} contratti registrati`:
+              tab==='devices'?`${devices.length} device associati`:
+              'Scadenze, compleanni e contratti per compagnia'
+            }</div>
+            ${
+              tab==='clients'
+                ? renderClientsTable(filteredCustomers,contracts,devices)
+                : tab==='contracts'
                   ? renderContractsTable(filteredContracts)
-                  : renderDevicesTable(filteredDevices)}
-            </section>
+                  : tab==='devices'
+                    ? renderDevicesTable(filteredDevices)
+                    : renderReportsSection(State.data,report)
+            }
+          </section>
+          <section class="panel">
+            <div class="panel-title">Riepilogo</div>
+            <div class="panel-sub">Panoramica veloce del portafoglio.</div>
+            ${renderInsights()}
+          </section>
+        </div>
+      </main>
+    </div>
+    ${modal?renderModal(modal,editing):''}
+  `;
+  bindEvents();
+}
 
-            <section class="panel">
-              <div class="panel-title">Riepilogo</div>
-              <div class="panel-sub">
-                Piccola panoramica dello stato del portafoglio.
+function renderClientsTable(list,contracts,devices){
+  if(!list.length)return`<div class="empty">Nessun cliente ancora inserito. Usa "Nuovo cliente" per iniziare.</div>`;
+  return `
+    <table>
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Codice fiscale</th>
+          <th>Contatti / attività</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        ${list.map(c=>{
+          const cf=c.codice_fiscale||'';
+          const contr=contracts.filter(k=>k.codice_fiscale===cf);
+          const devs=devices.filter(d=>d.codice_fiscale===cf);
+          const contrNames=contr.slice(0,2).map(k=>k.nome_contratto||k.offerta||'').filter(Boolean).join(', ');
+          const devNames=devs.slice(0,2).map(d=>(d.marca||'')+' '+(d.modello||'')).filter(s=>s.trim()).join(', ');
+          const wa=formatPhoneForWhatsApp(c.telefono||'');
+          return `
+          <tr>
+            <td>
+              <div>${esc(c.nome||'')} ${esc(c.cognome||'')}</div>
+              <div class="muted">${esc(c.residenza||'')}</div>
+              ${c.data_nascita?`<div class="muted">🎂 ${esc(c.data_nascita)}</div>`:''}
+            </td>
+            <td><span class="chip chip-strong">${esc(cf)}</span></td>
+            <td>
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <span>${esc(c.telefono||'')}</span>
+                ${
+                  wa
+                    ? `<a class="btn whatsapp-btn" href="https://wa.me/${wa}" target="_blank" rel="noopener">WhatsApp</a>`
+                    : ''
+                }
               </div>
-              ${renderInsights()}
-            </section>
-          </div>
-        </main>
-      </div>
+              <div class="muted">${esc(c.email||'')}</div>
+              <div class="muted" style="margin-top:4px;">
+                Contratti: <strong>${contr.length}</strong>${contrNames?` • ${esc(contrNames)}`:''}<br/>
+                Device: <strong>${devs.length}</strong>${devNames?` • ${esc(devNames)}`:''}
+              </div>
+            </td>
+            <td style="text-align:right;">
+              <button class="btn" data-action="edit-client" data-id="${esc(c.id)}">Modifica</button>
+              <button class="btn btn-danger" data-action="delete-client" data-id="${esc(c.id)}">Elimina</button>
+            </td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+  `;
+}
 
-      ${modal ? renderModal(modal, editing) : ''}
-    `;
-
-    bindEvents();
-  }
-
-  function renderClientsTable(list) {
-    if (!list.length) {
-      return `<div class="empty">Nessun cliente ancora inserito. Usa "Nuovo cliente" per iniziare.</div>`;
-    }
-    return `
-      <table>
-        <thead>
+function renderContractsTable(list){
+  if(!list.length)return`<div class="empty">Ancora nessun contratto registrato.</div>`;
+  return `
+    <table>
+      <thead>
+        <tr>
+          <th>Cliente / CF</th>
+          <th>Contratto</th>
+          <th>Tipo</th>
+          <th>€/mese</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        ${list.map(c=>{
+          const wa=formatPhoneForWhatsApp(c.numero_contatto||'');
+          return `
           <tr>
-            <th>Cliente</th>
-            <th>Codice fiscale</th>
-            <th>Contatti</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          ${list.map(c => `
-            <tr>
-              <td>
-                <div>${esc(c.nome || '')} ${esc(c.cognome || '')}</div>
-                <div class="muted">${esc(c.residenza || '')}</div>
-              </td>
-              <td><span class="chip chip-strong">${esc(c.codice_fiscale || '')}</span></td>
-              <td>
-                <div>${esc(c.telefono || '')}</div>
-                <div class="muted">${esc(c.email || '')}</div>
-              </td>
-              <td style="text-align:right;">
-                <button class="btn" data-action="edit-client" data-id="${esc(c.id)}">Modifica</button>
-                <button class="btn btn-danger" data-action="delete-client" data-id="${esc(c.id)}">Elimina</button>
-              </td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    `;
-  }
+            <td>
+              <div>${esc(c.nome||'')} ${esc(c.cognome||'')}</div>
+              <div class="muted">${esc(c.codice_fiscale||'')}</div>
+              <div class="muted" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <span>${esc(c.numero_contatto||'')}</span>
+                ${
+                  wa
+                    ? `<a class="btn btn-ghost whatsapp-btn" href="https://wa.me/${wa}" target="_blank" rel="noopener">WhatsApp</a>`
+                    : ''
+                }
+              </div>
+            </td>
+            <td>
+              <div><span class="chip chip-strong">${esc(c.nome_contratto||c.offerta||'')}</span></div>
+              <div class="muted">${esc(c.compagnia||'')}</div>
+              <div class="muted">${esc(c.numero_lavorato||c.numero||'')}</div>
+            </td>
+            <td>
+              ${renderTypeTag(c.tipo_contratto||c.tipo)}
+              <div class="muted">${(c.mnp==='SI'?'MNP • ':'')+(c.telefono_incluso==='SI'?'Tel. incluso':'')}</div>
+            </td>
+            <td>
+              <strong>${esc(c.costo||c.costo_mensile||'')}</strong>
+              <div class="muted">
+                ${c.vincolo||c.mesi_vincolo?`Vincolo: ${esc(c.vincolo||c.mesi_vincolo)}`:''}
+                ${c.data_fine_vincolo?`<br/>Fine: ${esc(c.data_fine_vincolo)}`:''}
+              </div>
+            </td>
+            <td style="text-align:right;">
+              <button class="btn" data-action="edit-contract" data-id="${esc(c.id)}">Modifica</button>
+              <button class="btn btn-danger" data-action="delete-contract" data-id="${esc(c.id)}">Elimina</button>
+            </td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+  `;
+}
 
-  function renderContractsTable(list) {
-    if (!list.length) {
-      return `<div class="empty">Ancora nessun contratto registrato.</div>`;
-    }
-    return `
-      <table>
-        <thead>
+function renderDevicesTable(list){
+  if(!list.length)return`<div class="empty">Nessun device associato.</div>`;
+  return `
+    <table>
+      <thead>
+        <tr>
+          <th>Cliente / CF</th>
+          <th>Device</th>
+          <th>IMEI</th>
+          <th>Pagamento</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        ${list.map(d=>`
           <tr>
-            <th>Cliente / CF</th>
-            <th>Offerta</th>
-            <th>Tipo</th>
-            <th>€/mese</th>
-            <th></th>
+            <td>
+              <div>${esc(d.codice_fiscale||'')}</div>
+              <div class="muted">${esc(d.note||'')}</div>
+            </td>
+            <td><div>${esc(d.nome_device||((d.marca||'')+' '+(d.modello||'')))}</div></td>
+            <td><span class="chip">${esc(d.imei||'')}</span></td>
+            <td><span class="chip">${esc(d.tipo_pagamento||d.metodo||'')}</span></td>
+            <td style="text-align:right;">
+              <button class="btn" data-action="edit-device" data-id="${esc(d.id)}">Modifica</button>
+              <button class="btn btn-danger" data-action="delete-device" data-id="${esc(d.id)}">Elimina</button>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          ${list.map(c => `
-            <tr>
-              <td>
-                <div>${esc(c.codice_fiscale || '')}</div>
-                <div class="muted">${esc(c.compagnia || '')}</div>
-              </td>
-              <td>
-                <div><span class="chip chip-strong">${esc(c.offerta || '')}</span></div>
-                <div class="muted">${esc(c.numero || '')}</div>
-              </td>
-              <td>${renderTypeTag(c.tipo)}</td>
-              <td><strong>${esc(c.costo_mensile || '')}</strong></td>
-              <td style="text-align:right;">
-                <button class="btn" data-action="edit-contract" data-id="${esc(c.id)}">Modifica</button>
-                <button class="btn btn-danger" data-action="delete-contract" data-id="${esc(c.id)}">Elimina</button>
-              </td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    `;
-  }
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
 
-  function renderDevicesTable(list) {
-    if (!list.length) {
-      return `<div class="empty">Nessun device associato. Puoi registrarli dalla colonna di sinistra.</div>`;
-    }
-    return `
-      <table>
-        <thead>
-          <tr>
-            <th>Cliente / CF</th>
-            <th>Device</th>
-            <th>IMEI</th>
-            <th>Metodo</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          ${list.map(d => `
-            <tr>
-              <td>
-                <div>${esc(d.codice_fiscale || '')}</div>
-                <div class="muted">${esc(d.note || '')}</div>
-              </td>
-              <td>
-                <div>${esc(d.marca || '')} ${esc(d.modello || '')}</div>
-              </td>
-              <td><span class="chip">${esc(d.imei || '')}</span></td>
-              <td><span class="chip">${esc(d.metodo || '')}</span></td>
-              <td style="text-align:right;">
-                <button class="btn" data-action="edit-device" data-id="${esc(d.id)}">Modifica</button>
-                <button class="btn btn-danger" data-action="delete-device" data-id="${esc(d.id)}">Elimina</button>
-              </td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    `;
-  }
+function renderTypeTag(t){
+  t=(t||'').toLowerCase();
+  const base='tag ';
+  if(t==='mobile')return`<span class="${base}tag-mobile">MOBILE</span>`;
+  if(t==='fisso')return`<span class="${base}tag-fisso">FISSO</span>`;
+  if(t==='luce')return`<span class="${base}tag-luce">LUCE</span>`;
+  if(t==='gas')return`<span class="${base}tag-gas">GAS</span>`;
+  if(t==='tv')return`<span class="${base}tag-tv">TV</span>`;
+  return`<span class="${base}">${esc(t||'')}</span>`;
+}
 
-  function renderTypeTag(tipo) {
-    const t = (tipo || '').toLowerCase();
-    const base = 'tag ';
-    if (t === 'mobile') return `<span class="${base} tag-mobile">MOBILE</span>`;
-    if (t === 'fisso')  return `<span class="${base} tag-fisso">FISSO</span>`;
-    if (t === 'luce')   return `<span class="${base} tag-luce">LUCE</span>`;
-    if (t === 'gas')    return `<span class="${base} tag-gas">GAS</span>`;
-    if (t === 'tv')     return `<span class="${base} tag-tv">TV</span>`;
-    return `<span class="${base}">${esc(tipo || '')}</span>`;
-  }
+function renderReportsSection(data,report){
+  const {customers,contracts}=data;
+  const mesi=['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
 
-  function renderInsights() {
-    const { customers, contracts, devices } = State.data;
-    const perTipo = contracts.reduce((acc, c) => {
-      const key = (c.tipo || 'Altro').toLowerCase();
-      acc[key] = (acc[key] || 0) + 1;
-      return acc;
-    }, {});
-    const totContratti = contracts.length || 1;
-    const topTipo = Object.entries(perTipo).sort((a,b) => b[1] - a[1])[0];
+  // COMPLEANNI
+  const bMonth=report.birthMonth;
+  const birthdays=customers.filter(c=>{
+    if(!c.data_nascita)return false;
+    const d=new Date(c.data_nascita);
+    return !isNaN(d)&&d.getMonth()===bMonth;
+  });
 
-    return `
-      <div class="stats-pills">
-        <div class="pill">
-          <span class="pill-dot"></span>
-          <span>${customers.length} clienti</span>
+  // SCADENZA VINCOLO
+  const eMonth=report.expiryMonth;
+  const eYear=report.expiryYear;
+  const expiring=contracts.filter(c=>{
+    if(!c.data_fine_vincolo)return false;
+    const d=new Date(c.data_fine_vincolo);
+    return !isNaN(d)&&d.getMonth()===eMonth&&d.getFullYear()===eYear;
+  });
+
+  // CONTRATTI PER COMPAGNIA
+  const byComp={};
+  contracts.forEach(c=>{
+    const k=c.compagnia||'N/D';
+    if(!byComp[k])byComp[k]={count:0,total:0};
+    byComp[k].count++;
+    const val=parseFloat(String(c.costo||c.costo_mensile||'').replace(',','.'));
+    if(!isNaN(val))byComp[k].total+=val;
+  });
+  const compRows=Object.entries(byComp).sort((a,b)=>b[1].count-a[1].count);
+
+  return `
+    <div>
+      <div class="section-title">🎂 Compleanni</div>
+      <div class="section-box">
+        <div class="section-controls">
+          <select class="select" data-report="birthMonth">
+            ${mesi.map((m,idx)=>`<option value="${idx}" ${idx===bMonth?'selected':''}>${m}</option>`).join('')}
+          </select>
+          <span class="badge-mini">${birthdays.length} clienti trovati</span>
         </div>
-        <div class="pill">
-          <span class="pill-dot" style="background:#22c55e;"></span>
-          <span>${contracts.length} contratti</span>
-        </div>
-        <div class="pill">
-          <span class="pill-dot" style="background:#f97316;"></span>
-          <span>${devices.length} device</span>
-        </div>
-      </div>
-
-      <div style="font-size:12px; color:#4b5563; margin-bottom:10px;">
-        ${topTipo
-          ? `Tipo prevalente: <strong>${topTipo[0].toUpperCase()}</strong> (${Math.round(topTipo[1]/totContratti*100)}%)`
-          : 'Quando inserirai i primi contratti vedrai qui il riepilogo per tipologia.'}
-      </div>
-
-      <button class="btn btn-primary" data-action="new-contract">
-        ⚡ Registra un nuovo contratto
-      </button>
-    `;
-  }
-
-  function renderModal(kind, editing) {
-    const title =
-      kind === 'client'
-        ? (editing ? 'Modifica cliente' : 'Nuovo cliente')
-        : kind === 'contract'
-          ? (editing ? 'Modifica contratto' : 'Nuovo contratto')
-          : (editing ? 'Modifica device' : 'Nuovo device');
-
-    const sub =
-      kind === 'client'
-        ? 'Dati anagrafici principali'
-        : kind === 'contract'
-          ? 'Dati sintetici del contratto'
-          : 'Informazioni sul terminale';
-
-    const c = editing || {};
-
-    return `
-      <div class="modal-backdrop">
-        <div class="modal">
-          <div class="modal-header">
-            <div>
-              <div class="modal-title-main">${title}</div>
-              <div class="modal-title-sub">${sub}</div>
-            </div>
-            <button class="modal-close" data-action="close-modal">✕</button>
-          </div>
-
-          ${kind === 'client'
-            ? renderClientForm(c)
-            : kind === 'contract'
-              ? renderContractForm(c)
-              : renderDeviceForm(c)}
-        </div>
-      </div>
-    `;
-  }
-
-  function renderClientForm(c) {
-    return `
-      <form data-form="client">
-        <div class="form-grid">
-          <div class="field">
-            <label>Codice fiscale</label>
-            <input name="codice_fiscale" required placeholder="RSSMRA80A01H501U" value="${esc(c.codice_fiscale || '')}" />
-          </div>
-          <div class="field">
-            <label>Telefono</label>
-            <input name="telefono" required placeholder="3331234567" value="${esc(c.telefono || '')}" />
-          </div>
-          <div class="field">
-            <label>Nome</label>
-            <input name="nome" required value="${esc(c.nome || '')}" />
-          </div>
-          <div class="field">
-            <label>Cognome</label>
-            <input name="cognome" required value="${esc(c.cognome || '')}" />
-          </div>
-          <div class="field">
-            <label>Email</label>
-            <input name="email" type="email" placeholder="nome@dominio.it" value="${esc(c.email || '')}" />
-          </div>
-          <div class="field">
-            <label>Residenza</label>
-            <input name="residenza" placeholder="Via, città…" value="${esc(c.residenza || '')}" />
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn" data-action="close-modal">Annulla</button>
-          <button type="submit" class="btn btn-primary">Salva cliente</button>
-        </div>
-      </form>
-    `;
-  }
-
-  function renderContractForm(c) {
-    return `
-      <form data-form="contract">
-        <div class="form-grid">
-          <div class="field">
-            <label>Codice fiscale cliente</label>
-            <input name="codice_fiscale" required value="${esc(c.codice_fiscale || '')}" />
-          </div>
-          <div class="field">
-            <label>Compagnia</label>
-            <input name="compagnia" placeholder="WindTre, TIM…" value="${esc(c.compagnia || '')}" />
-          </div>
-          <div class="field">
-            <label>Tipo</label>
-            <select name="tipo">
-              <option value="">–</option>
-              <option value="Mobile" ${c.tipo === 'Mobile' ? 'selected' : ''}>Mobile</option>
-              <option value="Fisso"  ${c.tipo === 'Fisso'  ? 'selected' : ''}>Fisso</option>
-              <option value="Luce"   ${c.tipo === 'Luce'   ? 'selected' : ''}>Luce</option>
-              <option value="Gas"    ${c.tipo === 'Gas'    ? 'selected' : ''}>Gas</option>
-              <option value="TV"     ${c.tipo === 'TV'     ? 'selected' : ''}>TV</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Numero linea / contratto</label>
-            <input name="numero" value="${esc(c.numero || '')}" />
-          </div>
-          <div class="field">
-            <label>Offerta</label>
-            <input name="offerta" placeholder="New Basic, Family 5G…" value="${esc(c.offerta || '')}" />
-          </div>
-          <div class="field">
-            <label>Costo mensile (€)</label>
-            <input name="costo_mensile" type="number" step="0.01" value="${esc(c.costo_mensile || '')}" />
-          </div>
-          <div class="field">
-            <label>Data attivazione</label>
-            <input name="data_attivazione" type="date" value="${esc(c.data_attivazione || '')}" />
-          </div>
-          <div class="field">
-            <label>Mesi vincolo</label>
-            <input name="mesi_vincolo" type="number" value="${esc(c.mesi_vincolo || '')}" />
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn" data-action="close-modal">Annulla</button>
-          <button type="submit" class="btn btn-primary">Salva contratto</button>
-        </div>
-      </form>
-    `;
-  }
-
-  function renderDeviceForm(c) {
-    return `
-      <form data-form="device">
-        <div class="form-grid">
-          <div class="field">
-            <label>Codice fiscale cliente</label>
-            <input name="codice_fiscale" required value="${esc(c.codice_fiscale || '')}" />
-          </div>
-          <div class="field">
-            <label>Marca</label>
-            <input name="marca" value="${esc(c.marca || '')}" />
-          </div>
-          <div class="field">
-            <label>Modello</label>
-            <input name="modello" value="${esc(c.modello || '')}" />
-          </div>
-          <div class="field">
-            <label>IMEI</label>
-            <input name="imei" value="${esc(c.imei || '')}" />
-          </div>
-          <div class="field">
-            <label>Metodo pagamento</label>
-            <input name="metodo" placeholder="Contanti, rate…" value="${esc(c.metodo || '')}" />
-          </div>
-          <div class="field">
-            <label>Note</label>
-            <input name="note" value="${esc(c.note || '')}" />
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn" data-action="close-modal">Annulla</button>
-          <button type="submit" class="btn btn-primary">Salva device</button>
-        </div>
-      </form>
-    `;
-  }
-
-  // ==============================
-  // 🧷 EVENTI
-  // ==============================
-  function bindEvents() {
-    const root = document.getElementById('app');
-
-    root.querySelectorAll('[data-tab]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        State.ui.tab = btn.getAttribute('data-tab');
-        render();
-      });
-    });
-
-    root.querySelectorAll('[data-action]').forEach(btn => {
-      const act = btn.getAttribute('data-action');
-      btn.addEventListener('click', () => {
-        if (act === 'new-client') {
-          State.ui.modal = 'client';
-          State.ui.editing = null;
-          render();
-        } else if (act === 'new-contract') {
-          State.ui.modal = 'contract';
-          State.ui.editing = null;
-          render();
-        } else if (act === 'new-device') {
-          State.ui.modal = 'device';
-          State.ui.editing = null;
-          render();
-        } else if (act === 'close-modal') {
-          State.ui.modal = null;
-          State.ui.editing = null;
-          render();
-        } else if (act === 'clear-search') {
-          State.ui.search = '';
-          render();
-        } else if (act === 'delete-client') {
-          const id = btn.getAttribute('data-id');
-          if (confirm('Eliminare definitivamente il cliente?')) {
-            State.removeCustomer(id);
-          }
-        } else if (act === 'delete-contract') {
-          const id = btn.getAttribute('data-id');
-          if (confirm('Eliminare definitivamente il contratto?')) {
-            State.removeContract(id);
-          }
-        } else if (act === 'delete-device') {
-          const id = btn.getAttribute('data-id');
-          if (confirm('Eliminare definitivamente il device?')) {
-            State.removeDevice(id);
-          }
-        } else if (act === 'edit-client') {
-          const id = btn.getAttribute('data-id');
-          State.ui.editing = State.data.customers.find(c => c.id === id) || null;
-          State.ui.modal = 'client';
-          render();
-        } else if (act === 'edit-contract') {
-          const id = btn.getAttribute('data-id');
-          State.ui.editing = State.data.contracts.find(c => c.id === id) || null;
-          State.ui.modal = 'contract';
-          render();
-        } else if (act === 'edit-device') {
-          const id = btn.getAttribute('data-id');
-          State.ui.editing = State.data.devices.find(d => d.id === id) || null;
-          State.ui.modal = 'device';
-          render();
+        ${
+          !birthdays.length
+            ? `<div class="muted">Nessun compleanno nel mese selezionato.</div>`
+            : birthdays.map(c=>{
+                const wa=formatPhoneForWhatsApp(c.telefono||'');
+                return `
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-top:1px solid #e5e7eb;">
+                    <div>
+                      <div>${esc(c.nome||'')} ${esc(c.cognome||'')}</div>
+                      <div class="muted">🎂 ${esc(c.data_nascita||'')}</div>
+                      <div class="muted">${esc(c.telefono||'')}</div>
+                    </div>
+                    ${wa?`<a class="btn whatsapp-btn" href="https://wa.me/${wa}" target="_blank" rel="noopener">WhatsApp</a>`:''}
+                  </div>
+                `;
+              }).join('')
         }
-      });
+      </div>
+
+      <div class="section-title">⏰ Fine vincolo</div>
+      <div class="section-box">
+        <div class="section-controls">
+          <select class="select" data-report="expiryMonth">
+            ${mesi.map((m,idx)=>`<option value="${idx}" ${idx===eMonth?'selected':''}>${m}</option>`).join('')}
+          </select>
+          <select class="select" data-report="expiryYear">
+            ${[eYear-1,eYear,eYear+1].map(y=>`<option value="${y}" ${y===eYear?'selected':''}>${y}</option>`).join('')}
+          </select>
+          <span class="badge-mini">${expiring.length} contratti in scadenza</span>
+        </div>
+        ${
+          !expiring.length
+            ? `<div class="muted">Nessun vincolo in scadenza nel periodo selezionato.</div>`
+            : expiring.map(c=>{
+                const wa=formatPhoneForWhatsApp(c.numero_contatto||'');
+                return `
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-top:1px solid #e5e7eb;">
+                    <div>
+                      <div>${esc(c.nome||'')} ${esc(c.cognome||'')}</div>
+                      <div class="muted">${esc(c.compagnia||'')} • ${esc(c.nome_contratto||c.offerta||'')}</div>
+                      <div class="muted">Fine vincolo: ${esc(c.data_fine_vincolo||'')}</div>
+                      <div class="muted">${esc(c.numero_contatto||'')}</div>
+                    </div>
+                    ${wa?`<a class="btn whatsapp-btn" href="https://wa.me/${wa}" target="_blank" rel="noopener">WhatsApp</a>`:''}
+                  </div>
+                `;
+              }).join('')
+        }
+      </div>
+
+      <div class="section-title">🏢 Contratti per compagnia</div>
+      <div class="section-box">
+        ${
+          !compRows.length
+            ? `<div class="muted">Nessun contratto inserito.</div>`
+            : `
+              <table>
+                <thead>
+                  <tr>
+                    <th>Compagnia</th>
+                    <th>Contratti</th>
+                    <th>Tot. €/mese</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${compRows.map(([name,info])=>`
+                    <tr>
+                      <td>${esc(name)}</td>
+                      <td>${info.count}</td>
+                      <td>${info.total.toFixed(2)}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            `
+        }
+      </div>
+    </div>
+  `;
+}
+
+function renderInsights(){
+  const {customers,contracts,devices}=State.data;
+  const perTipo=contracts.reduce((a,c)=>{
+    const k=(c.tipo_contratto||c.tipo||'Altro').toLowerCase();
+    a[k]=(a[k]||0)+1;return a;
+  },{});
+  const tot=contracts.length||1;
+  const top=Object.entries(perTipo).sort((a,b)=>b[1]-a[1])[0];
+  return `
+    <div class="stats-pills">
+      <div class="pill"><span class="pill-dot"></span><span>${customers.length} clienti</span></div>
+      <div class="pill"><span class="pill-dot" style="background:#22c55e;"></span><span>${contracts.length} contratti</span></div>
+      <div class="pill"><span class="pill-dot" style="background:#f97316;"></span><span>${devices.length} device</span></div>
+    </div>
+    <div style="font-size:12px;color:#4b5563;margin-bottom:10px;">
+      ${
+        top?`Tipo prevalente: <strong>${top[0].toUpperCase()}</strong> (${Math.round(top[1]/tot*100)}%)`
+            :'Quando inserirai i primi contratti vedrai qui il riepilogo per tipologia.'
+      }
+    </div>
+    <button class="btn btn-primary" data-action="new-contract">⚡ Registra un nuovo contratto</button>
+  `;
+}
+
+function renderModal(kind,editing){
+  const title=
+    kind==='client'?(editing?'Modifica cliente':'Nuovo cliente'):
+    kind==='contract'?(editing?'Modifica contratto':'Nuovo contratto'):
+    editing?'Modifica device':'Nuovo device';
+  const sub=
+    kind==='client'?'Dati anagrafici principali':
+    kind==='contract'?'Dati completi del contratto':
+    'Informazioni sul terminale';
+  const c=editing||{};
+  return `
+    <div class="modal-backdrop">
+      <div class="modal">
+        <div class="modal-header">
+          <div>
+            <div class="modal-title-main">${title}</div>
+            <div class="modal-title-sub">${sub}</div>
+          </div>
+          <button class="modal-close" data-action="close-modal">✕</button>
+        </div>
+        ${
+          kind==='client'
+            ? renderClientForm(c)
+            : kind==='contract'
+              ? renderContractForm(c)
+              : renderDeviceForm(c)
+        }
+      </div>
+    </div>
+  `;
+}
+
+function renderClientForm(c){
+  return `
+    <form data-form="client">
+      <div class="form-grid">
+        <div class="field">
+          <label>Codice fiscale</label>
+          <input name="codice_fiscale" required placeholder="RSSMRA80A01H501U" value="${esc(c.codice_fiscale||'')}" />
+        </div>
+        <div class="field">
+          <label>Telefono</label>
+          <input name="telefono" required placeholder="3331234567" value="${esc(c.telefono||'')}" />
+        </div>
+        <div class="field">
+          <label>Nome</label>
+          <input name="nome" required value="${esc(c.nome||'')}" />
+        </div>
+        <div class="field">
+          <label>Cognome</label>
+          <input name="cognome" required value="${esc(c.cognome||'')}" />
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input name="email" type="email" placeholder="nome@dominio.it" value="${esc(c.email||'')}" />
+        </div>
+        <div class="field">
+          <label>Data di nascita</label>
+          <input type="date" name="data_nascita" value="${esc(c.data_nascita||'')}" />
+        </div>
+        <div class="field">
+          <label>Residenza</label>
+          <input name="residenza" placeholder="Via, città…" value="${esc(c.residenza||'')}" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" data-action="close-modal">Annulla</button>
+        <button type="submit" class="btn btn-primary">Salva cliente</button>
+      </div>
+    </form>
+  `;
+}
+
+function renderContractForm(c){
+  return `
+    <form data-form="contract">
+      <div class="form-grid">
+        <div class="field">
+          <label>Data contratto (DATA)</label>
+          <input type="date" name="data" value="${esc(c.data||c.data_attivazione||'')}" />
+        </div>
+        <div class="field">
+          <label>Compagnia</label>
+          <input name="compagnia" placeholder="WindTre, TIM…" value="${esc(c.compagnia||'')}" />
+        </div>
+        <div class="field">
+          <label>T. Cliente</label>
+          <input name="tipo_cliente" placeholder="Nuovo, già cliente…" value="${esc(c.tipo_cliente||'')}" />
+        </div>
+        <div class="field">
+          <label>T. Contratto</label>
+          <select name="tipo_contratto">
+            <option value="">–</option>
+            <option ${c.tipo_contratto==='Mobile'?'selected':''}>Mobile</option>
+            <option ${c.tipo_contratto==='Fisso'?'selected':''}>Fisso</option>
+            <option ${c.tipo_contratto==='Luce'?'selected':''}>Luce</option>
+            <option ${c.tipo_contratto==='Gas'?'selected':''}>Gas</option>
+            <option ${c.tipo_contratto==='TV'?'selected':''}>TV</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>MNP</label>
+          <select name="mnp">
+            <option value="">–</option>
+            <option value="SI" ${c.mnp==='SI'?'selected':''}>SI</option>
+            <option value="NO" ${c.mnp==='NO'?'selected':''}>NO</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Telefono incluso</label>
+          <select name="telefono_incluso">
+            <option value="">–</option>
+            <option value="SI" ${c.telefono_incluso==='SI'?'selected':''}>SI</option>
+            <option value="NO" ${c.telefono_incluso==='NO'?'selected':''}>NO</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Nome cliente</label>
+          <input name="nome" value="${esc(c.nome||'')}" />
+        </div>
+        <div class="field">
+          <label>Cognome cliente</label>
+          <input name="cognome" value="${esc(c.cognome||'')}" />
+        </div>
+        <div class="field">
+          <label>Numero contatto</label>
+          <input name="numero_contatto" value="${esc(c.numero_contatto||'')}" />
+        </div>
+
+        <div class="field">
+          <label>C.F/P.IVA</label>
+          <input name="codice_fiscale" required value="${esc(c.codice_fiscale||'')}" />
+        </div>
+        <div class="field">
+          <label>Nome contratto</label>
+          <input name="nome_contratto" placeholder="New Basic, Family 5G…" value="${esc(c.nome_contratto||c.offerta||'')}" />
+        </div>
+        <div class="field">
+          <label>Numero lavorato</label>
+          <input name="numero_lavorato" value="${esc(c.numero_lavorato||c.numero||'')}" />
+        </div>
+
+        <div class="field">
+          <label>Costo mensile (€)</label>
+          <input name="costo" type="number" step="0.01" value="${esc(c.costo||c.costo_mensile||'')}" />
+        </div>
+        <div class="field">
+          <label>Vincolo (mesi)</label>
+          <input name="vincolo" type="number" value="${esc(c.vincolo||c.mesi_vincolo||'')}" />
+        </div>
+        <div class="field">
+          <label>Data fine vincolo</label>
+          <input type="date" name="data_fine_vincolo" value="${esc(c.data_fine_vincolo||'')}" />
+        </div>
+
+        <div class="field">
+          <label>Nome device</label>
+          <input name="nome_device" value="${esc(c.nome_device||'')}" />
+        </div>
+        <div class="field">
+          <label>Tipo device</label>
+          <input name="tipo_device" value="${esc(c.tipo_device||'')}" />
+        </div>
+        <div class="field">
+          <label>IMEI</label>
+          <input name="imei" value="${esc(c.imei||'')}" />
+        </div>
+
+        <div class="field">
+          <label>Tipo pagamento</label>
+          <input name="tipo_pagamento" placeholder="Contanti, rate…" value="${esc(c.tipo_pagamento||'')}" />
+        </div>
+        <div class="field">
+          <label>Durata pagamento</label>
+          <input name="durata_pagamento" value="${esc(c.durata_pagamento||'')}" />
+        </div>
+        <div class="field">
+          <label>Fornitore</label>
+          <input name="fornitore" value="${esc(c.fornitore||'')}" />
+        </div>
+
+        <div class="field">
+          <label>Data portabilità</label>
+          <input type="date" name="data_portabilita" value="${esc(c.data_portabilita||'')}" />
+        </div>
+        <div class="field">
+          <label>Valore cliente</label>
+          <input name="valore_cliente" value="${esc(c.valore_cliente||'')}" />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn" data-action="close-modal">Annulla</button>
+        <button type="submit" class="btn btn-primary">Salva contratto</button>
+      </div>
+    </form>
+  `;
+}
+
+function renderDeviceForm(c){
+  return `
+    <form data-form="device">
+      <div class="form-grid">
+        <div class="field">
+          <label>Codice fiscale cliente</label>
+          <input name="codice_fiscale" required value="${esc(c.codice_fiscale||'')}" />
+        </div>
+        <div class="field">
+          <label>Nome device</label>
+          <input name="nome_device" value="${esc(c.nome_device||'')}" />
+        </div>
+        <div class="field">
+          <label>Tipo device</label>
+          <input name="tipo_device" value="${esc(c.tipo_device||'')}" />
+        </div>
+        <div class="field">
+          <label>Marca</label>
+          <input name="marca" value="${esc(c.marca||'')}" />
+        </div>
+        <div class="field">
+          <label>Modello</label>
+          <input name="modello" value="${esc(c.modello||'')}" />
+        </div>
+        <div class="field">
+          <label>IMEI</label>
+          <input name="imei" value="${esc(c.imei||'')}" />
+        </div>
+        <div class="field">
+          <label>Tipo pagamento</label>
+          <input name="tipo_pagamento" placeholder="Contanti, rate…" value="${esc(c.tipo_pagamento||c.metodo||'')}" />
+        </div>
+        <div class="field">
+          <label>Durata pagamento</label>
+          <input name="durata_pagamento" value="${esc(c.durata_pagamento||'')}" />
+        </div>
+        <div class="field">
+          <label>Note</label>
+          <input name="note" value="${esc(c.note||'')}" />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn" data-action="close-modal">Annulla</button>
+        <button type="submit" class="btn btn-primary">Salva device</button>
+      </div>
+    </form>
+  `;
+}
+
+function bindEvents(){
+  const root=document.getElementById('app');
+
+  root.querySelectorAll('[data-tab]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      State.ui.tab=btn.getAttribute('data-tab');render();
     });
+  });
 
-    const searchInput = root.querySelector('.search-input');
-    if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
-        State.ui.search = e.target.value;
-        render();
-      });
-    }
+  root.querySelectorAll('[data-action]').forEach(btn=>{
+    const act=btn.getAttribute('data-action');
+    btn.addEventListener('click',()=>{
+      if(act==='new-client'){State.ui.modal='client';State.ui.editing=null;render();}
+      else if(act==='new-contract'){State.ui.modal='contract';State.ui.editing=null;render();}
+      else if(act==='new-device'){State.ui.modal='device';State.ui.editing=null;render();}
+      else if(act==='close-modal'){State.ui.modal=null;State.ui.editing=null;render();}
+      else if(act==='clear-search'){State.ui.search='';render();}
+      else if(act==='delete-client'){
+        const id=btn.getAttribute('data-id');
+        if(confirm('Eliminare definitivamente il cliente?'))State.removeCustomer(id);
+      }else if(act==='delete-contract'){
+        const id=btn.getAttribute('data-id');
+        if(confirm('Eliminare definitivamente il contratto?'))State.removeContract(id);
+      }else if(act==='delete-device'){
+        const id=btn.getAttribute('data-id');
+        if(confirm('Eliminare definitivamente il device?'))State.removeDevice(id);
+      }else if(act==='edit-client'){
+        const id=btn.getAttribute('data-id');
+        State.ui.editing=State.data.customers.find(c=>c.id===id)||null;
+        State.ui.modal='client';render();
+      }else if(act==='edit-contract'){
+        const id=btn.getAttribute('data-id');
+        State.ui.editing=State.data.contracts.find(c=>c.id===id)||null;
+        State.ui.modal='contract';render();
+      }else if(act==='edit-device'){
+        const id=btn.getAttribute('data-id');
+        State.ui.editing=State.data.devices.find(d=>d.id===id)||null;
+        State.ui.modal='device';render();
+      }
+    });
+  });
 
-    const modal = document.querySelector('.modal');
-    if (modal) {
-      const clientForm = modal.querySelector('form[data-form="client"]');
-      const contractForm = modal.querySelector('form[data-form="contract"]');
-      const deviceForm = modal.querySelector('form[data-form="device"]');
-
-      if (clientForm) {
-        clientForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-          const fd = new FormData(clientForm);
-          State.upsertCustomer({
-            codice_fiscale: fd.get('codice_fiscale') || '',
-            telefono: fd.get('telefono') || '',
-            nome: fd.get('nome') || '',
-            cognome: fd.get('cognome') || '',
-            email: (fd.get('email') || '').toLowerCase(),
-            residenza: fd.get('residenza') || ''
-          });
-        });
-      }
-      if (contractForm) {
-        contractForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-          const fd = new FormData(contractForm);
-          State.upsertContract({
-            codice_fiscale: fd.get('codice_fiscale') || '',
-            compagnia: fd.get('compagnia') || '',
-            tipo: fd.get('tipo') || '',
-            numero: fd.get('numero') || '',
-            offerta: fd.get('offerta') || '',
-            costo_mensile: fd.get('costo_mensile') || '',
-            data_attivazione: fd.get('data_attivazione') || '',
-            mesi_vincolo: fd.get('mesi_vincolo') || ''
-          });
-        });
-      }
-      if (deviceForm) {
-        deviceForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-          const fd = new FormData(deviceForm);
-          State.upsertDevice({
-            codice_fiscale: fd.get('codice_fiscale') || '',
-            marca: fd.get('marca') || '',
-            modello: fd.get('modello') || '',
-            imei: fd.get('imei') || '',
-            metodo: fd.get('metodo') || '',
-            note: fd.get('note') || ''
-          });
-        });
-      }
-    }
+  const searchInput=root.querySelector('.search-input');
+  if(searchInput){
+    searchInput.addEventListener('input',e=>{
+      State.ui.search=e.target.value;render();
+    });
   }
 
-  // ==============================
-  // 🚀 AVVIO
-  // ==============================
-  (async () => {
-    await State.init();
-    render();
-  })();
+  // controlli report (select mese/anno)
+  root.querySelectorAll('[data-report]').forEach(sel=>{
+    sel.addEventListener('change',e=>{
+      const key=sel.getAttribute('data-report');
+      if(key==='birthMonth') State.ui.report.birthMonth=parseInt(e.target.value,10);
+      if(key==='expiryMonth') State.ui.report.expiryMonth=parseInt(e.target.value,10);
+      if(key==='expiryYear') State.ui.report.expiryYear=parseInt(e.target.value,10);
+      render();
+    });
+  });
+
+  const modal=document.querySelector('.modal');
+  if(modal){
+    const clientForm=modal.querySelector('form[data-form="client"]');
+    const contractForm=modal.querySelector('form[data-form="contract"]');
+    const deviceForm=modal.querySelector('form[data-form="device"]');
+
+    if(clientForm){
+      clientForm.addEventListener('submit',e=>{
+        e.preventDefault();
+        const fd=new FormData(clientForm);
+        State.upsertCustomer({
+          codice_fiscale:(fd.get('codice_fiscale')||'').toUpperCase().replace(/\s/g,''),
+          telefono:fd.get('telefono')||'',
+          nome:fd.get('nome')||'',
+          cognome:fd.get('cognome')||'',
+          email:(fd.get('email')||'').toLowerCase(),
+          data_nascita:fd.get('data_nascita')||'',
+          residenza:fd.get('residenza')||''
+        });
+      });
+    }
+    if(contractForm){
+      contractForm.addEventListener('submit',e=>{
+        e.preventDefault();
+        const fd=new FormData(contractForm);
+        State.upsertContract({
+          data:fd.get('data')||'',
+          data_attivazione:fd.get('data')||'',
+          compagnia:fd.get('compagnia')||'',
+          tipo_cliente:fd.get('tipo_cliente')||'',
+          tipo_contratto:fd.get('tipo_contratto')||'',
+          tipo:fd.get('tipo_contratto')||'',
+          mnp:fd.get('mnp')||'',
+          telefono_incluso:fd.get('telefono_incluso')||'',
+          nome:fd.get('nome')||'',
+          cognome:fd.get('cognome')||'',
+          numero_contatto:fd.get('numero_contatto')||'',
+          codice_fiscale:(fd.get('codice_fiscale')||'').toUpperCase().replace(/\s/g,''),
+          nome_contratto:fd.get('nome_contratto')||'',
+          offerta:fd.get('nome_contratto')||'',
+          numero_lavorato:fd.get('numero_lavorato')||'',
+          numero:fd.get('numero_lavorato')||'',
+          costo:fd.get('costo')||'',
+          costo_mensile:fd.get('costo')||'',
+          vincolo:fd.get('vincolo')||'',
+          mesi_vincolo:fd.get('vincolo')||'',
+          data_fine_vincolo:fd.get('data_fine_vincolo')||'',
+          nome_device:fd.get('nome_device')||'',
+          tipo_device:fd.get('tipo_device')||'',
+          imei:fd.get('imei')||'',
+          tipo_pagamento:fd.get('tipo_pagamento')||'',
+          durata_pagamento:fd.get('durata_pagamento')||'',
+          fornitore:fd.get('fornitore')||'',
+          data_portabilita:fd.get('data_portabilita')||'',
+          valore_cliente:fd.get('valore_cliente')||''
+        });
+      });
+    }
+    if(deviceForm){
+      deviceForm.addEventListener('submit',e=>{
+        e.preventDefault();
+        const fd=new FormData(deviceForm);
+        State.upsertDevice({
+          codice_fiscale:(fd.get('codice_fiscale')||'').toUpperCase().replace(/\s/g,''),
+          nome_device:fd.get('nome_device')||'',
+          tipo_device:fd.get('tipo_device')||'',
+          marca:fd.get('marca')||'',
+          modello:fd.get('modello')||'',
+          imei:fd.get('imei')||'',
+          tipo_pagamento:fd.get('tipo_pagamento')||'',
+          durata_pagamento:fd.get('durata_pagamento')||'',
+          note:fd.get('note')||''
+        });
+      });
+    }
+  }
+}
+
+(async()=>{await State.init();render();})();
 </script>
 </body>
 </html>
