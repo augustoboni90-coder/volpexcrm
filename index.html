@@ -1,2886 +1,1157 @@
 <!doctype html>
 <html lang="it">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gestione Clienti CRM</title>
-  <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
+<head>
+  <meta charset="utf-8" />
+  <title>Volpex CRM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #020617;
+      --card: #020617;
+      --accent: #f97316;
+      --accent-soft: rgba(249, 115, 22, 0.12);
+      --text: #e5e7eb;
+      --muted: #6b7280;
+      --danger: #ef4444;
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
     body {
-      box-sizing: border-box;
-    }
-    
-    html, body {
-      height: 100%;
       margin: 0;
-      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1e293b 0, #020617 55%, #000 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 16px;
     }
-
-    .modal-overlay {
-      background-color: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(4px);
+    #app {
+      width: 100%;
+      max-width: 1200px;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 24px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow:
+        0 40px 80px rgba(15, 23, 42, 0.75),
+        0 0 0 1px rgba(15, 23, 42, 0.9);
+      overflow: hidden;
+      backdrop-filter: blur(16px);
     }
-
-    .client-card, .contract-card {
-      transition: all 0.3s ease;
-      border-left: 4px solid;
+    .layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 640px;
     }
-
-    .client-card:hover, .contract-card:hover {
-      transform: translateX(4px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { border-right: none; border-bottom: 1px solid rgba(148,163,184,0.35); }
     }
-
-    .loading-spinner {
-      border: 3px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top-color: white;
-      width: 20px;
-      height: 20px;
-      animation: spin 0.8s linear infinite;
+    .sidebar {
+      padding: 20px 18px;
+      border-right: 1px solid rgba(148,163,184,0.35);
+      background: radial-gradient(circle at top left, rgba(249,115,22,0.12), transparent 55%);
     }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 26px;
     }
-
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      background: radial-gradient(circle at 30% 20%, #f97316, #ea580c);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        0 0 0 1px rgba(248, 250, 252, 0.12),
+        0 10px 25px rgba(249,115,22,0.55);
+      font-size: 20px;
+    }
+    .logo-text-main {
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+    .logo-text-sub {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 18px;
+    }
+    .nav-btn {
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      padding: 7px 11px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease, transform 0.08s ease;
+    }
+    .nav-btn span.icon {
+      font-size: 16px;
+      width: 18px;
+      text-align: center;
+    }
+    .nav-btn.active {
+      background: radial-gradient(circle at top left, rgba(249,115,22,0.22), rgba(15,23,42,0.95));
+      border-color: rgba(248, 250, 252, 0.14);
+      color: #e5e7eb;
+      transform: translateX(1px);
+    }
+    .nav-btn:hover:not(.active) {
+      background: rgba(15, 23, 42, 0.9);
+      border-color: rgba(148,163,184,0.4);
+      color: #e5e7eb;
+    }
+    .nav-label { font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.13em; margin: 14px 0 8px; }
+    .sync-badge {
+      margin-top: 16px;
+      padding: 9px 11px;
+      border-radius: 12px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: radial-gradient(circle at top left, rgba(34,197,94,0.12), rgba(15,23,42,0.9));
+      border: 1px solid rgba(22,163,74,0.55);
+      color: #bbf7d0;
+    }
+    .sync-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34,197,94,0.35);
+    }
+    .main {
+      padding: 18px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+    }
+    .headline {
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .headline span.sub {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+    }
+    .pill {
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      font-size: 11px;
+      color: var(--muted);
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+    }
+    .badge-accent {
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      background: rgba(249,115,22,0.14);
+      color: #fed7aa;
+      border: 1px solid rgba(249,115,22,0.45);
+    }
+    .btn {
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 13px;
+      border: 1px solid transparent;
+      background: rgba(15,23,42,0.85);
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: background 0.18s ease, transform 0.08s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+    .btn-primary {
+      background: radial-gradient(circle at 30% 0, #fed7aa, #f97316);
+      color: #020617;
+      font-weight: 600;
+      box-shadow:
+        0 10px 28px rgba(249,115,22,0.55),
+        0 0 0 1px rgba(15,23,42,0.9);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 18px 40px rgba(249,115,22,0.7),
+        0 0 0 1px rgba(15,23,42,0.9);
+    }
+    .btn-ghost {
+      border-color: rgba(148,163,184,0.6);
+    }
+    .btn-ghost:hover {
+      background: rgba(15,23,42,0.9);
+      border-color: rgba(148,163,184,0.9);
+    }
+    .search-input {
+      width: 100%;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.4);
+      background: rgba(15,23,42,0.9);
+      padding: 8px 11px;
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
+    }
+    .search-input::placeholder { color: rgba(148,163,184,0.9); }
+    .search-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 6px;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.2fr);
+      gap: 12px;
+      margin-top: 6px;
+    }
+    @media (max-width: 900px) {
+      .cards { grid-template-columns: 1fr; }
+    }
+    .panel {
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: var(--radius);
+      padding: 12px 12px 10px;
+      border: 1px solid rgba(30,64,175,0.45);
+      box-shadow:
+        0 12px 28px rgba(15,23,42,0.85),
+        inset 0 0 0 1px rgba(15,23,42,0.9);
+    }
+    .panel h2 {
+      margin: 0 0 4px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+    }
+    .panel-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .table th, .table td {
+      padding: 6px 4px;
+      border-bottom: 1px solid rgba(31,41,55,0.9);
+    }
+    .table th {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      text-align: left;
+    }
+    .table tr:last-child td { border-bottom: none; }
+    .chip {
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      border: 1px solid rgba(148,163,184,0.45);
+      color: var(--muted);
+    }
+    .chip-brand {
+      border-color: rgba(248,250,252,0.28);
+      color: #e5e7eb;
+      background: rgba(15,23,42,0.9);
+    }
+    .muted { color: var(--muted); }
+    .tag-type {
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      border: 1px solid rgba(148,163,184,0.55);
+    }
+    .tag-mobile { border-color: rgba(34,197,94,0.7); color: #bbf7d0; }
+    .tag-fisso { border-color: rgba(59,130,246,0.7); color: #bfdbfe; }
+    .tag-luce  { border-color: rgba(234,179,8,0.7); color: #facc15; }
+    .tag-gas   { border-color: rgba(248,113,113,0.8); color: #fecaca; }
+    .tag-tv    { border-color: rgba(168,85,247,0.8); color: #e9d5ff; }
+    .pill-sm {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-size: 10px;
+      border: 1px solid rgba(148,163,184,0.5);
+      color: var(--muted);
+    }
+    .pill-sm-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(248,250,252,0.7);
+    }
+    .empty {
+      padding: 12px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      border-radius: 12px;
+      background: radial-gradient(circle at top, rgba(15,23,42,0.95), rgba(15,23,42,0.98));
+      border: 1px dashed rgba(55,65,81,0.9);
+    }
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at top, rgba(15,23,42,0.88), rgba(0,0,0,0.96));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 40;
+    }
+    .modal {
+      width: 100%;
+      max-width: 560px;
+      background: rgba(15,23,42,0.98);
+      border-radius: 20px;
+      border: 1px solid rgba(148,163,184,0.6);
+      box-shadow: 0 36px 80px rgba(0,0,0,0.9);
+      padding: 16px 16px 12px;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .modal-title {
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .modal-title span.sub { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.16em; }
+    .modal-close {
+      border-radius: 999px;
+      width: 28px;
+      height: 28px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.9);
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .form-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+    @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+    .field { display: flex; flex-direction: column; gap: 3px; margin-bottom: 6px; }
+    .field label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+    .field input, .field select {
+      border-radius: 10px;
+      border: 1px solid rgba(55,65,81,0.9);
+      padding: 6px 8px;
+      background: rgba(15,23,42,0.95);
+      color: var(--text);
+      font-size: 12px;
+      outline: none;
+    }
+    .field input::placeholder { color: rgba(75,85,99,0.9); }
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 10px;
+    }
     .toast {
       position: fixed;
-      bottom: 24px;
-      right: 24px;
-      padding: 16px 24px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      animation: slideIn 0.3s ease;
-      z-index: 1000;
+      right: 14px;
+      bottom: 14px;
+      padding: 8px 12px;
+      border-radius: 14px;
+      font-size: 12px;
+      background: radial-gradient(circle at top left, #22c55e, #15803d);
+      color: #ecfdf5;
+      box-shadow: 0 14px 32px rgba(22,163,74,0.7);
+      z-index: 50;
     }
-
-    @keyframes slideIn {
-      from {
-        transform: translateX(400px);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
-
-    .stat-card {
-      transition: all 0.2s ease;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    .tab-button {
-      transition: all 0.2s ease;
-    }
-
-    .tab-button.active {
-      border-bottom: 3px solid;
-    }
-
-    .whatsapp-btn {
-      background-color: #25D366;
-      color: white;
-      text-decoration: none;
-      transition: all 0.2s ease;
-    }
-
-    .whatsapp-btn:hover {
-      background-color: #20BA5A;
-      transform: scale(1.05);
+    .toast.error {
+      background: radial-gradient(circle at top left, #ef4444, #991b1b);
+      box-shadow: 0 14px 32px rgba(220,38,38,0.7);
     }
   </style>
-  <style>@view-transition { navigation: auto; }</style>
- </head>
- <body class="min-h-full">
-  <main id="app" class="min-h-full"></main>
-  <script>
-    const defaultConfig = {
-      background_color: "#f0f4f8",
-      surface_color: "#ffffff",
-      text_color: "#1a202c",
-      primary_action_color: "#2563eb",
-      secondary_action_color: "#64748b",
-      app_title: "Gestione Clienti CRM",
-      subtitle: "Anagrafica Clienti e Contratti",
-      button_add: "Aggiungi Cliente",
-      button_save: "Salva",
-      button_cancel: "Annulla",
-      font_family: "Inter",
-      font_size: 16
-    };
+</head>
+<body>
+<div id="app"></div>
 
-    let allRecords = [];
-    let showModal = false;
-    let isLoading = false;
-    let editingRecord = null;
-    let activeMainTab = 'home';
-    let activeModalTab = 'manual';
-    let parsedData = null;
-    let pasteStep = 'input';
-    let searchQuery = '';
-    let currentFormType = 'cliente';
-    let csvData = null;
-    let csvErrors = [];
-    let csvValidRecords = [];
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbxtaqy6Yv3fKlQB3nMrhEd0GdGAzAYzrF5VoRFzgrtRgK7nqvaxoCLF479YJtupn089/exec';
 
-    const dataHandler = {
-      onDataChanged(data) {
-        allRecords = data.sort((a, b) => 
-          new Date(b.created_at) - new Date(a.created_at)
-        );
-        render();
-      }
-    };
+const State = {
+  data: { customers: [], contracts: [], devices: [] },
+  ui: {
+    tab: 'clients',
+    search: '',
+    modal: null, // 'client' | 'contract' | 'device'
+    editing: null,
+    syncing: false
+  },
 
-    function showToast(message, type = 'success') {
-      const toast = document.createElement('div');
-      toast.className = 'toast';
-      toast.style.backgroundColor = type === 'success' ? '#10b981' : '#ef4444';
-      toast.style.color = 'white';
-      toast.textContent = message;
-      document.body.appendChild(toast);
-      
-      setTimeout(() => {
-        toast.style.animation = 'slideIn 0.3s ease reverse';
-        setTimeout(() => toast.remove(), 300);
-      }, 3000);
+  async init() {
+    try {
+      const res = await fetch(API_URL + '?type=all');
+      if (!res.ok) throw new Error('http');
+      const json = await res.json();
+      this.data = json;
+      localStorage.setItem('volpex_state', JSON.stringify(this.data));
+    } catch (e) {
+      console.warn('Errore fetch remoto, uso cache locale', e);
+      const raw = localStorage.getItem('volpex_state');
+      if (raw) this.data = JSON.parse(raw);
     }
+  },
 
-    function validateCodiceFiscale(cf) {
-      return /^[A-Z]{6}[0-9]{2}[A-Z][0-9]{2}[A-Z][0-9]{3}[A-Z]$/i.test(cf);
-    }
-
-    function getClients() {
-      return allRecords.filter(r => r.type === 'cliente');
-    }
-
-    function getContracts() {
-      return allRecords.filter(r => r.type === 'contratto');
-    }
-
-    function getDevices() {
-      return allRecords.filter(r => r.type === 'device');
-    }
-
-    function checkDuplicateCodiceFiscale(cf, excludeId = null) {
-      const clients = getClients();
-      return clients.some(c => 
-        c.codice_fiscale.toUpperCase() === cf.toUpperCase() && 
-        c.id !== excludeId
-      );
-    }
-
-    function calculateEndDate(startDate, months) {
-      if (!startDate || !months) return '';
-      const date = new Date(startDate);
-      date.setMonth(date.getMonth() + parseInt(months));
-      return date.toISOString().split('T')[0];
-    }
-
-    function formatPhoneForWhatsApp(phone) {
-      let cleaned = phone.replace(/[^0-9]/g, '');
-      
-      if (cleaned.startsWith('0')) {
-        cleaned = '39' + cleaned.substring(1);
-      }
-      else if (!cleaned.startsWith('39') && cleaned.length === 10) {
-        cleaned = '39' + cleaned;
-      }
-      
-      return cleaned;
-    }
-
-    function parseCsvFile(csvText) {
-      const lines = csvText.trim().split('\n');
-      const errors = [];
-      const validRecords = [];
-      
-      const startIndex = lines[0].toUpperCase().includes('CODICE FISCALE') ? 1 : 0;
-      
-      for (let i = startIndex; i < lines.length; i++) {
-        const lineNumber = i + 1;
-        const line = lines[i].trim();
-        
-        if (!line) continue;
-        
-        const fields = line.split(';').map(f => f.trim());
-        
-        if (fields.length < 7) {
-          errors.push({
-            line: lineNumber,
-            error: `Riga incompleta: trovati ${fields.length} campi, richiesti almeno 7`
-          });
-          continue;
-        }
-        
-        const [codiceFiscale, cognome, nome, dataNascita, sesso, numeroContatto, email, indirizzo, citta, provincia, stato, note] = fields;
-        
-        if (!codiceFiscale || !validateCodiceFiscale(codiceFiscale)) {
-          errors.push({
-            line: lineNumber,
-            error: `Codice fiscale non valido: "${codiceFiscale}"`
-          });
-          continue;
-        }
-        
-        if (validRecords.some(r => r.codice_fiscale.toUpperCase() === codiceFiscale.toUpperCase())) {
-          errors.push({
-            line: lineNumber,
-            error: `Codice fiscale duplicato nel file: "${codiceFiscale}"`
-          });
-          continue;
-        }
-        
-        if (checkDuplicateCodiceFiscale(codiceFiscale)) {
-          errors.push({
-            line: lineNumber,
-            error: `Codice fiscale già presente nell'anagrafica: "${codiceFiscale}"`
-          });
-          continue;
-        }
-        
-        if (!cognome || !nome) {
-          errors.push({
-            line: lineNumber,
-            error: 'Nome e Cognome sono obbligatori'
-          });
-          continue;
-        }
-        
-        if (!numeroContatto) {
-          errors.push({
-            line: lineNumber,
-            error: 'Numero di contatto è obbligatorio'
-          });
-          continue;
-        }
-        
-        if (!email) {
-          errors.push({
-            line: lineNumber,
-            error: 'Email è obbligatoria'
-          });
-          continue;
-        }
-        
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-          errors.push({
-            line: lineNumber,
-            error: `Email non valida: "${email}"`
-          });
-          continue;
-        }
-        
-        let parsedDate = dataNascita;
-        if (dataNascita) {
-          const dateFormats = [
-            /^(\d{2})\/(\d{2})\/(\d{4})$/,
-            /^(\d{4})-(\d{2})-(\d{2})$/
-          ];
-          
-          let validDate = false;
-          for (const format of dateFormats) {
-            const match = dataNascita.match(format);
-            if (match) {
-              if (format.source.includes('\\/')) {
-                parsedDate = `${match[3]}-${match[2]}-${match[1]}`;
-              } else {
-                parsedDate = dataNascita;
-              }
-              validDate = true;
-              break;
-            }
-          }
-          
-          if (!validDate) {
-            errors.push({
-              line: lineNumber,
-              error: `Data di nascita non valida: "${dataNascita}". Usa formato DD/MM/YYYY o YYYY-MM-DD`
-            });
-            continue;
-          }
-        } else {
-          parsedDate = new Date().toISOString().split('T')[0];
-        }
-        
-        const sessoUpper = sesso ? sesso.toUpperCase() : 'M';
-        if (sessoUpper !== 'M' && sessoUpper !== 'F') {
-          errors.push({
-            line: lineNumber,
-            error: `Sesso non valido: "${sesso}". Usa M o F`
-          });
-          continue;
-        }
-        
-        let residenza = indirizzo || 'N/D';
-        if (citta) residenza += `, ${citta}`;
-        if (provincia) residenza += ` ${provincia}`;
-        
-        validRecords.push({
-          codice_fiscale: codiceFiscale.toUpperCase(),
-          cognome: cognome,
-          nome: nome,
-          data_nascita: parsedDate,
-          sesso: sessoUpper,
-          numero_contatto: numeroContatto,
-          email: email,
-          residenza: residenza,
-          stato_nascita: stato || 'Italia',
-          note: note || ''
-        });
-      }
-      
-      return { validRecords, errors };
-    }
-
-    async function importCsvRecords(records) {
-      let successCount = 0;
-      let failCount = 0;
-      
-      for (const record of records) {
-        if (allRecords.length >= 999) {
-          showToast('Limite massimo di 999 record raggiunto', 'error');
-          break;
-        }
-        
-        const newClient = {
-          id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-          type: 'cliente',
-          ...record,
-          created_at: new Date().toISOString()
-        };
-        
-        const result = await window.dataSdk.create(newClient);
-        
-        if (result.isOk) {
-          successCount++;
-        } else {
-          failCount++;
-        }
-        
-        await new Promise(resolve => setTimeout(resolve, 50));
-      }
-      
-      return { successCount, failCount };
-    }
-
-    async function addClient(formData) {
-      if (allRecords.length >= 999) {
-        showToast('Limite massimo di 999 record raggiunto', 'error');
-        return;
-      }
-
-      const codiceFiscale = formData.get('codice_fiscale').toUpperCase();
-      
-      if (!validateCodiceFiscale(codiceFiscale)) {
-        showToast('Codice fiscale non valido', 'error');
-        return;
-      }
-
-      if (checkDuplicateCodiceFiscale(codiceFiscale)) {
-        showToast('Codice fiscale già presente nell\'anagrafica', 'error');
-        return;
-      }
-
-      isLoading = true;
-      render();
-
-      const newClient = {
-        id: Date.now().toString(),
-        type: 'cliente',
-        codice_fiscale: codiceFiscale,
-        nome: formData.get('nome'),
-        cognome: formData.get('cognome'),
-        numero_contatto: formData.get('numero_contatto'),
-        email: formData.get('email'),
-        data_nascita: formData.get('data_nascita'),
-        sesso: formData.get('sesso'),
-        residenza: formData.get('residenza'),
-        stato_nascita: formData.get('stato_nascita'),
-        created_at: new Date().toISOString()
-      };
-
-      const result = await window.dataSdk.create(newClient);
-      
-      isLoading = false;
-      
-      if (result.isOk) {
-        showModal = false;
-        showToast('Cliente aggiunto con successo');
-        render();
-      } else {
-        showToast('Errore nell\'aggiunta del cliente', 'error');
-        render();
-      }
-    }
-
-    async function addDevice(formData) {
-      if (allRecords.length >= 999) {
-        showToast('Limite massimo di 999 record raggiunto', 'error');
-        return;
-      }
-
-      const imei = formData.get('device_imei');
-      const codiceFiscale = formData.get('device_codice_fiscale').toUpperCase();
-      
-      if (!imei) {
-        showToast('IMEI è obbligatorio', 'error');
-        return;
-      }
-
-      if (!validateCodiceFiscale(codiceFiscale)) {
-        showToast('Codice fiscale non valido', 'error');
-        return;
-      }
-
-      isLoading = true;
-      render();
-
-      const clients = getClients();
-      const existingClient = clients.find(c => c.codice_fiscale.toUpperCase() === codiceFiscale);
-
-      if (!existingClient) {
-        const newClient = {
-          id: Date.now().toString(),
-          type: 'cliente',
-          codice_fiscale: codiceFiscale,
-          nome: formData.get('device_nome'),
-          cognome: formData.get('device_cognome'),
-          numero_contatto: formData.get('device_numero_contatto'),
-          email: formData.get('device_email'),
-          data_nascita: formData.get('device_data_nascita'),
-          sesso: formData.get('device_sesso'),
-          residenza: formData.get('device_residenza'),
-          stato_nascita: formData.get('device_stato_nascita'),
-          created_at: new Date().toISOString()
-        };
-
-        const clientResult = await window.dataSdk.create(newClient);
-        
-        if (!clientResult.isOk) {
-          isLoading = false;
-          showToast('Errore nella creazione del cliente', 'error');
-          render();
-          return;
-        }
-        
-        showToast('Cliente creato automaticamente!');
-      } else {
-        const updatedClient = {
-          ...existingClient,
-          nome: formData.get('device_nome'),
-          cognome: formData.get('device_cognome'),
-          numero_contatto: formData.get('device_numero_contatto'),
-          email: formData.get('device_email'),
-          data_nascita: formData.get('device_data_nascita'),
-          sesso: formData.get('device_sesso'),
-          residenza: formData.get('device_residenza'),
-          stato_nascita: formData.get('device_stato_nascita')
-        };
-
-        const updateResult = await window.dataSdk.update(updatedClient);
-        
-        if (!updateResult.isOk) {
-          isLoading = false;
-          showToast('Errore nell\'aggiornamento del cliente', 'error');
-          render();
-          return;
-        }
-        
-        showToast('Dati cliente aggiornati!');
-      }
-
-      const newDevice = {
-        id: (Date.now() + 1).toString(),
-        type: 'device',
-        device_codice_fiscale: codiceFiscale,
-        device_nome: formData.get('device_nome'),
-        device_cognome: formData.get('device_cognome'),
-        device_numero_contatto: formData.get('device_numero_contatto'),
-        device_email: formData.get('device_email'),
-        device_data_nascita: formData.get('device_data_nascita'),
-        device_sesso: formData.get('device_sesso'),
-        device_residenza: formData.get('device_residenza'),
-        device_stato_nascita: formData.get('device_stato_nascita'),
-        device_imei: imei,
-        device_marca: formData.get('device_marca'),
-        device_modello: formData.get('device_modello'),
-        device_costo: formData.get('device_costo'),
-        device_metodo_pagamento: formData.get('device_metodo_pagamento'),
-        device_anticipo: formData.get('device_anticipo') || null,
-        device_numero_rate: formData.get('device_numero_rate') ? parseInt(formData.get('device_numero_rate')) : null,
-        device_costo_rata: formData.get('device_costo_rata') || null,
-        device_condizione: formData.get('device_condizione'),
-        device_fornitore: formData.get('device_fornitore'),
-        created_at: new Date().toISOString()
-      };
-
-      const result = await window.dataSdk.create(newDevice);
-      
-      isLoading = false;
-      
-      if (result.isOk) {
-        showModal = false;
-        showToast('Dispositivo aggiunto con successo!');
-        render();
-      } else {
-        showToast('Errore nell\'aggiunta del dispositivo', 'error');
-        render();
-      }
-    }
-
-    async function addContract(formData) {
-      if (allRecords.length >= 999) {
-        showToast('Limite massimo di 999 record raggiunto', 'error');
-        return;
-      }
-
-      const codiceFiscale = formData.get('codice_fiscale').toUpperCase();
-      
-      if (!validateCodiceFiscale(codiceFiscale)) {
-        showToast('Codice fiscale non valido', 'error');
-        return;
-      }
-
-      isLoading = true;
-      render();
-
-      const clients = getClients();
-      const existingClient = clients.find(c => c.codice_fiscale.toUpperCase() === codiceFiscale);
-
-      if (!existingClient) {
-        const newClient = {
-          id: Date.now().toString(),
-          type: 'cliente',
-          codice_fiscale: codiceFiscale,
-          nome: formData.get('nome'),
-          cognome: formData.get('cognome'),
-          numero_contatto: formData.get('numero_contatto') || 'N/D',
-          email: formData.get('email') || 'noemail@example.com',
-          data_nascita: formData.get('data_nascita') || new Date().toISOString().split('T')[0],
-          sesso: formData.get('sesso') || 'M',
-          residenza: formData.get('residenza') || 'N/D',
-          stato_nascita: formData.get('stato_nascita') || 'Italia',
-          created_at: new Date().toISOString()
-        };
-
-        const clientResult = await window.dataSdk.create(newClient);
-        
-        if (!clientResult.isOk) {
-          isLoading = false;
-          showToast('Errore nella creazione del cliente', 'error');
-          render();
-          return;
-        }
-        
-        showToast('Cliente creato automaticamente!');
-      } else {
-        const updatedClient = {
-          ...existingClient,
-          nome: formData.get('nome'),
-          cognome: formData.get('cognome'),
-          numero_contatto: formData.get('numero_contatto') || existingClient.numero_contatto,
-          email: formData.get('email') || existingClient.email,
-          data_nascita: formData.get('data_nascita') || existingClient.data_nascita,
-          sesso: formData.get('sesso') || existingClient.sesso,
-          residenza: formData.get('residenza') || existingClient.residenza,
-          stato_nascita: formData.get('stato_nascita') || existingClient.stato_nascita
-        };
-
-        const updateResult = await window.dataSdk.update(updatedClient);
-        
-        if (!updateResult.isOk) {
-          isLoading = false;
-          showToast('Errore nell\'aggiornamento del cliente', 'error');
-          render();
-          return;
-        }
-        
-        showToast('Dati cliente aggiornati!');
-      }
-
-      const tipoAttivazione = formData.get('tipo_attivazione');
-      
-      const newContract = {
-        id: (Date.now() + 1).toString(),
-        type: 'contratto',
-        codice_fiscale: codiceFiscale,
-        nome: formData.get('nome'),
-        cognome: formData.get('cognome'),
-        tipo_attivazione: tipoAttivazione,
-        brand: formData.get('brand') || null,
-        tipo_contratto: formData.get('tipo_contratto') || null,
-        codice_contratto: formData.get('codice_contratto') || null,
-        created_at: new Date().toISOString()
-      };
-
-      if (tipoAttivazione === 'fisso') {
-        newContract.tecnologia_fisso = formData.get('tecnologia_fisso') || null;
-        newContract.luogo_installazione = formData.get('luogo_installazione') || null;
-        newContract.costo_contratto = formData.get('costo_contratto') || null;
-        newContract.vincolo_mesi = formData.get('vincolo_mesi') ? parseInt(formData.get('vincolo_mesi')) : null;
-        newContract.data_inizio_vincolo = formData.get('data_inizio_vincolo') || null;
-        
-        if (newContract.data_inizio_vincolo && newContract.vincolo_mesi) {
-          newContract.data_fine_vincolo = calculateEndDate(newContract.data_inizio_vincolo, newContract.vincolo_mesi);
-        } else {
-          newContract.data_fine_vincolo = null;
-        }
-        
-        newContract.metodo_pagamento = formData.get('metodo_pagamento') || null;
-        newContract.iban = formData.get('iban') || null;
-      }
-
-      if (tipoAttivazione === 'mobile') {
-        newContract.tipo_mobile = formData.get('tipo_mobile') || null;
-        newContract.operatore_provenienza = formData.get('operatore_provenienza') || null;
-        newContract.nome_offerta = formData.get('nome_offerta') || null;
-        newContract.costo_offerta = formData.get('costo_offerta') || null;
-        
-        if (newContract.tipo_mobile === 'mnp') {
-          newContract.numero_portare = formData.get('numero_portare') || null;
-          newContract.data_portabilita = formData.get('data_portabilita') || null;
-        } else {
-          newContract.numero_assegnato = formData.get('numero_assegnato') || null;
-        }
-        
-        newContract.iccid_provenienza = formData.get('iccid_provenienza') || null;
-        newContract.iccid_nuovo = formData.get('iccid_nuovo') || null;
-        newContract.mobile_metodo_pagamento = formData.get('mobile_metodo_pagamento') || null;
-        newContract.mobile_vincolo_mesi = formData.get('mobile_vincolo_mesi') ? parseInt(formData.get('mobile_vincolo_mesi')) : null;
-        newContract.mobile_data_inserimento = formData.get('mobile_data_inserimento') || null;
-        
-        if (newContract.mobile_data_inserimento && newContract.mobile_vincolo_mesi) {
-          newContract.mobile_data_fine_vincolo = calculateEndDate(newContract.mobile_data_inserimento, newContract.mobile_vincolo_mesi);
-        } else {
-          newContract.mobile_data_fine_vincolo = null;
-        }
-        
-        newContract.telefono_incluso = formData.get('telefono_incluso') === 'true';
-        
-        if (newContract.telefono_incluso) {
-          newContract.modello_telefono = formData.get('modello_telefono') || null;
-          newContract.costo_telefono = formData.get('costo_telefono') || null;
-          newContract.tipo_pagamento_telefono = formData.get('tipo_pagamento_telefono') || null;
-          newContract.rate_telefono_mesi = formData.get('rate_telefono_mesi') ? parseInt(formData.get('rate_telefono_mesi')) : null;
-          newContract.imei = formData.get('imei') || null;
-          
-          const dataInizioVincolo = formData.get('data_inizio_vincolo') || new Date().toISOString().split('T')[0];
-          if (newContract.rate_telefono_mesi) {
-            newContract.data_fine_vincolo_telefono = calculateEndDate(dataInizioVincolo, newContract.rate_telefono_mesi);
-          } else {
-            newContract.data_fine_vincolo_telefono = null;
-          }
-        }
-      }
-
-      const result = await window.dataSdk.create(newContract);
-      
-      isLoading = false;
-      
-      if (result.isOk) {
-        showModal = false;
-        showToast('Contratto aggiunto con successo!');
-        render();
-      } else {
-        showToast('Errore nell\'aggiunta del contratto', 'error');
-        render();
-      }
-    }
-
-    async function updateClient(client, formData) {
-      const codiceFiscale = formData.get('codice_fiscale').toUpperCase();
-      
-      if (!validateCodiceFiscale(codiceFiscale)) {
-        showToast('Codice fiscale non valido', 'error');
-        return;
-      }
-
-      if (checkDuplicateCodiceFiscale(codiceFiscale, client.id)) {
-        showToast('Codice fiscale già presente nell\'anagrafica', 'error');
-        return;
-      }
-
-      isLoading = true;
-      render();
-
-      const updatedClient = {
-        ...client,
-        codice_fiscale: codiceFiscale,
-        nome: formData.get('nome'),
-        cognome: formData.get('cognome'),
-        numero_contatto: formData.get('numero_contatto'),
-        email: formData.get('email'),
-        data_nascita: formData.get('data_nascita'),
-        sesso: formData.get('sesso'),
-        residenza: formData.get('residenza'),
-        stato_nascita: formData.get('stato_nascita')
-      };
-
-      const result = await window.dataSdk.update(updatedClient);
-      
-      isLoading = false;
-      
-      if (result.isOk) {
-        showModal = false;
-        editingRecord = null;
-        showToast('Cliente aggiornato con successo');
-        render();
-      } else {
-        showToast('Errore nell\'aggiornamento del cliente', 'error');
-        render();
-      }
-    }
-
-    async function updateDevice(device, formData) {
-      const imei = formData.get('device_imei');
-      const codiceFiscale = formData.get('device_codice_fiscale').toUpperCase();
-      
-      if (!imei) {
-        showToast('IMEI è obbligatorio', 'error');
-        return;
-      }
-
-      if (!validateCodiceFiscale(codiceFiscale)) {
-        showToast('Codice fiscale non valido', 'error');
-        return;
-      }
-
-      isLoading = true;
-      render();
-
-      const updatedDevice = {
-        ...device,
-        device_codice_fiscale: codiceFiscale,
-        device_nome: formData.get('device_nome'),
-        device_cognome: formData.get('device_cognome'),
-        device_numero_contatto: formData.get('device_numero_contatto'),
-        device_email: formData.get('device_email'),
-        device_data_nascita: formData.get('device_data_nascita'),
-        device_sesso: formData.get('device_sesso'),
-        device_residenza: formData.get('device_residenza'),
-        device_stato_nascita: formData.get('device_stato_nascita'),
-        device_imei: imei,
-        device_marca: formData.get('device_marca'),
-        device_modello: formData.get('device_modello'),
-        device_costo: formData.get('device_costo'),
-        device_metodo_pagamento: formData.get('device_metodo_pagamento'),
-        device_anticipo: formData.get('device_anticipo') || null,
-        device_numero_rate: formData.get('device_numero_rate') ? parseInt(formData.get('device_numero_rate')) : null,
-        device_costo_rata: formData.get('device_costo_rata') || null,
-        device_condizione: formData.get('device_condizione'),
-        device_fornitore: formData.get('device_fornitore')
-      };
-
-      const result = await window.dataSdk.update(updatedDevice);
-      
-      isLoading = false;
-      
-      if (result.isOk) {
-        showModal = false;
-        editingRecord = null;
-        showToast('Dispositivo aggiornato con successo');
-        render();
-      } else {
-        showToast('Errore nell\'aggiornamento del dispositivo', 'error');
-        render();
-      }
-    }
-
-    async function updateContract(contract, formData) {
-      const codiceFiscale = formData.get('codice_fiscale').toUpperCase();
-      
-      if (!validateCodiceFiscale(codiceFiscale)) {
-        showToast('Codice fiscale non valido', 'error');
-        return;
-      }
-
-      isLoading = true;
-      render();
-
-      const tipoAttivazione = formData.get('tipo_attivazione');
-      
-      const updatedContract = {
-        ...contract,
-        codice_fiscale: codiceFiscale,
-        nome: formData.get('nome'),
-        cognome: formData.get('cognome'),
-        tipo_attivazione: tipoAttivazione,
-        brand: formData.get('brand') || null,
-        tipo_contratto: formData.get('tipo_contratto') || null,
-        codice_contratto: formData.get('codice_contratto') || null,
-        tecnologia_fisso: null,
-        luogo_installazione: null,
-        costo_contratto: null,
-        vincolo_mesi: null,
-        data_inizio_vincolo: null,
-        data_fine_vincolo: null,
-        metodo_pagamento: null,
-        iban: null,
-        tipo_mobile: null,
-        operatore_provenienza: null,
-        nome_offerta: null,
-        costo_offerta: null,
-        numero_portare: null,
-        data_portabilita: null,
-        numero_assegnato: null,
-        iccid_provenienza: null,
-        iccid_nuovo: null,
-        mobile_metodo_pagamento: null,
-        mobile_vincolo_mesi: null,
-        mobile_data_inserimento: null,
-        mobile_data_fine_vincolo: null,
-        telefono_incluso: false,
-        modello_telefono: null,
-        costo_telefono: null,
-        tipo_pagamento_telefono: null,
-        rate_telefono_mesi: null,
-        data_fine_vincolo_telefono: null,
-        imei: null
-      };
-
-      if (tipoAttivazione === 'fisso') {
-        updatedContract.tecnologia_fisso = formData.get('tecnologia_fisso') || null;
-        updatedContract.luogo_installazione = formData.get('luogo_installazione') || null;
-        updatedContract.costo_contratto = formData.get('costo_contratto') || null;
-        updatedContract.vincolo_mesi = formData.get('vincolo_mesi') ? parseInt(formData.get('vincolo_mesi')) : null;
-        updatedContract.data_inizio_vincolo = formData.get('data_inizio_vincolo') || null;
-        
-        if (updatedContract.data_inizio_vincolo && updatedContract.vincolo_mesi) {
-          updatedContract.data_fine_vincolo = calculateEndDate(updatedContract.data_inizio_vincolo, updatedContract.vincolo_mesi);
-        }
-        
-        updatedContract.metodo_pagamento = formData.get('metodo_pagamento') || null;
-        updatedContract.iban = formData.get('iban') || null;
-      }
-
-      if (tipoAttivazione === 'mobile') {
-        updatedContract.tipo_mobile = formData.get('tipo_mobile') || null;
-        updatedContract.operatore_provenienza = formData.get('operatore_provenienza') || null;
-        updatedContract.nome_offerta = formData.get('nome_offerta') || null;
-        updatedContract.costo_offerta = formData.get('costo_offerta') || null;
-        
-        if (updatedContract.tipo_mobile === 'mnp') {
-          updatedContract.numero_portare = formData.get('numero_portare') || null;
-          updatedContract.data_portabilita = formData.get('data_portabilita') || null;
-        } else {
-          updatedContract.numero_assegnato = formData.get('numero_assegnato') || null;
-        }
-        
-        updatedContract.iccid_provenienza = formData.get('iccid_provenienza') || null;
-        updatedContract.iccid_nuovo = formData.get('iccid_nuovo') || null;
-        updatedContract.mobile_metodo_pagamento = formData.get('mobile_metodo_pagamento') || null;
-        updatedContract.mobile_vincolo_mesi = formData.get('mobile_vincolo_mesi') ? parseInt(formData.get('mobile_vincolo_mesi')) : null;
-        updatedContract.mobile_data_inserimento = formData.get('mobile_data_inserimento') || null;
-        
-        if (updatedContract.mobile_data_inserimento && updatedContract.mobile_vincolo_mesi) {
-          updatedContract.mobile_data_fine_vincolo = calculateEndDate(updatedContract.mobile_data_inserimento, updatedContract.mobile_vincolo_mesi);
-        } else {
-          updatedContract.mobile_data_fine_vincolo = null;
-        }
-        
-        updatedContract.telefono_incluso = formData.get('telefono_incluso') === 'true';
-        
-        if (updatedContract.telefono_incluso) {
-          updatedContract.modello_telefono = formData.get('modello_telefono') || null;
-          updatedContract.costo_telefono = formData.get('costo_telefono') || null;
-          updatedContract.tipo_pagamento_telefono = formData.get('tipo_pagamento_telefono') || null;
-          updatedContract.rate_telefono_mesi = formData.get('rate_telefono_mesi') ? parseInt(formData.get('rate_telefono_mesi')) : null;
-          updatedContract.imei = formData.get('imei') || null;
-          
-          const dataInizioVincolo = formData.get('data_inizio_vincolo') || new Date().toISOString().split('T')[0];
-          if (updatedContract.rate_telefono_mesi) {
-            updatedContract.data_fine_vincolo_telefono = calculateEndDate(dataInizioVincolo, updatedContract.rate_telefono_mesi);
-          }
-        }
-      }
-
-      const result = await window.dataSdk.update(updatedContract);
-      
-      isLoading = false;
-      
-      if (result.isOk) {
-        showModal = false;
-        editingRecord = null;
-        showToast('Contratto aggiornato con successo');
-        render();
-      } else {
-        showToast('Errore nell\'aggiornamento del contratto', 'error');
-        render();
-      }
-    }
-
-    async function deleteRecord(record) {
-      const confirmDelete = record.confirmingDelete;
-      
-      if (!confirmDelete) {
-        allRecords = allRecords.map(r => 
-          r.id === record.id ? { ...r, confirmingDelete: true } : r
-        );
-        render();
-        return;
-      }
-
-      isLoading = true;
-      render();
-
-      const result = await window.dataSdk.delete(record);
-      
-      isLoading = false;
-      
-      if (result.isOk) {
-        const tipo = record.type === 'cliente' ? 'Cliente' : (record.type === 'contratto' ? 'Contratto' : 'Dispositivo');
-        showToast(`${tipo} eliminato con successo`);
-        render();
-      } else {
-        showToast('Errore nell\'eliminazione', 'error');
-        render();
-      }
-    }
-
-    function cancelDelete(recordId) {
-      allRecords = allRecords.map(r => 
-        r.id === recordId ? { ...r, confirmingDelete: false } : r
-      );
+  async save() {
+    this.ui.syncing = true;
+    render();
+    try {
+      await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(this.data)
+      });
+      localStorage.setItem('volpex_state', JSON.stringify(this.data));
+      showToast('Sincronizzato con Volpex Cloud');
+    } catch (e) {
+      console.warn('Errore salvataggio remoto', e);
+      showToast('Errore salvataggio remoto', 'error');
+    } finally {
+      this.ui.syncing = false;
       render();
     }
-
-    function openModal(record = null, formType = null) {
-      editingRecord = record;
-      showModal = true;
-      activeModalTab = 'manual';
-      parsedData = null;
-      pasteStep = 'input';
-      
-      if (formType) {
-        currentFormType = formType;
-      } else if (record) {
-        currentFormType = record.type;
-      } else {
-        currentFormType = activeMainTab === 'clienti' ? 'cliente' : (activeMainTab === 'contratti' ? 'contratto' : 'device');
-      }
-      
-      render();
-    }
-
-    function closeModal() {
-      showModal = false;
-      editingRecord = null;
-      activeModalTab = 'manual';
-      parsedData = null;
-      pasteStep = 'input';
-      currentFormType = 'cliente';
-      render();
-    }
-
-    function getFilteredClients() {
-      const clients = getClients();
-      if (!searchQuery) return clients;
-      
-      const query = searchQuery.toLowerCase();
-      return clients.filter(c => 
-        c.nome.toLowerCase().includes(query) ||
-        c.cognome.toLowerCase().includes(query) ||
-        c.codice_fiscale.toLowerCase().includes(query) ||
-        c.email.toLowerCase().includes(query) ||
-        c.numero_contatto.includes(query)
-      );
-    }
-
-    function getFilteredContracts() {
-      const contracts = getContracts();
-      if (!searchQuery) return contracts;
-      
-      const query = searchQuery.toLowerCase();
-      return contracts.filter(c => 
-        c.nome.toLowerCase().includes(query) ||
-        c.cognome.toLowerCase().includes(query) ||
-        c.codice_fiscale.toLowerCase().includes(query) ||
-        (c.tipo_attivazione && c.tipo_attivazione.toLowerCase().includes(query)) ||
-        (c.brand && c.brand.toLowerCase().includes(query)) ||
-        (c.tipo_contratto && c.tipo_contratto.toLowerCase().includes(query))
-      );
-    }
-
-    function getFilteredDevices() {
-      const devices = getDevices();
-      if (!searchQuery) return devices;
-      
-      const query = searchQuery.toLowerCase();
-      return devices.filter(d => 
-        (d.device_imei && d.device_imei.toLowerCase().includes(query)) ||
-        (d.device_marca && d.device_marca.toLowerCase().includes(query)) ||
-        (d.device_modello && d.device_modello.toLowerCase().includes(query)) ||
-        (d.device_fornitore && d.device_fornitore.toLowerCase().includes(query))
-      );
-    }
-
-    function getGenderStats() {
-      const clients = getClients();
-      const males = clients.filter(c => c.sesso === 'M').length;
-      const females = clients.filter(c => c.sesso === 'F').length;
-      return { males, females };
-    }
-
-    function getContractStats() {
-      const contracts = getContracts();
-      const fisso = contracts.filter(c => c.tipo_attivazione === 'fisso').length;
-      const mobile = contracts.filter(c => c.tipo_attivazione === 'mobile').length;
-      const luce = contracts.filter(c => c.tipo_attivazione === 'luce').length;
-      const gas = contracts.filter(c => c.tipo_attivazione === 'gas').length;
-      const tv = contracts.filter(c => c.tipo_attivazione === 'tv').length;
-      return { fisso, mobile, luce, gas, tv };
-    }
-
-    function getDeviceStats() {
-      const devices = getDevices();
-      const nuovi = devices.filter(d => d.device_condizione === 'nuovo').length;
-      const ricondizionati = devices.filter(d => d.device_condizione === 'ricondizionato').length;
-      const cash = devices.filter(d => d.device_metodo_pagamento === 'cash').length;
-      const compass = devices.filter(d => d.device_metodo_pagamento === 'compass').length;
-      return { nuovi, ricondizionati, cash, compass };
-    }
-
-    function getBirthdaysForMonth(month, year) {
-      const clients = getClients();
-      
-      return clients.filter(c => {
-        if (!c.data_nascita) return false;
-        const birthDate = new Date(c.data_nascita);
-        return birthDate.getMonth() === month;
-      }).sort((a, b) => {
-        const dateA = new Date(a.data_nascita).getDate();
-        const dateB = new Date(b.data_nascita).getDate();
-        return dateA - dateB;
-      });
-    }
-
-    function getContractsByBrand() {
-      const contracts = getContracts();
-      const byBrand = {};
-      
-      contracts.forEach(c => {
-        const brand = c.brand || 'Non specificato';
-        if (!byBrand[brand]) {
-          byBrand[brand] = [];
-        }
-        byBrand[brand].push(c);
-      });
-      
-      return byBrand;
-    }
-
-    function getContractsExpiringInMonth(month, year) {
-      const contracts = getContracts();
-      
-      return contracts.filter(c => {
-        let endDate = null;
-        
-        if (c.tipo_attivazione === 'fisso' && c.data_fine_vincolo) {
-          endDate = new Date(c.data_fine_vincolo);
-        } else if (c.tipo_attivazione === 'mobile' && c.mobile_data_fine_vincolo) {
-          endDate = new Date(c.mobile_data_fine_vincolo);
-        }
-        
-        if (!endDate) return false;
-        
-        return endDate.getMonth() === month && endDate.getFullYear() === year;
-      }).sort((a, b) => {
-        const dateA = new Date(a.data_fine_vincolo || a.mobile_data_fine_vincolo);
-        const dateB = new Date(b.data_fine_vincolo || b.mobile_data_fine_vincolo);
-        return dateA - dateB;
-      });
-    }
-
-    function getMonthlyRevenue() {
-      const contracts = getContracts();
-      let totalRevenue = 0;
-      
-      contracts.forEach(c => {
-        if (c.tipo_attivazione === 'fisso' && c.costo_contratto) {
-          totalRevenue += parseFloat(c.costo_contratto);
-        } else if (c.tipo_attivazione === 'mobile' && c.costo_offerta) {
-          totalRevenue += parseFloat(c.costo_offerta);
-        }
-      });
-      
-      return totalRevenue.toFixed(2);
-    }
-
-    function getClientContracts(codiceFiscale) {
-      return getContracts().filter(c => c.codice_fiscale.toUpperCase() === codiceFiscale.toUpperCase());
-    }
-
-    function getTechnologyIcon(tipoAttivazione) {
-      const icons = {
-        'fisso': '📞',
-        'mobile': '📱',
-        'luce': '💡',
-        'gas': '🔥',
-        'tv': '📺'
-      };
-      return icons[tipoAttivazione] || '📄';
-    }
-
-    function getTechnologyColor(tipoAttivazione) {
-      const colors = {
-        'fisso': '#3b82f6',
-        'mobile': '#8b5cf6',
-        'luce': '#f59e0b',
-        'gas': '#ef4444',
-        'tv': '#10b981'
-      };
-      return colors[tipoAttivazione] || '#64748b';
-    }
-
-    function render() {
-      const config = window.elementSdk?.config || defaultConfig;
-      const customFont = config.font_family || defaultConfig.font_family;
-      const baseSize = config.font_size || defaultConfig.font_size;
-      const baseFontStack = 'system-ui, -apple-system, sans-serif';
-      
-      const backgroundColor = config.background_color || defaultConfig.background_color;
-      const surfaceColor = config.surface_color || defaultConfig.surface_color;
-      const textColor = config.text_color || defaultConfig.text_color;
-      const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
-      const secondaryColor = config.secondary_action_color || defaultConfig.secondary_action_color;
-
-      document.body.style.backgroundColor = backgroundColor;
-      document.body.style.color = textColor;
-      document.body.style.fontFamily = `${customFont}, ${baseFontStack}`;
-
-      const clients = getClients();
-      const contracts = getContracts();
-      const devices = getDevices();
-      const filteredClients = getFilteredClients();
-
-      const app = document.getElementById('app');
-      
-      app.innerHTML = `
-        <div class="min-h-full p-6">
-          <div class="flex gap-3 mb-6">
-            <button id="tabHome" class="tab-button flex flex-col items-center justify-center rounded-xl transition-all" 
-              style="width: 100px; height: 100px; background-color: ${activeMainTab === 'home' ? primaryColor : surfaceColor}; color: ${activeMainTab === 'home' ? 'white' : textColor}; border: 3px solid ${activeMainTab === 'home' ? primaryColor : secondaryColor}40;">
-              <span style="font-size: 32px; margin-bottom: 4px;">🏠</span>
-              <span style="font-size: ${baseSize * 0.85}px; font-weight: 700;">Home</span>
-            </button>
-            <button id="tabClienti" class="tab-button flex flex-col items-center justify-center rounded-xl transition-all" 
-              style="width: 100px; height: 100px; background-color: ${activeMainTab === 'clienti' ? primaryColor : surfaceColor}; color: ${activeMainTab === 'clienti' ? 'white' : textColor}; border: 3px solid ${activeMainTab === 'clienti' ? primaryColor : secondaryColor}40;">
-              <span style="font-size: 32px; margin-bottom: 4px;">👥</span>
-              <span style="font-size: ${baseSize * 0.85}px; font-weight: 700;">Clienti</span>
-            </button>
-            <button id="tabContratti" class="tab-button flex flex-col items-center justify-center rounded-xl transition-all" 
-              style="width: 100px; height: 100px; background-color: ${activeMainTab === 'contratti' ? primaryColor : surfaceColor}; color: ${activeMainTab === 'contratti' ? 'white' : textColor}; border: 3px solid ${activeMainTab === 'contratti' ? primaryColor : secondaryColor}40;">
-              <span style="font-size: 32px; margin-bottom: 4px;">📄</span>
-              <span style="font-size: ${baseSize * 0.85}px; font-weight: 700;">Contratti</span>
-            </button>
-            <button id="tabDispositivi" class="tab-button flex flex-col items-center justify-center rounded-xl transition-all" 
-              style="width: 100px; height: 100px; background-color: ${activeMainTab === 'dispositivi' ? primaryColor : surfaceColor}; color: ${activeMainTab === 'dispositivi' ? 'white' : textColor}; border: 3px solid ${activeMainTab === 'dispositivi' ? primaryColor : secondaryColor}40;">
-              <span style="font-size: 32px; margin-bottom: 4px;">📱</span>
-              <span style="font-size: ${baseSize * 0.85}px; font-weight: 700;">Device</span>
-            </button>
-            <button id="tabReport" class="tab-button flex flex-col items-center justify-center rounded-xl transition-all" 
-              style="width: 100px; height: 100px; background-color: ${activeMainTab === 'report' ? primaryColor : surfaceColor}; color: ${activeMainTab === 'report' ? 'white' : textColor}; border: 3px solid ${activeMainTab === 'report' ? primaryColor : secondaryColor}40;">
-              <span style="font-size: 32px; margin-bottom: 4px;">📊</span>
-              <span style="font-size: ${baseSize * 0.85}px; font-weight: 700;">Report</span>
-            </button>
-          </div>
-
-          <header class="mb-8">
-            <h1 class="mb-2" style="font-size: ${baseSize * 2}px; font-weight: 700; color: ${textColor};">
-              ${config.app_title || defaultConfig.app_title}
-            </h1>
-            <p style="font-size: ${baseSize * 1.1}px; color: ${secondaryColor};">
-              ${config.subtitle || defaultConfig.subtitle}
-            </p>
-          </header>
-
-          ${activeMainTab === 'home' ? `
-            <div class="mb-8 p-8 rounded-2xl relative overflow-hidden" style="background: linear-gradient(135deg, ${primaryColor} 0%, ${primaryColor}dd 100%); box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
-              <div class="absolute top-0 right-0 w-64 h-64 rounded-full" style="background: rgba(255,255,255,0.1); transform: translate(30%, -30%);"></div>
-              <div class="absolute bottom-0 left-0 w-48 h-48 rounded-full" style="background: rgba(255,255,255,0.1); transform: translate(-30%, 30%);"></div>
-              
-              <div class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-                <div class="text-center md:text-left">
-                  <div class="mb-4 flex justify-center md:justify-start">
-                    <div class="w-24 h-24 rounded-2xl flex items-center justify-center" style="background-color: rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
-                      <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M30 5L35 20H50L38 29L43 44L30 35L17 44L22 29L10 20H25L30 5Z" fill="white" stroke="white" stroke-width="2"/>
-                        <circle cx="30" cy="30" r="25" stroke="white" stroke-width="2" fill="none"/>
-                      </svg>
-                    </div>
-                  </div>
-                  <p style="font-size: ${baseSize * 1.3}px; font-weight: 700; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                    IL TUO CRM
-                  </p>
-                </div>
-
-                <div class="text-center p-6 rounded-xl" style="background-color: rgba(255,255,255,0.15); backdrop-filter: blur(10px);">
-                  <p style="font-size: ${baseSize * 0.9}px; color: rgba(255,255,255,0.9); font-weight: 600; margin-bottom: 8px;">
-                    Attivazioni Questo Mese
-                  </p>
-                  <p style="font-size: ${baseSize * 3}px; font-weight: 700; color: white; text-shadow: 0 2px 8px rgba(0,0,0,0.2);">
-                    ${(() => {
-                      const thisMonth = new Date().getMonth();
-                      const thisYear = new Date().getFullYear();
-                      return getContracts().filter(c => {
-                        const createdDate = new Date(c.created_at);
-                        return createdDate.getMonth() === thisMonth && createdDate.getFullYear() === thisYear;
-                      }).length;
-                    })()}
-                  </p>
-                </div>
-
-                <div class="text-center md:text-right">
-                  <p style="font-size: ${baseSize * 1.1}px; font-weight: 700; color: white; line-height: 1.5; text-shadow: 0 2px 4px rgba(0,0,0,0.1); font-style: italic;">
-                    "I dati sono<br>il nuovo petrolio"
-                  </p>
-                  <p style="font-size: ${baseSize * 0.8}px; color: rgba(255,255,255,0.8); margin-top: 8px;">
-                    🚀 Gestisci il tuo futuro
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <button id="goToClienti" class="stat-card p-6 rounded-xl text-left transition-all cursor-pointer" style="background-color: ${surfaceColor}; border-left: 4px solid ${primaryColor};">
-                <div class="text-4xl mb-3">👥</div>
-                <p style="font-size: ${baseSize * 2}px; font-weight: 700; color: ${textColor};">${clients.length}</p>
-                <p style="font-size: ${baseSize * 0.9}px; color: ${secondaryColor}; font-weight: 600;">Clienti</p>
-              </button>
-
-              <button id="goToContratti" class="stat-card p-6 rounded-xl text-left transition-all cursor-pointer" style="background-color: ${surfaceColor}; border-left: 4px solid #8b5cf6;">
-                <div class="text-4xl mb-3">📄</div>
-                <p style="font-size: ${baseSize * 2}px; font-weight: 700; color: ${textColor};">${contracts.length}</p>
-                <p style="font-size: ${baseSize * 0.9}px; color: ${secondaryColor}; font-weight: 600;">Contratti</p>
-              </button>
-
-              <button id="goToDispositivi" class="stat-card p-6 rounded-xl text-left transition-all cursor-pointer" style="background-color: ${surfaceColor}; border-left: 4px solid #10b981;">
-                <div class="text-4xl mb-3">📱</div>
-                <p style="font-size: ${baseSize * 2}px; font-weight: 700; color: ${textColor};">${devices.length}</p>
-                <p style="font-size: ${baseSize * 0.9}px; color: ${secondaryColor}; font-weight: 600;">Dispositivi</p>
-              </button>
-
-              <button id="goToReport" class="stat-card p-6 rounded-xl text-left transition-all cursor-pointer" style="background-color: ${surfaceColor}; border-left: 4px solid #f59e0b;">
-                <div class="text-4xl mb-3">📊</div>
-                <p style="font-size: ${baseSize * 2}px; font-weight: 700; color: ${textColor};">Report</p>
-                <p style="font-size: ${baseSize * 0.9}px; color: ${secondaryColor}; font-weight: 600;">Analisi Dati</p>
-              </button>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div class="p-6 rounded-xl" style="background-color: ${surfaceColor};">
-                <h3 style="font-size: ${baseSize * 1.3}px; font-weight: 700; color: ${textColor}; margin-bottom: 16px;">
-                  📈 Statistiche Rapide
-                </h3>
-                <div class="space-y-4">
-                  ${(() => {
-                    const contractStats = getContractStats();
-                    return `
-                      <div class="flex justify-between items-center p-3 rounded" style="background-color: ${backgroundColor};">
-                        <span style="font-size: ${baseSize * 0.9}px; color: ${textColor};">📞 Linee Fisse</span>
-                        <span style="font-size: ${baseSize * 1.1}px; font-weight: 700; color: ${primaryColor};">${contractStats.fisso}</span>
-                      </div>
-                      <div class="flex justify-between items-center p-3 rounded" style="background-color: ${backgroundColor};">
-                        <span style="font-size: ${baseSize * 0.9}px; color: ${textColor};">📱 Mobile</span>
-                        <span style="font-size: ${baseSize * 1.1}px; font-weight: 700; color: ${primaryColor};">${contractStats.mobile}</span>
-                      </div>
-                      <div class="flex justify-between items-center p-3 rounded" style="background-color: ${backgroundColor};">
-                        <span style="font-size: ${baseSize * 0.9}px; color: ${textColor};">💡 Luce</span>
-                        <span style="font-size: ${baseSize * 1.1}px; font-weight: 700; color: ${primaryColor};">${contractStats.luce}</span>
-                      </div>
-                      <div class="flex justify-between items-center p-3 rounded" style="background-color: ${backgroundColor};">
-                        <span style="font-size: ${baseSize * 0.9}px; color: ${textColor};">🔥 Gas</span>
-                        <span style="font-size: ${baseSize * 1.1}px; font-weight: 700; color: ${primaryColor};">${contractStats.gas}</span>
-                      </div>
-                    `;
-                  })()}
-                </div>
-              </div>
-
-              <div class="p-6 rounded-xl" style="background-color: ${surfaceColor};">
-                <h3 style="font-size: ${baseSize * 1.3}px; font-weight: 700; color: ${textColor}; margin-bottom: 16px;">
-                  🎂 Prossimi Compleanni
-                </h3>
-                ${(() => {
-                  const today = new Date();
-                  const currentMonth = today.getMonth();
-                  const birthdays = getBirthdaysForMonth(currentMonth, today.getFullYear()).slice(0, 5);
-                  
-                  if (birthdays.length === 0) {
-                    return `<p style="font-size: ${baseSize * 0.9}px; color: ${secondaryColor}; text-align: center; padding: 20px;">Nessun compleanno questo mese</p>`;
-                  }
-                  
-                  return `
-                    <div class="space-y-3">
-                      ${birthdays.map(client => {
-                        const birthDate = new Date(client.data_nascita);
-                        return `
-                          <div class="p-3 rounded flex justify-between items-center" style="background-color: ${backgroundColor};">
-                            <div>
-                              <p style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">
-                                ${client.nome} ${client.cognome}
-                              </p>
-                              <p style="font-size: ${baseSize * 0.75}px; color: ${secondaryColor};">
-                                ${client.numero_contatto}
-                              </p>
-                            </div>
-                            <p style="font-size: ${baseSize * 1.1}px; font-weight: 700; color: ${primaryColor};">
-                              ${birthDate.getDate()} ${birthDate.toLocaleDateString('it-IT', { month: 'short' })}
-                            </p>
-                          </div>
-                        `;
-                      }).join('')}
-                    </div>
-                  `;
-                })()}
-              </div>
-            </div>
-          ` : ''}
-
-          ${activeMainTab === 'clienti' ? `
-
-            <div class="mb-6 space-y-3">
-              <div class="flex justify-between items-center flex-wrap gap-3">
-                <button id="addClientBtn" class="px-6 py-3 rounded-lg font-bold transition-all hover:opacity-90" 
-                  style="background-color: ${primaryColor}; color: white; font-size: ${baseSize}px;">
-                  ➕ ${config.button_add || defaultConfig.button_add}
-                </button>
-                <button id="importCsvBtn" class="px-6 py-3 rounded-lg font-bold transition-all hover:opacity-90" 
-                  style="background-color: ${secondaryColor}; color: white; font-size: ${baseSize}px;">
-                  📄 Importa da CSV
-                </button>
-              </div>
-              <input type="text" id="searchClientsInput" placeholder="🔍 Cerca cliente..." value="${searchQuery}"
-                class="w-full px-4 py-2 rounded-lg border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-            </div>
-            <div class="space-y-4">
-              ${filteredClients.length === 0 ? `
-                <div class="text-center py-16" style="background-color: ${surfaceColor}; border-radius: 12px;">
-                  <div class="text-6xl mb-4">👤</div>
-                  <p style="font-size: ${baseSize * 1.2}px; color: ${secondaryColor};">
-                    Nessun cliente presente
-                  </p>
-                </div>
-              ` : filteredClients.map(client => {
-                const whatsappNumber = formatPhoneForWhatsApp(client.numero_contatto || '');
-                const clientContracts = getClientContracts(client.codice_fiscale);
-                
-                return `
-                  <div class="client-card p-6 rounded-xl" style="background-color: ${surfaceColor}; border-left-color: ${primaryColor};">
-                    <div class="flex flex-col gap-4">
-                      <div>
-                        <h3 style="font-size: ${baseSize * 1.3}px; font-weight: 700; color: ${textColor};">
-                          ${client.nome} ${client.cognome}
-                        </h3>
-                        <p style="font-size: ${baseSize * 0.85}px; color: ${secondaryColor};">
-                          CF: ${client.codice_fiscale}
-                        </p>
-                        <div class="mt-2 flex items-center gap-3 flex-wrap">
-                          <p style="font-size: ${baseSize * 0.85}px; color: ${textColor};">
-                            📞 ${client.numero_contatto || 'N/D'}
-                          </p>
-                          ${whatsappNumber ? `
-                            <a href="https://wa.me/${whatsappNumber}" target="_blank" rel="noopener noreferrer"
-                              class="whatsapp-btn px-3 py-1 rounded" style="font-size: ${baseSize * 0.75}px;">
-                              💬 WhatsApp
-                            </a>
-                          ` : ''}
-                        </div>
-                        <p style="font-size: ${baseSize * 0.85}px; color: ${textColor}; margin-top: 8px;">
-                          ✉️ ${client.email || 'N/D'}
-                        </p>
-                      </div>
-
-                      ${clientContracts.length > 0 ? `
-                        <div class="pt-4" style="border-top: 2px solid ${backgroundColor};">
-                          <h4 style="font-size: ${baseSize}px; font-weight: 700; color: ${textColor}; margin-bottom: 12px;">
-                            📄 Contratti Associati (${clientContracts.length})
-                          </h4>
-                          <div class="space-y-2">
-                            ${clientContracts.map(contract => {
-                              const techIcon = getTechnologyIcon(contract.tipo_attivazione);
-                              const techColor = getTechnologyColor(contract.tipo_attivazione);
-                              
-                              return `
-                                <div class="p-3 rounded-lg flex items-center justify-between" style="background-color: ${backgroundColor}; border-left: 3px solid ${techColor};">
-                                  <div class="flex items-center gap-2">
-                                    <span style="font-size: 20px;">${techIcon}</span>
-                                    <div>
-                                      <p style="font-size: ${baseSize * 0.85}px; font-weight: 600; color: ${textColor};">
-                                        ${contract.tipo_attivazione}${contract.brand ? ` - ${contract.brand.toUpperCase()}` : ''}
-                                      </p>
-                                    </div>
-                                  </div>
-                                  <a href="https://wa.me/${whatsappNumber}" target="_blank" rel="noopener noreferrer"
-                                    class="whatsapp-btn px-2 py-1 rounded" style="font-size: ${baseSize * 0.7}px;">
-                                    💬 WhatsApp
-                                  </a>
-                                </div>
-                              `;
-                            }).join('')}
-                          </div>
-                        </div>
-                      ` : ''}
-
-                      <div class="flex gap-2 mt-4">
-                        <button class="edit-btn px-4 py-2 rounded font-semibold transition-all hover:opacity-80" 
-                          data-id="${client.id}" style="background-color: ${primaryColor}; color: white; font-size: ${baseSize * 0.85}px;">
-                          ✏️ Modifica
-                        </button>
-                        ${client.confirmingDelete ? `
-                          <button class="confirm-delete-btn px-4 py-2 rounded font-semibold" 
-                            data-id="${client.id}" style="background-color: #ef4444; color: white; font-size: ${baseSize * 0.85}px;">
-                            ⚠️ Conferma Eliminazione
-                          </button>
-                          <button class="cancel-delete-btn px-4 py-2 rounded font-semibold" 
-                            data-id="${client.id}" style="background-color: ${secondaryColor}; color: white; font-size: ${baseSize * 0.85}px;">
-                            Annulla
-                          </button>
-                        ` : `
-                          <button class="delete-btn px-4 py-2 rounded font-semibold transition-all hover:opacity-80" 
-                            data-id="${client.id}" style="background-color: #ef4444; color: white; font-size: ${baseSize * 0.85}px;">
-                            🗑️ Elimina
-                          </button>
-                        `}
-                      </div>
-                    </div>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-          ` : activeMainTab === 'contratti' ? `
-            <div class="mb-6 flex justify-between items-center gap-4 flex-wrap">
-              <button id="addContractBtn" class="px-6 py-3 rounded-lg font-bold transition-all hover:opacity-90" 
-                style="background-color: ${primaryColor}; color: white; font-size: ${baseSize}px;">
-                ➕ Aggiungi Contratto
-              </button>
-              <input type="text" id="searchContractsInput" placeholder="🔍 Cerca contratto..." value="${searchQuery}"
-                class="px-4 py-2 rounded-lg border flex-1 max-w-md" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-            </div>
-            <div class="space-y-4">
-              ${getFilteredContracts().length === 0 ? `
-                <div class="text-center py-16" style="background-color: ${surfaceColor}; border-radius: 12px;">
-                  <div class="text-6xl mb-4">📄</div>
-                  <p style="font-size: ${baseSize * 1.2}px; color: ${secondaryColor};">
-                    Nessun contratto presente
-                  </p>
-                </div>
-              ` : getFilteredContracts().map(contract => `
-                <div class="contract-card p-6 rounded-xl" style="background-color: ${surfaceColor}; border-left-color: ${getTechnologyColor(contract.tipo_attivazione)};">
-                  <h3 style="font-size: ${baseSize * 1.3}px; font-weight: 700; color: ${textColor};">
-                    ${getTechnologyIcon(contract.tipo_attivazione)} ${contract.nome} ${contract.cognome}
-                  </h3>
-                  <p style="font-size: ${baseSize * 0.85}px; color: ${secondaryColor};">
-                    ${contract.tipo_attivazione.toUpperCase()}${contract.brand ? ` - ${contract.brand.toUpperCase()}` : ''}
-                  </p>
-                  <div class="flex gap-2 mt-4">
-                    <button class="edit-contract-btn px-4 py-2 rounded font-semibold transition-all hover:opacity-80" 
-                      data-id="${contract.id}" style="background-color: ${primaryColor}; color: white; font-size: ${baseSize * 0.85}px;">
-                      ✏️ Modifica
-                    </button>
-                    ${contract.confirmingDelete ? `
-                      <button class="confirm-delete-btn px-4 py-2 rounded font-semibold" 
-                        data-id="${contract.id}" style="background-color: #ef4444; color: white; font-size: ${baseSize * 0.85}px;">
-                        ⚠️ Conferma Eliminazione
-                      </button>
-                      <button class="cancel-delete-btn px-4 py-2 rounded font-semibold" 
-                        data-id="${contract.id}" style="background-color: ${secondaryColor}; color: white; font-size: ${baseSize * 0.85}px;">
-                        Annulla
-                      </button>
-                    ` : `
-                      <button class="delete-btn px-4 py-2 rounded font-semibold transition-all hover:opacity-80" 
-                        data-id="${contract.id}" style="background-color: #ef4444; color: white; font-size: ${baseSize * 0.85}px;">
-                        🗑️ Elimina
-                      </button>
-                    `}
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          ` : activeMainTab === 'dispositivi' ? `
-            <div class="mb-6 flex justify-between items-center gap-4 flex-wrap">
-              <button id="addDeviceBtn" class="px-6 py-3 rounded-lg font-bold transition-all hover:opacity-90" 
-                style="background-color: ${primaryColor}; color: white; font-size: ${baseSize}px;">
-                ➕ Aggiungi Dispositivo
-              </button>
-              <input type="text" id="searchDevicesInput" placeholder="🔍 Cerca dispositivo..." value="${searchQuery}"
-                class="px-4 py-2 rounded-lg border flex-1 max-w-md" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-            </div>
-            <div class="space-y-4">
-              ${getFilteredDevices().length === 0 ? `
-                <div class="text-center py-16" style="background-color: ${surfaceColor}; border-radius: 12px;">
-                  <div class="text-6xl mb-4">📱</div>
-                  <p style="font-size: ${baseSize * 1.2}px; color: ${secondaryColor};">
-                    Nessun dispositivo presente
-                  </p>
-                </div>
-              ` : getFilteredDevices().map(device => `
-                <div class="client-card p-6 rounded-xl" style="background-color: ${surfaceColor}; border-left-color: ${primaryColor};">
-                  <h3 style="font-size: ${baseSize * 1.3}px; font-weight: 700; color: ${textColor};">
-                    📱 ${device.device_marca} ${device.device_modello}
-                  </h3>
-                  <p style="font-size: ${baseSize * 0.85}px; color: ${secondaryColor};">
-                    IMEI: ${device.device_imei}
-                  </p>
-                  <p style="font-size: ${baseSize * 0.85}px; color: ${textColor}; margin-top: 8px;">
-                    Cliente: ${device.device_nome} ${device.device_cognome}
-                  </p>
-                  <div class="flex gap-2 mt-4">
-                    <button class="edit-device-btn px-4 py-2 rounded font-semibold transition-all hover:opacity-80" 
-                      data-id="${device.id}" style="background-color: ${primaryColor}; color: white; font-size: ${baseSize * 0.85}px;">
-                      ✏️ Modifica
-                    </button>
-                    ${device.confirmingDelete ? `
-                      <button class="confirm-delete-btn px-4 py-2 rounded font-semibold" 
-                        data-id="${device.id}" style="background-color: #ef4444; color: white; font-size: ${baseSize * 0.85}px;">
-                        ⚠️ Conferma Eliminazione
-                      </button>
-                      <button class="cancel-delete-btn px-4 py-2 rounded font-semibold" 
-                        data-id="${device.id}" style="background-color: ${secondaryColor}; color: white; font-size: ${baseSize * 0.85}px;">
-                        Annulla
-                      </button>
-                    ` : `
-                      <button class="delete-btn px-4 py-2 rounded font-semibold transition-all hover:opacity-80" 
-                        data-id="${device.id}" style="background-color: #ef4444; color: white; font-size: ${baseSize * 0.85}px;">
-                        🗑️ Elimina
-                      </button>
-                    `}
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          ` : activeMainTab === 'report' ? `
-            <div class="space-y-8">
-              ${(() => {
-                const selectedMonth = window.reportSelectedMonth !== undefined ? window.reportSelectedMonth : new Date().getMonth();
-                const selectedYear = window.reportSelectedYear !== undefined ? window.reportSelectedYear : new Date().getFullYear();
-                const birthdays = getBirthdaysForMonth(selectedMonth, selectedYear);
-                
-                const mesiItaliani = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
-                const currentYear = new Date().getFullYear();
-                const anni = Array.from({length: 5}, (_, i) => currentYear - 2 + i);
-                
-                return `
-                  <div class="p-6 rounded-xl" style="background-color: ${surfaceColor};">
-                    <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
-                      <h3 style="font-size: ${baseSize * 1.3}px; font-weight: 700; color: ${textColor};">
-                        🎂 Compleanni (${birthdays.length})
-                      </h3>
-                      <div class="flex gap-3">
-                        <select id="birthMonthSelect" class="px-4 py-2 rounded border" style="font-size: ${baseSize * 0.9}px; border-color: ${secondaryColor}40;">
-                          ${mesiItaliani.map((mese, idx) => `
-                            <option value="${idx}" ${idx === selectedMonth ? 'selected' : ''}>${mese}</option>
-                          `).join('')}
-                        </select>
-                        <select id="birthYearSelect" class="px-4 py-2 rounded border" style="font-size: ${baseSize * 0.9}px; border-color: ${secondaryColor}40;">
-                          ${anni.map(anno => `
-                            <option value="${anno}" ${anno === selectedYear ? 'selected' : ''}>${anno}</option>
-                          `).join('')}
-                        </select>
-                      </div>
-                    </div>
-                    <div class="space-y-3">
-                      ${birthdays.map(client => {
-                        const whatsappNumber = formatPhoneForWhatsApp(client.numero_contatto || '');
-                        const birthDate = new Date(client.data_nascita);
-                        
-                        return `
-                          <div class="p-4 rounded-lg flex items-center justify-between" style="background-color: ${backgroundColor};">
-                            <div>
-                              <p style="font-size: ${baseSize}px; font-weight: 600; color: ${textColor};">
-                                ${client.nome} ${client.cognome}
-                              </p>
-                              <div class="flex items-center gap-3 mt-1">
-                                <p style="font-size: ${baseSize * 0.85}px; color: ${secondaryColor};">
-                                  📞 ${client.numero_contatto || 'N/D'}
-                                </p>
-                                ${whatsappNumber ? `
-                                  <a href="https://wa.me/${whatsappNumber}" target="_blank" rel="noopener noreferrer"
-                                    class="whatsapp-btn px-2 py-1 rounded" style="font-size: ${baseSize * 0.7}px;">
-                                    💬 WhatsApp
-                                  </a>
-                                ` : ''}
-                              </div>
-                            </div>
-                            <p style="font-size: ${baseSize * 1.2}px; font-weight: 700; color: ${primaryColor};">
-                              ${birthDate.getDate()} ${birthDate.toLocaleDateString('it-IT', { month: 'short' })}
-                            </p>
-                          </div>
-                        `;
-                      }).join('')}
-                    </div>
-                  </div>
-                `;
-              })()}
-
-              ${(() => {
-                const contractsByBrand = getContractsByBrand();
-                const brands = Object.keys(contractsByBrand);
-                
-                return `
-                  <div class="p-6 rounded-xl" style="background-color: ${surfaceColor};">
-                    <h3 class="mb-4" style="font-size: ${baseSize * 1.3}px; font-weight: 700; color: ${textColor};">
-                      🏢 Contratti per Compagnia
-                    </h3>
-                    ${brands.map(brand => {
-                      const brandContracts = contractsByBrand[brand];
-                      return `
-                        <div class="mb-6">
-                          <h4 class="mb-3" style="font-size: ${baseSize * 1.1}px; font-weight: 700; color: ${textColor};">
-                            ${brand.toUpperCase()} (${brandContracts.length})
-                          </h4>
-                          <div class="space-y-2">
-                            ${brandContracts.map(contract => {
-                              const clientInfo = getClients().find(c => c.codice_fiscale === contract.codice_fiscale);
-                              const whatsappNumber = clientInfo ? formatPhoneForWhatsApp(clientInfo.numero_contatto || '') : '';
-                              const techIcon = getTechnologyIcon(contract.tipo_attivazione);
-                              const techColor = getTechnologyColor(contract.tipo_attivazione);
-                              
-                              return `
-                                <div class="p-3 rounded-lg flex items-center justify-between" style="background-color: ${backgroundColor}; border-left: 3px solid ${techColor};">
-                                  <div class="flex items-center gap-2">
-                                    <span style="font-size: 20px;">${techIcon}</span>
-                                    <p style="font-size: ${baseSize * 0.85}px; color: ${textColor};">
-                                      ${contract.nome} ${contract.cognome}
-                                    </p>
-                                  </div>
-                                  ${whatsappNumber ? `
-                                    <a href="https://wa.me/${whatsappNumber}" target="_blank" rel="noopener noreferrer"
-                                      class="whatsapp-btn px-2 py-1 rounded" style="font-size: ${baseSize * 0.7}px;">
-                                      💬 WhatsApp
-                                    </a>
-                                  ` : ''}
-                                </div>
-                              `;
-                            }).join('')}
-                          </div>
-                        </div>
-                      `;
-                    }).join('')}
-                  </div>
-                `;
-              })()}
-
-              ${(() => {
-                const selectedExpiryMonth = window.reportExpiryMonth !== undefined ? window.reportExpiryMonth : new Date().getMonth();
-                const selectedExpiryYear = window.reportExpiryYear !== undefined ? window.reportExpiryYear : new Date().getFullYear();
-                const expiringContracts = getContractsExpiringInMonth(selectedExpiryMonth, selectedExpiryYear);
-                
-                const mesiItaliani = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
-                const currentYear = new Date().getFullYear();
-                const anni = Array.from({length: 5}, (_, i) => currentYear - 2 + i);
-                
-                return `
-                  <div class="p-6 rounded-xl" style="background-color: ${surfaceColor};">
-                    <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
-                      <h3 style="font-size: ${baseSize * 1.3}px; font-weight: 700; color: ${textColor};">
-                        ⚠️ Vincoli in Scadenza (${expiringContracts.length})
-                      </h3>
-                      <div class="flex gap-3">
-                        <select id="expiryMonthSelect" class="px-4 py-2 rounded border" style="font-size: ${baseSize * 0.9}px; border-color: ${secondaryColor}40;">
-                          ${mesiItaliani.map((mese, idx) => `
-                            <option value="${idx}" ${idx === selectedExpiryMonth ? 'selected' : ''}>${mese}</option>
-                          `).join('')}
-                        </select>
-                        <select id="expiryYearSelect" class="px-4 py-2 rounded border" style="font-size: ${baseSize * 0.9}px; border-color: ${secondaryColor}40;">
-                          ${anni.map(anno => `
-                            <option value="${anno}" ${anno === selectedExpiryYear ? 'selected' : ''}>${anno}</option>
-                          `).join('')}
-                        </select>
-                      </div>
-                    </div>
-                    <div class="space-y-3">
-                      ${expiringContracts.map(contract => {
-                        const clientInfo = getClients().find(c => c.codice_fiscale === contract.codice_fiscale);
-                        const whatsappNumber = clientInfo ? formatPhoneForWhatsApp(clientInfo.numero_contatto || '') : '';
-                        const numeroContatto = clientInfo ? clientInfo.numero_contatto : 'N/D';
-                        const endDate = new Date(contract.data_fine_vincolo || contract.mobile_data_fine_vincolo);
-                        const techIcon = getTechnologyIcon(contract.tipo_attivazione);
-                        const techColor = getTechnologyColor(contract.tipo_attivazione);
-                        
-                        return `
-                          <div class="p-4 rounded-lg flex items-center justify-between" style="background-color: ${backgroundColor}; border-left: 3px solid ${techColor};">
-                            <div class="flex items-center gap-3">
-                              <span style="font-size: 24px;">${techIcon}</span>
-                              <div>
-                                <p style="font-size: ${baseSize}px; font-weight: 600; color: ${textColor};">
-                                  ${contract.nome} ${contract.cognome}
-                                </p>
-                                <div class="flex items-center gap-3 mt-1">
-                                  <p style="font-size: ${baseSize * 0.85}px; color: ${secondaryColor};">
-                                    📞 ${numeroContatto}
-                                  </p>
-                                  ${whatsappNumber ? `
-                                    <a href="https://wa.me/${whatsappNumber}" target="_blank" rel="noopener noreferrer"
-                                      class="whatsapp-btn px-2 py-1 rounded" style="font-size: ${baseSize * 0.7}px;">
-                                      💬 WhatsApp
-                                    </a>
-                                  ` : ''}
-                                </div>
-                              </div>
-                            </div>
-                            <p style="font-size: ${baseSize * 1.1}px; font-weight: 700; color: #ef4444;">
-                              ${endDate.toLocaleDateString('it-IT')}
-                            </p>
-                          </div>
-                        `;
-                      }).join('')}
-                    </div>
-                  </div>
-                `;
-              })()}
-            </div>
-          ` : ''}
-
-          ${showModal ? `
-            <div class="modal-overlay fixed inset-0 flex items-center justify-center p-4" style="z-index: 1000;">
-              <div class="rounded-xl shadow-2xl max-w-4xl w-full max-h-[90%] overflow-y-auto" style="background-color: ${surfaceColor};">
-                <div class="p-6">
-                  <h2 class="mb-6" style="font-size: ${baseSize * 1.5}px; font-weight: 700; color: ${textColor};">
-                    ${editingRecord ? 'Modifica' : 'Aggiungi'} ${currentFormType === 'cliente' ? 'Cliente' : (currentFormType === 'contratto' ? 'Contratto' : 'Dispositivo')}
-                  </h2>
-
-                  ${currentFormType === 'cliente' && !editingRecord ? `
-                    <div class="flex gap-4 mb-6" style="border-bottom: 2px solid ${secondaryColor}30;">
-                      <button type="button" id="tabManualInput" class="tab-button px-6 py-3 font-bold" 
-                        style="font-size: ${baseSize * 1.1}px; color: ${activeModalTab === 'manual' ? primaryColor : secondaryColor}; border-bottom-color: ${activeModalTab === 'manual' ? primaryColor : 'transparent'};">
-                        ���️ Inserimento Manuale
-                      </button>
-                      <button type="button" id="tabCsvInput" class="tab-button px-6 py-3 font-bold" 
-                        style="font-size: ${baseSize * 1.1}px; color: ${activeModalTab === 'csv' ? primaryColor : secondaryColor}; border-bottom-color: ${activeModalTab === 'csv' ? primaryColor : 'transparent'};">
-                        📄 Importa CSV
-                      </button>
-                    </div>
-                  ` : ''}
-
-                  ${currentFormType === 'cliente' && activeModalTab === 'manual' ? `
-                    <form id="clientForm">
-                      <div class="space-y-4">
-                        <div>
-                          <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Codice Fiscale *</label>
-                          <input type="text" name="codice_fiscale" required maxlength="16"
-                            value="${editingRecord?.codice_fiscale || ''}"
-                            class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                          <div>
-                            <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Nome *</label>
-                            <input type="text" name="nome" required
-                              value="${editingRecord?.nome || ''}"
-                              class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                          </div>
-                          <div>
-                            <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Cognome *</label>
-                            <input type="text" name="cognome" required
-                              value="${editingRecord?.cognome || ''}"
-                              class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                          </div>
-                        </div>
-                        <div>
-                          <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Numero Contatto *</label>
-                          <input type="tel" name="numero_contatto" required
-                            value="${editingRecord?.numero_contatto || ''}"
-                            class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                        </div>
-                        <div>
-                          <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Email *</label>
-                          <input type="email" name="email" required
-                            value="${editingRecord?.email || ''}"
-                            class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                          <div>
-                            <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Data di Nascita *</label>
-                            <input type="date" name="data_nascita" required
-                              value="${editingRecord?.data_nascita || ''}"
-                              class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                          </div>
-                          <div>
-                            <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Sesso *</label>
-                            <select name="sesso" required
-                              class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                              <option value="M" ${editingRecord?.sesso === 'M' ? 'selected' : ''}>Maschio</option>
-                              <option value="F" ${editingRecord?.sesso === 'F' ? 'selected' : ''}>Femmina</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div>
-                          <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Residenza</label>
-                          <input type="text" name="residenza"
-                            value="${editingRecord?.residenza || ''}"
-                            class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                        </div>
-                        <div>
-                          <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Stato di Nascita</label>
-                          <input type="text" name="stato_nascita"
-                            value="${editingRecord?.stato_nascita || 'Italia'}"
-                            class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                        </div>
-                      </div>
-
-                      <div class="flex gap-3 mt-6">
-                        <button type="submit" class="px-6 py-3 rounded-lg font-bold transition-all hover:opacity-90" 
-                          style="background-color: ${primaryColor}; color: white; font-size: ${baseSize}px;" ${isLoading ? 'disabled' : ''}>
-                          ${isLoading ? '<div class="loading-spinner"></div>' : (config.button_save || defaultConfig.button_save)}
-                        </button>
-                        <button type="button" id="cancelBtn" class="px-6 py-3 rounded-lg font-bold transition-all hover:opacity-90" 
-                          style="background-color: ${secondaryColor}; color: white; font-size: ${baseSize}px;">
-                          ${config.button_cancel || defaultConfig.button_cancel}
-                        </button>
-                      </div>
-                    </form>
-                  ` : currentFormType === 'contratto' ? `
-                    <form id="contractForm">
-                      <div class="space-y-4">
-                        ${!editingRecord ? `
-                          <div class="p-4 rounded-lg" style="background-color: ${primaryColor}20; border-left: 4px solid ${primaryColor};">
-                            <h4 style="font-size: ${baseSize}px; font-weight: 700; color: ${textColor}; margin-bottom: 12px;">
-                              🔍 Cerca Cliente
-                            </h4>
-                            <input type="text" id="searchClientContract" placeholder="Cerca per nome, cognome o codice fiscale..."
-                              class="w-full px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                            <div id="clientSearchResultsContract" class="mt-3 space-y-2 max-h-48 overflow-y-auto"></div>
-                          </div>
-                        ` : ''}
-                        
-                        <div>
-                          <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Codice Fiscale *</label>
-                          <input type="text" name="codice_fiscale" id="contractCodiceFiscale" required maxlength="16"
-                            value="${editingRecord?.codice_fiscale || ''}"
-                            class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                          <div>
-                            <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Nome *</label>
-                            <input type="text" name="nome" id="contractNome" required
-                              value="${editingRecord?.nome || ''}"
-                              class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                          </div>
-                          <div>
-                            <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Cognome *</label>
-                            <input type="text" name="cognome" id="contractCognome" required
-                              value="${editingRecord?.cognome || ''}"
-                              class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                          </div>
-                        </div>
-
-                        <div>
-                          <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Tipo Attivazione *</label>
-                          <select name="tipo_attivazione" id="tipoAttivazione" required
-                            class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                            <option value="">Seleziona tipo</option>
-                            <option value="fisso" ${editingRecord?.tipo_attivazione === 'fisso' ? 'selected' : ''}>Linea Fissa</option>
-                            <option value="mobile" ${editingRecord?.tipo_attivazione === 'mobile' ? 'selected' : ''}>Mobile</option>
-                            <option value="luce" ${editingRecord?.tipo_attivazione === 'luce' ? 'selected' : ''}>Luce</option>
-                            <option value="gas" ${editingRecord?.tipo_attivazione === 'gas' ? 'selected' : ''}>Gas</option>
-                            <option value="tv" ${editingRecord?.tipo_attivazione === 'tv' ? 'selected' : ''}>TV</option>
-                          </select>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4">
-                          <div>
-                            <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Brand</label>
-                            <input type="text" name="brand"
-                              value="${editingRecord?.brand || ''}"
-                              class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                          </div>
-                          <div>
-                            <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Tipo Contratto</label>
-                            <input type="text" name="tipo_contratto"
-                              value="${editingRecord?.tipo_contratto || ''}"
-                              class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                          </div>
-                        </div>
-
-                        <div id="fissoFields" style="display: ${editingRecord?.tipo_attivazione === 'fisso' ? 'block' : 'none'};">
-                          <div class="space-y-4 p-4 rounded-lg" style="background-color: ${backgroundColor};">
-                            <h4 style="font-size: ${baseSize * 1.1}px; font-weight: 700; color: ${textColor};">Dettagli Linea Fissa</h4>
-                            <div>
-                              <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Tecnologia</label>
-                              <select name="tecnologia_fisso"
-                                class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                                <option value="">Seleziona</option>
-                                <option value="FTTH" ${editingRecord?.tecnologia_fisso === 'FTTH' ? 'selected' : ''}>FTTH</option>
-                                <option value="FTTC" ${editingRecord?.tecnologia_fisso === 'FTTC' ? 'selected' : ''}>FTTC</option>
-                                <option value="ADSL" ${editingRecord?.tecnologia_fisso === 'ADSL' ? 'selected' : ''}>ADSL</option>
-                                <option value="FWA" ${editingRecord?.tecnologia_fisso === 'FWA' ? 'selected' : ''}>FWA</option>
-                              </select>
-                            </div>
-                            <div>
-                              <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Luogo Installazione</label>
-                              <input type="text" name="luogo_installazione"
-                                value="${editingRecord?.luogo_installazione || ''}"
-                                class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                            </div>
-                            <div class="grid grid-cols-2 gap-4">
-                              <div>
-                                <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Costo Mensile (€)</label>
-                                <input type="number" name="costo_contratto" step="0.01"
-                                  value="${editingRecord?.costo_contratto || ''}"
-                                  class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                              </div>
-                              <div>
-                                <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Vincolo (mesi)</label>
-                                <input type="number" name="vincolo_mesi"
-                                  value="${editingRecord?.vincolo_mesi || ''}"
-                                  class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                              </div>
-                            </div>
-                            <div>
-                              <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Data Inizio Vincolo</label>
-                              <input type="date" name="data_inizio_vincolo"
-                                value="${editingRecord?.data_inizio_vincolo || ''}"
-                                class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                            </div>
-                            <div>
-                              <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Metodo Pagamento</label>
-                              <select name="metodo_pagamento"
-                                class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                                <option value="">Seleziona</option>
-                                <option value="Bollettino" ${editingRecord?.metodo_pagamento === 'Bollettino' ? 'selected' : ''}>Bollettino</option>
-                                <option value="SEPA" ${editingRecord?.metodo_pagamento === 'SEPA' ? 'selected' : ''}>SEPA</option>
-                                <option value="Carta" ${editingRecord?.metodo_pagamento === 'Carta' ? 'selected' : ''}>Carta di Credito</option>
-                              </select>
-                            </div>
-                            <div>
-                              <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">IBAN (se SEPA)</label>
-                              <input type="text" name="iban"
-                                value="${editingRecord?.iban || ''}"
-                                class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                            </div>
-                          </div>
-                        </div>
-
-                        <div id="mobileFields" style="display: ${editingRecord?.tipo_attivazione === 'mobile' ? 'block' : 'none'};">
-                          <div class="space-y-4 p-4 rounded-lg" style="background-color: ${backgroundColor};">
-                            <h4 style="font-size: ${baseSize * 1.1}px; font-weight: 700; color: ${textColor};">Dettagli Mobile</h4>
-                            <div>
-                              <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Tipo Mobile</label>
-                              <select name="tipo_mobile" id="tipoMobile"
-                                class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                                <option value="">Seleziona</option>
-                                <option value="mnp" ${editingRecord?.tipo_mobile === 'mnp' ? 'selected' : ''}>MNP (Portabilità)</option>
-                                <option value="new" ${editingRecord?.tipo_mobile === 'new' ? 'selected' : ''}>Nuova Attivazione</option>
-                              </select>
-                            </div>
-                            <div>
-                              <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Nome Offerta</label>
-                              <input type="text" name="nome_offerta"
-                                value="${editingRecord?.nome_offerta || ''}"
-                                class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                            </div>
-                            <div>
-                              <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Costo Mensile (€)</label>
-                              <input type="number" name="costo_offerta" step="0.01"
-                                value="${editingRecord?.costo_offerta || ''}"
-                                class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                            </div>
-                            
-                            <div id="mnpFields" style="display: ${editingRecord?.tipo_mobile === 'mnp' ? 'block' : 'none'};">
-                              <div class="space-y-4">
-                                <div>
-                                  <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Operatore Provenienza</label>
-                                  <input type="text" name="operatore_provenienza"
-                                    value="${editingRecord?.operatore_provenienza || ''}"
-                                    class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                                </div>
-                                <div>
-                                  <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Numero da Portare</label>
-                                  <input type="tel" name="numero_portare"
-                                    value="${editingRecord?.numero_portare || ''}"
-                                    class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                                </div>
-                                <div>
-                                  <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Data Portabilità</label>
-                                  <input type="date" name="data_portabilita"
-                                    value="${editingRecord?.data_portabilita || ''}"
-                                    class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                                </div>
-                                <div>
-                                  <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">ICCID Provenienza</label>
-                                  <input type="text" name="iccid_provenienza"
-                                    value="${editingRecord?.iccid_provenienza || ''}"
-                                    class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                                </div>
-                              </div>
-                            </div>
-
-                            <div id="newFields" style="display: ${editingRecord?.tipo_mobile === 'new' ? 'block' : 'none'};">
-                              <div>
-                                <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Numero Assegnato</label>
-                                <input type="tel" name="numero_assegnato"
-                                  value="${editingRecord?.numero_assegnato || ''}"
-                                  class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                              </div>
-                            </div>
-
-                            <div>
-                              <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">ICCID Nuovo</label>
-                              <input type="text" name="iccid_nuovo"
-                                value="${editingRecord?.iccid_nuovo || ''}"
-                                class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                            </div>
-
-                            <div>
-                              <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Metodo Pagamento</label>
-                              <select name="mobile_metodo_pagamento"
-                                class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                                <option value="">Seleziona</option>
-                                <option value="Ricaricabile" ${editingRecord?.mobile_metodo_pagamento === 'Ricaricabile' ? 'selected' : ''}>Ricaricabile</option>
-                                <option value="Carta" ${editingRecord?.mobile_metodo_pagamento === 'Carta' ? 'selected' : ''}>Carta di Credito</option>
-                                <option value="Conto" ${editingRecord?.mobile_metodo_pagamento === 'Conto' ? 'selected' : ''}>Addebito su Conto</option>
-                              </select>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-4">
-                              <div>
-                                <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Vincolo (mesi)</label>
-                                <input type="number" name="mobile_vincolo_mesi"
-                                  value="${editingRecord?.mobile_vincolo_mesi || ''}"
-                                  class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                              </div>
-                              <div>
-                                <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Data Inserimento</label>
-                                <input type="date" name="mobile_data_inserimento"
-                                  value="${editingRecord?.mobile_data_inserimento || ''}"
-                                  class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                              </div>
-                            </div>
-
-                            <div class="p-4 rounded-lg" style="background-color: ${surfaceColor}; border: 2px solid ${secondaryColor}40;">
-                              <div class="mb-3">
-                                <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Telefono Incluso?</label>
-                                <select name="telefono_incluso" id="telefonoIncluso"
-                                  class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                                  <option value="false" ${editingRecord?.telefono_incluso === false ? 'selected' : ''}>No</option>
-                                  <option value="true" ${editingRecord?.telefono_incluso === true ? 'selected' : ''}>Sì</option>
-                                </select>
-                              </div>
-
-                              <div id="telefonoFields" style="display: ${editingRecord?.telefono_incluso ? 'block' : 'none'};">
-                                <div class="space-y-4">
-                                  <div>
-                                    <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Modello Telefono</label>
-                                    <input type="text" name="modello_telefono"
-                                      value="${editingRecord?.modello_telefono || ''}"
-                                      class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                                  </div>
-                                  <div>
-                                    <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Costo Telefono (€)</label>
-                                    <input type="number" name="costo_telefono" step="0.01"
-                                      value="${editingRecord?.costo_telefono || ''}"
-                                      class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                                  </div>
-                                  <div>
-                                    <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Tipo Pagamento</label>
-                                    <select name="tipo_pagamento_telefono"
-                                      class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                                      <option value="">Seleziona</option>
-                                      <option value="Unica Soluzione" ${editingRecord?.tipo_pagamento_telefono === 'Unica Soluzione' ? 'selected' : ''}>Unica Soluzione</option>
-                                      <option value="Rate" ${editingRecord?.tipo_pagamento_telefono === 'Rate' ? 'selected' : ''}>A Rate</option>
-                                    </select>
-                                  </div>
-                                  <div>
-                                    <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Numero Rate (mesi)</label>
-                                    <input type="number" name="rate_telefono_mesi"
-                                      value="${editingRecord?.rate_telefono_mesi || ''}"
-                                      class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                                  </div>
-                                  <div>
-                                    <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">IMEI</label>
-                                    <input type="text" name="imei"
-                                      value="${editingRecord?.imei || ''}"
-                                      class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="flex gap-3 mt-6">
-                        <button type="submit" class="px-6 py-3 rounded-lg font-bold transition-all hover:opacity-90" 
-                          style="background-color: ${primaryColor}; color: white; font-size: ${baseSize}px;" ${isLoading ? 'disabled' : ''}>
-                          ${isLoading ? '<div class="loading-spinner"></div>' : (config.button_save || defaultConfig.button_save)}
-                        </button>
-                        <button type="button" id="cancelBtn" class="px-6 py-3 rounded-lg font-bold transition-all hover:opacity-90" 
-                          style="background-color: ${secondaryColor}; color: white; font-size: ${baseSize}px;">
-                          ${config.button_cancel || defaultConfig.button_cancel}
-                        </button>
-                      </div>
-                    </form>
-                  ` : currentFormType === 'device' ? `
-                    <form id="deviceForm">
-                      <div class="space-y-4">
-                        <h3 style="font-size: ${baseSize * 1.2}px; font-weight: 700; color: ${textColor};">Dati Cliente</h3>
-                        
-                        ${!editingRecord ? `
-                          <div class="p-4 rounded-lg" style="background-color: ${primaryColor}20; border-left: 4px solid ${primaryColor};">
-                            <h4 style="font-size: ${baseSize}px; font-weight: 700; color: ${textColor}; margin-bottom: 12px;">
-                              🔍 Cerca Cliente
-                            </h4>
-                            <input type="text" id="searchClientDevice" placeholder="Cerca per nome, cognome o codice fiscale..."
-                              class="w-full px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                            <div id="clientSearchResultsDevice" class="mt-3 space-y-2 max-h-48 overflow-y-auto"></div>
-                          </div>
-                        ` : ''}
-                        
-                        <div>
-                          <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Codice Fiscale *</label>
-                          <input type="text" name="device_codice_fiscale" id="deviceCodiceFiscale" required maxlength="16"
-                            value="${editingRecord?.device_codice_fiscale || ''}"
-                            class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                          <div>
-                            <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Nome *</label>
-                            <input type="text" name="device_nome" id="deviceNome" required
-                              value="${editingRecord?.device_nome || ''}"
-                              class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                          </div>
-                          <div>
-                            <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Cognome *</label>
-                            <input type="text" name="device_cognome" id="deviceCognome" required
-                              value="${editingRecord?.device_cognome || ''}"
-                              class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                          </div>
-                        </div>
-                        <div>
-                          <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Numero Contatto *</label>
-                          <input type="tel" name="device_numero_contatto" required
-                            value="${editingRecord?.device_numero_contatto || ''}"
-                            class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                        </div>
-                        <div>
-                          <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Email *</label>
-                          <input type="email" name="device_email" required
-                            value="${editingRecord?.device_email || ''}"
-                            class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                          <div>
-                            <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Data di Nascita *</label>
-                            <input type="date" name="device_data_nascita" required
-                              value="${editingRecord?.device_data_nascita || ''}"
-                              class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                          </div>
-                          <div>
-                            <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Sesso *</label>
-                            <select name="device_sesso" required
-                              class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                              <option value="M" ${editingRecord?.device_sesso === 'M' ? 'selected' : ''}>Maschio</option>
-                              <option value="F" ${editingRecord?.device_sesso === 'F' ? 'selected' : ''}>Femmina</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div>
-                          <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Residenza</label>
-                          <input type="text" name="device_residenza"
-                            value="${editingRecord?.device_residenza || ''}"
-                            class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                        </div>
-                        <div>
-                          <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Stato di Nascita</label>
-                          <input type="text" name="device_stato_nascita"
-                            value="${editingRecord?.device_stato_nascita || 'Italia'}"
-                            class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                        </div>
-
-                        <div style="border-top: 2px solid ${secondaryColor}40; padding-top: 16px; margin-top: 24px;">
-                          <h3 style="font-size: ${baseSize * 1.2}px; font-weight: 700; color: ${textColor}; margin-bottom: 16px;">Dati Dispositivo</h3>
-                          
-                          <div>
-                            <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">IMEI *</label>
-                            <input type="text" name="device_imei" required
-                              value="${editingRecord?.device_imei || ''}"
-                              class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                          </div>
-
-                          <div class="grid grid-cols-2 gap-4 mt-4">
-                            <div>
-                              <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Marca *</label>
-                              <input type="text" name="device_marca" required
-                                value="${editingRecord?.device_marca || ''}"
-                                class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                            </div>
-                            <div>
-                              <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Modello *</label>
-                              <input type="text" name="device_modello" required
-                                value="${editingRecord?.device_modello || ''}"
-                                class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                            </div>
-                          </div>
-
-                          <div class="grid grid-cols-2 gap-4 mt-4">
-                            <div>
-                              <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Costo (€) *</label>
-                              <input type="number" name="device_costo" step="0.01" required
-                                value="${editingRecord?.device_costo || ''}"
-                                class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                            </div>
-                            <div>
-                              <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Metodo Pagamento *</label>
-                              <select name="device_metodo_pagamento" id="deviceMetodoPagamento" required
-                                class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                                <option value="">Seleziona</option>
-                                <option value="cash" ${editingRecord?.device_metodo_pagamento === 'cash' ? 'selected' : ''}>Cash</option>
-                                <option value="compass" ${editingRecord?.device_metodo_pagamento === 'compass' ? 'selected' : ''}>Compass</option>
-                              </select>
-                            </div>
-                          </div>
-
-                          <div id="compassFields" style="display: ${editingRecord?.device_metodo_pagamento === 'compass' ? 'block' : 'none'}; margin-top: 16px;">
-                            <div class="space-y-4 p-4 rounded-lg" style="background-color: ${backgroundColor};">
-                              <div>
-                                <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Anticipo (€)</label>
-                                <input type="number" name="device_anticipo" step="0.01"
-                                  value="${editingRecord?.device_anticipo || ''}"
-                                  class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                              </div>
-                              <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                  <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Numero Rate</label>
-                                  <input type="number" name="device_numero_rate"
-                                    value="${editingRecord?.device_numero_rate || ''}"
-                                    class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                                </div>
-                                <div>
-                                  <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Costo Rata (€)</label>
-                                  <input type="number" name="device_costo_rata" step="0.01"
-                                    value="${editingRecord?.device_costo_rata || ''}"
-                                    class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div class="grid grid-cols-2 gap-4 mt-4">
-                            <div>
-                              <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Condizione *</label>
-                              <select name="device_condizione" required
-                                class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                                <option value="">Seleziona</option>
-                                <option value="nuovo" ${editingRecord?.device_condizione === 'nuovo' ? 'selected' : ''}>Nuovo</option>
-                                <option value="ricondizionato" ${editingRecord?.device_condizione === 'ricondizionato' ? 'selected' : ''}>Ricondizionato</option>
-                              </select>
-                            </div>
-                            <div>
-                              <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">Fornitore *</label>
-                              <input type="text" name="device_fornitore" required
-                                value="${editingRecord?.device_fornitore || ''}"
-                                class="w-full mt-1 px-4 py-2 rounded border" style="font-size: ${baseSize}px; border-color: ${secondaryColor}40;">
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="flex gap-3 mt-6">
-                        <button type="submit" class="px-6 py-3 rounded-lg font-bold transition-all hover:opacity-90" 
-                          style="background-color: ${primaryColor}; color: white; font-size: ${baseSize}px;" ${isLoading ? 'disabled' : ''}>
-                          ${isLoading ? '<div class="loading-spinner"></div>' : (config.button_save || defaultConfig.button_save)}
-                        </button>
-                        <button type="button" id="cancelBtn" class="px-6 py-3 rounded-lg font-bold transition-all hover:opacity-90" 
-                          style="background-color: ${secondaryColor}; color: white; font-size: ${baseSize}px;">
-                          ${config.button_cancel || defaultConfig.button_cancel}
-                        </button>
-                      </div>
-                    </form>
-                  ` : currentFormType === 'cliente' && activeModalTab === 'csv' ? `
-                    <div class="space-y-4">
-                      <div class="p-4 rounded-lg" style="background-color: ${primaryColor}20; border-left: 4px solid ${primaryColor};">
-                        <p style="font-size: ${baseSize * 0.9}px; color: ${textColor}; font-weight: 600;">
-                          📋 Formato CSV richiesto (separatore: punto e virgola)
-                        </p>
-                        <p style="font-size: ${baseSize * 0.85}px; color: ${textColor}; margin-top: 8px;">
-                          Codice Fiscale;Cognome;Nome;Data Nascita;Sesso;Numero Contatto;Email;Indirizzo;Città;Provincia;Stato;Note
-                        </p>
-                        <p style="font-size: ${baseSize * 0.75}px; color: ${secondaryColor}; margin-top: 8px;">
-                          * La prima riga può contenere le intestazioni<br>
-                          * Data Nascita: formato DD/MM/YYYY o YYYY-MM-DD<br>
-                          * Sesso: M o F<br>
-                          * I campi Indirizzo, Città, Provincia, Stato e Note sono opzionali
-                        </p>
-                      </div>
-
-                      ${pasteStep === 'input' ? `
-                        <div class="space-y-4">
-                          <div>
-                            <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">
-                              📁 Carica un file CSV
-                            </label>
-                            <input type="file" id="csvFileInput" accept=".csv,.txt"
-                              class="w-full mt-2 px-4 py-3 rounded border" 
-                              style="font-size: ${baseSize * 0.9}px; border-color: ${secondaryColor}40;">
-                          </div>
-
-                          <div class="flex items-center gap-4">
-                            <div style="height: 2px; flex: 1; background-color: ${secondaryColor}40;"></div>
-                            <p style="font-size: ${baseSize * 0.85}px; color: ${secondaryColor}; font-weight: 600;">OPPURE</p>
-                            <div style="height: 2px; flex: 1; background-color: ${secondaryColor}40;"></div>
-                          </div>
-
-                          <div>
-                            <label style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">
-                              ✍️ Incolla il contenuto del file CSV
-                            </label>
-                            <textarea id="csvInput" rows="8"
-                              placeholder="Incolla qui il contenuto del CSV..."
-                              class="w-full mt-2 px-4 py-3 rounded border font-mono" 
-                              style="font-size: ${baseSize * 0.85}px; border-color: ${secondaryColor}40;"></textarea>
-                          </div>
-                        </div>
-
-                        <div class="flex gap-3">
-                          <button type="button" id="parseCsvBtn" class="px-6 py-3 rounded-lg font-bold transition-all hover:opacity-90" 
-                            style="background-color: ${primaryColor}; color: white; font-size: ${baseSize}px;">
-                            🔍 Verifica CSV
-                          </button>
-                          <button type="button" id="cancelBtn" class="px-6 py-3 rounded-lg font-bold transition-all hover:opacity-90" 
-                            style="background-color: ${secondaryColor}; color: white; font-size: ${baseSize}px;">
-                            Annulla
-                          </button>
-                        </div>
-                      ` : pasteStep === 'validation' ? `
-                        <div class="space-y-4">
-                          ${csvErrors.length > 0 ? `
-                            <div class="p-4 rounded-lg" style="background-color: #fef2f2; border-left: 4px solid #ef4444;">
-                              <p style="font-size: ${baseSize}px; color: #ef4444; font-weight: 700; margin-bottom: 12px;">
-                                ⚠️ Errori trovati (${csvErrors.length})
-                              </p>
-                              <div class="space-y-2 max-h-64 overflow-y-auto">
-                                ${csvErrors.map(err => `
-                                  <p style="font-size: ${baseSize * 0.85}px; color: #991b1b;">
-                                    Riga ${err.line}: ${err.error}
-                                  </p>
-                                `).join('')}
-                              </div>
-                            </div>
-                          ` : ''}
-
-                          ${csvValidRecords.length > 0 ? `
-                            <div class="p-4 rounded-lg" style="background-color: #f0fdf4; border-left: 4px solid #10b981;">
-                              <p style="font-size: ${baseSize}px; color: #10b981; font-weight: 700; margin-bottom: 12px;">
-                                ✅ Record validi pronti per l'importazione: ${csvValidRecords.length}
-                              </p>
-                              <div class="space-y-2 max-h-64 overflow-y-auto">
-                                ${csvValidRecords.slice(0, 5).map(record => `
-                                  <div class="p-3 rounded" style="background-color: white;">
-                                    <p style="font-size: ${baseSize * 0.85}px; color: ${textColor}; font-weight: 600;">
-                                      ${record.nome} ${record.cognome}
-                                    </p>
-                                    <p style="font-size: ${baseSize * 0.75}px; color: ${secondaryColor};">
-                                      CF: ${record.codice_fiscale} • 📞 ${record.numero_contatto} • ��️ ${record.email}
-                                    </p>
-                                  </div>
-                                `).join('')}
-                                ${csvValidRecords.length > 5 ? `
-                                  <p style="font-size: ${baseSize * 0.85}px; color: ${secondaryColor}; text-align: center;">
-                                    ... e altri ${csvValidRecords.length - 5} record
-                                  </p>
-                                ` : ''}
-                              </div>
-                            </div>
-                          ` : ''}
-
-                          <div class="flex gap-3">
-                            ${csvValidRecords.length > 0 ? `
-                              <button type="button" id="importCsvRecordsBtn" class="px-6 py-3 rounded-lg font-bold transition-all hover:opacity-90" 
-                                style="background-color: #10b981; color: white; font-size: ${baseSize}px;" ${isLoading ? 'disabled' : ''}>
-                                ${isLoading ? '<div class="loading-spinner"></div>' : `✅ Importa ${csvValidRecords.length} Clienti`}
-                              </button>
-                            ` : ''}
-                            <button type="button" id="backToCsvInputBtn" class="px-6 py-3 rounded-lg font-bold transition-all hover:opacity-90" 
-                              style="background-color: ${secondaryColor}; color: white; font-size: ${baseSize}px;">
-                              ← Torna all'input
-                            </button>
-                          </div>
-                        </div>
-                      ` : ''}
-                    </div>
-                  ` : ''}
-                </div>
-              </div>
-            </div>
-          ` : ''}
-        </div>
-      `;
-
-      attachEventListeners();
-    }
-
-    function attachEventListeners() {
-      document.getElementById('tabHome')?.addEventListener('click', () => {
-        activeMainTab = 'home';
-        searchQuery = '';
-        render();
-      });
-      
-      document.getElementById('tabClienti')?.addEventListener('click', () => {
-        activeMainTab = 'clienti';
-        searchQuery = '';
-        render();
-      });
-      
-      document.getElementById('tabContratti')?.addEventListener('click', () => {
-        activeMainTab = 'contratti';
-        searchQuery = '';
-        render();
-      });
-
-      document.getElementById('tabDispositivi')?.addEventListener('click', () => {
-        activeMainTab = 'dispositivi';
-        searchQuery = '';
-        render();
-      });
-
-      document.getElementById('tabReport')?.addEventListener('click', () => {
-        activeMainTab = 'report';
-        searchQuery = '';
-        render();
-      });
-
-      document.getElementById('goToClienti')?.addEventListener('click', () => {
-        activeMainTab = 'clienti';
-        searchQuery = '';
-        render();
-      });
-
-      document.getElementById('goToContratti')?.addEventListener('click', () => {
-        activeMainTab = 'contratti';
-        searchQuery = '';
-        render();
-      });
-
-      document.getElementById('goToDispositivi')?.addEventListener('click', () => {
-        activeMainTab = 'dispositivi';
-        searchQuery = '';
-        render();
-      });
-
-      document.getElementById('goToReport')?.addEventListener('click', () => {
-        activeMainTab = 'report';
-        searchQuery = '';
-        render();
-      });
-
-      document.getElementById('addClientBtn')?.addEventListener('click', () => {
-        openModal(null, 'cliente');
-      });
-
-      document.getElementById('importCsvBtn')?.addEventListener('click', () => {
-        activeModalTab = 'csv';
-        pasteStep = 'input';
-        csvErrors = [];
-        csvValidRecords = [];
-        openModal(null, 'cliente');
-      });
-
-      document.getElementById('addContractBtn')?.addEventListener('click', () => {
-        openModal(null, 'contratto');
-      });
-
-      document.getElementById('addDeviceBtn')?.addEventListener('click', () => {
-        openModal(null, 'device');
-      });
-
-      document.getElementById('cancelBtn')?.addEventListener('click', () => {
-        closeModal();
-      });
-
-      document.getElementById('tabManualInput')?.addEventListener('click', () => {
-        activeModalTab = 'manual';
-        render();
-      });
-
-      document.getElementById('tabCsvInput')?.addEventListener('click', () => {
-        activeModalTab = 'csv';
-        pasteStep = 'input';
-        csvErrors = [];
-        csvValidRecords = [];
-        render();
-      });
-
-      document.getElementById('csvFileInput')?.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const csvText = event.target.result;
-          const csvInput = document.getElementById('csvInput');
-          if (csvInput) {
-            csvInput.value = csvText;
-          }
-        };
-        reader.onerror = () => {
-          showToast('Errore nella lettura del file', 'error');
-        };
-        reader.readAsText(file, 'UTF-8');
-      });
-
-      document.getElementById('parseCsvBtn')?.addEventListener('click', () => {
-        const csvInput = document.getElementById('csvInput');
-        const csvText = csvInput?.value.trim();
-        
-        if (!csvText) {
-          showToast('Carica un file CSV o incolla il contenuto', 'error');
-          return;
-        }
-        
-        const result = parseCsvFile(csvText);
-        csvErrors = result.errors;
-        csvValidRecords = result.validRecords;
-        pasteStep = 'validation';
-        render();
-      });
-
-      document.getElementById('backToCsvInputBtn')?.addEventListener('click', () => {
-        pasteStep = 'input';
-        csvErrors = [];
-        csvValidRecords = [];
-        render();
-      });
-
-      document.getElementById('importCsvRecordsBtn')?.addEventListener('click', async () => {
-        if (csvValidRecords.length === 0) {
-          showToast('Nessun record da importare', 'error');
-          return;
-        }
-        
-        isLoading = true;
-        render();
-        
-        const result = await importCsvRecords(csvValidRecords);
-        
-        isLoading = false;
-        showModal = false;
-        pasteStep = 'input';
-        csvErrors = [];
-        csvValidRecords = [];
-        
-        if (result.successCount > 0) {
-          showToast(`✅ Importati ${result.successCount} clienti con successo!`);
-        }
-        if (result.failCount > 0) {
-          showToast(`⚠️ ${result.failCount} clienti non importati`, 'error');
-        }
-        
-        render();
-      });
-
-      document.getElementById('clientForm')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        if (editingRecord && editingRecord.type === 'cliente') {
-          await updateClient(editingRecord, formData);
-        } else {
-          await addClient(formData);
-        }
-      });
-
-      document.getElementById('contractForm')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        if (editingRecord && editingRecord.type === 'contratto') {
-          await updateContract(editingRecord, formData);
-        } else {
-          await addContract(formData);
-        }
-      });
-
-      document.getElementById('deviceForm')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        if (editingRecord && editingRecord.type === 'device') {
-          await updateDevice(editingRecord, formData);
-        } else {
-          await addDevice(formData);
-        }
-      });
-
-      document.getElementById('tipoAttivazione')?.addEventListener('change', (e) => {
-        const tipo = e.target.value;
-        const fissoFields = document.getElementById('fissoFields');
-        const mobileFields = document.getElementById('mobileFields');
-        
-        if (fissoFields) fissoFields.style.display = tipo === 'fisso' ? 'block' : 'none';
-        if (mobileFields) mobileFields.style.display = tipo === 'mobile' ? 'block' : 'none';
-      });
-
-      document.getElementById('tipoMobile')?.addEventListener('change', (e) => {
-        const tipo = e.target.value;
-        const mnpFields = document.getElementById('mnpFields');
-        const newFields = document.getElementById('newFields');
-        
-        if (mnpFields) mnpFields.style.display = tipo === 'mnp' ? 'block' : 'none';
-        if (newFields) newFields.style.display = tipo === 'new' ? 'block' : 'none';
-      });
-
-      document.getElementById('telefonoIncluso')?.addEventListener('change', (e) => {
-        const incluso = e.target.value === 'true';
-        const telefonoFields = document.getElementById('telefonoFields');
-        if (telefonoFields) telefonoFields.style.display = incluso ? 'block' : 'none';
-      });
-
-      document.getElementById('deviceMetodoPagamento')?.addEventListener('change', (e) => {
-        const metodo = e.target.value;
-        const compassFields = document.getElementById('compassFields');
-        if (compassFields) compassFields.style.display = metodo === 'compass' ? 'block' : 'none';
-      });
-
-      document.querySelectorAll('.edit-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const recordId = btn.getAttribute('data-id');
-          const record = allRecords.find(r => r.id === recordId);
-          if (record) openModal(record);
-        });
-      });
-
-      document.querySelectorAll('.edit-contract-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const recordId = btn.getAttribute('data-id');
-          const record = allRecords.find(r => r.id === recordId);
-          if (record) openModal(record, 'contratto');
-        });
-      });
-
-      document.querySelectorAll('.edit-device-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const recordId = btn.getAttribute('data-id');
-          const record = allRecords.find(r => r.id === recordId);
-          if (record) openModal(record, 'device');
-        });
-      });
-
-      document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const recordId = btn.getAttribute('data-id');
-          const record = allRecords.find(r => r.id === recordId);
-          if (record) deleteRecord(record);
-        });
-      });
-
-      document.querySelectorAll('.confirm-delete-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const recordId = btn.getAttribute('data-id');
-          const record = allRecords.find(r => r.id === recordId);
-          if (record) deleteRecord(record);
-        });
-      });
-
-      document.querySelectorAll('.cancel-delete-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const recordId = btn.getAttribute('data-id');
-          cancelDelete(recordId);
-        });
-      });
-
-      document.getElementById('searchClientsInput')?.addEventListener('input', (e) => {
-        searchQuery = e.target.value;
-        render();
-      });
-
-      document.getElementById('searchContractsInput')?.addEventListener('input', (e) => {
-        searchQuery = e.target.value;
-        render();
-      });
-
-      document.getElementById('searchDevicesInput')?.addEventListener('input', (e) => {
-        searchQuery = e.target.value;
-        render();
-      });
-
-      document.getElementById('birthMonthSelect')?.addEventListener('change', (e) => {
-        window.reportSelectedMonth = parseInt(e.target.value);
-        render();
-      });
-
-      document.getElementById('birthYearSelect')?.addEventListener('change', (e) => {
-        window.reportSelectedYear = parseInt(e.target.value);
-        render();
-      });
-
-      document.getElementById('expiryMonthSelect')?.addEventListener('change', (e) => {
-        window.reportExpiryMonth = parseInt(e.target.value);
-        render();
-      });
-
-      document.getElementById('expiryYearSelect')?.addEventListener('change', (e) => {
-        window.reportExpiryYear = parseInt(e.target.value);
-        render();
-      });
-
-      document.getElementById('searchClientContract')?.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase();
-        const resultsContainer = document.getElementById('clientSearchResultsContract');
-        const config = window.elementSdk?.config || defaultConfig;
-        const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
-        const backgroundColor = config.background_color || defaultConfig.background_color;
-        const textColor = config.text_color || defaultConfig.text_color;
-        const secondaryColor = config.secondary_action_color || defaultConfig.secondary_action_color;
-        const baseSize = config.font_size || defaultConfig.font_size;
-        
-        if (!query) {
-          resultsContainer.innerHTML = '';
-          return;
-        }
-        
-        const clients = getClients();
-        const filtered = clients.filter(c => 
-          c.nome.toLowerCase().includes(query) ||
-          c.cognome.toLowerCase().includes(query) ||
-          c.codice_fiscale.toLowerCase().includes(query)
-        ).slice(0, 5);
-        
-        if (filtered.length === 0) {
-          resultsContainer.innerHTML = `
-            <p style="font-size: ${baseSize * 0.85}px; color: ${secondaryColor}; text-align: center;">
-              Nessun cliente trovato
-            </p>
-          `;
-          return;
-        }
-        
-        resultsContainer.innerHTML = filtered.map(client => `
-          <div class="p-3 rounded cursor-pointer transition-all hover:opacity-80" 
-            data-client-id="${client.id}"
-            style="background-color: ${backgroundColor}; border-left: 3px solid ${primaryColor};">
-            <p style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">
-              ${client.nome} ${client.cognome}
-            </p>
-            <p style="font-size: ${baseSize * 0.75}px; color: ${secondaryColor};">
-              CF: ${client.codice_fiscale}
-            </p>
-          </div>
-        `).join('');
-        
-        resultsContainer.querySelectorAll('[data-client-id]').forEach(el => {
-          el.addEventListener('click', () => {
-            const clientId = el.getAttribute('data-client-id');
-            const client = clients.find(c => c.id === clientId);
-            if (client) {
-              document.getElementById('contractCodiceFiscale').value = client.codice_fiscale;
-              document.getElementById('contractNome').value = client.nome;
-              document.getElementById('contractCognome').value = client.cognome;
-              document.getElementById('searchClientContract').value = '';
-              resultsContainer.innerHTML = '';
-            }
-          });
-        });
-      });
-
-      document.getElementById('searchClientDevice')?.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase();
-        const resultsContainer = document.getElementById('clientSearchResultsDevice');
-        const config = window.elementSdk?.config || defaultConfig;
-        const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
-        const backgroundColor = config.background_color || defaultConfig.background_color;
-        const textColor = config.text_color || defaultConfig.text_color;
-        const secondaryColor = config.secondary_action_color || defaultConfig.secondary_action_color;
-        const baseSize = config.font_size || defaultConfig.font_size;
-        
-        if (!query) {
-          resultsContainer.innerHTML = '';
-          return;
-        }
-        
-        const clients = getClients();
-        const filtered = clients.filter(c => 
-          c.nome.toLowerCase().includes(query) ||
-          c.cognome.toLowerCase().includes(query) ||
-          c.codice_fiscale.toLowerCase().includes(query)
-        ).slice(0, 5);
-        
-        if (filtered.length === 0) {
-          resultsContainer.innerHTML = `
-            <p style="font-size: ${baseSize * 0.85}px; color: ${secondaryColor}; text-align: center;">
-              Nessun cliente trovato
-            </p>
-          `;
-          return;
-        }
-        
-        resultsContainer.innerHTML = filtered.map(client => `
-          <div class="p-3 rounded cursor-pointer transition-all hover:opacity-80" 
-            data-client-id="${client.id}"
-            style="background-color: ${backgroundColor}; border-left: 3px solid ${primaryColor};">
-            <p style="font-size: ${baseSize * 0.9}px; font-weight: 600; color: ${textColor};">
-              ${client.nome} ${client.cognome}
-            </p>
-            <p style="font-size: ${baseSize * 0.75}px; color: ${secondaryColor};">
-              CF: ${client.codice_fiscale} • 📞 ${client.numero_contatto} • ✉️ ${client.email}
-            </p>
-          </div>
-        `).join('');
-        
-        resultsContainer.querySelectorAll('[data-client-id]').forEach(el => {
-          el.addEventListener('click', () => {
-            const clientId = el.getAttribute('data-client-id');
-            const client = clients.find(c => c.id === clientId);
-            if (client) {
-              document.getElementById('deviceCodiceFiscale').value = client.codice_fiscale;
-              document.getElementById('deviceNome').value = client.nome;
-              document.getElementById('deviceCognome').value = client.cognome;
-              document.querySelector('input[name="device_numero_contatto"]').value = client.numero_contatto;
-              document.querySelector('input[name="device_email"]').value = client.email;
-              document.querySelector('input[name="device_data_nascita"]').value = client.data_nascita;
-              document.querySelector('select[name="device_sesso"]').value = client.sesso;
-              document.querySelector('input[name="device_residenza"]').value = client.residenza || '';
-              document.querySelector('input[name="device_stato_nascita"]').value = client.stato_nascita || 'Italia';
-              document.getElementById('searchClientDevice').value = '';
-              resultsContainer.innerHTML = '';
-            }
-          });
-        });
-      });
-    }
-
-    async function onConfigChange(config) {
-      render();
-    }
-
-    async function init() {
-      const initResult = await window.dataSdk.init(dataHandler);
-      
-      if (!initResult.isOk) {
-        console.error("Failed to initialize data SDK");
-        showToast('Errore inizializzazione', 'error');
-        return;
-      }
-
-      if (window.elementSdk) {
-        await window.elementSdk.init({
-          defaultConfig,
-          onConfigChange,
-          mapToCapabilities: (config) => ({
-            recolorables: [],
-            borderables: [],
-            fontEditable: undefined,
-            fontSizeable: undefined
-          }),
-          mapToEditPanelValues: (config) => new Map()
-        });
-      }
-
-      render();
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', init);
+  },
+
+  upsertCustomer(payload) {
+    const list = [...this.data.customers];
+    if (this.ui.editing) {
+      const idx = list.findIndex(c => c.id === this.ui.editing.id);
+      if (idx !== -1) list[idx] = { ...list[idx], ...payload };
     } else {
-      init();
+      list.unshift({
+        id: 'c_' + Date.now(),
+        ...payload
+      });
     }
-  </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a12d93b20f6ed94',t:'MTc2MzU4ODI0My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+    this.data.customers = list;
+    this.ui.modal = null;
+    this.ui.editing = null;
+    this.save();
+  },
+
+  removeCustomer(id) {
+    this.data.customers = this.data.customers.filter(c => c.id !== id);
+    this.save();
+  },
+
+  upsertContract(payload) {
+    const list = [...this.data.contracts];
+    if (this.ui.editing) {
+      const idx = list.findIndex(c => c.id === this.ui.editing.id);
+      if (idx !== -1) list[idx] = { ...list[idx], ...payload };
+    } else {
+      list.unshift({
+        id: 'ctr_' + Date.now(),
+        ...payload
+      });
+    }
+    this.data.contracts = list;
+    this.ui.modal = null;
+    this.ui.editing = null;
+    this.save();
+  },
+
+  removeContract(id) {
+    this.data.contracts = this.data.contracts.filter(c => c.id !== id);
+    this.save();
+  },
+
+  upsertDevice(payload) {
+    const list = [...this.data.devices];
+    if (this.ui.editing) {
+      const idx = list.findIndex(d => d.id === this.ui.editing.id);
+      if (idx !== -1) list[idx] = { ...list[idx], ...payload };
+    } else {
+      list.unshift({
+        id: 'dev_' + Date.now(),
+        ...payload
+      });
+    }
+    this.data.devices = list;
+    this.ui.modal = null;
+    this.ui.editing = null;
+    this.save();
+  },
+
+  removeDevice(id) {
+    this.data.devices = this.data.devices.filter(d => d.id !== id);
+    this.save();
+  }
+};
+
+let toastTimeout = null;
+function showToast(msg, type = 'success') {
+  const existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+  const div = document.createElement('div');
+  div.className = 'toast' + (type === 'error' ? ' error' : '');
+  div.textContent = msg;
+  document.body.appendChild(div);
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => div.remove(), 2800);
+}
+
+function esc(str) {
+  return (str ?? '').toString().replace(/[&<>"]/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'
+  }[c]));
+}
+
+function render() {
+  const root = document.getElementById('app');
+  const { tab, search, modal, editing, syncing } = State.ui;
+  const { customers, contracts, devices } = State.data;
+
+  const q = search.trim().toLowerCase();
+  const filteredCustomers = !q ? customers : customers.filter(c =>
+    (c.nome || '').toLowerCase().includes(q) ||
+    (c.cognome || '').toLowerCase().includes(q) ||
+    (c.codice_fiscale || '').toLowerCase().includes(q)
+  );
+
+  const filteredContracts = !q ? contracts : contracts.filter(c =>
+    (c.codice_fiscale || '').toLowerCase().includes(q) ||
+    (c.compagnia || '').toLowerCase().includes(q) ||
+    (c.offerta || '').toLowerCase().includes(q) ||
+    (c.numero || '').toLowerCase().includes(q)
+  );
+
+  const filteredDevices = !q ? devices : devices.filter(d =>
+    (d.codice_fiscale || '').toLowerCase().includes(q) ||
+    (d.marca || '').toLowerCase().includes(q) ||
+    (d.modello || '').toLowerCase().includes(q) ||
+    (d.imei || '').toLowerCase().includes(q)
+  );
+
+  root.innerHTML = `
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="logo">
+          <div class="logo-mark">🦊</div>
+          <div>
+            <div class="logo-text-main">VOLPEX CRM</div>
+            <div class="logo-text-sub">Customer Radar</div>
+          </div>
+        </div>
+
+        <div class="nav-label">Vista</div>
+        <div class="nav">
+          <button class="nav-btn ${tab === 'clients' ? 'active' : ''}" data-tab="clients">
+            <span class="icon">👥</span>
+            <span>Clienti</span>
+          </button>
+          <button class="nav-btn ${tab === 'contracts' ? 'active' : ''}" data-tab="contracts">
+            <span class="icon">📄</span>
+            <span>Contratti</span>
+          </button>
+          <button class="nav-btn ${tab === 'devices' ? 'active' : ''}" data-tab="devices">
+            <span class="icon">📱</span>
+            <span>Device</span>
+          </button>
+        </div>
+
+        <div class="nav-label">Azioni</div>
+        <div class="nav">
+          <button class="nav-btn" data-action="new-client">
+            <span class="icon">➕</span>
+            <span>Nuovo cliente</span>
+          </button>
+          <button class="nav-btn" data-action="new-contract">
+            <span class="icon">⚡</span>
+            <span>Nuovo contratto</span>
+          </button>
+          <button class="nav-btn" data-action="new-device">
+            <span class="icon">📦</span>
+            <span>Aggiungi device</span>
+          </button>
+        </div>
+
+        <div class="sync-badge">
+          <div class="sync-dot" style="opacity:${syncing ? 1 : 0.4}"></div>
+          <div style="display:flex;flex-direction:column;gap:2px;">
+            <span style="font-size:11px;">Volpex Cloud Sync</span>
+            <span style="font-size:10px;color:var(--muted);">
+              ${syncing ? 'Sincronizzazione in corso…' : 'Stato: allineato'}
+            </span>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <div class="top-bar">
+          <div class="headline">
+            <span>${tab === 'clients' ? 'Clienti' : tab === 'contracts' ? 'Contratti' : 'Device'}</span>
+            <span class="sub">Volpex overview</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="badge-accent">
+              Cloud Sheet • Live
+            </span>
+          </div>
+        </div>
+
+        <div class="search-row">
+          <input class="search-input" placeholder="Cerca per nome, CF, numero…" value="${esc(search)}" />
+          <button class="btn btn-ghost" data-action="clear-search">
+            ✕
+          </button>
+        </div>
+
+        <div class="cards">
+          <section class="panel">
+            <h2>${tab === 'clients' ? 'Elenco clienti' : tab === 'contracts' ? 'Elenco contratti' : 'Elenco device'}</h2>
+            <div class="panel-sub">
+              ${tab === 'clients'
+                ? `${customers.length} clienti in anagrafica`
+                : tab === 'contracts'
+                  ? `${contracts.length} contratti totali`
+                  : `${devices.length} device registrati`}
+            </div>
+
+            ${tab === 'clients'
+              ? renderClientsTable(filteredCustomers)
+              : tab === 'contracts'
+                ? renderContractsTable(filteredContracts)
+                : renderDevicesTable(filteredDevices)}
+          </section>
+
+          <section class="panel">
+            <h2>Insight veloci</h2>
+            <div class="panel-sub">
+              Snapshot sintetico del portafoglio Volpex.
+            </div>
+            ${renderInsightBlock()}
+          </section>
+        </div>
+      </main>
+    </div>
+
+    ${modal ? renderModal(modal, editing) : ''}
+  `;
+
+  bindEvents();
+}
+
+function renderClientsTable(list) {
+  if (!list.length) {
+    return `<div class="empty">Nessun cliente ancora registrato. Aggiungine uno dal menu a sinistra.</div>`;
+  }
+  return `
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Codice fiscale</th>
+          <th>Contatto</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        ${list.map(c => `
+          <tr>
+            <td>
+              <div style="font-size:12px;">${esc(c.nome)} ${esc(c.cognome)}</div>
+              <div class="muted" style="font-size:11px;">${esc(c.residenza || '')}</div>
+            </td>
+            <td><span class="chip">${esc(c.codice_fiscale || '')}</span></td>
+            <td>
+              <div style="font-size:12px;">${esc(c.telefono || '')}</div>
+              <div class="muted" style="font-size:11px;">${esc(c.email || '')}</div>
+            </td>
+            <td style="text-align:right;">
+              <button class="btn btn-ghost" data-action="edit-client" data-id="${esc(c.id)}">Modifica</button>
+              <button class="btn btn-ghost" style="border-color:rgba(239,68,68,0.7);color:#fecaca;" data-action="delete-client" data-id="${esc(c.id)}">Elimina</button>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+function renderContractsTable(list) {
+  if (!list.length) {
+    return `<div class="empty">Ancora nessun contratto. Registra il primo dal menu a sinistra.</div>`;
+  }
+  return `
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Offerta</th>
+          <th>Tipo</th>
+          <th>€ / mese</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        ${list.map(c => `
+          <tr>
+            <td>
+              <div style="font-size:12px;">${esc(c.codice_fiscale || '')}</div>
+              <div class="muted" style="font-size:11px;">${esc(c.compagnia || '')}</div>
+            </td>
+            <td>
+              <span class="chip chip-brand">${esc(c.offerta || '')}</span>
+              <div class="muted" style="font-size:11px;">${esc(c.numero || '')}</div>
+            </td>
+            <td>${renderTypeTag(c.tipo)}</td>
+            <td><strong>${esc(c.costo_mensile || '')}</strong></td>
+            <td style="text-align:right;">
+              <button class="btn btn-ghost" data-action="edit-contract" data-id="${esc(c.id)}">Modifica</button>
+              <button class="btn btn-ghost" style="border-color:rgba(239,68,68,0.7);color:#fecaca;" data-action="delete-contract" data-id="${esc(c.id)}">Elimina</button>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+function renderDevicesTable(list) {
+  if (!list.length) {
+    return `<div class="empty">Nessun device registrato. Puoi associarne uno a un cliente.</div>`;
+  }
+  return `
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Cliente / CF</th>
+          <th>Device</th>
+          <th>IMEI</th>
+          <th>Met.</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        ${list.map(d => `
+          <tr>
+            <td>
+              <div style="font-size:12px;">${esc(d.codice_fiscale || '')}</div>
+              <div class="muted" style="font-size:11px;">${esc(d.note || '')}</div>
+            </td>
+            <td>
+              <div style="font-size:12px;">${esc(d.marca || '')} ${esc(d.modello || '')}</div>
+            </td>
+            <td><span class="chip">${esc(d.imei || '')}</span></td>
+            <td><span class="pill-sm"><span class="pill-sm-dot"></span>${esc(d.metodo || '')}</span></td>
+            <td style="text-align:right;">
+              <button class="btn btn-ghost" data-action="edit-device" data-id="${esc(d.id)}">Modifica</button>
+              <button class="btn btn-ghost" style="border-color:rgba(239,68,68,0.7);color:#fecaca;" data-action="delete-device" data-id="${esc(d.id)}">Elimina</button>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+function renderTypeTag(tipo) {
+  const t = (tipo || '').toLowerCase();
+  const base = 'tag-type ';
+  if (t === 'mobile') return `<span class="${base} tag-mobile">MOBILE</span>`;
+  if (t === 'fisso')  return `<span class="${base} tag-fisso">FISSO</span>`;
+  if (t === 'luce')   return `<span class="${base} tag-luce">LUCE</span>`;
+  if (t === 'gas')    return `<span class="${base} tag-gas">GAS</span>`;
+  if (t === 'tv')     return `<span class="${base} tag-tv">TV</span>`;
+  return `<span class="${base}">${esc(tipo || '')}</span>`;
+}
+
+function renderInsightBlock() {
+  const { customers, contracts, devices } = State.data;
+  const perTipo = contracts.reduce((acc, c) => {
+    const key = (c.tipo || 'Altro').toLowerCase();
+    acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {});
+  const tot = contracts.length || 1;
+  const topTipo = Object.entries(perTipo).sort((a,b) => b[1]-a[1])[0];
+
+  return `
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;gap:8px;align-items:center;">
+        <div class="pill-sm">
+          <span class="pill-sm-dot"></span>
+          <span>${customers.length} clienti</span>
+        </div>
+        <div class="pill-sm">
+          <span class="pill-sm-dot" style="background:#f97316;"></span>
+          <span>${contracts.length} contratti</span>
+        </div>
+        <div class="pill-sm">
+          <span class="pill-sm-dot" style="background:#22c55e;"></span>
+          <span>${devices.length} device</span>
+        </div>
+      </div>
+
+      <div style="font-size:12px;color:var(--muted);">
+        ${topTipo
+          ? `Contratti prevalenti: <strong style="color:#e5e7eb;">${topTipo[0].toUpperCase()}</strong> (${Math.round(topTipo[1]/tot*100)}%)`
+          : 'Ancora nessun contratto, i primi dati arriveranno qui.'}
+      </div>
+
+      <button class="btn btn-primary" data-action="new-contract">
+        ⚡ Registra un nuovo contratto
+      </button>
+    </div>
+  `;
+}
+
+function renderModal(kind, editing) {
+  const title =
+    kind === 'client'   ? (editing ? 'Modifica cliente'   : 'Nuovo cliente') :
+    kind === 'contract' ? (editing ? 'Modifica contratto' : 'Nuovo contratto') :
+                          (editing ? 'Modifica device'    : 'Nuovo device');
+
+  const sub =
+    kind === 'client'   ? 'Anagrafica base' :
+    kind === 'contract' ? 'Dati contrattuali principali' :
+                          'Informazioni sul terminale';
+
+  const c = editing || {};
+
+  return `
+    <div class="modal-backdrop">
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-title">
+            <span>${title}</span>
+            <span class="sub">${sub}</span>
+          </div>
+          <button class="modal-close" data-action="close-modal">✕</button>
+        </div>
+
+        ${kind === 'client' ? renderClientForm(c) :
+          kind === 'contract' ? renderContractForm(c) :
+          renderDeviceForm(c)}
+
+      </div>
+    </div>
+  `;
+}
+
+function renderClientForm(c) {
+  return `
+    <form data-form="client">
+      <div class="form-grid">
+        <div class="field">
+          <label>Codice fiscale</label>
+          <input name="codice_fiscale" required placeholder="RSSMRA80A01H501U" value="${esc(c.codice_fiscale || '')}" />
+        </div>
+        <div class="field">
+          <label>Telefono</label>
+          <input name="telefono" required placeholder="3331234567" value="${esc(c.telefono || '')}" />
+        </div>
+        <div class="field">
+          <label>Nome</label>
+          <input name="nome" required value="${esc(c.nome || '')}" />
+        </div>
+        <div class="field">
+          <label>Cognome</label>
+          <input name="cognome" required value="${esc(c.cognome || '')}" />
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input name="email" type="email" placeholder="nome@dominio.it" value="${esc(c.email || '')}" />
+        </div>
+        <div class="field">
+          <label>Residenza</label>
+          <input name="residenza" placeholder="Via, città…" value="${esc(c.residenza || '')}" />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" data-action="close-modal">Annulla</button>
+        <button type="submit" class="btn btn-primary">Salva cliente</button>
+      </div>
+    </form>
+  `;
+}
+
+function renderContractForm(c) {
+  return `
+    <form data-form="contract">
+      <div class="form-grid">
+        <div class="field">
+          <label>Codice fiscale cliente</label>
+          <input name="codice_fiscale" required value="${esc(c.codice_fiscale || '')}" />
+        </div>
+        <div class="field">
+          <label>Compagnia</label>
+          <input name="compagnia" placeholder="WindTre, TIM…" value="${esc(c.compagnia || '')}" />
+        </div>
+        <div class="field">
+          <label>Tipo</label>
+          <select name="tipo">
+            <option value="">–</option>
+            <option value="Mobile" ${c.tipo === 'Mobile' ? 'selected' : ''}>Mobile</option>
+            <option value="Fisso"  ${c.tipo === 'Fisso'  ? 'selected' : ''}>Fisso</option>
+            <option value="Luce"   ${c.tipo === 'Luce'   ? 'selected' : ''}>Luce</option>
+            <option value="Gas"    ${c.tipo === 'Gas'    ? 'selected' : ''}>Gas</option>
+            <option value="TV"     ${c.tipo === 'TV'     ? 'selected' : ''}>TV</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Numero linea / contratto</label>
+          <input name="numero" value="${esc(c.numero || '')}" />
+        </div>
+        <div class="field">
+          <label>Offerta</label>
+          <input name="offerta" placeholder="New Basic, Family 5G…" value="${esc(c.offerta || '')}" />
+        </div>
+        <div class="field">
+          <label>Costo mensile (€)</label>
+          <input name="costo_mensile" type="number" step="0.01" value="${esc(c.costo_mensile || '')}" />
+        </div>
+        <div class="field">
+          <label>Data attivazione</label>
+          <input name="data_attivazione" type="date" value="${esc(c.data_attivazione || '')}" />
+        </div>
+        <div class="field">
+          <label>Mesi vincolo</label>
+          <input name="mesi_vincolo" type="number" value="${esc(c.mesi_vincolo || '')}" />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" data-action="close-modal">Annulla</button>
+        <button type="submit" class="btn btn-primary">Salva contratto</button>
+      </div>
+    </form>
+  `;
+}
+
+function renderDeviceForm(c) {
+  return `
+    <form data-form="device">
+      <div class="form-grid">
+        <div class="field">
+          <label>Codice fiscale cliente</label>
+          <input name="codice_fiscale" required value="${esc(c.codice_fiscale || '')}" />
+        </div>
+        <div class="field">
+          <label>Marca</label>
+          <input name="marca" value="${esc(c.marca || '')}" />
+        </div>
+        <div class="field">
+          <label>Modello</label>
+          <input name="modello" value="${esc(c.modello || '')}" />
+        </div>
+        <div class="field">
+          <label>IMEI</label>
+          <input name="imei" value="${esc(c.imei || '')}" />
+        </div>
+        <div class="field">
+          <label>Metodo pagamento</label>
+          <input name="metodo" placeholder="Contanti, rate…" value="${esc(c.metodo || '')}" />
+        </div>
+        <div class="field">
+          <label>Note</label>
+          <input name="note" value="${esc(c.note || '')}" />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" data-action="close-modal">Annulla</button>
+        <button type="submit" class="btn btn-primary">Salva device</button>
+      </div>
+    </form>
+  `;
+}
+
+function bindEvents() {
+  const root = document.getElementById('app');
+
+  root.querySelectorAll('[data-tab]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      State.ui.tab = btn.getAttribute('data-tab');
+      render();
+    });
+  });
+
+  root.querySelectorAll('[data-action]').forEach(btn => {
+    const action = btn.getAttribute('data-action');
+    btn.addEventListener('click', () => {
+      if (action === 'new-client') {
+        State.ui.modal = 'client';
+        State.ui.editing = null;
+        render();
+      } else if (action === 'new-contract') {
+        State.ui.modal = 'contract';
+        State.ui.editing = null;
+        render();
+      } else if (action === 'new-device') {
+        State.ui.modal = 'device';
+        State.ui.editing = null;
+        render();
+      } else if (action === 'close-modal') {
+        State.ui.modal = null;
+        State.ui.editing = null;
+        render();
+      } else if (action === 'clear-search') {
+        State.ui.search = '';
+        render();
+      } else if (action === 'delete-client') {
+        const id = btn.getAttribute('data-id');
+        if (confirm('Eliminare definitivamente il cliente?')) {
+          State.removeCustomer(id);
+        }
+      } else if (action === 'delete-contract') {
+        const id = btn.getAttribute('data-id');
+        if (confirm('Eliminare definitivamente il contratto?')) {
+          State.removeContract(id);
+        }
+      } else if (action === 'delete-device') {
+        const id = btn.getAttribute('data-id');
+        if (confirm('Eliminare definitivamente il device?')) {
+          State.removeDevice(id);
+        }
+      } else if (action === 'edit-client') {
+        const id = btn.getAttribute('data-id');
+        State.ui.editing = State.data.customers.find(c => c.id === id) || null;
+        State.ui.modal = 'client';
+        render();
+      } else if (action === 'edit-contract') {
+        const id = btn.getAttribute('data-id');
+        State.ui.editing = State.data.contracts.find(c => c.id === id) || null;
+        State.ui.modal = 'contract';
+        render();
+      } else if (action === 'edit-device') {
+        const id = btn.getAttribute('data-id');
+        State.ui.editing = State.data.devices.find(c => c.id === id) || null;
+        State.ui.modal = 'device';
+        render();
+      }
+    });
+  });
+
+  const searchInput = root.querySelector('.search-input');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      State.ui.search = e.target.value;
+      render();
+    });
+  }
+
+  const modal = document.querySelector('.modal');
+  if (modal) {
+    const formClient = modal.querySelector('form[data-form="client"]');
+    const formContract = modal.querySelector('form[data-form="contract"]');
+    const formDevice = modal.querySelector('form[data-form="device"]');
+
+    if (formClient) {
+      formClient.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const fd = new FormData(formClient);
+        State.upsertCustomer({
+          codice_fiscale: fd.get('codice_fiscale') || '',
+          telefono: fd.get('telefono') || '',
+          nome: fd.get('nome') || '',
+          cognome: fd.get('cognome') || '',
+          email: (fd.get('email') || '').toLowerCase(),
+          residenza: fd.get('residenza') || ''
+        });
+      });
+    }
+    if (formContract) {
+      formContract.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const fd = new FormData(formContract);
+        State.upsertContract({
+          codice_fiscale: fd.get('codice_fiscale') || '',
+          compagnia: fd.get('compagnia') || '',
+          tipo: fd.get('tipo') || '',
+          numero: fd.get('numero') || '',
+          offerta: fd.get('offerta') || '',
+          costo_mensile: fd.get('costo_mensile') || '',
+          data_attivazione: fd.get('data_attivazione') || '',
+          mesi_vincolo: fd.get('mesi_vincolo') || ''
+        });
+      });
+    }
+    if (formDevice) {
+      formDevice.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const fd = new FormData(formDevice);
+        State.upsertDevice({
+          codice_fiscale: fd.get('codice_fiscale') || '',
+          marca: fd.get('marca') || '',
+          modello: fd.get('modello') || '',
+          imei: fd.get('imei') || '',
+          metodo: fd.get('metodo') || '',
+          note: fd.get('note') || ''
+        });
+      });
+    }
+  }
+}
+
+(async () => {
+  await State.init();
+  render();
+})();
+</script>
+</body>
 </html>
