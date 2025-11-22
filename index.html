@@ -5,643 +5,429 @@
   <title>Volpex CRM</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-:root {
-  --bg: #f5f5f7;
-  --bg-soft: #ffffff;
-  --bg-soft-alt: #f9fafb;
-  --border-soft: #e5e7eb;
-  --text-main: #111827;
-  --text-muted: #6b7280;
-  --accent: #f97316;
-  --accent-soft: rgba(249, 115, 22, 0.12);
-  --accent-strong: #ea580c;
-  --danger: #ef4444;
-  --danger-soft: rgba(239, 68, 68, 0.12);
-  --sidebar-bg: #111827;
-  --sidebar-border: #1f2937;
-  --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.12);
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-}
-
-body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
-  background: radial-gradient(circle at top, #fef3c7 0, #f5f5f7 42%, #e5e7eb 100%);
-  color: var(--text-main);
-}
-
-#app {
-  min-height: 100vh;
-}
-
-.layout {
-  display: flex;
-  min-height: 100vh;
-}
-
-/* SIDEBAR / VOLPEX BRAND */
-
-.sidebar {
-  width: 260px;
-  background: radial-gradient(circle at top left, #f97316 0, #111827 48%, #020617 100%);
-  color: #e5e7eb;
-  padding: 20px 18px;
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid rgba(148, 163, 184, 0.35);
-  position: sticky;
-  top: 0;
-  align-self: flex-start;
-  max-height: 100vh;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 10px 18px 10px;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.35);
-  margin-bottom: 12px;
-}
-
-.logo-mark {
-  width: 38px;
-  height: 38px;
-  border-radius: 14px;
-  background: radial-gradient(circle at 10% 0, #fed7aa 0, #f97316 30%, #ea580c 70%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  box-shadow: 0 10px 25px rgba(248, 113, 22, 0.45);
-}
-
-.logo-text-main {
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  font-size: 13px;
-  text-transform: uppercase;
-}
-
-.logo-text-sub {
-  font-size: 11px;
-  color: #9ca3af;
-}
-
-.nav-label {
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #9ca3af;
-  margin: 10px 4px 6px;
-}
-
-.nav {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-bottom: 10px;
-}
-
-.nav-btn {
-  border: 0;
-  outline: 0;
-  border-radius: 10px;
-  padding: 7px 9px;
-  font-size: 13px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 8px;
-  background: transparent;
-  color: #e5e7eb;
-  cursor: pointer;
-  transition: background 0.16s ease, transform 0.12s ease, box-shadow 0.16s ease, color 0.16s ease;
-}
-
-.nav-btn .icon {
-  width: 22px;
-  display: flex;
-  justify-content: center;
-  opacity: 0.9;
-}
-
-.nav-btn:hover {
-  background: rgba(55, 65, 81, 0.75);
-  transform: translateY(-1px);
-}
-
-.nav-btn.active {
-  background: linear-gradient(135deg, #f97316, #ea580c);
-  color: #111827;
-  box-shadow: 0 12px 30px rgba(249, 115, 22, 0.5);
-}
-
-.nav-btn.active .icon {
-  opacity: 1;
-}
-
-.sync-box {
-  margin-top: auto;
-  padding: 10px;
-  border-radius: 12px;
-  background: radial-gradient(circle at top, rgba(249, 115, 22, 0.16), rgba(15, 23, 42, 0.9));
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  font-size: 11px;
-  color: #e5e7eb;
-  border: 1px solid rgba(148, 163, 184, 0.5);
-}
-
-.sync-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  border: 2px solid #22c55e;
-  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25);
-  background-color: rgba(22, 163, 74, 0.7);
-}
-
-/* MAIN */
-
-.main {
-  flex: 1;
-  padding: 22px 26px 28px;
-}
-
-.top-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.headline-title {
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-
-.headline-sub {
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(34, 197, 94, 0.08);
-  border: 1px solid rgba(34, 197, 94, 0.32);
-  font-size: 11px;
-  color: #166534;
-}
-
-.search-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.search-input {
-  flex: 1;
-  border-radius: 999px;
-  border: 1px solid var(--border-soft);
-  padding: 9px 14px;
-  font-size: 13px;
-  outline: none;
-  background: rgba(255,255,255,0.8);
-  backdrop-filter: blur(10px);
-}
-
-.search-input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.25);
-}
-
-.btn {
-  border-radius: 999px;
-  border: 0;
-  padding: 7px 13px;
-  font-size: 12px;
-  font-weight: 500;
-  background: #e5e7eb;
-  color: #111827;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  transition: background 0.16s ease, transform 0.12s ease, box-shadow 0.16s ease, color 0.16s ease;
-}
-
-.btn:hover {
-  background: #d1d5db;
-  transform: translateY(-0.5px);
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-  color: white;
-  box-shadow: 0 14px 32px rgba(249, 115, 22, 0.6);
-}
-
-.btn-primary:hover {
-  box-shadow: 0 18px 40px rgba(249, 115, 22, 0.7);
-}
-
-.btn-danger {
-  background: linear-gradient(135deg, var(--danger), #b91c1c);
-  color: white;
-  box-shadow: 0 8px 22px rgba(248, 113, 113, 0.6);
-}
-
-.btn-danger:hover {
-  box-shadow: 0 10px 28px rgba(248, 113, 113, 0.7);
-}
-
-.btn-ghost {
-  background: transparent;
-  border: 1px solid rgba(148, 163, 184, 0.6);
-  color: var(--text-muted);
-}
-
-.btn-ghost:hover {
-  background: rgba(243, 244, 246, 0.85);
-}
-
-.whatsapp-btn {
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  color: white;
-  border: 0;
-  box-shadow: 0 8px 18px rgba(34, 197, 94, 0.5);
-}
-
-.whatsapp-btn:hover {
-  box-shadow: 0 10px 26px rgba(34, 197, 94, 0.6);
-}
-
-/* GRID / PANELS */
-
-.grid {
-  display: grid;
-  grid-template-columns: minmax(0, 2.4fr) minmax(260px, 1.1fr);
-  gap: 16px;
-}
-
-.panel {
-  background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(249, 250, 251, 0.98));
-  border-radius: 22px;
-  padding: 16px 18px 18px;
-  border: 1px solid rgba(209, 213, 219, 0.9);
-  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.10);
-}
-
-.panel-title {
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.panel-sub {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-bottom: 10px;
-}
-
-/* TABLES */
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12px;
-}
-
-thead {
-  background: var(--bg-soft-alt);
-}
-
-th, td {
-  padding: 7px 6px;
-  text-align: left;
-}
-
-th {
-  font-weight: 600;
-  font-size: 11px;
-  color: var(--text-muted);
-  border-bottom: 1px solid var(--border-soft);
-}
-
-tbody tr:nth-child(odd) {
-  background: rgba(249, 250, 251, 0.95);
-}
-
-tbody tr:nth-child(even) {
-  background: rgba(255, 255, 255, 0.96);
-}
-
-tbody tr:hover {
-  background: #fef3c7;
-}
-
-/* SMALL ELEMENTS */
-
-.empty {
-  padding: 28px 8px;
-  text-align: center;
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.muted {
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
-.chip {
-  display: inline-flex;
-  padding: 2px 8px;
-  border-radius: 999px;
-  border: 1px solid rgba(148, 163, 184, 0.8);
-  font-size: 11px;
-  background: rgba(249, 250, 251, 0.9);
-}
-
-.chip-strong {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-  color: var(--accent-strong);
-}
-
-.tag {
-  display: inline-flex;
-  padding: 2px 7px;
-  border-radius: 999px;
-  font-size: 10px;
-  border: 1px solid rgba(148, 163, 184, 0.7);
-  background: rgba(249, 250, 251, 0.9);
-}
-
-.tag-mobile { background: rgba(59, 130, 246, 0.09); border-color: #3b82f6; color: #1d4ed8; }
-.tag-fisso  { background: rgba(139, 92, 246, 0.09); border-color: #8b5cf6; color: #5b21b6; }
-.tag-luce   { background: rgba(234, 179, 8, 0.12);  border-color: #eab308; color: #854d0e; }
-.tag-gas    { background: rgba(239, 68, 68, 0.09);  border-color: #ef4444; color: #b91c1c; }
-.tag-tv     { background: rgba(34, 197, 94, 0.12);  border-color: #22c55e; color: #166534; }
-
-/* SIDE STATS */
-
-.stats-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 10px;
-}
-
-.pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 9px;
-  border-radius: 999px;
-  font-size: 11px;
-  background: rgba(249, 250, 251, 0.98);
-  border: 1px solid rgba(209, 213, 219, 0.9);
-}
-
-.pill-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: #3b82f6;
-}
-
-/* REPORT SECTION */
-
-.section-title {
-  font-size: 13px;
-  font-weight: 600;
-  margin-top: 8px;
-  margin-bottom: 4px;
-}
-
-.section-box {
-  border-radius: 16px;
-  border: 1px solid rgba(209, 213, 219, 0.9);
-  padding: 8px 10px;
-  background: rgba(249, 250, 251, 0.98);
-  margin-bottom: 8px;
-}
-
-.section-controls {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 6px;
-}
-
-.select {
-  border-radius: 999px;
-  border: 1px solid var(--border-soft);
-  padding: 3px 8px;
-  font-size: 11px;
-  background: white;
-}
-
-.badge-mini {
-  font-size: 10px;
-  padding: 2px 7px;
-  border-radius: 999px;
-  background: var(--accent-soft);
-  color: var(--accent-strong);
-}
-
-/* MODAL */
-
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.44);
-  backdrop-filter: blur(7px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 40;
-}
-
-.modal {
-  width: 760px;
-  max-width: calc(100% - 32px);
-  max-height: calc(100vh - 40px);
-  background: linear-gradient(145deg, #ffffff, #f9fafb);
-  border-radius: 24px;
-  border: 1px solid rgba(209, 213, 219, 0.9);
-  box-shadow: 0 28px 80px rgba(15, 23, 42, 0.35);
-  padding: 14px 18px 16px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(229, 231, 235, 0.7);
-  margin-bottom: 8px;
-}
-
-.modal-title-main {
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.modal-title-sub {
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
-.modal-close {
-  border: 0;
-  background: transparent;
-  font-size: 16px;
-  cursor: pointer;
-  color: var(--text-muted);
-}
-
-.modal-close:hover {
-  color: var(--text-main);
-}
-
-.modal form {
-  flex: 1;
-  overflow-y: auto;
-  padding-right: 3px;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px 10px;
-  padding: 4px 2px 10px;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.field label {
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
-.field input,
-.field select,
-.field textarea {
-  border-radius: 9px;
-  border: 1px solid var(--border-soft);
-  padding: 6px 8px;
-  font-size: 12px;
-  outline: none;
-  background: white;
-}
-
-.field input:focus,
-.field select:focus,
-.field textarea:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.3);
-}
-
-.field textarea {
-  resize: vertical;
-  min-height: 140px;
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(229, 231, 235, 0.7);
-  margin-top: 2px;
-}
-
-/* TOAST */
-
-.toast {
-  position: fixed;
-  right: 18px;
-  bottom: 18px;
-  background: #22c55e;
-  color: white;
-  padding: 9px 14px;
-  border-radius: 11px;
-  font-size: 12px;
-  box-shadow: 0 18px 45px rgba(22, 163, 74, 0.6);
-  z-index: 50;
-}
-
-.toast.error {
-  background: #ef4444;
-  box-shadow: 0 18px 45px rgba(248, 113, 113, 0.7);
-}
-
-/* RESPONSIVE */
-
-@media (max-width: 900px) {
-  .layout {
-    flex-direction: column;
-  }
-  .sidebar {
-    width: 100%;
-    position: relative;
-    max-height: none;
-  }
-  .main {
-    padding: 14px 14px 24px;
-  }
-  .grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .form-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 640px) {
-  .form-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .top-bar {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
+    :root {
+      --bg: #0f172a;
+      --surface: #020617;
+      --card: #020617;
+      --accent: #f97316;
+      --accent-soft: rgba(249, 115, 22, 0.12);
+      --text: #e5e7eb;
+      --muted: #6b7280;
+      --danger: #ef4444;
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1e293b 0, #020617 55%, #000 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 16px;
+    }
+    #app {
+      width: 100%;
+      max-width: 1200px;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 24px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow:
+        0 40px 80px rgba(15, 23, 42, 0.75),
+        0 0 0 1px rgba(15, 23, 42, 0.9);
+      overflow: hidden;
+      backdrop-filter: blur(16px);
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 640px;
+    }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { border-right: none; border-bottom: 1px solid rgba(148,163,184,0.35); }
+    }
+    .sidebar {
+      padding: 20px 18px;
+      border-right: 1px solid rgba(148,163,184,0.35);
+      background: radial-gradient(circle at top left, rgba(249,115,22,0.12), transparent 55%);
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 26px;
+    }
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      background: radial-gradient(circle at 30% 20%, #f97316, #ea580c);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        0 0 0 1px rgba(248, 250, 252, 0.12),
+        0 10px 25px rgba(249,115,22,0.55);
+      font-size: 20px;
+    }
+    .logo-text-main {
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+    .logo-text-sub {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 18px;
+    }
+    .nav-btn {
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      padding: 7px 11px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease, transform 0.08s ease;
+    }
+    .nav-btn span.icon {
+      font-size: 16px;
+      width: 18px;
+      text-align: center;
+    }
+    .nav-btn.active {
+      background: radial-gradient(circle at top left, rgba(249,115,22,0.22), rgba(15,23,42,0.95));
+      border-color: rgba(248, 250, 252, 0.14);
+      color: #e5e7eb;
+      transform: translateX(1px);
+    }
+    .nav-btn:hover:not(.active) {
+      background: rgba(15, 23, 42, 0.9);
+      border-color: rgba(148,163,184,0.4);
+      color: #e5e7eb;
+    }
+    .nav-label { font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.13em; margin: 14px 0 8px; }
+    .sync-badge {
+      margin-top: 16px;
+      padding: 9px 11px;
+      border-radius: 12px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: radial-gradient(circle at top left, rgba(34,197,94,0.12), rgba(15,23,42,0.9));
+      border: 1px solid rgba(22,163,74,0.55);
+      color: #bbf7d0;
+    }
+    .sync-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34,197,94,0.35);
+    }
+    .main {
+      padding: 18px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+    }
+    .headline {
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .headline span.sub {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+    }
+    .pill {
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      font-size: 11px;
+      color: var(--muted);
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+    }
+    .badge-accent {
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      background: rgba(249,115,22,0.14);
+      color: #fed7aa;
+      border: 1px solid rgba(249,115,22,0.45);
+    }
+    .btn {
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 13px;
+      border: 1px solid transparent;
+      background: rgba(15,23,42,0.85);
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: background 0.18s ease, transform 0.08s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+    .btn-primary {
+      background: radial-gradient(circle at 30% 0, #fed7aa, #f97316);
+      color: #020617;
+      font-weight: 600;
+      box-shadow:
+        0 10px 28px rgba(249,115,22,0.55),
+        0 0 0 1px rgba(15,23,42,0.9);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 18px 40px rgba(249,115,22,0.7),
+        0 0 0 1px rgba(15,23,42,0.9);
+    }
+    .btn-ghost {
+      border-color: rgba(148,163,184,0.6);
+    }
+    .btn-ghost:hover {
+      background: rgba(15,23,42,0.9);
+      border-color: rgba(148,163,184,0.9);
+    }
+    .search-input {
+      width: 100%;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.4);
+      background: rgba(15,23,42,0.9);
+      padding: 8px 11px;
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
+    }
+    .search-input::placeholder { color: rgba(148,163,184,0.9); }
+    .search-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 6px;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.2fr);
+      gap: 12px;
+      margin-top: 6px;
+    }
+    @media (max-width: 900px) {
+      .cards { grid-template-columns: 1fr; }
+    }
+    .panel {
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: var(--radius);
+      padding: 12px 12px 10px;
+      border: 1px solid rgba(30,64,175,0.45);
+      box-shadow:
+        0 12px 28px rgba(15,23,42,0.85),
+        inset 0 0 0 1px rgba(15,23,42,0.9);
+    }
+    .panel h2 {
+      margin: 0 0 4px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+    }
+    .panel-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .table th, .table td {
+      padding: 6px 4px;
+      border-bottom: 1px solid rgba(31,41,55,0.9);
+    }
+    .table th {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      text-align: left;
+    }
+    .table tr:last-child td { border-bottom: none; }
+    .chip {
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      border: 1px solid rgba(148,163,184,0.45);
+      color: var(--muted);
+    }
+    .chip-brand {
+      border-color: rgba(248,250,252,0.28);
+      color: #e5e7eb;
+      background: rgba(15,23,42,0.9);
+    }
+    .muted { color: var(--muted); }
+    .tag-type {
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      border: 1px solid rgba(148,163,184,0.55);
+    }
+    .tag-mobile { border-color: rgba(34,197,94,0.7); color: #bbf7d0; }
+    .tag-fisso { border-color: rgba(59,130,246,0.7); color: #bfdbfe; }
+    .tag-luce  { border-color: rgba(234,179,8,0.7); color: #facc15; }
+    .tag-gas   { border-color: rgba(248,113,113,0.8); color: #fecaca; }
+    .tag-tv    { border-color: rgba(168,85,247,0.8); color: #e9d5ff; }
+    .pill-sm {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-size: 10px;
+      border: 1px solid rgba(148,163,184,0.5);
+      color: var(--muted);
+    }
+    .pill-sm-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(248,250,252,0.7);
+    }
+    .empty {
+      padding: 12px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      border-radius: 12px;
+      background: radial-gradient(circle at top, rgba(15,23,42,0.95), rgba(15,23,42,0.98));
+      border: 1px dashed rgba(55,65,81,0.9);
+    }
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at top, rgba(15,23,42,0.88), rgba(0,0,0,0.96));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 40;
+    }
+    .modal {
+      width: 100%;
+      max-width: 560px;
+      background: rgba(15,23,42,0.98);
+      border-radius: 20px;
+      border: 1px solid rgba(148,163,184,0.6);
+      box-shadow: 0 36px 80px rgba(0,0,0,0.9);
+      padding: 16px 16px 12px;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .modal-title {
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .modal-title span.sub { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.16em; }
+    .modal-close {
+      border-radius: 999px;
+      width: 28px;
+      height: 28px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.9);
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .form-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+    @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+    .field { display: flex; flex-direction: column; gap: 3px; margin-bottom: 6px; }
+    .field label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+    .field input, .field select {
+      border-radius: 10px;
+      border: 1px solid rgba(55,65,81,0.9);
+      padding: 6px 8px;
+      background: rgba(15,23,42,0.95);
+      color: var(--text);
+      font-size: 12px;
+      outline: none;
+    }
+    .field input::placeholder { color: rgba(75,85,99,0.9); }
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .toast {
+      position: fixed;
+      right: 14px;
+      bottom: 14px;
+      padding: 8px 12px;
+      border-radius: 14px;
+      font-size: 12px;
+      background: radial-gradient(circle at top left, #22c55e, #15803d);
+      color: #ecfdf5;
+      box-shadow: 0 14px 32px rgba(22,163,74,0.7);
+      z-index: 50;
+    }
+    .toast.error {
+      background: radial-gradient(circle at top left, #ef4444, #991b1b);
+      box-shadow: 0 14px 32px rgba(220,38,38,0.7);
+    }
   </style>
 </head>
 <body>
-  <div id="app"></div>
+<div id="app"></div>
 
-  <script>
+<script>
 const API_URL = 'https://script.google.com/macros/s/AKfycbxtaqy6Yv3fKlQB3nMrhEd0GdGAzAYzrF5VoRFzgrtRgK7nqvaxoCLF479YJtupn089/exec';
 
 const State = {
@@ -649,55 +435,22 @@ const State = {
   ui: {
     tab: 'clients',
     search: '',
-    modal: null,
+    modal: null, // 'client' | 'contract' | 'device'
     editing: null,
-    syncing: false,
-    report: {
-      birthMonth: new Date().getMonth(),
-      expiryMonth: new Date().getMonth(),
-      expiryYear: new Date().getFullYear(),
-      highValue: 30,
-      minContracts: 2
-    }
+    syncing: false
   },
 
   async init() {
     try {
       const res = await fetch(API_URL + '?type=all');
-      if (!res.ok) throw new Error('HTTP ' + res.status);
+      if (!res.ok) throw new Error('http');
       const json = await res.json();
-      let customers = Array.isArray(json.customers) ? json.customers : [];
-      const contracts = Array.isArray(json.contracts) ? json.contracts : [];
-      const devices = Array.isArray(json.devices) ? json.devices : [];
-
-      const byCf = {};
-      const normalized = [];
-      customers.forEach(c => {
-        const cf = (c.codice_fiscale || '').toUpperCase().replace(/\s/g, '');
-        if (!cf) {
-          normalized.push(c);
-          return;
-        }
-        if (!byCf[cf]) {
-          byCf[cf] = { ...c, codice_fiscale: cf };
-          normalized.push(byCf[cf]);
-        } else {
-          byCf[cf] = { ...byCf[cf], ...c };
-        }
-      });
-
-      customers = normalized.map(c => ({
-        ...c,
-        codice_fiscale: (c.codice_fiscale || '').toUpperCase().replace(/\s/g, ''),
-        data_nascita: getCustomerBirthDate(c) || c.data_nascita || ''
-      }));
-
-      this.data = { customers, contracts, devices };
+      this.data = json;
       localStorage.setItem('volpex_state', JSON.stringify(this.data));
-    } catch (err) {
-      console.warn('Errore caricamento remoto, uso cache locale:', err);
-      const cached = localStorage.getItem('volpex_state');
-      if (cached) this.data = JSON.parse(cached);
+    } catch (e) {
+      console.warn('Errore fetch remoto, uso cache locale', e);
+      const raw = localStorage.getItem('volpex_state');
+      if (raw) this.data = JSON.parse(raw);
     }
   },
 
@@ -705,43 +458,34 @@ const State = {
     this.ui.syncing = true;
     render();
     try {
-      const res = await fetch(API_URL, {
+      await fetch(API_URL, {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(this.data)
       });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
       localStorage.setItem('volpex_state', JSON.stringify(this.data));
-      showToast('Dati sincronizzati con Volpex Sheet');
-    } catch (err) {
-      console.error('Errore salvataggio:', err);
-      showToast('Errore salvataggio su Google Sheet', 'error');
+      showToast('Sincronizzato con Volpex Cloud');
+    } catch (e) {
+      console.warn('Errore salvataggio remoto', e);
+      showToast('Errore salvataggio remoto', 'error');
     } finally {
       this.ui.syncing = false;
       render();
     }
   },
 
-  upsertCustomer(p) {
-    const cf = (p.codice_fiscale || '').toUpperCase().replace(/\s/g, '');
-    const birth = p.data_nascita || birthDateFromCF(cf) || '';
+  upsertCustomer(payload) {
     const list = [...this.data.customers];
-    const editing = this.ui.editing;
-
-    if (editing) {
-      const newItem = { ...editing, ...p, codice_fiscale: cf, data_nascita: birth };
-      const filtered = list.filter(c => c.id !== editing.id && c.codice_fiscale !== cf);
-      filtered.unshift(newItem);
-      this.data.customers = filtered;
+    if (this.ui.editing) {
+      const idx = list.findIndex(c => c.id === this.ui.editing.id);
+      if (idx !== -1) list[idx] = { ...list[idx], ...payload };
     } else {
-      const idx = list.findIndex(c => c.codice_fiscale === cf);
-      if (idx !== -1) {
-        list[idx] = { ...list[idx], ...p, codice_fiscale: cf, data_nascita: birth };
-        this.data.customers = list;
-      } else {
-        this.data.customers = [{ id: 'c_' + Date.now(), ...p, codice_fiscale: cf, data_nascita: birth }, ...list];
-      }
+      list.unshift({
+        id: 'c_' + Date.now(),
+        ...payload
+      });
     }
-
+    this.data.customers = list;
     this.ui.modal = null;
     this.ui.editing = null;
     this.save();
@@ -752,36 +496,18 @@ const State = {
     this.save();
   },
 
-  upsertContract(p) {
-    const baseDate = p.data || p.data_attivazione || '';
-    const autoPort = computePortabilityDate(baseDate);
-    if (!p.data_portabilita) p.data_portabilita = autoPort;
-
+  upsertContract(payload) {
     const list = [...this.data.contracts];
-    const editing = this.ui.editing;
-
-    if (editing) {
-      const idx = list.findIndex(c => c.id === editing.id);
-      if (idx !== -1) list[idx] = { ...list[idx], ...p };
-      this.data.contracts = list;
+    if (this.ui.editing) {
+      const idx = list.findIndex(c => c.id === this.ui.editing.id);
+      if (idx !== -1) list[idx] = { ...list[idx], ...payload };
     } else {
-      this.data.contracts = [{ id: 'ctr_' + Date.now(), ...p }, ...list];
+      list.unshift({
+        id: 'ctr_' + Date.now(),
+        ...payload
+      });
     }
-
-    const cf = (p.codice_fiscale || '').toUpperCase().replace(/\s/g, '');
-    if (cf && !this.data.customers.some(c => c.codice_fiscale === cf)) {
-      const newC = {
-        id: 'c_' + Date.now(),
-        codice_fiscale: cf,
-        nome: p.nome || '',
-        cognome: p.cognome || '',
-        telefono: p.numero_contatto || '',
-        email: '',
-        data_nascita: birthDateFromCF(cf) || ''
-      };
-      this.data.customers = [newC, ...this.data.customers];
-    }
-
+    this.data.contracts = list;
     this.ui.modal = null;
     this.ui.editing = null;
     this.save();
@@ -792,16 +518,18 @@ const State = {
     this.save();
   },
 
-  upsertDevice(p) {
+  upsertDevice(payload) {
     const list = [...this.data.devices];
-    const editing = this.ui.editing;
-    if (editing) {
-      const idx = list.findIndex(d => d.id === editing.id);
-      if (idx !== -1) list[idx] = { ...list[idx], ...p };
-      this.data.devices = list;
+    if (this.ui.editing) {
+      const idx = list.findIndex(d => d.id === this.ui.editing.id);
+      if (idx !== -1) list[idx] = { ...list[idx], ...payload };
     } else {
-      this.data.devices = [{ id: 'dev_' + Date.now(), ...p }, ...list];
+      list.unshift({
+        id: 'dev_' + Date.now(),
+        ...payload
+      });
     }
+    this.data.devices = list;
     this.ui.modal = null;
     this.ui.editing = null;
     this.save();
@@ -814,222 +542,42 @@ const State = {
 };
 
 let toastTimeout = null;
-function showToast(m, t = 'success') {
-  const ex = document.querySelector('.toast');
-  if (ex) ex.remove();
-  const el = document.createElement('div');
-  el.className = 'toast' + (t === 'error' ? ' error' : '');
-  el.textContent = m;
-  document.body.appendChild(el);
+function showToast(msg, type = 'success') {
+  const existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+  const div = document.createElement('div');
+  div.className = 'toast' + (type === 'error' ? ' error' : '');
+  div.textContent = msg;
+  document.body.appendChild(div);
   clearTimeout(toastTimeout);
-  toastTimeout = setTimeout(() => el.remove(), 2800);
+  toastTimeout = setTimeout(() => div.remove(), 2800);
 }
 
-function esc(s) {
-  return (s ?? '').toString().replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
-}
-
-function birthDateFromCF(cf) {
-  if (!cf || cf.length < 11) return '';
-  const s = cf.toUpperCase().replace(/[^A-Z0-9]/g, '');
-  if (s.length < 11) return '';
-  const yearStr = s.slice(6, 8);
-  const monthChar = s[8];
-  const dayStr = s.slice(9, 11);
-  const months = { A: 1, B: 2, C: 3, D: 4, E: 5, H: 6, L: 7, M: 8, P: 9, R: 10, S: 11, T: 12 };
-  const m = months[monthChar];
-  if (!m) return '';
-  let day = parseInt(dayStr, 10);
-  if (isNaN(day)) return '';
-  if (day > 40) day -= 40;
-  let year = parseInt(yearStr, 10);
-  if (isNaN(year)) return '';
-  const currentYear = new Date().getFullYear() % 100;
-  const century = year <= currentYear ? 2000 : 1900;
-  year = century + year;
-  const mm = String(m).padStart(2, '0');
-  const dd = String(day).padStart(2, '0');
-  return `${year}-${mm}-${dd}`;
-}
-
-function getCustomerBirthDate(c) {
-  if (c.data_nascita) return c.data_nascita;
-  return birthDateFromCF(c.codice_fiscale || '');
-}
-
-function formatPhoneForWhatsApp(raw) {
-  if (!raw) return '';
-  let s = String(raw).trim();
-  s = s.replace(/[^\d+]/g, '');
-  s = s.replace(/^\+/, '');
-  if (s.startsWith('0')) s = '39' + s.slice(1);
-  if (!s.startsWith('39') && s.length === 10) s = '39' + s;
-  s = s.replace(/\D/g, '');
-  return s;
-}
-
-function parseDateToISO(str) {
-  if (!str) return '';
-  str = String(str).trim();
-  let m = str.match(/^(\d{2})[\/\-\.](\d{2})[\/\-\.](\d{4})$/);
-  if (m) return `${m[3]}-${m[2]}-${m[1]}`;
-  m = str.match(/^(\d{4})[\/\-\.](\d{2})[\/\-\.](\d{2})$/);
-  if (m) return `${m[1]}-${m[2]}-${m[3]}`;
-  return '';
-}
-
-function addBusinessDays(date, days) {
-  const d = new Date(date.getTime());
-  let added = 0;
-  while (added < days) {
-    d.setDate(d.getDate() + 1);
-    const g = d.getDay();
-    if (g !== 0 && g !== 6) added++;
-  }
-  return d;
-}
-
-function toISODate(d) {
-  return d.toISOString().slice(0, 10);
-}
-
-function computePortabilityDate(contractDateStr) {
-  let d = contractDateStr ? new Date(contractDateStr) : new Date();
-  if (isNaN(d.getTime())) d = new Date();
-  while (d.getDay() === 0 || d.getDay() === 6) {
-    d.setDate(d.getDate() + 1);
-  }
-  const res = addBusinessDays(d, 2);
-  return toISODate(res);
-}
-
-function parseAndImportRaw(raw) {
-  if (!raw || !raw.trim()) {
-    showToast('Incolla prima il testo da importare', 'error');
-    return;
-  }
-  const text = raw.replace(/\r\n/g, '\n');
-
-  function val(label) {
-    const re = new RegExp('^' + label + '\\s*:\\s*(.+)$', 'im');
-    const m = text.match(re);
-    return m ? m[1].trim() : '';
-  }
-
-  const nome = val('Nome');
-  const cognome = val('Cognome');
-  const cfRaw = val('Codice Fiscale');
-  const tel = val('Telefono');
-  const email = val('Email');
-  const nascitaStr = val('Data di nascita') || val('Data Nascita');
-  const sessoRaw = val('Sesso');
-
-  const cf = (cfRaw || '').toUpperCase().replace(/\s/g, '');
-  const data_nascita = parseDateToISO(nascitaStr) || birthDateFromCF(cf) || '';
-
-  const sesso = /^f/i.test(sessoRaw) ? 'F' : (/^m/i.test(sessoRaw) ? 'M' : '');
-
-  const cliente = {
-    codice_fiscale: cf,
-    nome,
-    cognome,
-    telefono: tel,
-    email: (email || '').toLowerCase(),
-    data_nascita,
-    residenza: ''
-  };
-
-  const operatore = val('Operatore');
-  const tipoContrRaw = val('Tipo Contratto');
-  let tipoContratto = '';
-  if (/mobile/i.test(tipoContrRaw)) tipoContratto = 'Mobile';
-  else if (/fisso|fibra|ftth|adsl/i.test(tipoContrRaw)) tipoContratto = 'Fisso';
-  else if (/luce/i.test(tipoContrRaw)) tipoContratto = 'Luce';
-  else if (/gas/i.test(tipoContrRaw)) tipoContratto = 'Gas';
-  else if (/tv/i.test(tipoContrRaw)) tipoContratto = 'TV';
-
-  const numContratto = val('Numero Contratto');
-  const dataContrattoISO = parseDateToISO(val('Data Contratto'));
-  const piano = val('Piano');
-  const costoRaw = val('Costo Mensile');
-  const costoPulito = (costoRaw || '').replace(/[^\d,\.]/g, '').replace(',', '.');
-
-  const numDaPortare = val('Numero da Portare');
-  const imei = val('IMEI');
-  const modello = val('Modello Telefono');
-
-  const contratto = {
-    data: dataContrattoISO,
-    data_attivazione: dataContrattoISO,
-    compagnia: operatore,
-    tipo_cliente: '',
-    tipo_contratto: tipoContratto,
-    tipo: tipoContratto,
-    mnp: numDaPortare ? 'SI' : 'NO',
-    telefono_incluso: imei ? 'SI' : 'NO',
-    nome,
-    cognome,
-    numero_contatto: tel,
-    codice_fiscale: cf,
-    nome_contratto: piano,
-    offerta: piano,
-    numero_lavorato: numDaPortare || numContratto,
-    numero: numDaPortare || numContratto,
-    costo: costoPulito,
-    costo_mensile: costoPulito,
-    vincolo: '',
-    mesi_vincolo: '',
-    data_fine_vincolo: '',
-    nome_device: modello,
-    tipo_device: 'Smartphone',
-    imei: imei,
-    tipo_pagamento: '',
-    durata_pagamento: '',
-    fornitore: operatore,
-    data_portabilita: computePortabilityDate(dataContrattoISO),
-    valore_cliente: ''
-  };
-
-  let device = null;
-  if (imei || modello) {
-    device = {
-      codice_fiscale: cf,
-      nome_device: modello || piano || 'Device',
-      tipo_device: 'Smartphone',
-      marca: '',
-      modello: modello || '',
-      imei: imei || '',
-      tipo_pagamento: '',
-      durata_pagamento: '',
-      note: 'Import da testo'
-    };
-  }
-
-  State.ui.modal = null;
-  State.ui.editing = null;
-  State.upsertCustomer(cliente);
-  State.upsertContract(contratto);
-  if (device) State.upsertDevice(device);
-  showToast('Dati importati dal testo');
+function esc(str) {
+  return (str ?? '').toString().replace(/[&<>"]/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'
+  }[c]));
 }
 
 function render() {
   const root = document.getElementById('app');
-  const { tab, search, modal, editing, syncing, report } = State.ui;
+  const { tab, search, modal, editing, syncing } = State.ui;
   const { customers, contracts, devices } = State.data;
-  const q = search.trim().toLowerCase();
 
+  const q = search.trim().toLowerCase();
   const filteredCustomers = !q ? customers : customers.filter(c =>
     (c.nome || '').toLowerCase().includes(q) ||
     (c.cognome || '').toLowerCase().includes(q) ||
     (c.codice_fiscale || '').toLowerCase().includes(q)
   );
+
   const filteredContracts = !q ? contracts : contracts.filter(c =>
     (c.codice_fiscale || '').toLowerCase().includes(q) ||
     (c.compagnia || '').toLowerCase().includes(q) ||
-    (c.nome_contratto || c.offerta || '').toLowerCase().includes(q) ||
-    (c.numero_lavorato || c.numero || '').toLowerCase().includes(q)
+    (c.offerta || '').toLowerCase().includes(q) ||
+    (c.numero || '').toLowerCase().includes(q)
   );
+
   const filteredDevices = !q ? devices : devices.filter(d =>
     (d.codice_fiscale || '').toLowerCase().includes(q) ||
     (d.marca || '').toLowerCase().includes(q) ||
@@ -1044,28 +592,49 @@ function render() {
           <div class="logo-mark">🦊</div>
           <div>
             <div class="logo-text-main">VOLPEX CRM</div>
-            <div class="logo-text-sub">Clienti • Contratti • Device</div>
+            <div class="logo-text-sub">Customer Radar</div>
           </div>
         </div>
+
         <div class="nav-label">Vista</div>
         <div class="nav">
-          <button class="nav-btn ${tab === 'clients' ? 'active' : ''}" data-tab="clients"><span class="icon">👥</span><span>Clienti</span></button>
-          <button class="nav-btn ${tab === 'contracts' ? 'active' : ''}" data-tab="contracts"><span class="icon">📄</span><span>Contratti</span></button>
-          <button class="nav-btn ${tab === 'devices' ? 'active' : ''}" data-tab="devices"><span class="icon">📱</span><span>Device</span></button>
-          <button class="nav-btn ${tab === 'reports' ? 'active' : ''}" data-tab="reports"><span class="icon">📊</span><span>Report / Query</span></button>
+          <button class="nav-btn ${tab === 'clients' ? 'active' : ''}" data-tab="clients">
+            <span class="icon">👥</span>
+            <span>Clienti</span>
+          </button>
+          <button class="nav-btn ${tab === 'contracts' ? 'active' : ''}" data-tab="contracts">
+            <span class="icon">📄</span>
+            <span>Contratti</span>
+          </button>
+          <button class="nav-btn ${tab === 'devices' ? 'active' : ''}" data-tab="devices">
+            <span class="icon">📱</span>
+            <span>Device</span>
+          </button>
         </div>
+
         <div class="nav-label">Azioni</div>
         <div class="nav">
-          <button class="nav-btn" data-action="new-client"><span class="icon">➕</span><span>Nuovo cliente</span></button>
-          <button class="nav-btn" data-action="new-contract"><span class="icon">⚡</span><span>Nuovo contratto</span></button>
-          <button class="nav-btn" data-action="new-device"><span class="icon">📦</span><span>Aggiungi device</span></button>
-          <button class="nav-btn" data-action="open-import"><span class="icon">📥</span><span>Importa da testo</span></button>
+          <button class="nav-btn" data-action="new-client">
+            <span class="icon">➕</span>
+            <span>Nuovo cliente</span>
+          </button>
+          <button class="nav-btn" data-action="new-contract">
+            <span class="icon">⚡</span>
+            <span>Nuovo contratto</span>
+          </button>
+          <button class="nav-btn" data-action="new-device">
+            <span class="icon">📦</span>
+            <span>Aggiungi device</span>
+          </button>
         </div>
-        <div class="sync-box">
-          <div class="sync-dot" style="opacity:${syncing ? 1 : 0.45}"></div>
-          <div>
-            <div style="font-weight:500;font-size:11px;">Volpex Sheet Sync</div>
-            <div style="font-size:11px;">${syncing ? 'Salvataggio in corso…' : 'Ultima versione salvata'}</div>
+
+        <div class="sync-badge">
+          <div class="sync-dot" style="opacity:${syncing ? 1 : 0.4}"></div>
+          <div style="display:flex;flex-direction:column;gap:2px;">
+            <span style="font-size:11px;">Volpex Cloud Sync</span>
+            <span style="font-size:10px;color:var(--muted);">
+              ${syncing ? 'Sincronizzazione in corso…' : 'Stato: allineato'}
+            </span>
           </div>
         </div>
       </aside>
@@ -1073,189 +642,87 @@ function render() {
       <main class="main">
         <div class="top-bar">
           <div class="headline">
-            <div class="headline-title">${
-              tab === 'clients' ? 'Clienti' :
-              tab === 'contracts' ? 'Contratti' :
-              tab === 'devices' ? 'Device' : 'Report / Query'
-            }</div>
-            <div class="headline-sub">Vista e interrogazione dati Volpex</div>
+            <span>${tab === 'clients' ? 'Clienti' : tab === 'contracts' ? 'Contratti' : 'Device'}</span>
+            <span class="sub">Volpex overview</span>
           </div>
-          <div class="badge"><span>📊</span><span>Collegato a Google Sheets</span></div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="badge-accent">
+              Cloud Sheet • Live
+            </span>
+          </div>
         </div>
 
         <div class="search-row">
           <input class="search-input" placeholder="Cerca per nome, CF, numero…" value="${esc(search)}" />
-          <button class="btn" data-action="clear-search">Pulisci</button>
+          <button class="btn btn-ghost" data-action="clear-search">
+            ✕
+          </button>
         </div>
 
-        <div class="grid">
+        <div class="cards">
           <section class="panel">
-            <div class="panel-title">${
-              tab === 'clients' ? 'Elenco clienti' :
-              tab === 'contracts' ? 'Elenco contratti' :
-              tab === 'devices' ? 'Elenco device' : 'Report dettagliati'
-            }</div>
-            <div class="panel-sub">${
-              tab === 'clients' ? `${customers.length} clienti in anagrafica` :
-              tab === 'contracts' ? `${contracts.length} contratti registrati` :
-              tab === 'devices' ? `${devices.length} device associati` :
-              'Scadenze, compleanni e contratti per compagnia / valore'
-            }</div>
-            ${
-              tab === 'clients'
-                ? renderClientsTable(filteredCustomers, contracts, devices)
+            <h2>${tab === 'clients' ? 'Elenco clienti' : tab === 'contracts' ? 'Elenco contratti' : 'Elenco device'}</h2>
+            <div class="panel-sub">
+              ${tab === 'clients'
+                ? `${customers.length} clienti in anagrafica`
                 : tab === 'contracts'
-                  ? renderContractsTable(filteredContracts)
-                  : tab === 'devices'
-                    ? renderDevicesTable(filteredDevices)
-                    : renderReportsSection(State.data, report)
-            }
+                  ? `${contracts.length} contratti totali`
+                  : `${devices.length} device registrati`}
+            </div>
+
+            ${tab === 'clients'
+              ? renderClientsTable(filteredCustomers)
+              : tab === 'contracts'
+                ? renderContractsTable(filteredContracts)
+                : renderDevicesTable(filteredDevices)}
           </section>
+
           <section class="panel">
-            <div class="panel-title">Riepilogo</div>
-            <div class="panel-sub">Panoramica veloce del portafoglio.</div>
-            ${renderInsights()}
+            <h2>Insight veloci</h2>
+            <div class="panel-sub">
+              Snapshot sintetico del portafoglio Volpex.
+            </div>
+            ${renderInsightBlock()}
           </section>
         </div>
       </main>
     </div>
+
     ${modal ? renderModal(modal, editing) : ''}
   `;
 
   bindEvents();
 }
 
-function renderClientsTable(list, contracts, devices) {
-  if (!list.length) return `<div class="empty">Nessun cliente ancora inserito. Usa "Nuovo cliente" per iniziare.</div>`;
+function renderClientsTable(list) {
+  if (!list.length) {
+    return `<div class="empty">Nessun cliente ancora registrato. Aggiungine uno dal menu a sinistra.</div>`;
+  }
   return `
-    <table>
+    <table class="table">
       <thead>
         <tr>
           <th>Cliente</th>
           <th>Codice fiscale</th>
-          <th>Contatti / attività</th>
+          <th>Contatto</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
-        ${list.map(c => {
-          const cf = c.codice_fiscale || '';
-          const contr = contracts.filter(k => k.codice_fiscale === cf);
-          const devs = devices.filter(d => d.codice_fiscale === cf);
-          const contrNames = contr.slice(0, 2).map(k => k.nome_contratto || k.offerta || '').filter(Boolean).join(', ');
-          const devNames = devs.slice(0, 2).map(d => (d.marca || '') + ' ' + (d.modello || '')).filter(s => s.trim()).join(', ');
-          const wa = formatPhoneForWhatsApp(c.telefono || '');
-          const bd = getCustomerBirthDate(c);
-          return `
+        ${list.map(c => `
           <tr>
             <td>
-              <div>${esc(c.nome || '')} ${esc(c.cognome || '')}</div>
-              <div class="muted">${esc(c.residenza || '')}</div>
-              ${bd ? `<div class="muted">🎂 ${esc(bd)}</div>` : ''}
+              <div style="font-size:12px;">${esc(c.nome)} ${esc(c.cognome)}</div>
+              <div class="muted" style="font-size:11px;">${esc(c.residenza || '')}</div>
             </td>
-            <td><span class="chip chip-strong">${esc(cf)}</span></td>
+            <td><span class="chip">${esc(c.codice_fiscale || '')}</span></td>
             <td>
-              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-                <span>${esc(c.telefono || '')}</span>
-                ${wa ? `<a class="btn whatsapp-btn" href="https://wa.me/${wa}" target="_blank" rel="noopener">WhatsApp</a>` : ''}
-              </div>
-              <div class="muted">${esc(c.email || '')}</div>
-              <div class="muted" style="margin-top:4px;">
-                Contratti: <strong>${contr.length}</strong>${contrNames ? ` • ${esc(contrNames)}` : ''}<br/>
-                Device: <strong>${devs.length}</strong>${devNames ? ` • ${esc(devNames)}` : ''}
-              </div>
+              <div style="font-size:12px;">${esc(c.telefono || '')}</div>
+              <div class="muted" style="font-size:11px;">${esc(c.email || '')}</div>
             </td>
             <td style="text-align:right;">
-              <button class="btn" data-action="edit-client" data-id="${esc(c.id)}">Modifica</button>
-              <button class="btn btn-danger" data-action="delete-client" data-id="${esc(c.id)}">Elimina</button>
-            </td>
-          </tr>`;
-        }).join('')}
-      </tbody>
-    </table>
-  `;
-}
-
-function renderContractsTable(list) {
-  if (!list.length) return `<div class="empty">Ancora nessun contratto registrato.</div>`;
-  return `
-    <table>
-      <thead>
-        <tr>
-          <th>Cliente / CF</th>
-          <th>Contratto</th>
-          <th>Tipo</th>
-          <th>€/mese</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        ${list.map(c => {
-          const wa = formatPhoneForWhatsApp(c.numero_contatto || '');
-          return `
-          <tr>
-            <td>
-              <div>${esc(c.nome || '')} ${esc(c.cognome || '')}</div>
-              <div class="muted">${esc(c.codice_fiscale || '')}</div>
-              <div class="muted" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-                <span>${esc(c.numero_contatto || '')}</span>
-                ${wa ? `<a class="btn btn-ghost whatsapp-btn" href="https://wa.me/${wa}" target="_blank" rel="noopener">WhatsApp</a>` : ''}
-              </div>
-            </td>
-            <td>
-              <div><span class="chip chip-strong">${esc(c.nome_contratto || c.offerta || '')}</span></div>
-              <div class="muted">${esc(c.compagnia || '')}</div>
-              <div class="muted">${esc(c.numero_lavorato || c.numero || '')}</div>
-            </td>
-            <td>
-              ${renderTypeTag(c.tipo_contratto || c.tipo)}
-              <div class="muted">${(c.mnp === 'SI' ? 'MNP • ' : '') + (c.telefono_incluso === 'SI' ? 'Tel. incluso' : '')}</div>
-            </td>
-            <td>
-              <strong>${esc(c.costo || c.costo_mensile || '')}</strong>
-              <div class="muted">
-                ${c.vincolo || c.mesi_vincolo ? `Vincolo: ${esc(c.vincolo || c.mesi_vincolo)}` : ''}
-                ${c.data_fine_vincolo ? `<br/>Fine: ${esc(c.data_fine_vincolo)}` : ''}
-                ${c.data_portabilita ? `<br/>Portabilità: ${esc(c.data_portabilita)}` : ''}
-              </div>
-            </td>
-            <td style="text-align:right;">
-              <button class="btn" data-action="edit-contract" data-id="${esc(c.id)}">Modifica</button>
-              <button class="btn btn-danger" data-action="delete-contract" data-id="${esc(c.id)}">Elimina</button>
-            </td>
-          </tr>`;
-        }).join('')}
-      </tbody>
-    </table>
-  `;
-}
-
-function renderDevicesTable(list) {
-  if (!list.length) return `<div class="empty">Nessun device associato.</div>`;
-  return `
-    <table>
-      <thead>
-        <tr>
-          <th>Cliente / CF</th>
-          <th>Device</th>
-          <th>IMEI</th>
-          <th>Pagamento</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        ${list.map(d => `
-          <tr>
-            <td>
-              <div>${esc(d.codice_fiscale || '')}</div>
-              <div class="muted">${esc(d.note || '')}</div>
-            </td>
-            <td><div>${esc(d.nome_device || ((d.marca || '') + ' ' + (d.modello || '')))}</div></td>
-            <td><span class="chip">${esc(d.imei || '')}</span></td>
-            <td><span class="chip">${esc(d.tipo_pagamento || d.metodo || '')}</span></td>
-            <td style="text-align:right;">
-              <button class="btn" data-action="edit-device" data-id="${esc(d.id)}">Modifica</button>
-              <button class="btn btn-danger" data-action="delete-device" data-id="${esc(d.id)}">Elimina</button>
+              <button class="btn btn-ghost" data-action="edit-client" data-id="${esc(c.id)}">Modifica</button>
+              <button class="btn btn-ghost" style="border-color:rgba(239,68,68,0.7);color:#fecaca;" data-action="delete-client" data-id="${esc(c.id)}">Elimina</button>
             </td>
           </tr>
         `).join('')}
@@ -1264,269 +731,162 @@ function renderDevicesTable(list) {
   `;
 }
 
-function renderTypeTag(t) {
-  t = (t || '').toLowerCase();
-  const base = 'tag ';
-  if (t === 'mobile') return `<span class="${base}tag-mobile">MOBILE</span>`;
-  if (t === 'fisso') return `<span class="${base}tag-fisso">FISSO</span>`;
-  if (t === 'luce') return `<span class="${base}tag-luce">LUCE</span>`;
-  if (t === 'gas') return `<span class="${base}tag-gas">GAS</span>`;
-  if (t === 'tv') return `<span class="${base}tag-tv">TV</span>`;
-  return `<span class="${base}">${esc(t || '')}</span>`;
-}
-
-function renderReportsSection(data, report) {
-  const { customers, contracts } = data;
-  const mesi = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'];
-
-  const bMonth = report.birthMonth;
-  const birthdays = customers.filter(c => {
-    const bdStr = getCustomerBirthDate(c);
-    if (!bdStr) return false;
-    const d = new Date(bdStr);
-    return !isNaN(d) && d.getMonth() === bMonth;
-  });
-
-  const eMonth = report.expiryMonth;
-  const eYear = report.expiryYear;
-  const expiring = contracts.filter(c => {
-    if (!c.data_fine_vincolo) return false;
-    const d = new Date(c.data_fine_vincolo);
-    return !isNaN(d) && d.getMonth() === eMonth && d.getFullYear() === eYear;
-  });
-
-  const byComp = {};
-  contracts.forEach(c => {
-    const k = c.compagnia || 'N/D';
-    if (!byComp[k]) byComp[k] = { count: 0, total: 0 };
-    byComp[k].count++;
-    const val = parseFloat(String(c.costo || c.costo_mensile || '').replace(',', '.'));
-    if (!isNaN(val)) byComp[k].total += val;
-  });
-  const compRows = Object.entries(byComp).sort((a, b) => b[1].count - a[1].count);
-
-  const soglia = Number(report.highValue) || 0;
-  const highValueContracts = contracts.filter(c => {
-    const val = parseFloat(String(c.costo || c.costo_mensile || '').replace(',', '.'));
-    return !isNaN(val) && val >= soglia;
-  });
-
-  const minC = Number(report.minContracts) || 2;
-  const perCliente = {};
-  contracts.forEach(c => {
-    const cf = c.codice_fiscale || 'N/D';
-    if (!perCliente[cf]) perCliente[cf] = { count: 0, contracts: [] };
-    perCliente[cf].count++;
-    perCliente[cf].contracts.push(c);
-  });
-  const multiContracts = Object.entries(perCliente)
-    .filter(([_, info]) => info.count >= minC)
-    .sort((a, b) => b[1].count - a[1].count);
-
+function renderContractsTable(list) {
+  if (!list.length) {
+    return `<div class="empty">Ancora nessun contratto. Registra il primo dal menu a sinistra.</div>`;
+  }
   return `
-    <div>
-      <div class="section-title">🎂 Compleanni</div>
-      <div class="section-box">
-        <div class="section-controls">
-          <select class="select" data-report="birthMonth">
-            ${mesi.map((m, idx) => `<option value="${idx}" ${idx === bMonth ? 'selected' : ''}>${m}</option>`).join('')}
-          </select>
-          <span class="badge-mini">${birthdays.length} clienti trovati</span>
-        </div>
-        ${
-          !birthdays.length
-            ? `<div class="muted">Nessun compleanno nel mese selezionato.</div>`
-            : birthdays.map(c => {
-                const wa = formatPhoneForWhatsApp(c.telefono || '');
-                const bd = getCustomerBirthDate(c);
-                return `
-                  <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-top:1px solid #e5e7eb;">
-                    <div>
-                      <div>${esc(c.nome || '')} ${esc(c.cognome || '')}</div>
-                      <div class="muted">🎂 ${esc(bd || '')}</div>
-                      <div class="muted">${esc(c.telefono || '')}</div>
-                    </div>
-                    ${wa ? `<a class="btn whatsapp-btn" href="https://wa.me/${wa}" target="_blank" rel="noopener">WhatsApp</a>` : ''}
-                  </div>
-                `;
-              }).join('')
-        }
-      </div>
-
-      <div class="section-title">⏰ Fine vincolo</div>
-      <div class="section-box">
-        <div class="section-controls">
-          <select class="select" data-report="expiryMonth">
-            ${mesi.map((m, idx) => `<option value="${idx}" ${idx === eMonth ? 'selected' : ''}>${m}</option>`).join('')}
-          </select>
-          <select class="select" data-report="expiryYear">
-            ${[eYear - 1, eYear, eYear + 1].map(y => `<option value="${y}" ${y === eYear ? 'selected' : ''}>${y}</option>`).join('')}
-          </select>
-          <span class="badge-mini">${expiring.length} contratti in scadenza</span>
-        </div>
-        ${
-          !expiring.length
-            ? `<div class="muted">Nessun vincolo in scadenza nel periodo selezionato.</div>`
-            : expiring.map(c => {
-                const wa = formatPhoneForWhatsApp(c.numero_contatto || '');
-                return `
-                  <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-top:1px solid #e5e7eb;">
-                    <div>
-                      <div>${esc(c.nome || '')} ${esc(c.cognome || '')}</div>
-                      <div class="muted">${esc(c.compagnia || '')} • ${esc(c.nome_contratto || c.offerta || '')}</div>
-                      <div class="muted">Fine vincolo: ${esc(c.data_fine_vincolo || '')}</div>
-                      <div class="muted">${esc(c.numero_contatto || '')}</div>
-                    </div>
-                    ${wa ? `<a class="btn whatsapp-btn" href="https://wa.me/${wa}" target="_blank" rel="noopener">WhatsApp</a>` : ''}
-                  </div>
-                `;
-              }).join('')
-        }
-      </div>
-
-      <div class="section-title">🏢 Contratti per compagnia</div>
-      <div class="section-box">
-        ${
-          !compRows.length
-            ? `<div class="muted">Nessun contratto inserito.</div>`
-            : `
-              <table>
-                <thead>
-                  <tr>
-                    <th>Compagnia</th>
-                    <th>Contratti</th>
-                    <th>Tot. €/mese</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${compRows.map(([name, info]) => `
-                    <tr>
-                      <td>${esc(name)}</td>
-                      <td>${info.count}</td>
-                      <td>${info.total.toFixed(2)}</td>
-                    </tr>
-                  `).join('')}
-                </tbody>
-              </table>
-            `
-        }
-      </div>
-
-      <div class="section-title">💰 Contratti ad alto valore</div>
-      <div class="section-box">
-        <div class="section-controls">
-          <span style="font-size:11px;">Soglia €</span>
-          <input type="number" min="0" step="1" class="select" style="width:80px;" data-report="highValue" value="${esc(report.highValue)}" />
-          <span class="badge-mini">${highValueContracts.length} contratti ≥ €${Number(report.highValue || 0).toFixed(0)}</span>
-        </div>
-        ${
-          !highValueContracts.length
-            ? `<div class="muted">Nessun contratto sopra la soglia selezionata.</div>`
-            : highValueContracts.slice(0, 20).map(c => {
-                const wa = formatPhoneForWhatsApp(c.numero_contatto || '');
-                return `
-                  <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-top:1px solid #e5e7eb;">
-                    <div>
-                      <div>${esc(c.nome || '')} ${esc(c.cognome || '')}</div>
-                      <div class="muted">${esc(c.compagnia || '')} • ${esc(c.nome_contratto || c.offerta || '')}</div>
-                      <div class="muted">€ ${esc(c.costo || c.costo_mensile || '')}</div>
-                    </div>
-                    ${wa ? `<a class="btn whatsapp-btn" href="https://wa.me/${wa}" target="_blank" rel="noopener">WhatsApp</a>` : ''}
-                  </div>
-                `;
-              }).join('')
-        }
-      </div>
-
-      <div class="section-title">👑 Clienti con più contratti</div>
-      <div class="section-box">
-        <div class="section-controls">
-          <span style="font-size:11px;">Min. contratti</span>
-          <input type="number" min="1" step="1" class="select" style="width:80px;" data-report="minContracts" value="${esc(report.minContracts)}" />
-          <span class="badge-mini">${multiContracts.length} clienti trovati</span>
-        </div>
-        ${
-          !multiContracts.length
-            ? `<div class="muted">Nessun cliente con almeno ${esc(report.minContracts)} contratti.</div>`
-            : multiContracts.slice(0, 20).map(([cf, info]) => {
-                const cl = customers.find(c => c.codice_fiscale === cf);
-                const nome = (cl ? (cl.nome || '') : '') + ' ' + (cl ? (cl.cognome || '') : '');
-                const tel = cl ? (cl.telefono || '') : '';
-                const wa = formatPhoneForWhatsApp(tel);
-                return `
-                  <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-top:1px solid #e5e7eb;">
-                    <div>
-                      <div>${esc(nome.trim() || cf)}</div>
-                      <div class="muted">CF: ${esc(cf)}</div>
-                      <div class="muted">Contratti: ${info.count}</div>
-                    </div>
-                    ${wa ? `<a class="btn whatsapp-btn" href="https://wa.me/${wa}" target="_blank" rel="noopener">WhatsApp</a>` : ''}
-                  </div>
-                `;
-              }).join('')
-        }
-      </div>
-    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Offerta</th>
+          <th>Tipo</th>
+          <th>€ / mese</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        ${list.map(c => `
+          <tr>
+            <td>
+              <div style="font-size:12px;">${esc(c.codice_fiscale || '')}</div>
+              <div class="muted" style="font-size:11px;">${esc(c.compagnia || '')}</div>
+            </td>
+            <td>
+              <span class="chip chip-brand">${esc(c.offerta || '')}</span>
+              <div class="muted" style="font-size:11px;">${esc(c.numero || '')}</div>
+            </td>
+            <td>${renderTypeTag(c.tipo)}</td>
+            <td><strong>${esc(c.costo_mensile || '')}</strong></td>
+            <td style="text-align:right;">
+              <button class="btn btn-ghost" data-action="edit-contract" data-id="${esc(c.id)}">Modifica</button>
+              <button class="btn btn-ghost" style="border-color:rgba(239,68,68,0.7);color:#fecaca;" data-action="delete-contract" data-id="${esc(c.id)}">Elimina</button>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
   `;
 }
 
-function renderInsights() {
+function renderDevicesTable(list) {
+  if (!list.length) {
+    return `<div class="empty">Nessun device registrato. Puoi associarne uno a un cliente.</div>`;
+  }
+  return `
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Cliente / CF</th>
+          <th>Device</th>
+          <th>IMEI</th>
+          <th>Met.</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        ${list.map(d => `
+          <tr>
+            <td>
+              <div style="font-size:12px;">${esc(d.codice_fiscale || '')}</div>
+              <div class="muted" style="font-size:11px;">${esc(d.note || '')}</div>
+            </td>
+            <td>
+              <div style="font-size:12px;">${esc(d.marca || '')} ${esc(d.modello || '')}</div>
+            </td>
+            <td><span class="chip">${esc(d.imei || '')}</span></td>
+            <td><span class="pill-sm"><span class="pill-sm-dot"></span>${esc(d.metodo || '')}</span></td>
+            <td style="text-align:right;">
+              <button class="btn btn-ghost" data-action="edit-device" data-id="${esc(d.id)}">Modifica</button>
+              <button class="btn btn-ghost" style="border-color:rgba(239,68,68,0.7);color:#fecaca;" data-action="delete-device" data-id="${esc(d.id)}">Elimina</button>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+function renderTypeTag(tipo) {
+  const t = (tipo || '').toLowerCase();
+  const base = 'tag-type ';
+  if (t === 'mobile') return `<span class="${base} tag-mobile">MOBILE</span>`;
+  if (t === 'fisso')  return `<span class="${base} tag-fisso">FISSO</span>`;
+  if (t === 'luce')   return `<span class="${base} tag-luce">LUCE</span>`;
+  if (t === 'gas')    return `<span class="${base} tag-gas">GAS</span>`;
+  if (t === 'tv')     return `<span class="${base} tag-tv">TV</span>`;
+  return `<span class="${base}">${esc(tipo || '')}</span>`;
+}
+
+function renderInsightBlock() {
   const { customers, contracts, devices } = State.data;
-  const perTipo = contracts.reduce((a, c) => {
-    const k = (c.tipo_contratto || c.tipo || 'Altro').toLowerCase();
-    a[k] = (a[k] || 0) + 1;
-    return a;
+  const perTipo = contracts.reduce((acc, c) => {
+    const key = (c.tipo || 'Altro').toLowerCase();
+    acc[key] = (acc[key] || 0) + 1;
+    return acc;
   }, {});
   const tot = contracts.length || 1;
-  const top = Object.entries(perTipo).sort((a, b) => b[1] - a[1])[0];
+  const topTipo = Object.entries(perTipo).sort((a,b) => b[1]-a[1])[0];
+
   return `
-    <div class="stats-pills">
-      <div class="pill"><span class="pill-dot"></span><span>${customers.length} clienti</span></div>
-      <div class="pill"><span class="pill-dot" style="background:#22c55e;"></span><span>${contracts.length} contratti</span></div>
-      <div class="pill"><span class="pill-dot" style="background:#f97316;"></span><span>${devices.length} device</span></div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;gap:8px;align-items:center;">
+        <div class="pill-sm">
+          <span class="pill-sm-dot"></span>
+          <span>${customers.length} clienti</span>
+        </div>
+        <div class="pill-sm">
+          <span class="pill-sm-dot" style="background:#f97316;"></span>
+          <span>${contracts.length} contratti</span>
+        </div>
+        <div class="pill-sm">
+          <span class="pill-sm-dot" style="background:#22c55e;"></span>
+          <span>${devices.length} device</span>
+        </div>
+      </div>
+
+      <div style="font-size:12px;color:var(--muted);">
+        ${topTipo
+          ? `Contratti prevalenti: <strong style="color:#e5e7eb;">${topTipo[0].toUpperCase()}</strong> (${Math.round(topTipo[1]/tot*100)}%)`
+          : 'Ancora nessun contratto, i primi dati arriveranno qui.'}
+      </div>
+
+      <button class="btn btn-primary" data-action="new-contract">
+        ⚡ Registra un nuovo contratto
+      </button>
     </div>
-    <div style="font-size:12px;color:#4b5563;margin-bottom:10px;">
-      ${
-        top
-          ? `Tipo prevalente: <strong>${top[0].toUpperCase()}</strong> (${Math.round(top[1] / tot * 100)}%)`
-          : 'Quando inserirai i primi contratti vedrai qui il riepilogo per tipologia.'
-      }
-    </div>
-    <button class="btn btn-primary" data-action="new-contract">⚡ Registra un nuovo contratto</button>
   `;
 }
 
 function renderModal(kind, editing) {
   const title =
-    kind === 'client' ? (editing ? 'Modifica cliente' : 'Nuovo cliente') :
+    kind === 'client'   ? (editing ? 'Modifica cliente'   : 'Nuovo cliente') :
     kind === 'contract' ? (editing ? 'Modifica contratto' : 'Nuovo contratto') :
-    kind === 'device' ? (editing ? 'Modifica device' : 'Nuovo device') :
-    'Importa dati da testo';
+                          (editing ? 'Modifica device'    : 'Nuovo device');
+
   const sub =
-    kind === 'client' ? 'Dati anagrafici principali' :
-    kind === 'contract' ? 'Dati completi del contratto' :
-    kind === 'device' ? 'Informazioni sul terminale' :
-    'Incolla testo tipo "DATI CLIENTE / DATI CONTRATTO" per importare in automatico';
+    kind === 'client'   ? 'Anagrafica base' :
+    kind === 'contract' ? 'Dati contrattuali principali' :
+                          'Informazioni sul terminale';
+
   const c = editing || {};
+
   return `
     <div class="modal-backdrop">
       <div class="modal">
         <div class="modal-header">
-          <div>
-            <div class="modal-title-main">${title}</div>
-            <div class="modal-title-sub">${sub}</div>
+          <div class="modal-title">
+            <span>${title}</span>
+            <span class="sub">${sub}</span>
           </div>
           <button class="modal-close" data-action="close-modal">✕</button>
         </div>
-        ${
-          kind === 'client'
-            ? renderClientForm(c)
-            : kind === 'contract'
-              ? renderContractForm(c)
-              : kind === 'device'
-                ? renderDeviceForm(c)
-                : renderImportForm()
-        }
+
+        ${kind === 'client' ? renderClientForm(c) :
+          kind === 'contract' ? renderContractForm(c) :
+          renderDeviceForm(c)}
+
       </div>
     </div>
   `;
@@ -1557,16 +917,13 @@ function renderClientForm(c) {
           <input name="email" type="email" placeholder="nome@dominio.it" value="${esc(c.email || '')}" />
         </div>
         <div class="field">
-          <label>Data di nascita</label>
-          <input type="date" name="data_nascita" value="${esc(getCustomerBirthDate(c) || '')}" />
-        </div>
-        <div class="field">
           <label>Residenza</label>
           <input name="residenza" placeholder="Via, città…" value="${esc(c.residenza || '')}" />
         </div>
       </div>
+
       <div class="modal-footer">
-        <button type="button" class="btn" data-action="close-modal">Annulla</button>
+        <button type="button" class="btn btn-ghost" data-action="close-modal">Annulla</button>
         <button type="submit" class="btn btn-primary">Salva cliente</button>
       </div>
     </form>
@@ -1578,122 +935,48 @@ function renderContractForm(c) {
     <form data-form="contract">
       <div class="form-grid">
         <div class="field">
-          <label>Data contratto (DATA)</label>
-          <input type="date" name="data" value="${esc(c.data || c.data_attivazione || '')}" />
+          <label>Codice fiscale cliente</label>
+          <input name="codice_fiscale" required value="${esc(c.codice_fiscale || '')}" />
         </div>
         <div class="field">
           <label>Compagnia</label>
           <input name="compagnia" placeholder="WindTre, TIM…" value="${esc(c.compagnia || '')}" />
         </div>
         <div class="field">
-          <label>T. Cliente</label>
-          <input name="tipo_cliente" placeholder="Nuovo, già cliente…" value="${esc(c.tipo_cliente || '')}" />
-        </div>
-        <div class="field">
-          <label>T. Contratto</label>
-          <select name="tipo_contratto">
+          <label>Tipo</label>
+          <select name="tipo">
             <option value="">–</option>
-            <option ${c.tipo_contratto === 'Mobile' ? 'selected' : ''}>Mobile</option>
-            <option ${c.tipo_contratto === 'Fisso' ? 'selected' : ''}>Fisso</option>
-            <option ${c.tipo_contratto === 'Luce' ? 'selected' : ''}>Luce</option>
-            <option ${c.tipo_contratto === 'Gas' ? 'selected' : ''}>Gas</option>
-            <option ${c.tipo_contratto === 'TV' ? 'selected' : ''}>TV</option>
+            <option value="Mobile" ${c.tipo === 'Mobile' ? 'selected' : ''}>Mobile</option>
+            <option value="Fisso"  ${c.tipo === 'Fisso'  ? 'selected' : ''}>Fisso</option>
+            <option value="Luce"   ${c.tipo === 'Luce'   ? 'selected' : ''}>Luce</option>
+            <option value="Gas"    ${c.tipo === 'Gas'    ? 'selected' : ''}>Gas</option>
+            <option value="TV"     ${c.tipo === 'TV'     ? 'selected' : ''}>TV</option>
           </select>
         </div>
         <div class="field">
-          <label>MNP</label>
-          <select name="mnp">
-            <option value="">–</option>
-            <option value="SI" ${c.mnp === 'SI' ? 'selected' : ''}>SI</option>
-            <option value="NO" ${c.mnp === 'NO' ? 'selected' : ''}>NO</option>
-          </select>
+          <label>Numero linea / contratto</label>
+          <input name="numero" value="${esc(c.numero || '')}" />
         </div>
         <div class="field">
-          <label>Telefono incluso</label>
-          <select name="telefono_incluso">
-            <option value="">–</option>
-            <option value="SI" ${c.telefono_incluso === 'SI' ? 'selected' : ''}>SI</option>
-            <option value="NO" ${c.telefono_incluso === 'NO' ? 'selected' : ''}>NO</option>
-          </select>
+          <label>Offerta</label>
+          <input name="offerta" placeholder="New Basic, Family 5G…" value="${esc(c.offerta || '')}" />
         </div>
-
-        <div class="field">
-          <label>Nome cliente</label>
-          <input name="nome" value="${esc(c.nome || '')}" />
-        </div>
-        <div class="field">
-          <label>Cognome cliente</label>
-          <input name="cognome" value="${esc(c.cognome || '')}" />
-        </div>
-        <div class="field">
-          <label>Numero contatto</label>
-          <input name="numero_contatto" value="${esc(c.numero_contatto || '')}" />
-        </div>
-
-        <div class="field">
-          <label>C.F/P.IVA</label>
-          <input name="codice_fiscale" required value="${esc(c.codice_fiscale || '')}" />
-        </div>
-        <div class="field">
-          <label>Nome contratto</label>
-          <input name="nome_contratto" placeholder="New Basic, Family 5G…" value="${esc(c.nome_contratto || c.offerta || '')}" />
-        </div>
-        <div class="field">
-          <label>Numero lavorato</label>
-          <input name="numero_lavorato" value="${esc(c.numero_lavorato || c.numero || '')}" />
-        </div>
-
         <div class="field">
           <label>Costo mensile (€)</label>
-          <input name="costo" type="number" step="0.01" value="${esc(c.costo || c.costo_mensile || '')}" />
+          <input name="costo_mensile" type="number" step="0.01" value="${esc(c.costo_mensile || '')}" />
         </div>
         <div class="field">
-          <label>Vincolo (mesi)</label>
-          <input name="vincolo" type="number" value="${esc(c.vincolo || c.mesi_vincolo || '')}" />
+          <label>Data attivazione</label>
+          <input name="data_attivazione" type="date" value="${esc(c.data_attivazione || '')}" />
         </div>
         <div class="field">
-          <label>Data fine vincolo</label>
-          <input type="date" name="data_fine_vincolo" value="${esc(c.data_fine_vincolo || '')}" />
-        </div>
-
-        <div class="field">
-          <label>Nome device</label>
-          <input name="nome_device" value="${esc(c.nome_device || '')}" />
-        </div>
-        <div class="field">
-          <label>Tipo device</label>
-          <input name="tipo_device" value="${esc(c.tipo_device || '')}" />
-        </div>
-        <div class="field">
-          <label>IMEI</label>
-          <input name="imei" value="${esc(c.imei || '')}" />
-        </div>
-
-        <div class="field">
-          <label>Tipo pagamento</label>
-          <input name="tipo_pagamento" placeholder="Contanti, rate…" value="${esc(c.tipo_pagamento || '')}" />
-        </div>
-        <div class="field">
-          <label>Durata pagamento</label>
-          <input name="durata_pagamento" value="${esc(c.durata_pagamento || '')}" />
-        </div>
-        <div class="field">
-          <label>Fornitore</label>
-          <input name="fornitore" value="${esc(c.fornitore || '')}" />
-        </div>
-
-        <div class="field">
-          <label>Data portabilità</label>
-          <input type="date" name="data_portabilita" value="${esc(c.data_portabilita || '')}" />
-        </div>
-        <div class="field">
-          <label>Valore cliente</label>
-          <input name="valore_cliente" value="${esc(c.valore_cliente || '')}" />
+          <label>Mesi vincolo</label>
+          <input name="mesi_vincolo" type="number" value="${esc(c.mesi_vincolo || '')}" />
         </div>
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn" data-action="close-modal">Annulla</button>
+        <button type="button" class="btn btn-ghost" data-action="close-modal">Annulla</button>
         <button type="submit" class="btn btn-primary">Salva contratto</button>
       </div>
     </form>
@@ -1709,14 +992,6 @@ function renderDeviceForm(c) {
           <input name="codice_fiscale" required value="${esc(c.codice_fiscale || '')}" />
         </div>
         <div class="field">
-          <label>Nome device</label>
-          <input name="nome_device" value="${esc(c.nome_device || '')}" />
-        </div>
-        <div class="field">
-          <label>Tipo device</label>
-          <input name="tipo_device" value="${esc(c.tipo_device || '')}" />
-        </div>
-        <div class="field">
           <label>Marca</label>
           <input name="marca" value="${esc(c.marca || '')}" />
         </div>
@@ -1729,12 +1004,8 @@ function renderDeviceForm(c) {
           <input name="imei" value="${esc(c.imei || '')}" />
         </div>
         <div class="field">
-          <label>Tipo pagamento</label>
-          <input name="tipo_pagamento" placeholder="Contanti, rate…" value="${esc(c.tipo_pagamento || c.metodo || '')}" />
-        </div>
-        <div class="field">
-          <label>Durata pagamento</label>
-          <input name="durata_pagamento" value="${esc(c.durata_pagamento || '')}" />
+          <label>Metodo pagamento</label>
+          <input name="metodo" placeholder="Contanti, rate…" value="${esc(c.metodo || '')}" />
         </div>
         <div class="field">
           <label>Note</label>
@@ -1743,26 +1014,8 @@ function renderDeviceForm(c) {
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn" data-action="close-modal">Annulla</button>
+        <button type="button" class="btn btn-ghost" data-action="close-modal">Annulla</button>
         <button type="submit" class="btn btn-primary">Salva device</button>
-      </div>
-    </form>
-  `;
-}
-
-function renderImportForm() {
-  return `
-    <form data-form="import">
-      <div class="field">
-        <label>Incolla qui il testo del contratto</label>
-        <textarea name="raw" rows="14" placeholder="Incolla qui il blocco con
---- DATI CLIENTE ---
-Nome: ...
-..."></textarea>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn" data-action="close-modal">Annulla</button>
-        <button type="submit" class="btn btn-primary">Importa</button>
       </div>
     </form>
   `;
@@ -1779,142 +1032,117 @@ function bindEvents() {
   });
 
   root.querySelectorAll('[data-action]').forEach(btn => {
-    const act = btn.getAttribute('data-action');
+    const action = btn.getAttribute('data-action');
     btn.addEventListener('click', () => {
-      if (act === 'new-client') { State.ui.modal = 'client'; State.ui.editing = null; render(); }
-      else if (act === 'new-contract') { State.ui.modal = 'contract'; State.ui.editing = null; render(); }
-      else if (act === 'new-device') { State.ui.modal = 'device'; State.ui.editing = null; render(); }
-      else if (act === 'open-import') { State.ui.modal = 'import'; State.ui.editing = null; render(); }
-      else if (act === 'close-modal') { State.ui.modal = null; State.ui.editing = null; render(); }
-      else if (act === 'clear-search') { State.ui.search = ''; render(); }
-      else if (act === 'delete-client') {
+      if (action === 'new-client') {
+        State.ui.modal = 'client';
+        State.ui.editing = null;
+        render();
+      } else if (action === 'new-contract') {
+        State.ui.modal = 'contract';
+        State.ui.editing = null;
+        render();
+      } else if (action === 'new-device') {
+        State.ui.modal = 'device';
+        State.ui.editing = null;
+        render();
+      } else if (action === 'close-modal') {
+        State.ui.modal = null;
+        State.ui.editing = null;
+        render();
+      } else if (action === 'clear-search') {
+        State.ui.search = '';
+        render();
+      } else if (action === 'delete-client') {
         const id = btn.getAttribute('data-id');
-        if (confirm('Eliminare definitivamente il cliente?')) State.removeCustomer(id);
-      } else if (act === 'delete-contract') {
+        if (confirm('Eliminare definitivamente il cliente?')) {
+          State.removeCustomer(id);
+        }
+      } else if (action === 'delete-contract') {
         const id = btn.getAttribute('data-id');
-        if (confirm('Eliminare definitivamente il contratto?')) State.removeContract(id);
-      } else if (act === 'delete-device') {
+        if (confirm('Eliminare definitivamente il contratto?')) {
+          State.removeContract(id);
+        }
+      } else if (action === 'delete-device') {
         const id = btn.getAttribute('data-id');
-        if (confirm('Eliminare definitivamente il device?')) State.removeDevice(id);
-      } else if (act === 'edit-client') {
+        if (confirm('Eliminare definitivamente il device?')) {
+          State.removeDevice(id);
+        }
+      } else if (action === 'edit-client') {
         const id = btn.getAttribute('data-id');
         State.ui.editing = State.data.customers.find(c => c.id === id) || null;
-        State.ui.modal = 'client'; render();
-      } else if (act === 'edit-contract') {
+        State.ui.modal = 'client';
+        render();
+      } else if (action === 'edit-contract') {
         const id = btn.getAttribute('data-id');
         State.ui.editing = State.data.contracts.find(c => c.id === id) || null;
-        State.ui.modal = 'contract'; render();
-      } else if (act === 'edit-device') {
+        State.ui.modal = 'contract';
+        render();
+      } else if (action === 'edit-device') {
         const id = btn.getAttribute('data-id');
-        State.ui.editing = State.data.devices.find(d => d.id === id) || null;
-        State.ui.modal = 'device'; render();
+        State.ui.editing = State.data.devices.find(c => c.id === id) || null;
+        State.ui.modal = 'device';
+        render();
       }
     });
   });
 
   const searchInput = root.querySelector('.search-input');
   if (searchInput) {
-    searchInput.addEventListener('input', e => {
+    searchInput.addEventListener('input', (e) => {
       State.ui.search = e.target.value;
       render();
     });
   }
 
-  root.querySelectorAll('[data-report]').forEach(el => {
-    el.addEventListener('change', e => {
-      const key = el.getAttribute('data-report');
-      const val = e.target.value;
-      if (key === 'birthMonth') State.ui.report.birthMonth = parseInt(val, 10);
-      else if (key === 'expiryMonth') State.ui.report.expiryMonth = parseInt(val, 10);
-      else if (key === 'expiryYear') State.ui.report.expiryYear = parseInt(val, 10);
-      else if (key === 'highValue') State.ui.report.highValue = Number(val) || 0;
-      else if (key === 'minContracts') State.ui.report.minContracts = Number(val) || 1;
-      render();
-    });
-  });
-
   const modal = document.querySelector('.modal');
   if (modal) {
-    const clientForm = modal.querySelector('form[data-form="client"]');
-    const contractForm = modal.querySelector('form[data-form="contract"]');
-    const deviceForm = modal.querySelector('form[data-form="device"]');
-    const importForm = modal.querySelector('form[data-form="import"]');
+    const formClient = modal.querySelector('form[data-form="client"]');
+    const formContract = modal.querySelector('form[data-form="contract"]');
+    const formDevice = modal.querySelector('form[data-form="device"]');
 
-    if (clientForm) {
-      clientForm.addEventListener('submit', e => {
+    if (formClient) {
+      formClient.addEventListener('submit', (e) => {
         e.preventDefault();
-        const fd = new FormData(clientForm);
+        const fd = new FormData(formClient);
         State.upsertCustomer({
-          codice_fiscale: (fd.get('codice_fiscale') || '').toUpperCase().replace(/\s/g, ''),
+          codice_fiscale: fd.get('codice_fiscale') || '',
           telefono: fd.get('telefono') || '',
           nome: fd.get('nome') || '',
           cognome: fd.get('cognome') || '',
           email: (fd.get('email') || '').toLowerCase(),
-          data_nascita: fd.get('data_nascita') || '',
           residenza: fd.get('residenza') || ''
         });
       });
     }
-    if (contractForm) {
-      contractForm.addEventListener('submit', e => {
+    if (formContract) {
+      formContract.addEventListener('submit', (e) => {
         e.preventDefault();
-        const fd = new FormData(contractForm);
+        const fd = new FormData(formContract);
         State.upsertContract({
-          data: fd.get('data') || '',
-          data_attivazione: fd.get('data') || '',
+          codice_fiscale: fd.get('codice_fiscale') || '',
           compagnia: fd.get('compagnia') || '',
-          tipo_cliente: fd.get('tipo_cliente') || '',
-          tipo_contratto: fd.get('tipo_contratto') || '',
-          tipo: fd.get('tipo_contratto') || '',
-          mnp: fd.get('mnp') || '',
-          telefono_incluso: fd.get('telefono_incluso') || '',
-          nome: fd.get('nome') || '',
-          cognome: fd.get('cognome') || '',
-          numero_contatto: fd.get('numero_contatto') || '',
-          codice_fiscale: (fd.get('codice_fiscale') || '').toUpperCase().replace(/\s/g, ''),
-          nome_contratto: fd.get('nome_contratto') || '',
-          offerta: fd.get('nome_contratto') || '',
-          numero_lavorato: fd.get('numero_lavorato') || '',
-          numero: fd.get('numero_lavorato') || '',
-          costo: fd.get('costo') || '',
-          costo_mensile: fd.get('costo') || '',
-          vincolo: fd.get('vincolo') || '',
-          mesi_vincolo: fd.get('vincolo') || '',
-          data_fine_vincolo: fd.get('data_fine_vincolo') || '',
-          nome_device: fd.get('nome_device') || '',
-          tipo_device: fd.get('tipo_device') || '',
-          imei: fd.get('imei') || '',
-          tipo_pagamento: fd.get('tipo_pagamento') || '',
-          durata_pagamento: fd.get('durata_pagamento') || '',
-          fornitore: fd.get('fornitore') || '',
-          data_portabilita: fd.get('data_portabilita') || '',
-          valore_cliente: fd.get('valore_cliente') || ''
+          tipo: fd.get('tipo') || '',
+          numero: fd.get('numero') || '',
+          offerta: fd.get('offerta') || '',
+          costo_mensile: fd.get('costo_mensile') || '',
+          data_attivazione: fd.get('data_attivazione') || '',
+          mesi_vincolo: fd.get('mesi_vincolo') || ''
         });
       });
     }
-    if (deviceForm) {
-      deviceForm.addEventListener('submit', e => {
+    if (formDevice) {
+      formDevice.addEventListener('submit', (e) => {
         e.preventDefault();
-        const fd = new FormData(deviceForm);
+        const fd = new FormData(formDevice);
         State.upsertDevice({
-          codice_fiscale: (fd.get('codice_fiscale') || '').toUpperCase().replace(/\s/g, ''),
-          nome_device: fd.get('nome_device') || '',
-          tipo_device: fd.get('tipo_device') || '',
+          codice_fiscale: fd.get('codice_fiscale') || '',
           marca: fd.get('marca') || '',
           modello: fd.get('modello') || '',
           imei: fd.get('imei') || '',
-          tipo_pagamento: fd.get('tipo_pagamento') || '',
-          durata_pagamento: fd.get('durata_pagamento') || '',
+          metodo: fd.get('metodo') || '',
           note: fd.get('note') || ''
         });
-      });
-    }
-    if (importForm) {
-      importForm.addEventListener('submit', e => {
-        e.preventDefault();
-        const fd = new FormData(importForm);
-        const raw = fd.get('raw') || '';
-        parseAndImportRaw(raw);
       });
     }
   }
@@ -1924,6 +1152,6 @@ function bindEvents() {
   await State.init();
   render();
 })();
-  </script>
+</script>
 </body>
 </html>
