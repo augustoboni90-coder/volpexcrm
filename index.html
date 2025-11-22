@@ -1,648 +1,13 @@
-<!doctype html>
-<html lang="it">
-<head>
-  <meta charset="utf-8" />
-  <title>Volpex CRM</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-:root {
-  --bg: #f5f5f7;
-  --bg-soft: #ffffff;
-  --bg-soft-alt: #f9fafb;
-  --border-soft: #e5e7eb;
-  --text-main: #111827;
-  --text-muted: #6b7280;
-  --accent: #f97316;
-  --accent-soft: rgba(249, 115, 22, 0.12);
-  --accent-strong: #ea580c;
-  --danger: #ef4444;
-  --danger-soft: rgba(239, 68, 68, 0.12);
-  --sidebar-bg: #111827;
-  --sidebar-border: #1f2937;
-  --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.12);
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-}
-
-body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
-  background: radial-gradient(circle at top, #fef3c7 0, #f5f5f7 42%, #e5e7eb 100%);
-  color: var(--text-main);
-}
-
-#app {
-  min-height: 100vh;
-}
-
-.layout {
-  display: flex;
-  min-height: 100vh;
-}
-
-/* SIDEBAR / VOLPEX BRAND */
-
-.sidebar {
-  width: 260px;
-  background: radial-gradient(circle at top left, #f97316 0, #111827 48%, #020617 100%);
-  color: #e5e7eb;
-  padding: 20px 18px;
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid rgba(148, 163, 184, 0.35);
-  position: sticky;
-  top: 0;
-  align-self: flex-start;
-  max-height: 100vh;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 10px 18px 10px;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.35);
-  margin-bottom: 12px;
-}
-
-.logo-mark {
-  width: 38px;
-  height: 38px;
-  border-radius: 14px;
-  background: radial-gradient(circle at 10% 0, #fed7aa 0, #f97316 30%, #ea580c 70%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  box-shadow: 0 10px 25px rgba(248, 113, 22, 0.45);
-}
-
-.logo-text-main {
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  font-size: 13px;
-  text-transform: uppercase;
-}
-
-.logo-text-sub {
-  font-size: 11px;
-  color: #9ca3af;
-}
-
-.nav-label {
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #9ca3af;
-  margin: 10px 4px 6px;
-}
-
-.nav {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-bottom: 10px;
-}
-
-.nav-btn {
-  border: 0;
-  outline: 0;
-  border-radius: 10px;
-  padding: 7px 9px;
-  font-size: 13px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 8px;
-  background: transparent;
-  color: #e5e7eb;
-  cursor: pointer;
-  transition: background 0.16s ease, transform 0.12s ease, box-shadow 0.16s ease, color 0.16s ease;
-}
-
-.nav-btn .icon {
-  width: 22px;
-  display: flex;
-  justify-content: center;
-  opacity: 0.9;
-}
-
-.nav-btn:hover {
-  background: rgba(55, 65, 81, 0.75);
-  transform: translateY(-1px);
-}
-
-.nav-btn.active {
-  background: linear-gradient(135deg, #f97316, #ea580c);
-  color: #111827;
-  box-shadow: 0 12px 30px rgba(249, 115, 22, 0.5);
-}
-
-.nav-btn.active .icon {
-  opacity: 1;
-}
-
-.sync-box {
-  margin-top: auto;
-  padding: 10px;
-  border-radius: 12px;
-  background: radial-gradient(circle at top, rgba(249, 115, 22, 0.16), rgba(15, 23, 42, 0.9));
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  font-size: 11px;
-  color: #e5e7eb;
-  border: 1px solid rgba(148, 163, 184, 0.5);
-}
-
-.sync-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  border: 2px solid #22c55e;
-  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25);
-  background-color: rgba(22, 163, 74, 0.7);
-}
-
-/* MAIN */
-
-.main {
-  flex: 1;
-  padding: 22px 26px 28px;
-}
-
-.top-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.headline-title {
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-
-.headline-sub {
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(34, 197, 94, 0.08);
-  border: 1px solid rgba(34, 197, 94, 0.32);
-  font-size: 11px;
-  color: #166534;
-}
-
-.search-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.search-input {
-  flex: 1;
-  border-radius: 999px;
-  border: 1px solid var(--border-soft);
-  padding: 9px 14px;
-  font-size: 13px;
-  outline: none;
-  background: rgba(255,255,255,0.8);
-  backdrop-filter: blur(10px);
-}
-
-.search-input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.25);
-}
-
-.btn {
-  border-radius: 999px;
-  border: 0;
-  padding: 7px 13px;
-  font-size: 12px;
-  font-weight: 500;
-  background: #e5e7eb;
-  color: #111827;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  transition: background 0.16s ease, transform 0.12s ease, box-shadow 0.16s ease, color 0.16s ease;
-}
-
-.btn:hover {
-  background: #d1d5db;
-  transform: translateY(-0.5px);
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-  color: white;
-  box-shadow: 0 14px 32px rgba(249, 115, 22, 0.6);
-}
-
-.btn-primary:hover {
-  box-shadow: 0 18px 40px rgba(249, 115, 22, 0.7);
-}
-
-.btn-danger {
-  background: linear-gradient(135deg, var(--danger), #b91c1c);
-  color: white;
-  box-shadow: 0 8px 22px rgba(248, 113, 113, 0.6);
-}
-
-.btn-danger:hover {
-  box-shadow: 0 10px 28px rgba(248, 113, 113, 0.7);
-}
-
-.btn-ghost {
-  background: transparent;
-  border: 1px solid rgba(148, 163, 184, 0.6);
-  color: var(--text-muted);
-}
-
-.btn-ghost:hover {
-  background: rgba(243, 244, 246, 0.85);
-}
-
-.whatsapp-btn {
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  color: white;
-  border: 0;
-  box-shadow: 0 8px 18px rgba(34, 197, 94, 0.5);
-}
-
-.whatsapp-btn:hover {
-  box-shadow: 0 10px 26px rgba(34, 197, 94, 0.6);
-}
-
-/* GRID / PANELS */
-
-.grid {
-  display: grid;
-  grid-template-columns: minmax(0, 2.4fr) minmax(260px, 1.1fr);
-  gap: 16px;
-}
-
-.panel {
-  background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(249, 250, 251, 0.98));
-  border-radius: 22px;
-  padding: 16px 18px 18px;
-  border: 1px solid rgba(209, 213, 219, 0.9);
-  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.10);
-}
-
-.panel-title {
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.panel-sub {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-bottom: 10px;
-}
-
-/* TABLES */
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12px;
-}
-
-thead {
-  background: var(--bg-soft-alt);
-}
-
-th, td {
-  padding: 7px 6px;
-  text-align: left;
-}
-
-th {
-  font-weight: 600;
-  font-size: 11px;
-  color: var(--text-muted);
-  border-bottom: 1px solid var(--border-soft);
-}
-
-tbody tr:nth-child(odd) {
-  background: rgba(249, 250, 251, 0.95);
-}
-
-tbody tr:nth-child(even) {
-  background: rgba(255, 255, 255, 0.96);
-}
-
-tbody tr:hover {
-  background: #fef3c7;
-}
-
-/* SMALL ELEMENTS */
-
-.empty {
-  padding: 28px 8px;
-  text-align: center;
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.muted {
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
-.chip {
-  display: inline-flex;
-  padding: 2px 8px;
-  border-radius: 999px;
-  border: 1px solid rgba(148, 163, 184, 0.8);
-  font-size: 11px;
-  background: rgba(249, 250, 251, 0.9);
-}
-
-.chip-strong {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-  color: var(--accent-strong);
-}
-
-.tag {
-  display: inline-flex;
-  padding: 2px 7px;
-  border-radius: 999px;
-  font-size: 10px;
-  border: 1px solid rgba(148, 163, 184, 0.7);
-  background: rgba(249, 250, 251, 0.9);
-}
-
-.tag-mobile { background: rgba(59, 130, 246, 0.09); border-color: #3b82f6; color: #1d4ed8; }
-.tag-fisso  { background: rgba(139, 92, 246, 0.09); border-color: #8b5cf6; color: #5b21b6; }
-.tag-luce   { background: rgba(234, 179, 8, 0.12);  border-color: #eab308; color: #854d0e; }
-.tag-gas    { background: rgba(239, 68, 68, 0.09);  border-color: #ef4444; color: #b91c1c; }
-.tag-tv     { background: rgba(34, 197, 94, 0.12);  border-color: #22c55e; color: #166534; }
-
-/* SIDE STATS */
-
-.stats-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 10px;
-}
-
-.pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 9px;
-  border-radius: 999px;
-  font-size: 11px;
-  background: rgba(249, 250, 251, 0.98);
-  border: 1px solid rgba(209, 213, 219, 0.9);
-}
-
-.pill-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: #3b82f6;
-}
-
-/* REPORT SECTION */
-
-.section-title {
-  font-size: 13px;
-  font-weight: 600;
-  margin-top: 8px;
-  margin-bottom: 4px;
-}
-
-.section-box {
-  border-radius: 16px;
-  border: 1px solid rgba(209, 213, 219, 0.9);
-  padding: 8px 10px;
-  background: rgba(249, 250, 251, 0.98);
-  margin-bottom: 8px;
-}
-
-.section-controls {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 6px;
-}
-
-.select {
-  border-radius: 999px;
-  border: 1px solid var(--border-soft);
-  padding: 3px 8px;
-  font-size: 11px;
-  background: white;
-}
-
-.badge-mini {
-  font-size: 10px;
-  padding: 2px 7px;
-  border-radius: 999px;
-  background: var(--accent-soft);
-  color: var(--accent-strong);
-}
-
-/* MODAL */
-
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.44);
-  backdrop-filter: blur(7px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 40;
-}
-
-.modal {
-  width: 760px;
-  max-width: calc(100% - 32px);
-  max-height: calc(100vh - 40px);
-  background: linear-gradient(145deg, #ffffff, #f9fafb);
-  border-radius: 24px;
-  border: 1px solid rgba(209, 213, 219, 0.9);
-  box-shadow: 0 28px 80px rgba(15, 23, 42, 0.35);
-  padding: 14px 18px 16px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(229, 231, 235, 0.7);
-  margin-bottom: 8px;
-}
-
-.modal-title-main {
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.modal-title-sub {
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
-.modal-close {
-  border: 0;
-  background: transparent;
-  font-size: 16px;
-  cursor: pointer;
-  color: var(--text-muted);
-}
-
-.modal-close:hover {
-  color: var(--text-main);
-}
-
-.modal form {
-  flex: 1;
-  overflow-y: auto;
-  padding-right: 3px;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px 10px;
-  padding: 4px 2px 10px;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.field label {
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
-.field input,
-.field select,
-.field textarea {
-  border-radius: 9px;
-  border: 1px solid var(--border-soft);
-  padding: 6px 8px;
-  font-size: 12px;
-  outline: none;
-  background: white;
-}
-
-.field input:focus,
-.field select:focus,
-.field textarea:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.3);
-}
-
-.field textarea {
-  resize: vertical;
-  min-height: 140px;
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(229, 231, 235, 0.7);
-  margin-top: 2px;
-}
-
-/* TOAST */
-
-.toast {
-  position: fixed;
-  right: 18px;
-  bottom: 18px;
-  background: #22c55e;
-  color: white;
-  padding: 9px 14px;
-  border-radius: 11px;
-  font-size: 12px;
-  box-shadow: 0 18px 45px rgba(22, 163, 74, 0.6);
-  z-index: 50;
-}
-
-.toast.error {
-  background: #ef4444;
-  box-shadow: 0 18px 45px rgba(248, 113, 113, 0.7);
-}
-
-/* RESPONSIVE */
-
-@media (max-width: 900px) {
-  .layout {
-    flex-direction: column;
-  }
-  .sidebar {
-    width: 100%;
-    position: relative;
-    max-height: none;
-  }
-  .main {
-    padding: 14px 14px 24px;
-  }
-  .grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .form-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 640px) {
-  .form-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .top-bar {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-  </style>
-</head>
-<body>
-  <div id="app"></div>
-
-  <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycbxtaqy6Yv3fKlQB3nMrhEd0GdGAzAYzrF5VoRFzgrtRgK7nqvaxoCLF479YJtupn089/exec';
+
+const VOLPEX_QUOTES = [
+  'Ogni cliente è una relazione, non solo una riga di Excel.',
+  'I numeri ti dicono dove sei, le idee ti dicono dove puoi arrivare.',
+  'Creatività + dati = strategia che funziona davvero.',
+  'Piccoli miglioramenti ogni giorno battono il colpo di fortuna una volta sola.',
+  'Se puoi misurarlo, puoi migliorarlo.',
+  'Il futuro del tuo business è già scritto nei tuoi dati: devi solo leggerli.'
+];
 
 const State = {
   data: { customers: [], contracts: [], devices: [] },
@@ -652,6 +17,9 @@ const State = {
     modal: null,
     editing: null,
     syncing: false,
+    heroQuoteIndex: 0,
+    importPreview: null,
+    importStep: 'input',
     report: {
       birthMonth: new Date().getMonth(),
       expiryMonth: new Date().getMonth(),
@@ -699,6 +67,14 @@ const State = {
       const cached = localStorage.getItem('volpex_state');
       if (cached) this.data = JSON.parse(cached);
     }
+
+    if (
+      !Number.isInteger(this.ui.heroQuoteIndex) ||
+      this.ui.heroQuoteIndex < 0 ||
+      this.ui.heroQuoteIndex >= VOLPEX_QUOTES.length
+    ) {
+      this.ui.heroQuoteIndex = Math.floor(Math.random() * VOLPEX_QUOTES.length);
+    }
   },
 
   async save() {
@@ -727,7 +103,7 @@ const State = {
     const list = [...this.data.customers];
     const editing = this.ui.editing;
 
-    if (editing) {
+    if (editing && editing.id) {
       const newItem = { ...editing, ...p, codice_fiscale: cf, data_nascita: birth };
       const filtered = list.filter(c => c.id !== editing.id && c.codice_fiscale !== cf);
       filtered.unshift(newItem);
@@ -760,10 +136,14 @@ const State = {
     const list = [...this.data.contracts];
     const editing = this.ui.editing;
 
-    if (editing) {
+    if (editing && editing.id) {
       const idx = list.findIndex(c => c.id === editing.id);
-      if (idx !== -1) list[idx] = { ...list[idx], ...p };
-      this.data.contracts = list;
+      if (idx !== -1) {
+        list[idx] = { ...list[idx], ...p };
+        this.data.contracts = list;
+      } else {
+        this.data.contracts = [{ id: 'ctr_' + Date.now(), ...p }, ...list];
+      }
     } else {
       this.data.contracts = [{ id: 'ctr_' + Date.now(), ...p }, ...list];
     }
@@ -795,13 +175,19 @@ const State = {
   upsertDevice(p) {
     const list = [...this.data.devices];
     const editing = this.ui.editing;
-    if (editing) {
+
+    if (editing && editing.id) {
       const idx = list.findIndex(d => d.id === editing.id);
-      if (idx !== -1) list[idx] = { ...list[idx], ...p };
-      this.data.devices = list;
+      if (idx !== -1) {
+        list[idx] = { ...list[idx], ...p };
+        this.data.devices = list;
+      } else {
+        this.data.devices = [{ id: 'dev_' + Date.now(), ...p }, ...list];
+      }
     } else {
       this.data.devices = [{ id: 'dev_' + Date.now(), ...p }, ...list];
     }
+
     this.ui.modal = null;
     this.ui.editing = null;
     this.save();
@@ -914,10 +300,7 @@ function computePortabilityDate(contractDateStr) {
 }
 
 function parseAndImportRaw(raw) {
-  if (!raw || !raw.trim()) {
-    showToast('Incolla prima il testo da importare', 'error');
-    return;
-  }
+  if (!raw || !raw.trim()) return null;
   const text = raw.replace(/\r\n/g, '\n');
 
   function val(label) {
@@ -970,6 +353,8 @@ function parseAndImportRaw(raw) {
   const imei = val('IMEI');
   const modello = val('Modello Telefono');
 
+  const dataPortabilita = computePortabilityDate(dataContrattoISO);
+
   const contratto = {
     data: dataContrattoISO,
     data_attivazione: dataContrattoISO,
@@ -998,7 +383,7 @@ function parseAndImportRaw(raw) {
     tipo_pagamento: '',
     durata_pagamento: '',
     fornitore: operatore,
-    data_portabilita: computePortabilityDate(dataContrattoISO),
+    data_portabilita: dataPortabilita,
     valore_cliente: ''
   };
 
@@ -1017,12 +402,7 @@ function parseAndImportRaw(raw) {
     };
   }
 
-  State.ui.modal = null;
-  State.ui.editing = null;
-  State.upsertCustomer(cliente);
-  State.upsertContract(contratto);
-  if (device) State.upsertDevice(device);
-  showToast('Dati importati dal testo');
+  return { customer: cliente, contract: contratto, device };
 }
 
 // === EXPORT CSV CONTRATTI ===
@@ -1247,7 +627,7 @@ function exportDevicesCSV() {
 
 function render() {
   const root = document.getElementById('app');
-  const { tab, search, modal, editing, syncing, report } = State.ui;
+  const { tab, search, modal, editing, syncing, report, heroQuoteIndex } = State.ui;
   const { customers, contracts, devices } = State.data;
   const q = search.trim().toLowerCase();
 
@@ -1268,6 +648,8 @@ function render() {
     (d.modello || '').toLowerCase().includes(q) ||
     (d.imei || '').toLowerCase().includes(q)
   );
+
+  const quote = VOLPEX_QUOTES[heroQuoteIndex] || VOLPEX_QUOTES[0];
 
   root.innerHTML = `
     <div class="layout">
@@ -1316,6 +698,20 @@ function render() {
             <div class="headline-sub">Vista e interrogazione dati Volpex</div>
           </div>
           <div class="badge"><span>📊</span><span>Collegato a Google Sheets</span></div>
+        </div>
+
+        <div class="panel" style="margin-bottom:14px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:14px;">
+          <div>
+            <div style="font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;">
+              <span>🦊</span><span>Volpex CRM</span>
+            </div>
+            <div style="font-size:12px;color:#6b7280;margin-top:4px;">
+              Creatività, dati e relazioni in un unico posto.
+            </div>
+          </div>
+          <div style="font-size:11px;color:#4b5563;font-style:italic;max-width:260px;text-align:right;">
+            “${esc(quote)}”
+          </div>
         </div>
 
         <div class="search-row">
@@ -1381,6 +777,17 @@ function renderClientsTable(list, contracts, devices) {
           const devNames = devs.slice(0, 2).map(d => (d.marca || '') + ' ' + (d.modello || '')).filter(s => s.trim()).join(', ');
           const wa = formatPhoneForWhatsApp(c.telefono || '');
           const bd = getCustomerBirthDate(c);
+
+          const contractsDetailHtml = contr.slice(0, 3).map(k => {
+            const cost = k.costo || k.costo_mensile || '';
+            return `<div>${esc(k.compagnia || '')} • ${esc(k.nome_contratto || k.offerta || '')}${cost ? ' • €' + esc(cost) : ''}</div>`;
+          }).join('');
+
+          const devicesDetailHtml = devs.slice(0, 3).map(d => {
+            const label = d.nome_device || ((d.marca || '') + ' ' + (d.modello || ''));
+            return `<div>${esc(label.trim())}${d.imei ? ' • IMEI ' + esc(d.imei) : ''}</div>`;
+          }).join('');
+
           return `
           <tr>
             <td>
@@ -1399,6 +806,29 @@ function renderClientsTable(list, contracts, devices) {
                 Contratti: <strong>${contr.length}</strong>${contrNames ? ` • ${esc(contrNames)}` : ''}<br/>
                 Device: <strong>${devs.length}</strong>${devNames ? ` • ${esc(devNames)}` : ''}
               </div>
+              <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;">
+                <button class="btn btn-ghost" data-action="new-contract-for"
+                  data-cf="${esc(cf)}"
+                  data-nome="${esc(c.nome || '')}"
+                  data-cognome="${esc(c.cognome || '')}"
+                  data-phone="${esc(c.telefono || '')}">
+                  + Contratto
+                </button>
+                <button class="btn btn-ghost" data-action="new-device-for"
+                  data-cf="${esc(cf)}">
+                  + Device
+                </button>
+              </div>
+              ${
+                contractsDetailHtml
+                  ? `<div class="muted" style="margin-top:4px;">${contractsDetailHtml}</div>`
+                  : ''
+              }
+              ${
+                devicesDetailHtml
+                  ? `<div class="muted" style="margin-top:4px;">${devicesDetailHtml}</div>`
+                  : ''
+              }
             </td>
             <td style="text-align:right;">
               <button class="btn" data-action="edit-client" data-id="${esc(c.id)}">Modifica</button>
@@ -1986,18 +1416,169 @@ function renderDeviceForm(c) {
 }
 
 function renderImportForm() {
+  const { importStep, importPreview } = State.ui;
+
+  if (importStep === 'preview' && importPreview) {
+    const cl = importPreview.customer || {};
+    const ctr = importPreview.contract || {};
+    const dev = importPreview.device || null;
+
+    return `
+      <form data-form="import">
+        <div class="section-box">
+          <div class="section-title">1. Dati cliente</div>
+          <div class="form-grid" data-preview-section="customer">
+            <div class="field">
+              <label>Codice fiscale</label>
+              <input name="codice_fiscale" value="${esc(cl.codice_fiscale || '')}" />
+            </div>
+            <div class="field">
+              <label>Nome</label>
+              <input name="nome" value="${esc(cl.nome || '')}" />
+            </div>
+            <div class="field">
+              <label>Cognome</label>
+              <input name="cognome" value="${esc(cl.cognome || '')}" />
+            </div>
+            <div class="field">
+              <label>Telefono</label>
+              <input name="telefono" value="${esc(cl.telefono || '')}" />
+            </div>
+            <div class="field">
+              <label>Email</label>
+              <input name="email" value="${esc(cl.email || '')}" />
+            </div>
+            <div class="field">
+              <label>Data di nascita</label>
+              <input type="date" name="data_nascita" value="${esc(cl.data_nascita || '')}" />
+            </div>
+            <div class="field">
+              <label>Residenza</label>
+              <input name="residenza" value="${esc(cl.residenza || '')}" />
+            </div>
+          </div>
+        </div>
+
+        <div class="section-box">
+          <div class="section-title">2. Dati contratto</div>
+          <div class="form-grid" data-preview-section="contract">
+            <div class="field">
+              <label>Data contratto</label>
+              <input type="date" name="data" value="${esc(ctr.data || ctr.data_attivazione || '')}" />
+            </div>
+            <div class="field">
+              <label>Compagnia</label>
+              <input name="compagnia" value="${esc(ctr.compagnia || '')}" />
+            </div>
+            <div class="field">
+              <label>Tipo contratto</label>
+              <input name="tipo_contratto" value="${esc(ctr.tipo_contratto || ctr.tipo || '')}" />
+            </div>
+            <div class="field">
+              <label>Nome contratto</label>
+              <input name="nome_contratto" value="${esc(ctr.nome_contratto || ctr.offerta || '')}" />
+            </div>
+            <div class="field">
+              <label>Numero lavorato / MNP</label>
+              <input name="numero_lavorato" value="${esc(ctr.numero_lavorato || ctr.numero || '')}" />
+            </div>
+            <div class="field">
+              <label>Costo mensile (€)</label>
+              <input name="costo" value="${esc(ctr.costo || ctr.costo_mensile || '')}" />
+            </div>
+            <div class="field">
+              <label>C.F/P.IVA</label>
+              <input name="codice_fiscale" value="${esc(ctr.codice_fiscale || cl.codice_fiscale || '')}" />
+            </div>
+            <div class="field">
+              <label>Nome cliente</label>
+              <input name="nome" value="${esc(ctr.nome || cl.nome || '')}" />
+            </div>
+            <div class="field">
+              <label>Cognome cliente</label>
+              <input name="cognome" value="${esc(ctr.cognome || cl.cognome || '')}" />
+            </div>
+            <div class="field">
+              <label>Numero contatto</label>
+              <input name="numero_contatto" value="${esc(ctr.numero_contatto || cl.telefono || '')}" />
+            </div>
+            <div class="field">
+              <label>Data portabilità</label>
+              <input type="date" name="data_portabilita" value="${esc(ctr.data_portabilita || '')}" />
+            </div>
+            <div class="field">
+              <label>Valore cliente</label>
+              <input name="valore_cliente" value="${esc(ctr.valore_cliente || '')}" />
+            </div>
+          </div>
+        </div>
+
+        <div class="section-box">
+          <div class="section-title">3. Device (se presente)</div>
+          ${
+            dev
+              ? `<div class="form-grid" data-preview-section="device">
+                  <div class="field">
+                    <label>Codice fiscale</label>
+                    <input name="codice_fiscale" value="${esc(dev.codice_fiscale || ctr.codice_fiscale || cl.codice_fiscale || '')}" />
+                  </div>
+                  <div class="field">
+                    <label>Nome device</label>
+                    <input name="nome_device" value="${esc(dev.nome_device || '')}" />
+                  </div>
+                  <div class="field">
+                    <label>Tipo device</label>
+                    <input name="tipo_device" value="${esc(dev.tipo_device || '')}" />
+                  </div>
+                  <div class="field">
+                    <label>Marca</label>
+                    <input name="marca" value="${esc(dev.marca || '')}" />
+                  </div>
+                  <div class="field">
+                    <label>Modello</label>
+                    <input name="modello" value="${esc(dev.modello || '')}" />
+                  </div>
+                  <div class="field">
+                    <label>IMEI</label>
+                    <input name="imei" value="${esc(dev.imei || '')}" />
+                  </div>
+                  <div class="field">
+                    <label>Tipo pagamento</label>
+                    <input name="tipo_pagamento" value="${esc(dev.tipo_pagamento || '')}" />
+                  </div>
+                  <div class="field">
+                    <label>Durata pagamento</label>
+                    <input name="durata_pagamento" value="${esc(dev.durata_pagamento || '')}" />
+                  </div>
+                  <div class="field">
+                    <label>Note</label>
+                    <input name="note" value="${esc(dev.note || '')}" />
+                  </div>
+                </div>`
+              : `<div class="muted">Nessun device rilevato dal testo. Puoi comunque aggiungerlo dopo dal cliente o dai contratti.</div>`
+          }
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn" data-action="reset-import">← Torna al testo</button>
+          <button type="button" class="btn btn-primary" data-action="confirm-import">Conferma import</button>
+        </div>
+      </form>
+    `;
+  }
+
   return `
     <form data-form="import">
       <div class="field">
         <label>Incolla qui il testo del contratto</label>
-        <textarea name="raw" rows="14" placeholder="Incolla qui il blocco con
---- DATI CLIENTE ---
-Nome: ...
-..."></textarea>
+        <textarea name="raw" rows="14" placeholder="Incolla qui il blocco con DATI CLIENTE, DATI CONTRATTO, OFFERTA, PORTABILITÀ, DISPOSITIVO…"></textarea>
+        <div class="muted" style="margin-top:4px;">
+          Volpex proverà a leggere automaticamente cliente, contratto, device e calcolare la data di portabilità. Potrai modificare tutto prima di salvare.
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn" data-action="close-modal">Annulla</button>
-        <button type="submit" class="btn btn-primary">Importa</button>
+        <button type="submit" class="btn btn-primary">Analizza dati</button>
       </div>
     </form>
   `;
@@ -2022,8 +1603,32 @@ function bindEvents() {
         State.ui.modal = 'contract'; State.ui.editing = null; render();
       } else if (act === 'new-device') {
         State.ui.modal = 'device'; State.ui.editing = null; render();
+      } else if (act === 'new-contract-for') {
+        const cf = btn.getAttribute('data-cf') || '';
+        const nome = btn.getAttribute('data-nome') || '';
+        const cognome = btn.getAttribute('data-cognome') || '';
+        const phone = btn.getAttribute('data-phone') || '';
+        State.ui.editing = {
+          codice_fiscale: cf,
+          nome,
+          cognome,
+          numero_contatto: phone
+        };
+        State.ui.modal = 'contract';
+        render();
+      } else if (act === 'new-device-for') {
+        const cf = btn.getAttribute('data-cf') || '';
+        State.ui.editing = {
+          codice_fiscale: cf
+        };
+        State.ui.modal = 'device';
+        render();
       } else if (act === 'open-import') {
-        State.ui.modal = 'import'; State.ui.editing = null; render();
+        State.ui.modal = 'import';
+        State.ui.editing = null;
+        State.ui.importStep = 'input';
+        State.ui.importPreview = null;
+        render();
       } else if (act === 'export-contracts') {
         exportContractsCSV();
       } else if (act === 'export-customers') {
@@ -2031,7 +1636,11 @@ function bindEvents() {
       } else if (act === 'export-devices') {
         exportDevicesCSV();
       } else if (act === 'close-modal') {
-        State.ui.modal = null; State.ui.editing = null; render();
+        State.ui.modal = null;
+        State.ui.editing = null;
+        State.ui.importPreview = null;
+        State.ui.importStep = 'input';
+        render();
       } else if (act === 'clear-search') {
         State.ui.search = ''; render();
       } else if (act === 'delete-client') {
@@ -2055,6 +1664,109 @@ function bindEvents() {
         const id = btn.getAttribute('data-id');
         State.ui.editing = State.data.devices.find(d => d.id === id) || null;
         State.ui.modal = 'device'; render();
+      } else if (act === 'reset-import') {
+        State.ui.importPreview = null;
+        State.ui.importStep = 'input';
+        render();
+      } else if (act === 'confirm-import') {
+        const modalEl = document.querySelector('.modal');
+        if (!modalEl) return;
+
+        const collect = section => {
+          const wrapper = modalEl.querySelector('[data-preview-section="' + section + '"]');
+          if (!wrapper) return {};
+          const vals = {};
+          wrapper.querySelectorAll('input').forEach(inp => {
+            const name = inp.name;
+            if (!name) return;
+            vals[name] = inp.value || '';
+          });
+          return vals;
+        };
+
+        const custVals = collect('customer');
+        const ctrVals = collect('contract');
+        const devVals = collect('device');
+
+        let cfFinal = (ctrVals.codice_fiscale || custVals.codice_fiscale || devVals.codice_fiscale || '').toUpperCase().replace(/\s/g, '');
+        if (!cfFinal) {
+          showToast('Inserisci almeno il codice fiscale prima di importare', 'error');
+          return;
+        }
+
+        custVals.codice_fiscale = cfFinal;
+        ctrVals.codice_fiscale = cfFinal;
+        if (devVals && Object.keys(devVals).length) {
+          devVals.codice_fiscale = (devVals.codice_fiscale || cfFinal).toUpperCase().replace(/\s/g, '');
+        }
+
+        const customer = {
+          codice_fiscale: cfFinal,
+          telefono: custVals.telefono || '',
+          nome: custVals.nome || '',
+          cognome: custVals.cognome || '',
+          email: (custVals.email || '').toLowerCase(),
+          data_nascita: custVals.data_nascita || birthDateFromCF(cfFinal) || '',
+          residenza: custVals.residenza || ''
+        };
+
+        const contractData = ctrVals.data || '';
+        const contract = {
+          data: contractData,
+          data_attivazione: contractData,
+          compagnia: ctrVals.compagnia || '',
+          tipo_cliente: ctrVals.tipo_cliente || '',
+          tipo_contratto: ctrVals.tipo_contratto || '',
+          tipo: ctrVals.tipo_contratto || '',
+          mnp: ctrVals.mnp || '',
+          telefono_incluso: ctrVals.telefono_incluso || '',
+          nome: ctrVals.nome || customer.nome,
+          cognome: ctrVals.cognome || customer.cognome,
+          numero_contatto: ctrVals.numero_contatto || customer.telefono,
+          codice_fiscale: cfFinal,
+          nome_contratto: ctrVals.nome_contratto || '',
+          offerta: ctrVals.nome_contratto || '',
+          numero_lavorato: ctrVals.numero_lavorato || '',
+          numero: ctrVals.numero_lavorato || '',
+          costo: ctrVals.costo || '',
+          costo_mensile: ctrVals.costo || '',
+          vincolo: ctrVals.vincolo || '',
+          mesi_vincolo: ctrVals.vincolo || '',
+          data_fine_vincolo: ctrVals.data_fine_vincolo || '',
+          fornitore: ctrVals.fornitore || ctrVals.compagnia || '',
+          data_portabilita: ctrVals.data_portabilita || computePortabilityDate(contractData || ''),
+          valore_cliente: ctrVals.valore_cliente || ''
+        };
+
+        let device = null;
+        if (devVals && Object.keys(devVals).length && (devVals.nome_device || devVals.modello || devVals.imei)) {
+          device = {
+            codice_fiscale: (devVals.codice_fiscale || cfFinal).toUpperCase().replace(/\s/g, ''),
+            nome_device: devVals.nome_device || '',
+            tipo_device: devVals.tipo_device || '',
+            marca: devVals.marca || '',
+            modello: devVals.modello || '',
+            imei: devVals.imei || '',
+            tipo_pagamento: devVals.tipo_pagamento || '',
+            durata_pagamento: devVals.durata_pagamento || '',
+            note: devVals.note || 'Import da testo'
+          };
+        }
+
+        State.ui.importPreview = null;
+        State.ui.importStep = 'input';
+        State.ui.modal = null;
+        State.ui.editing = null;
+
+        State.ui.editing = null;
+        State.upsertCustomer(customer);
+        State.ui.editing = null;
+        State.upsertContract(contract);
+        if (device) {
+          State.ui.editing = null;
+          State.upsertDevice(device);
+        }
+        showToast('Dati importati dal testo');
       }
     });
   });
@@ -2108,7 +1820,7 @@ function bindEvents() {
         const fd = new FormData(contractForm);
         State.upsertContract({
           data: fd.get('data') || '',
-          data_attivazione: fd.get('data') || '',
+          data_attivazione: (fd.get('data') || ''),
           compagnia: fd.get('compagnia') || '',
           tipo_cliente: fd.get('tipo_cliente') || '',
           tipo_contratto: fd.get('tipo_contratto') || '',
@@ -2159,9 +1871,21 @@ function bindEvents() {
     if (importForm) {
       importForm.addEventListener('submit', e => {
         e.preventDefault();
+        if (State.ui.importStep !== 'input') return;
         const fd = new FormData(importForm);
         const raw = fd.get('raw') || '';
-        parseAndImportRaw(raw);
+        if (!raw.trim()) {
+          showToast('Incolla prima il testo da importare', 'error');
+          return;
+        }
+        const preview = parseAndImportRaw(raw);
+        if (!preview) {
+          showToast('Non sono riuscito a leggere i dati dal testo', 'error');
+          return;
+        }
+        State.ui.importPreview = preview;
+        State.ui.importStep = 'preview';
+        render();
       });
     }
   }
@@ -2171,6 +1895,3 @@ function bindEvents() {
   await State.init();
   render();
 })();
-  </script>
-</body>
-</html>
