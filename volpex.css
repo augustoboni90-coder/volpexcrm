@@ -1,353 +1,156 @@
-/* ========= BASE ========= */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html, body {
+/* RESET */
+* {
   margin: 0;
   padding: 0;
-  height: 100%;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: #f3f4f6;
-  color: #111827;
+  box-sizing: border-box;
+  font-family: Inter, system-ui, sans-serif;
 }
 
-a {
-  color: #2563eb;
-  text-decoration: none;
+body {
+  background: #f5f6fa;
+  color: #222;
 }
 
-a:hover {
-  text-decoration: underline;
-}
-
-/* ========= LAYOUT ========= */
-
-.layout {
+/* TOP BAR */
+.topbar {
+  height: 60px;
+  background: #ffffff;
+  border-bottom: 1px solid #ddd;
+  padding: 0 20px;
   display: flex;
-  min-height: 100vh;
+  align-items: center;
+  justify-content: space-between;
 }
 
-/* SIDEBAR GRANDE VOLPEX */
-
-.sidebar {
-  width: 260px;
-  background: #111827;
-  color: #f9fafb;
-  padding: 18px 16px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.sidebar-logo {
+.topbar-left {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.logo-mark {
-  width: 36px;
-  height: 36px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #f97316, #fb923c);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
+.logo-small {
+  width: 40px;
 }
 
-.logo-text-main {
-  font-weight: 700;
-  font-size: 14px;
-  letter-spacing: 0.06em;
-}
-
-.logo-text-sub {
-  font-size: 11px;
-  color: #9ca3af;
-}
-
-.sidebar-section-label {
-  margin-top: 8px;
-  font-size: 11px;
-  text-transform: uppercase;
-  color: #6b7280;
-}
-
-.sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-top: 4px;
-}
-
-.nav-btn {
-  border: none;
-  background: transparent;
-  color: #e5e7eb;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 10px;
-  border-radius: 9px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background 0.15s ease, transform 0.1s ease;
-}
-
-.nav-btn span:first-child {
-  font-size: 15px;
-}
-
-.nav-btn:hover {
-  background: rgba(249, 115, 22, 0.15);
-  transform: translateX(1px);
-}
-
-.nav-btn-active {
-  background: rgba(249, 115, 22, 0.25);
-  color: #fff;
-}
-
-.sidebar-status-box {
-  margin-top: 4px;
-  padding: 8px 9px;
-  border-radius: 10px;
-  background: rgba(31, 41, 55, 0.9);
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  font-size: 11px;
-}
-
-.status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: #22c55e;
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
-}
-
-.status-title {
-  font-weight: 600;
-}
-
-.status-sub {
-  color: #9ca3af;
-}
-
-.sidebar-footer {
-  margin-top: auto;
-  font-size: 11px;
-}
-
-.sidebar-footer-title {
-  font-weight: 600;
-}
-
-.sidebar-footer-sub {
-  color: #9ca3af;
-}
-
-/* MAIN AREA */
-
-.main {
-  flex: 1;
-  padding: 18px 20px 28px;
-  max-width: 1180px;
-  margin: 0 auto;
-}
-
-/* ========= HOME / HERO ========= */
-
-.home-hero {
-  background: radial-gradient(circle at top left, #ffedd5, #ffffff);
-  border-radius: 14px;
-  padding: 16px 18px 14px;
-  margin-bottom: 14px;
-  box-shadow:
-    0 8px 24px rgba(15, 23, 42, 0.10),
-    0 0 0 1px rgba(248, 113, 38, 0.06);
-}
-
-.hero-title {
-  margin: 0;
-  font-size: 22px;
+.crm-title {
+  font-size: 1.3rem;
   font-weight: 700;
 }
 
-.hero-subtitle {
-  margin: 4px 0 6px;
-  font-size: 13px;
-  color: #4b5563;
-}
-
-.hero-quote {
-  margin: 0;
-  font-size: 12px;
-  font-style: italic;
-  color: #9a3412;
-}
-
-/* ========= SHELL CONTENUTO CRM ========= */
-
-.app-shell {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 12px 14px 16px;
-  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.12);
-}
-
-/* Il tuo #app esistente vive qui dentro */
-#app {
-  font-size: 13px;
-}
-
-/* ========= STILE GENERALE (BOTTONI / INPUT / TABELLE) ========= */
-
-/* Bottoni “nudi” esistenti (Clienti, Contratti, ecc.) */
-button,
-input[type="button"],
-input[type="submit"],
-input[type="reset"] {
-  border-radius: 9999px;
-  border: none;
-  background: #f97316;
-  color: #ffffff;
-  padding: 5px 10px;
-  font-size: 12px;
-  cursor: pointer;
-  margin: 2px 2px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
-}
-
-button:hover,
-input[type="button"]:hover,
-input[type="submit"]:hover,
-input[type="reset"]:hover {
-  background: #ea580c;
-  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.25);
-  transform: translateY(-1px);
-}
-
-/* eventuale classe danger se la usi nel JS */
-button.danger,
-input.danger {
-  background: #ef4444;
-}
-
-button.danger:hover,
-input.danger:hover {
-  background: #dc2626;
-}
-
-/* pulsante whatsapp */
-.whatsapp-btn {
-  background: #22c55e;
-  color: #ffffff !important;
-}
-
-.whatsapp-btn:hover {
-  background: #16a34a;
-}
-
-/* Campi testo */
-input[type="text"],
-input[type="number"],
-input[type="email"],
-input[type="tel"],
-input[type="date"],
-textarea,
-select {
+.topbar-center input {
+  width: 350px;
+  padding: 8px 12px;
   border-radius: 8px;
-  border: 1px solid #d1d5db;
-  padding: 4px 6px;
-  font-size: 12px;
-  font-family: inherit;
+  border: 1px solid #ccc;
 }
 
-/* Tabelle */
-table {
+.icon-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+/* MENU BAR */
+.menu-bar {
+  height: 50px;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  padding: 8px 20px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.menu-link {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.menu-link:hover {
+  background: #ffddb8;
+}
+
+.menu-link.active {
+  background: #ff7f32;
+  color: white;
+}
+
+/* CONTENT */
+.content {
+  padding: 25px;
+}
+
+/* TITOLI */
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* KPI CARDS */
+.kpi-boxes {
+  display: flex;
+  gap: 20px;
+}
+
+.kpi {
+  flex: 1;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px #0001;
+}
+
+.kpi h3 {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.kpi p {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-top: 5px;
+}
+
+/* TABELLE */
+.table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 8px;
-  background: #ffffff;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+  margin-top: 20px;
 }
 
-th, td {
-  padding: 6px 8px;
-  font-size: 12px;
-  border-bottom: 1px solid #e5e7eb;
-  vertical-align: top;
+.table th {
+  background: #eee;
+  padding: 10px;
 }
 
-th {
-  background: #f9fafb;
-  font-weight: 600;
-  color: #4b5563;
+.table td {
+  background: #fff;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
 }
 
-tbody tr:nth-child(even) {
-  background: #f9fafb;
+/* BUTTONS */
+.btn {
+  background: #ff7f32;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
-/* Stato “vuoto” generico */
-.empty {
-  padding: 18px 4px;
-  text-align: center;
-  font-size: 12px;
-  color: #6b7280;
+.btn-secondary {
+  background: #333;
 }
 
-/* ========= TOAST ========= */
-
-.toast {
-  position: fixed;
-  right: 16px;
-  bottom: 16px;
-  padding: 10px 14px;
-  border-radius: 10px;
-  font-size: 12px;
-  color: #ffffff;
-  background: #22c55e;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.6);
-  z-index: 9999;
-}
-
-.toast.error {
-  background: #ef4444;
-}
-
-/* ========= RESPONSIVE ========= */
-@media (max-width: 900px) {
-  .layout {
-    flex-direction: column;
-  }
-
-  .sidebar {
-    width: 100%;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px;
-    padding-bottom: 12px;
-  }
-
-  .sidebar-status-box,
-  .sidebar-footer {
-    margin-top: 8px;
-  }
-
-  .main {
-    padding: 14px 12px 22px;
-  }
+.btn:hover {
+  opacity: 0.85;
 }
