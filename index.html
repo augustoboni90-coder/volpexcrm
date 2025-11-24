@@ -43,7 +43,14 @@
     }
     h3 {
       font-size: 1rem;
-      margin: 0 0 0.5rem 0;
+      margin: 0.75rem 0 0.5rem 0;
+    }
+    .section-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
+      margin-bottom: 0.25rem;
+      color: #374151;
     }
     .grid {
       display: grid;
@@ -63,12 +70,18 @@
       margin-bottom: 0.2rem;
       color: #4b5563;
     }
+    .required::after {
+      content: " *";
+      color: #b91c1c;
+      font-weight: 600;
+    }
     input, select, textarea {
       width: 100%;
       padding: 0.4rem 0.5rem;
       border-radius: 0.5rem;
       border: 1px solid #d1d5db;
       font-size: 0.9rem;
+      background: #ffffff;
     }
     textarea {
       min-height: 60px;
@@ -121,6 +134,12 @@
       align-items: center;
       gap: 0.5rem;
     }
+    .flex-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+    }
     .mt-1 { margin-top: 0.25rem; }
     .mt-2 { margin-top: 0.5rem; }
     .mb-1 { margin-bottom: 0.25rem; }
@@ -142,6 +161,13 @@
       background: #fee2e2;
       color: #b91c1c;
     }
+    .subtle {
+      font-size: 0.78rem;
+      color: #9ca3af;
+    }
+    .hidden {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
@@ -153,7 +179,10 @@
   <main>
     <!-- DATI CLIENTE -->
     <section class="card">
-      <h2>Dati cliente</h2>
+      <div class="flex-between mb-1">
+        <h2>Dati cliente</h2>
+        <span class="subtle">Passo 1 di 2</span>
+      </div>
       <p class="text-sm text-muted mb-2">
         1️⃣ Inserisci il <strong>codice fiscale</strong> e premi "Cerca cliente".<br>
         Se il cliente esiste viene caricata l'anagrafica, altrimenti puoi inserirla e sarà creato in automatico.
@@ -161,7 +190,7 @@
 
       <div class="grid grid-3 mb-2">
         <div>
-          <label for="cl-cf">Codice fiscale</label>
+          <label for="cl-cf" class="required">Codice fiscale</label>
           <input type="text" id="cl-cf" maxlength="16" placeholder="es. RSSMRA85M01H501Z" />
         </div>
         <div class="flex mt-2">
@@ -199,117 +228,143 @@
 
     <!-- DATI CONTRATTO -->
     <section class="card">
-      <h2>Dati contratto</h2>
+      <div class="flex-between mb-1">
+        <h2>Dati contratto</h2>
+        <span class="subtle">Passo 2 di 2</span>
+      </div>
       <p class="text-sm text-muted mb-2">
         2️⃣ Compila i dati del contratto. Le date di portabilità e fine vincoli saranno calcolate automaticamente nel foglio Google.
       </p>
 
-      <form id="form-contratto" class="grid grid-3">
+      <form id="form-contratto" class="grid">
+        <!-- BLOCCO 1: CONTRATTO BASE -->
         <div>
-          <label for="ct-data-contratto">Data contratto</label>
-          <input type="date" id="ct-data-contratto" required />
-        </div>
-        <div>
-          <label for="ct-tipo-cliente">Tipo cliente</label>
-          <select id="ct-tipo-cliente" required>
-            <option value="">Seleziona...</option>
-            <option value="privato">Privato</option>
-            <option value="partitaiva">Partita IVA</option>
-          </select>
-        </div>
-        <div>
-          <label for="ct-tipo-attivazione">Tipo attivazione</label>
-          <select id="ct-tipo-attivazione" required>
-            <option value="">Seleziona...</option>
-            <option value="Mobile">Mobile</option>
-            <option value="Fisso">Fisso</option>
-            <option value="TV">TV</option>
-            <option value="Luce">Luce</option>
-            <option value="Gas">Gas</option>
-          </select>
-        </div>
-
-        <div>
-          <label for="ct-tecnologia">Tecnologia</label>
-          <select id="ct-tecnologia" required>
-            <option value="">Seleziona...</option>
-            <option value="SIM">SIM</option>
-            <option value="FTTC">FTTC</option>
-            <option value="FTTH">FTTH</option>
-            <option value="FWA">FWA</option>
-            <option value="Luce">Luce</option>
-            <option value="Gas">Gas</option>
-            <option value="TV">TV</option>
-          </select>
-        </div>
-        <div>
-          <label for="ct-convergenza">Convergenza</label>
-          <select id="ct-convergenza" required>
-            <option value="">Seleziona...</option>
-            <option value="SI">SI</option>
-            <option value="NO">NO</option>
-          </select>
-        </div>
-        <div>
-          <label for="ct-mnp">MNP (portabilità)</label>
-          <select id="ct-mnp" required>
-            <option value="">Seleziona...</option>
-            <option value="SI">SI</option>
-            <option value="NO">NO</option>
-          </select>
+          <div class="section-title">Contratto</div>
+          <div class="grid grid-3">
+            <div>
+              <label for="ct-data-contratto" class="required">Data contratto</label>
+              <input type="date" id="ct-data-contratto" required />
+            </div>
+            <div>
+              <label for="ct-tipo-cliente" class="required">Tipo cliente</label>
+              <select id="ct-tipo-cliente" required>
+                <option value="">Seleziona...</option>
+                <option value="privato">Privato</option>
+                <option value="partitaiva">Partita IVA</option>
+              </select>
+            </div>
+            <div>
+              <label for="ct-tipo-attivazione" class="required">Tipo attivazione</label>
+              <select id="ct-tipo-attivazione" required>
+                <option value="">Seleziona...</option>
+                <option value="Mobile">Mobile</option>
+                <option value="Fisso">Fisso</option>
+                <option value="TV">TV</option>
+                <option value="Luce">Luce</option>
+                <option value="Gas">Gas</option>
+              </select>
+            </div>
+          </div>
         </div>
 
+        <!-- BLOCCO 2: LINEA & PORTABILITÀ -->
         <div>
-          <label for="ct-data-attivazione">Data attivazione</label>
-          <input type="date" id="ct-data-attivazione" required />
-        </div>
-        <div>
-          <label for="ct-numero-lavorato">Numero lavorato</label>
-          <input type="text" id="ct-numero-lavorato" />
-        </div>
-        <div>
-          <label for="ct-nome-offerta">Nome offerta</label>
-          <input type="text" id="ct-nome-offerta" />
+          <div class="section-title">Linea & portabilità</div>
+          <div class="grid grid-3">
+            <div>
+              <label for="ct-tecnologia" class="required">Tecnologia</label>
+              <select id="ct-tecnologia" required>
+                <option value="">Seleziona...</option>
+                <option value="SIM">SIM</option>
+                <option value="FTTC">FTTC</option>
+                <option value="FTTH">FTTH</option>
+                <option value="FWA">FWA</option>
+                <option value="Luce">Luce</option>
+                <option value="Gas">Gas</option>
+                <option value="TV">TV</option>
+              </select>
+            </div>
+            <div>
+              <label for="ct-convergenza" class="required">Convergenza</label>
+              <select id="ct-convergenza" required>
+                <option value="">Seleziona...</option>
+                <option value="SI">SI</option>
+                <option value="NO">NO</option>
+              </select>
+            </div>
+            <div>
+              <label for="ct-mnp" class="required">MNP (portabilità)</label>
+              <select id="ct-mnp" required>
+                <option value="">Seleziona...</option>
+                <option value="SI">SI</option>
+                <option value="NO">NO</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="ct-data-attivazione" class="required">Data attivazione</label>
+              <input type="date" id="ct-data-attivazione" required />
+            </div>
+            <div>
+              <label for="ct-numero-lavorato">Numero lavorato</label>
+              <input type="text" id="ct-numero-lavorato" />
+            </div>
+          </div>
         </div>
 
+        <!-- BLOCCO 3: OFFERTA & TELEFONO -->
         <div>
-          <label for="ct-costo-offerta">Costo offerta (€/mese)</label>
-          <input type="number" step="0.01" id="ct-costo-offerta" />
-        </div>
-        <div>
-          <label for="ct-vincolo-offerta-mesi">Vincolo offerta (mesi)</label>
-          <input type="number" min="0" id="ct-vincolo-offerta-mesi" />
-        </div>
-        <div>
-          <label for="ct-telefono-incluso">Telefono incluso</label>
-          <select id="ct-telefono-incluso" required>
-            <option value="">Seleziona...</option>
-            <option value="SI">SI</option>
-            <option value="NO">NO</option>
-          </select>
-        </div>
+          <div class="section-title">Offerta & telefono</div>
+          <div class="grid grid-3">
+            <div>
+              <label for="ct-nome-offerta">Nome offerta</label>
+              <input type="text" id="ct-nome-offerta" />
+            </div>
+            <div>
+              <label for="ct-costo-offerta">Costo offerta (€/mese)</label>
+              <input type="number" step="0.01" id="ct-costo-offerta" />
+            </div>
+            <div>
+              <label for="ct-vincolo-offerta-mesi">Vincolo offerta (mesi)</label>
+              <input type="number" min="0" id="ct-vincolo-offerta-mesi" />
+            </div>
 
-        <div>
-          <label for="ct-imei">IMEI telefono</label>
-          <input type="text" id="ct-imei" />
-        </div>
-        <div>
-          <label for="ct-modello">Modello telefono</label>
-          <input type="text" id="ct-modello" />
-        </div>
-        <div>
-          <label for="ct-tipo-pagamento">Tipo pagamento</label>
-          <select id="ct-tipo-pagamento">
-            <option value="">Seleziona...</option>
-            <option value="SDD">SDD</option>
-            <option value="Carta di credito">Carta di credito</option>
-            <option value="Compass">Compass</option>
-          </select>
-        </div>
+            <div>
+              <label for="ct-tipo-pagamento">Tipo pagamento</label>
+              <select id="ct-tipo-pagamento">
+                <option value="">Seleziona...</option>
+                <option value="SDD">SDD</option>
+                <option value="Carta di credito">Carta di credito</option>
+                <option value="Compass">Compass</option>
+              </select>
+            </div>
+            <div>
+              <label for="ct-telefono-incluso" class="required">Telefono incluso</label>
+              <select id="ct-telefono-incluso" required>
+                <option value="">Seleziona...</option>
+                <option value="SI">SI</option>
+                <option value="NO">NO</option>
+              </select>
+            </div>
+          </div>
 
-        <div>
-          <label for="ct-mesi-vincolo-telefono">Mesi vincolo telefono</label>
-          <input type="number" min="0" id="ct-mesi-vincolo-telefono" />
+          <div id="blocco-telefono" class="mt-2">
+            <div class="section-title">Dettagli telefono (se incluso)</div>
+            <div class="grid grid-3">
+              <div>
+                <label for="ct-imei">IMEI telefono</label>
+                <input type="text" id="ct-imei" />
+              </div>
+              <div>
+                <label for="ct-modello">Modello telefono</label>
+                <input type="text" id="ct-modello" />
+              </div>
+              <div>
+                <label for="ct-mesi-vincolo-telefono">Mesi vincolo telefono</label>
+                <input type="number" min="0" id="ct-mesi-vincolo-telefono" />
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="mt-2">
@@ -333,12 +388,18 @@
     const btnPulisciCliente = document.getElementById("btn-pulisci-cliente");
     const formContratto = document.getElementById("form-contratto");
     const messaggiDiv = document.getElementById("messaggi");
+    const bloccoTelefono = document.getElementById("blocco-telefono");
+    const selectTelefonoIncluso = document.getElementById("ct-telefono-incluso");
 
     const clNome = document.getElementById("cl-nome");
     const clCognome = document.getElementById("cl-cognome");
     const clTelefono = document.getElementById("cl-telefono");
     const clEmail = document.getElementById("cl-email");
     const clNote = document.getElementById("cl-note");
+
+    const campoIMEI = document.getElementById("ct-imei");
+    const campoModello = document.getElementById("ct-modello");
+    const campoMesiTel = document.getElementById("ct-mesi-vincolo-telefono");
 
     function setStatoCliente(tipo, testo) {
       statoClienteSpan.className = "status";
@@ -416,6 +477,20 @@
       }
     }
 
+    function aggiornaBloccoTelefono() {
+      const valore = selectTelefonoIncluso.value;
+      const attivo = (valore === "SI");
+      bloccoTelefono.classList.toggle("hidden", !attivo);
+      campoIMEI.disabled = !attivo;
+      campoModello.disabled = !attivo;
+      campoMesiTel.disabled = !attivo;
+      if (!attivo) {
+        campoIMEI.value = "";
+        campoModello.value = "";
+        campoMesiTel.value = "";
+      }
+    }
+
     async function salvaContratto(e) {
       e.preventDefault();
       mostraMessaggio("", "");
@@ -451,16 +526,16 @@
         costoOfferta: document.getElementById("ct-costo-offerta").value,
         vincoloOffertaMesi: document.getElementById("ct-vincolo-offerta-mesi").value,
         telefonoIncluso: document.getElementById("ct-telefono-incluso").value,
-        imei: document.getElementById("ct-imei").value.trim(),
-        modello: document.getElementById("ct-modello").value.trim(),
+        imei: campoIMEI.value.trim(),
+        modello: campoModello.value.trim(),
         tipoPagamento: document.getElementById("ct-tipo-pagamento").value,
-        mesiVincoloTelefono: document.getElementById("ct-mesi-vincolo-telefono").value
+        mesiVincoloTelefono: campoMesiTel.value
       };
 
       if (!payload.dataContratto || !payload.tipoCliente || !payload.tipoAttivazione ||
           !payload.tecnologia || !payload.convergenza || !payload.mnp || !payload.dataAttivazione ||
           !payload.telefonoIncluso) {
-        alert("Compila tutti i campi obbligatori del contratto (menu a tendina e le date).");
+        alert("Compila tutti i campi obbligatori del contratto (quelli con * e le date).");
         return;
       }
 
@@ -488,6 +563,7 @@
 
         mostraMessaggio(msg, "success");
         formContratto.reset();
+        aggiornaBloccoTelefono();
         setDefaultDates();
       } catch (err) {
         console.error(err);
@@ -520,8 +596,10 @@
       }
     });
     formContratto.addEventListener("submit", salvaContratto);
+    selectTelefonoIncluso.addEventListener("change", aggiornaBloccoTelefono);
 
     setDefaultDates();
+    aggiornaBloccoTelefono();
   </script>
 </body>
 </html>
