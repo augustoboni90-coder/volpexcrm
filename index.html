@@ -228,7 +228,7 @@
 
     <div class="nav-tabs">
       <button data-view="view-dashboard" class="active">Dashboard</button>
-      <button data-view="view-search">Ricerca clienti</button>
+      <button data-view="view-search">Ricerca</button>
       <button data-view="view-new-contract">Nuovo contratto</button>
     </div>
 
@@ -237,7 +237,7 @@
       <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
         <h2 style="margin:0;">Panoramica contratti</h2>
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <button class="btn-secondary" type="button" id="goToSearch1">Cerca cliente</button>
+          <button class="btn-secondary" type="button" id="goToSearch1">Cerca</button>
           <button class="btn-primary" type="button" id="goToNew1">Nuovo contratto</button>
         </div>
       </div>
@@ -282,11 +282,15 @@
       </table>
     </section>
 
-    <!-- RICERCA CLIENTI -->
+    <!-- RICERCA -->
     <section id="view-search" class="view">
-      <h2>Ricerca clienti</h2>
+      <h2>Ricerca</h2>
+
+      <!-- RICERCA CLIENTI -->
+      <h3>Ricerca clienti</h3>
       <div class="search-row">
         <input type="text" id="searchClienti" placeholder="Cerca per nome, cognome, telefono, email o codice fiscale..." />
+        <button class="btn-primary" type="button" id="btnSearchClienti">Cerca</button>
         <button class="btn-secondary" type="button" id="btnClearSearch">Pulisci</button>
       </div>
 
@@ -309,6 +313,34 @@
       </div>
 
       <div id="cliente-detail"></div>
+
+      <!-- RICERCA CONTRATTI -->
+      <h3 style="margin-top:20px;">Ricerca contratti</h3>
+      <div class="search-row">
+        <input type="text" id="searchContratti" placeholder="Cerca per numero, offerta, tecnologia, CF, ID contratto..." />
+        <button class="btn-primary" type="button" id="btnSearchContratti">Cerca</button>
+        <button class="btn-secondary" type="button" id="btnClearSearchContratti">Pulisci</button>
+      </div>
+
+      <div class="section-card">
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>ID contratto</th>
+              <th>Cliente</th>
+              <th>Numero</th>
+              <th>Offerta</th>
+              <th>Tecnologia</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-search-contratti">
+            <tr><td colspan="6">Nessun contratto</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="contratto-detail"></div>
     </section>
 
     <!-- NUOVO CONTRATTO -->
@@ -465,7 +497,7 @@
   </div>
 
   <script>
-    // ===== CONFIGURA QUI L'URL DELLA WEB APP APPS SCRIPT =====
+    // ===== URL della tua web app Apps Script =====
     const API_URL = 'https://script.google.com/macros/s/AKfycbxb0GIQqFXKJl8HRfXzFG7A-sdQHxzBWUotromEyF2zN_pS2RUmL2f20EQ0g7kSMga7/exec';
 
     let clienti = [];
@@ -527,8 +559,9 @@
           return;
         }
         contratti = data.data || [];
-        setStatus(prev => `Contratti: ${contratti.length}`);
+        setStatus('Contratti: ' + contratti.length);
         updateDashboard();
+        renderSearchContratti();
       } catch (err) {
         console.error(err);
         setStatus('Errore di rete nel caricamento contratti');
@@ -623,6 +656,9 @@
       searchClientiEl.value = '';
       renderSearchClienti();
       clienteDetailEl.innerHTML = '';
+    });
+    document.getElementById('btnSearchClienti').addEventListener('click', () => {
+      renderSearchClienti();
     });
 
     function getContrattiCountPerCliente() {
@@ -748,6 +784,108 @@
       });
     }
 
+    // ===== RICERCA CONTRATTI =====
+    const searchContrattiEl = document.getElementById('searchContratti');
+    const tbodySearchContratti = document.getElementById('tbody-search-contratti');
+    const contrattoDetailWrapper = document.getElementById('contratto-detail');
+
+    document.getElementById('btnSearchContratti').addEventListener('click', () => {
+      renderSearchContratti();
+    });
+
+    document.getElementById('btnClearSearchContratti').addEventListener('click', () => {
+      searchContrattiEl.value = '';
+      renderSearchContratti();
+      contrattoDetailWrapper.innerHTML = '';
+    });
+
+    function renderSearchContratti() {
+      const term = (searchContrattiEl.value || '').toLowerCase();
+      tbodySearchContratti.innerHTML = '';
+
+      const clienteMap = new Map(clienti.map(c => [c.id_cliente, c]));
+
+      let filtered = contratti;
+      if (term) {
+        filtered = contratti.filter(c => {
+          const cli = clienteMap.get(c.id_cliente);
+          const cliName = cli ? `${cli.nome || ''} ${cli.cognome || ''}` : '';
+          const txt = [
+            c.id_contratto,
+            c.numero_lavorato,
+            c.nome_offerta,
+            c.tecnologia,
+            c.tipo_cliente,
+            c.codice_fiscale,
+            cliName
+          ].join(' ').toLowerCase();
+          return txt.includes(term);
+        });
+      }
+
+      if (!filtered.length) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 6;
+        td.textContent = 'Nessun contratto trovato';
+        tr.appendChild(td);
+        tbodySearchContratti.appendChild(tr);
+        return;
+      }
+
+      filtered.forEach(c => {
+        const cli = clienteMap.get(c.id_cliente);
+        const nomeCli = cli ? `${cli.nome || ''} ${cli.cognome || ''}`.trim() : (c.codice_fiscale || '');
+        const tr = document.createElement('tr');
+        tr.classList.add('clickable');
+        tr.dataset.id = c.id_contratto;
+        tr.innerHTML = `
+          <td>${formatDateShort(c.data_contratto)}</td>
+          <td>${c.id_contratto || ''}</td>
+          <td>${nomeCli || '-'}</td>
+          <td>${c.numero_lavorato || ''}</td>
+          <td>${c.nome_offerta || ''}</td>
+          <td>${c.tecnologia || ''}</td>
+        `;
+        tr.addEventListener('click', () => {
+          showContrattoDetail(c.id_contratto);
+        });
+        tbodySearchContratti.appendChild(tr);
+      });
+    }
+
+    function showContrattoDetail(contrattoId) {
+      const ctr = contratti.find(c => c.id_contratto === contrattoId);
+      if (!ctr) {
+        contrattoDetailWrapper.innerHTML = '';
+        return;
+      }
+      const cli = clienti.find(c => c.id_cliente === ctr.id_cliente);
+
+      contrattoDetailWrapper.innerHTML = `
+        <div class="section-card">
+          <h3>Dettaglio contratto</h3>
+          <p>
+            <strong>ID contratto:</strong> ${ctr.id_contratto || '-'}<br/>
+            <strong>Data contratto:</strong> ${formatDateShort(ctr.data_contratto) || '-'}<br/>
+            <strong>Numero:</strong> ${ctr.numero_lavorato || '-'}<br/>
+            <strong>Offerta:</strong> ${ctr.nome_offerta || '-'}<br/>
+            <strong>Costo:</strong> ${ctr.costo_offerta || '-'} €<br/>
+            <strong>Tecnologia:</strong> ${ctr.tecnologia || '-'}<br/>
+            <strong>Tipo cliente:</strong> ${ctr.tipo_cliente || '-'}<br/>
+            <strong>CF:</strong> ${ctr.codice_fiscale || '-'}
+          </p>
+          ${cli ? `
+          <p>
+            <strong>Cliente:</strong> ${cli.nome || ''} ${cli.cognome || ''}<br/>
+            Tel: ${cli.telefono || '-'}<br/>
+            Email: ${cli.email || '-'}<br/>
+            ID cliente: ${cli.id_cliente || '-'}
+          </p>` : ''}
+        </div>
+      `;
+    }
+
     // ===== NUOVO CONTRATTO =====
     const formNewContract = document.getElementById('form-new-contract');
     const nc_info = document.getElementById('nc_info');
@@ -839,19 +977,19 @@
     }
 
     async function ensureClienteEsistente(clientData) {
-      // 1) prova match per codice fiscale
+      // 1) per codice fiscale
       if (clientData.codice_fiscale) {
         const cf = clientData.codice_fiscale.toUpperCase();
         const found = clienti.find(c => (c.codice_fiscale || '').toUpperCase() === cf);
         if (found) return found.id_cliente;
       }
-      // 2) prova per email
+      // 2) per email
       if (clientData.email) {
         const em = clientData.email.toLowerCase();
         const found = clienti.find(c => (c.email || '').toLowerCase() === em);
         if (found) return found.id_cliente;
       }
-      // 3) prova per telefono
+      // 3) per telefono
       if (clientData.telefono) {
         const tel = clientData.telefono;
         const found = clienti.find(c => (c.telefono || '') === tel);
@@ -921,13 +1059,11 @@
       setStatus('Verifica cliente / creazione se necessario...');
       let idCliente;
       try {
-        // se c'è già un id_cliente (da selezione), prova a usarlo
         if (clientData.id_cliente) {
           const found = clienti.find(c => c.id_cliente === clientData.id_cliente);
           if (found) {
             idCliente = found.id_cliente;
           } else {
-            // se non lo troviamo, fallback all'auto-match
             idCliente = await ensureClienteEsistente(clientData);
           }
         } else {
@@ -980,11 +1116,8 @@
 
         setStatus('Contratto creato correttamente');
         nc_info.textContent = `Contratto creato (ID: ${data.id_contratto || ''}) per cliente ID: ${idCliente}`;
-        // ricarica contratti per aggiornare dashboard / ricerche
         await loadContrattiAll();
         updateDashboard();
-        // se vuoi, puoi svuotare il form (commenta se non ti piace)
-        // resetNewContractForm();
       } catch (err) {
         console.error(err);
         setStatus('Errore di rete durante il salvataggio contratto');
