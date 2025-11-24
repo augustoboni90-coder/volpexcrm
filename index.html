@@ -2,13 +2,13 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <title>CRM Negozio - Clienti e Contratti</title>
+  <title>CRM Contratti - Negozio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     * { box-sizing: border-box; }
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: #f3f4f6;
       color: #111827;
     }
@@ -19,39 +19,17 @@
     }
     header h1 {
       margin: 0;
-      font-size: 1.4rem;
+      font-size: 1.3rem;
     }
     header small {
       color: #9ca3af;
+      font-size: 0.8rem;
     }
     main {
-      padding: 1rem;
       max-width: 1200px;
       margin: 0 auto;
+      padding: 1rem;
     }
-
-    .tabs {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-      border-bottom: 1px solid #e5e7eb;
-    }
-    .tab-btn {
-      border: none;
-      background: transparent;
-      padding: 0.5rem 0.75rem;
-      cursor: pointer;
-      font-size: 0.95rem;
-      border-radius: 0.5rem 0.5rem 0 0;
-      color: #6b7280;
-    }
-    .tab-btn.active {
-      background: #ffffff;
-      color: #111827;
-      border: 1px solid #e5e7eb;
-      border-bottom-color: #ffffff;
-    }
-
     .card {
       background: #ffffff;
       border-radius: 0.75rem;
@@ -59,7 +37,14 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.08);
       margin-bottom: 1rem;
     }
-
+    h2 {
+      font-size: 1.1rem;
+      margin: 0 0 0.5rem 0;
+    }
+    h3 {
+      font-size: 1rem;
+      margin: 0 0 0.5rem 0;
+    }
     .grid {
       display: grid;
       gap: 0.75rem;
@@ -72,11 +57,10 @@
         grid-template-columns: repeat(3, minmax(0, 1fr));
       }
     }
-
     label {
       display: block;
       font-size: 0.85rem;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.2rem;
       color: #4b5563;
     }
     input, select, textarea {
@@ -90,7 +74,6 @@
       min-height: 60px;
       resize: vertical;
     }
-
     button {
       border-radius: 0.5rem;
       border: none;
@@ -100,548 +83,453 @@
     }
     .btn-primary {
       background: #2563eb;
-      color: white;
-    }
-    .btn-danger {
-      background: #dc2626;
-      color: white;
+      color: #ffffff;
     }
     .btn-secondary {
       background: #e5e7eb;
       color: #111827;
     }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.85rem;
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #d1d5db;
     }
-    th, td {
-      padding: 0.4rem 0.5rem;
-      border-bottom: 1px solid #e5e7eb;
-      text-align: left;
+    .btn-primary:disabled,
+    .btn-secondary:disabled {
+      opacity: 0.6;
+      cursor: default;
     }
-    th {
-      background: #f9fafb;
-      font-weight: 600;
-    }
-    tr:hover td {
-      background: #f3f4f6;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 0.1rem 0.4rem;
-      border-radius: 999px;
-      font-size: 0.7rem;
-    }
-    .badge-attivo { background: #defce7; color: #166534; }
-    .badge-lavorazione { background: #e0f2fe; color: #1d4ed8; }
-    .badge-disdetto { background: #fee2e2; color: #b91c1c; }
-
-    .filters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-bottom: 0.5rem;
-      align-items: center;
-    }
-    .filters input, .filters select {
-      max-width: 200px;
-    }
-
-    .pill {
+    .status {
       font-size: 0.8rem;
-      padding: 0.15rem 0.5rem;
+      padding: 0.25rem 0.5rem;
       border-radius: 999px;
-      background: #eef2ff;
-      color: #4338ca;
+      display: inline-block;
     }
-
-    .text-right { text-align: right; }
+    .status-ok {
+      background: #dcfce7;
+      color: #166534;
+    }
+    .status-new {
+      background: #e0f2fe;
+      color: #1d4ed8;
+    }
+    .status-none {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+    .flex {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
     .mt-1 { margin-top: 0.25rem; }
     .mt-2 { margin-top: 0.5rem; }
     .mb-1 { margin-bottom: 0.25rem; }
     .mb-2 { margin-bottom: 0.5rem; }
     .mb-3 { margin-bottom: 0.75rem; }
-    .flex { display: flex; }
-    .justify-between { justify-content: space-between; }
-    .gap-1 { gap: 0.25rem; }
+    .text-sm { font-size: 0.85rem; }
+    .text-muted { color: #6b7280; }
+    .alert {
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+    .alert-success {
+      background: #dcfce7;
+      color: #166534;
+    }
+    .alert-error {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
   </style>
 </head>
 <body>
   <header>
-    <h1>CRM Negozio <small>- Clienti & Contratti</small></h1>
+    <h1>CRM Contratti - Negozio</h1>
+    <small>Gestione contratti collegati ai clienti tramite codice fiscale</small>
   </header>
 
   <main>
-    <!-- Tabs -->
-    <div class="tabs">
-      <button class="tab-btn active" data-tab="clienti">Clienti</button>
-      <button class="tab-btn" data-tab="contratti">Nuovo Contratto</button>
-      <button class="tab-btn" data-tab="dashboard">Riepilogo Attivazioni</button>
-    </div>
-
-    <!-- SEZIONE CLIENTI -->
-    <section id="tab-clienti" class="card">
-      <h2 class="mb-2">Gestione Clienti</h2>
-      <div class="grid grid-2 mb-3">
-        <div>
-          <h3 class="mb-1">Nuovo Cliente</h3>
-          <form id="form-cliente" class="grid grid-2">
-            <div>
-              <label>Nome</label>
-              <input type="text" id="cl-nome" required />
-            </div>
-            <div>
-              <label>Cognome</label>
-              <input type="text" id="cl-cognome" required />
-            </div>
-            <div>
-              <label>Telefono</label>
-              <input type="tel" id="cl-telefono" />
-            </div>
-            <div>
-              <label>Email</label>
-              <input type="email" id="cl-email" />
-            </div>
-            <div>
-              <label>Codice Fiscale</label>
-              <input type="text" id="cl-cf" />
-            </div>
-            <div>
-              <label>Note</label>
-              <textarea id="cl-note"></textarea>
-            </div>
-            <div>
-              <button type="submit" class="btn-primary mt-1">Salva Cliente</button>
-            </div>
-          </form>
-        </div>
-
-        <div>
-          <h3 class="mb-1">Clienti esistenti</h3>
-          <div class="filters">
-            <input type="text" id="filtro-clienti" placeholder="Cerca per nome / telefono / CF">
-            <button type="button" id="btn-reset-clienti" class="btn-secondary">Reset</button>
-          </div>
-          <div style="max-height: 260px; overflow-y: auto;">
-            <table>
-              <thead>
-                <tr>
-                  <th>Cliente</th>
-                  <th>Contatti</th>
-                  <th>CF</th>
-                  <th class="text-right">Contratti</th>
-                </tr>
-              </thead>
-              <tbody id="tabella-clienti"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SEZIONE CONTRATTI -->
-    <section id="tab-contratti" class="card" style="display:none;">
-      <h2 class="mb-2">Nuovo Contratto / Attivazione</h2>
-      <form id="form-contratto" class="grid grid-3">
-        <div>
-          <label>Cliente</label>
-          <select id="ct-cliente-id" required></select>
-        </div>
-        <div>
-          <label>Tipo Servizio</label>
-          <input type="text" id="ct-servizio" placeholder="es. Fibra, Mobile, Energia" required />
-        </div>
-        <div>
-          <label>Operatore / Brand</label>
-          <input type="text" id="ct-operatore" placeholder="es. TIM, Vodafone..." />
-        </div>
-        <div>
-          <label>Data Attivazione</label>
-          <input type="date" id="ct-data" required />
-        </div>
-        <div>
-          <label>Importo / Canone</label>
-          <input type="number" step="0.01" id="ct-importo" />
-        </div>
-        <div>
-          <label>Stato</label>
-          <select id="ct-stato">
-            <option value="in_lavorazione">In lavorazione</option>
-            <option value="attivo">Attivo</option>
-            <option value="disdetto">Disdetto</option>
-          </select>
-        </div>
-        <div>
-          <label>Note interne</label>
-          <textarea id="ct-note"></textarea>
-        </div>
-        <div>
-          <button type="submit" class="btn-primary mt-1">Salva Contratto</button>
-        </div>
-      </form>
-    </section>
-
-    <!-- SEZIONE DASHBOARD -->
-    <section id="tab-dashboard" class="card" style="display:none;">
-      <h2 class="mb-2">Riepilogo Attivazioni</h2>
-
-      <div class="filters">
-        <input type="text" id="filtro-dashboard-testuale" placeholder="Cerca cliente / servizio / operatore">
-        <select id="filtro-dashboard-stato">
-          <option value="">Tutti gli stati</option>
-          <option value="in_lavorazione">In lavorazione</option>
-          <option value="attivo">Attivo</option>
-          <option value="disdetto">Disdetto</option>
-        </select>
-        <input type="month" id="filtro-dashboard-mese" />
-        <button type="button" id="btn-reset-dashboard" class="btn-secondary">Reset</button>
-      </div>
+    <!-- DATI CLIENTE -->
+    <section class="card">
+      <h2>Dati cliente</h2>
+      <p class="text-sm text-muted mb-2">
+        1️⃣ Inserisci il <strong>codice fiscale</strong> e premi "Cerca cliente".<br>
+        Se il cliente esiste viene caricata l'anagrafica, altrimenti puoi inserirla e sarà creato in automatico.
+      </p>
 
       <div class="grid grid-3 mb-2">
         <div>
-          <div class="pill">Totale contratti</div>
-          <div id="kpi-totale" class="mt-1" style="font-size:1.4rem;font-weight:bold;">0</div>
+          <label for="cl-cf">Codice fiscale</label>
+          <input type="text" id="cl-cf" maxlength="16" placeholder="es. RSSMRA85M01H501Z" />
         </div>
-        <div>
-          <div class="pill">Attivi</div>
-          <div id="kpi-attivi" class="mt-1" style="font-size:1.4rem;font-weight:bold;">0</div>
+        <div class="flex mt-2">
+          <button type="button" class="btn-secondary" id="btn-cerca-cliente">Cerca cliente</button>
+          <button type="button" class="btn-outline" id="btn-pulisci-cliente">Pulisci</button>
         </div>
-        <div>
-          <div class="pill">In lavorazione</div>
-          <div id="kpi-lavorazione" class="mt-1" style="font-size:1.4rem;font-weight:bold;">0</div>
+        <div class="mt-2">
+          <span id="stato-cliente" class="status status-none">Cliente non ancora verificato</span>
         </div>
       </div>
 
-      <div style="max-height: 320px; overflow-y: auto;">
-        <table>
-          <thead>
-            <tr>
-              <th>Data</th>
-              <th>Cliente</th>
-              <th>Servizio</th>
-              <th>Operatore</th>
-              <th>Stato</th>
-              <th class="text-right">Importo</th>
-            </tr>
-          </thead>
-          <tbody id="tabella-contratti"></tbody>
-        </table>
+      <div class="grid grid-3">
+        <div>
+          <label for="cl-nome">Nome</label>
+          <input type="text" id="cl-nome" />
+        </div>
+        <div>
+          <label for="cl-cognome">Cognome</label>
+          <input type="text" id="cl-cognome" />
+        </div>
+        <div>
+          <label for="cl-telefono">Telefono</label>
+          <input type="tel" id="cl-telefono" />
+        </div>
+        <div>
+          <label for="cl-email">Email</label>
+          <input type="email" id="cl-email" />
+        </div>
+        <div class="grid-1">
+          <label for="cl-note">Note cliente</label>
+          <textarea id="cl-note" placeholder="Note interne (opzionale)"></textarea>
+        </div>
       </div>
+    </section>
+
+    <!-- DATI CONTRATTO -->
+    <section class="card">
+      <h2>Dati contratto</h2>
+      <p class="text-sm text-muted mb-2">
+        2️⃣ Compila i dati del contratto. Le date di portabilità e fine vincoli saranno calcolate automaticamente nel foglio Google.
+      </p>
+
+      <form id="form-contratto" class="grid grid-3">
+        <div>
+          <label for="ct-data-contratto">Data contratto</label>
+          <input type="date" id="ct-data-contratto" required />
+        </div>
+        <div>
+          <label for="ct-tipo-cliente">Tipo cliente</label>
+          <select id="ct-tipo-cliente" required>
+            <option value="">Seleziona...</option>
+            <option value="privato">Privato</option>
+            <option value="partitaiva">Partita IVA</option>
+          </select>
+        </div>
+        <div>
+          <label for="ct-tipo-attivazione">Tipo attivazione</label>
+          <select id="ct-tipo-attivazione" required>
+            <option value="">Seleziona...</option>
+            <option value="Mobile">Mobile</option>
+            <option value="Fisso">Fisso</option>
+            <option value="TV">TV</option>
+            <option value="Luce">Luce</option>
+            <option value="Gas">Gas</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="ct-tecnologia">Tecnologia</label>
+          <select id="ct-tecnologia" required>
+            <option value="">Seleziona...</option>
+            <option value="SIM">SIM</option>
+            <option value="FTTC">FTTC</option>
+            <option value="FTTH">FTTH</option>
+            <option value="FWA">FWA</option>
+            <option value="Luce">Luce</option>
+            <option value="Gas">Gas</option>
+            <option value="TV">TV</option>
+          </select>
+        </div>
+        <div>
+          <label for="ct-convergenza">Convergenza</label>
+          <select id="ct-convergenza" required>
+            <option value="">Seleziona...</option>
+            <option value="SI">SI</option>
+            <option value="NO">NO</option>
+          </select>
+        </div>
+        <div>
+          <label for="ct-mnp">MNP (portabilità)</label>
+          <select id="ct-mnp" required>
+            <option value="">Seleziona...</option>
+            <option value="SI">SI</option>
+            <option value="NO">NO</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="ct-data-attivazione">Data attivazione</label>
+          <input type="date" id="ct-data-attivazione" required />
+        </div>
+        <div>
+          <label for="ct-numero-lavorato">Numero lavorato</label>
+          <input type="text" id="ct-numero-lavorato" />
+        </div>
+        <div>
+          <label for="ct-nome-offerta">Nome offerta</label>
+          <input type="text" id="ct-nome-offerta" />
+        </div>
+
+        <div>
+          <label for="ct-costo-offerta">Costo offerta (€/mese)</label>
+          <input type="number" step="0.01" id="ct-costo-offerta" />
+        </div>
+        <div>
+          <label for="ct-vincolo-offerta-mesi">Vincolo offerta (mesi)</label>
+          <input type="number" min="0" id="ct-vincolo-offerta-mesi" />
+        </div>
+        <div>
+          <label for="ct-telefono-incluso">Telefono incluso</label>
+          <select id="ct-telefono-incluso" required>
+            <option value="">Seleziona...</option>
+            <option value="SI">SI</option>
+            <option value="NO">NO</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="ct-imei">IMEI telefono</label>
+          <input type="text" id="ct-imei" />
+        </div>
+        <div>
+          <label for="ct-modello">Modello telefono</label>
+          <input type="text" id="ct-modello" />
+        </div>
+        <div>
+          <label for="ct-tipo-pagamento">Tipo pagamento</label>
+          <select id="ct-tipo-pagamento">
+            <option value="">Seleziona...</option>
+            <option value="SDD">SDD</option>
+            <option value="Carta di credito">Carta di credito</option>
+            <option value="Compass">Compass</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="ct-mesi-vincolo-telefono">Mesi vincolo telefono</label>
+          <input type="number" min="0" id="ct-mesi-vincolo-telefono" />
+        </div>
+
+        <div class="mt-2">
+          <button type="submit" class="btn-primary" id="btn-salva-contratto">
+            Salva contratto
+          </button>
+        </div>
+      </form>
+
+      <div id="messaggi" class="mt-2"></div>
     </section>
   </main>
 
   <script>
-    // -------------------------
-    // GESTIONE STORAGE
-    // -------------------------
-    const STORAGE_KEY = "crm_negozio_v1";
+    // URL della tua Web App Apps Script
+    const API_URL = "https://script.google.com/macros/s/AKfycbyieuxmd0QTNC_N9Vyl1Xdwl_cirgnAo3pWykRgwBHOWdd2YWz31BB6bg6D1aYgUsu7/exec";
 
-    function loadData() {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) {
-        return { clienti: [], contratti: [] };
+    const cfInput = document.getElementById("cl-cf");
+    const statoClienteSpan = document.getElementById("stato-cliente");
+    const btnCercaCliente = document.getElementById("btn-cerca-cliente");
+    const btnPulisciCliente = document.getElementById("btn-pulisci-cliente");
+    const formContratto = document.getElementById("form-contratto");
+    const messaggiDiv = document.getElementById("messaggi");
+
+    const clNome = document.getElementById("cl-nome");
+    const clCognome = document.getElementById("cl-cognome");
+    const clTelefono = document.getElementById("cl-telefono");
+    const clEmail = document.getElementById("cl-email");
+    const clNote = document.getElementById("cl-note");
+
+    function setStatoCliente(tipo, testo) {
+      statoClienteSpan.className = "status";
+      if (tipo === "ok") {
+        statoClienteSpan.classList.add("status-ok");
+      } else if (tipo === "new") {
+        statoClienteSpan.classList.add("status-new");
+      } else {
+        statoClienteSpan.classList.add("status-none");
       }
+      statoClienteSpan.textContent = testo;
+    }
+
+    function pulisciAnagrafica(mantieniCF = true) {
+      if (!mantieniCF) cfInput.value = "";
+      clNome.value = "";
+      clCognome.value = "";
+      clTelefono.value = "";
+      clEmail.value = "";
+      clNote.value = "";
+      setStatoCliente("none", "Cliente non ancora verificato");
+    }
+
+    function mostraMessaggio(testo, tipo) {
+      messaggiDiv.innerHTML = "";
+      if (!testo) return;
+      const div = document.createElement("div");
+      div.className = "alert " + (tipo === "error" ? "alert-error" : "alert-success");
+      div.textContent = testo;
+      messaggiDiv.appendChild(div);
+    }
+
+    async function cercaCliente() {
+      const cf = cfInput.value.trim().toUpperCase();
+      mostraMessaggio("", "");
+      if (!cf || cf.length < 11) {
+        alert("Inserisci un codice fiscale valido (almeno 11 caratteri).");
+        return;
+      }
+
+      btnCercaCliente.disabled = true;
+      setStatoCliente("none", "Ricerca cliente in corso...");
+
       try {
-        const parsed = JSON.parse(raw);
-        return {
-          clienti: Array.isArray(parsed.clienti) ? parsed.clienti : [],
-          contratti: Array.isArray(parsed.contratti) ? parsed.contratti : []
-        };
-      } catch (e) {
-        console.error("Errore parsing dati:", e);
-        return { clienti: [], contratti: [] };
+        const url = API_URL + "?action=getClienteByCF&cf=" + encodeURIComponent(cf);
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("Errore HTTP " + res.status);
+        const data = await res.json();
+
+        if (data.success && data.found && data.cliente) {
+          const c = data.cliente;
+          clNome.value = c.nome || "";
+          clCognome.value = c.cognome || "";
+          clTelefono.value = c.telefono || "";
+          clEmail.value = c.email || "";
+          clNote.value = c.note || "";
+
+          setStatoCliente("ok", "Cliente trovato (ID: " + (c.id || "N/D") + ")");
+          mostraMessaggio("Cliente esistente caricato dall'anagrafica.", "success");
+        } else {
+          // nuovo cliente
+          clNome.value = "";
+          clCognome.value = "";
+          clTelefono.value = "";
+          clEmail.value = "";
+          clNote.value = "";
+          setStatoCliente("new", "Nuovo cliente (non presente in anagrafica)");
+          mostraMessaggio("Nessun cliente trovato con questo CF. Puoi inserire l'anagrafica e verrà creato.", "error");
+        }
+      } catch (err) {
+        console.error(err);
+        setStatoCliente("none", "Errore durante la ricerca");
+        mostraMessaggio("Errore nella comunicazione con il server: " + err.message, "error");
+      } finally {
+        btnCercaCliente.disabled = false;
       }
     }
 
-    function saveData(data) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    }
-
-    let DB = loadData();
-
-    // -------------------------
-    // UTIL
-    // -------------------------
-    function generaId() {
-      return "id_" + Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
-    }
-
-    function formatMoney(v) {
-      if (!v && v !== 0) return "";
-      const num = Number(v);
-      if (Number.isNaN(num)) return "";
-      return num.toFixed(2) + " €";
-    }
-
-    function formatDateItalian(dateStr) {
-      if (!dateStr) return "";
-      const [y, m, d] = dateStr.split("-");
-      if (!y || !m || !d) return dateStr;
-      return d + "/" + m + "/" + y;
-    }
-
-    function badgeStato(stato) {
-      switch (stato) {
-        case "attivo":
-          return '<span class="badge badge-attivo">Attivo</span>';
-        case "in_lavorazione":
-          return '<span class="badge badge-lavorazione">In lavorazione</span>';
-        case "disdetto":
-          return '<span class="badge badge-disdetto">Disdetto</span>';
-        default:
-          return stato || "";
-      }
-    }
-
-    function getClienteById(id) {
-      return DB.clienti.find(c => c.id === id);
-    }
-
-    // -------------------------
-    // RENDER CLIENTI
-    // -------------------------
-    function renderClientiTable(filtroTesto = "") {
-      const tbody = document.getElementById("tabella-clienti");
-      tbody.innerHTML = "";
-
-      const search = filtroTesto.trim().toLowerCase();
-
-      DB.clienti
-        .sort((a, b) => (a.cognome + a.nome).localeCompare(b.cognome + b.nome))
-        .forEach(cliente => {
-          const contrattiCount = DB.contratti.filter(c => c.clienteId === cliente.id).length;
-
-          const testoRicerca = [
-            cliente.nome,
-            cliente.cognome,
-            cliente.telefono,
-            cliente.email,
-            cliente.cf
-          ].join(" ").toLowerCase();
-
-          if (search && !testoRicerca.includes(search)) return;
-
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${cliente.nome} ${cliente.cognome}</td>
-            <td>
-              <div>${cliente.telefono || ""}</div>
-              <div>${cliente.email || ""}</div>
-            </td>
-            <td>${cliente.cf || ""}</td>
-            <td class="text-right">${contrattiCount}</td>
-          `;
-          tbody.appendChild(tr);
-        });
-    }
-
-    function renderClientiSelect() {
-      const select = document.getElementById("ct-cliente-id");
-      select.innerHTML = "";
-
-      if (DB.clienti.length === 0) {
-        const opt = document.createElement("option");
-        opt.value = "";
-        opt.textContent = "Nessun cliente. Aggiungine uno nella sezione Clienti.";
-        select.appendChild(opt);
-        select.disabled = true;
-        return;
-      }
-
-      select.disabled = false;
-
-      DB.clienti
-        .sort((a, b) => (a.cognome + a.nome).localeCompare(b.cognome + b.nome))
-        .forEach(cliente => {
-          const opt = document.createElement("option");
-          opt.value = cliente.id;
-          opt.textContent = `${cliente.cognome} ${cliente.nome} - ${cliente.telefono || ""}`;
-          select.appendChild(opt);
-        });
-    }
-
-    // -------------------------
-    // RENDER CONTRATTI / DASHBOARD
-    // -------------------------
-    function renderContrattiTable() {
-      const tbody = document.getElementById("tabella-contratti");
-      tbody.innerHTML = "";
-
-      const filtroTesto = document.getElementById("filtro-dashboard-testuale").value.trim().toLowerCase();
-      const filtroStato = document.getElementById("filtro-dashboard-stato").value;
-      const filtroMese = document.getElementById("filtro-dashboard-mese").value; // formato YYYY-MM
-
-      let totale = 0;
-      let attivi = 0;
-      let lavorazione = 0;
-
-      DB.contratti
-        .slice()
-        .sort((a, b) => (b.dataAttivazione || "").localeCompare(a.dataAttivazione || ""))
-        .forEach(contratto => {
-          const cliente = getClienteById(contratto.clienteId);
-          const clienteNome = cliente ? (cliente.cognome + " " + cliente.nome) : "Cliente non trovato";
-
-          // Filtri
-          if (filtroStato && contratto.stato !== filtroStato) return;
-          if (filtroMese && (!contratto.dataAttivazione || !contratto.dataAttivazione.startsWith(filtroMese))) return;
-
-          const testoRicerca = [
-            clienteNome,
-            contratto.servizio,
-            contratto.operatore
-          ].join(" ").toLowerCase();
-
-          if (filtroTesto && !testoRicerca.includes(filtroTesto)) return;
-
-          // KPI
-          totale++;
-          if (contratto.stato === "attivo") attivi++;
-          if (contratto.stato === "in_lavorazione") lavorazione++;
-
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${formatDateItalian(contratto.dataAttivazione)}</td>
-            <td>${clienteNome}</td>
-            <td>${contratto.servizio || ""}</td>
-            <td>${contratto.operatore || ""}</td>
-            <td>${badgeStato(contratto.stato)}</td>
-            <td class="text-right">${formatMoney(contratto.importo)}</td>
-          `;
-          tbody.appendChild(tr);
-        });
-
-      document.getElementById("kpi-totale").textContent = totale;
-      document.getElementById("kpi-attivi").textContent = attivi;
-      document.getElementById("kpi-lavorazione").textContent = lavorazione;
-    }
-
-    // -------------------------
-    // EVENTI FORM CLIENTE
-    // -------------------------
-    document.getElementById("form-cliente").addEventListener("submit", function (e) {
+    async function salvaContratto(e) {
       e.preventDefault();
-      const nome = document.getElementById("cl-nome").value.trim();
-      const cognome = document.getElementById("cl-cognome").value.trim();
-      if (!nome || !cognome) {
-        alert("Nome e Cognome sono obbligatori");
+      mostraMessaggio("", "");
+
+      const cf = cfInput.value.trim().toUpperCase();
+      if (!cf || cf.length < 11) {
+        alert("Devi inserire un codice fiscale valido prima di salvare il contratto.");
         return;
       }
 
-      const nuovoCliente = {
-        id: generaId(),
-        nome,
-        cognome,
-        telefono: document.getElementById("cl-telefono").value.trim(),
-        email: document.getElementById("cl-email").value.trim(),
-        cf: document.getElementById("cl-cf").value.trim(),
-        note: document.getElementById("cl-note").value.trim(),
-        creatoIl: new Date().toISOString()
+      // Controllo minimo su nome/cognome
+      if (!clNome.value.trim() || !clCognome.value.trim()) {
+        const conferma = confirm("Nome e cognome non sono compilati. Vuoi continuare lo stesso?");
+        if (!conferma) return;
+      }
+
+      const payload = {
+        action: "addContrattoByCF",
+        cf: cf,
+        nome: clNome.value.trim(),
+        cognome: clCognome.value.trim(),
+        telefono: clTelefono.value.trim(),
+        email: clEmail.value.trim(),
+        noteCliente: clNote.value.trim(),
+        dataContratto: document.getElementById("ct-data-contratto").value,
+        tipoCliente: document.getElementById("ct-tipo-cliente").value,
+        tipoAttivazione: document.getElementById("ct-tipo-attivazione").value,
+        tecnologia: document.getElementById("ct-tecnologia").value,
+        convergenza: document.getElementById("ct-convergenza").value,
+        mnp: document.getElementById("ct-mnp").value,
+        dataAttivazione: document.getElementById("ct-data-attivazione").value,
+        numeroLavorato: document.getElementById("ct-numero-lavorato").value.trim(),
+        nomeOfferta: document.getElementById("ct-nome-offerta").value.trim(),
+        costoOfferta: document.getElementById("ct-costo-offerta").value,
+        vincoloOffertaMesi: document.getElementById("ct-vincolo-offerta-mesi").value,
+        telefonoIncluso: document.getElementById("ct-telefono-incluso").value,
+        imei: document.getElementById("ct-imei").value.trim(),
+        modello: document.getElementById("ct-modello").value.trim(),
+        tipoPagamento: document.getElementById("ct-tipo-pagamento").value,
+        mesiVincoloTelefono: document.getElementById("ct-mesi-vincolo-telefono").value
       };
 
-      DB.clienti.push(nuovoCliente);
-      saveData(DB);
-
-      this.reset();
-      renderClientiTable(document.getElementById("filtro-clienti").value);
-      renderClientiSelect();
-      alert("Cliente salvato");
-    });
-
-    document.getElementById("filtro-clienti").addEventListener("input", function () {
-      renderClientiTable(this.value);
-    });
-
-    document.getElementById("btn-reset-clienti").addEventListener("click", function () {
-      document.getElementById("filtro-clienti").value = "";
-      renderClientiTable("");
-    });
-
-    // -------------------------
-    // EVENTI FORM CONTRATTO
-    // -------------------------
-    document.getElementById("form-contratto").addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      if (DB.clienti.length === 0) {
-        alert("Devi prima inserire almeno un cliente.");
+      // Controllo campi obbligatori principali
+      if (!payload.dataContratto || !payload.tipoCliente || !payload.tipoAttivazione ||
+          !payload.tecnologia || !payload.convergenza || !payload.mnp || !payload.dataAttivazione ||
+          !payload.telefonoIncluso) {
+        alert("Compila tutti i campi obbligatori del contratto (quelli con menu a tendina e le date).");
         return;
       }
 
-      const clienteId = document.getElementById("ct-cliente-id").value;
-      const servizio = document.getElementById("ct-servizio").value.trim();
-      const dataAttivazione = document.getElementById("ct-data").value;
+      const btnSalva = document.getElementById("btn-salva-contratto");
+      btnSalva.disabled = true;
+      btnSalva.textContent = "Salvataggio in corso...";
 
-      if (!clienteId || !servizio || !dataAttivazione) {
-        alert("Cliente, Tipo Servizio e Data Attivazione sono obbligatori.");
-        return;
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error("Errore HTTP " + res.status);
+
+        const data = await res.json();
+        if (!data.success) {
+          throw new Error(data.error || "Errore sconosciuto dal server");
+        }
+
+        const msg = `Contratto salvato correttamente. ID contratto: ${data.contrattoId || "N/D"}, ` +
+                    `ID cliente: ${data.clienteId || "N/D"} ` +
+                    (data.nuovoClienteCreato ? "(nuovo cliente creato)." : "(cliente esistente).");
+
+        mostraMessaggio(msg, "success");
+
+        // Pulisci solo i dati contratto, mantieni il cliente
+        formContratto.reset();
+
+        // Reimposta date con oggi come default
+        setDefaultDates();
+      } catch (err) {
+        console.error(err);
+        mostraMessaggio("Errore nel salvataggio del contratto: " + err.message, "error");
+      } finally {
+        btnSalva.disabled = false;
+        btnSalva.textContent = "Salva contratto";
       }
+    }
 
-      const nuovoContratto = {
-        id: generaId(),
-        clienteId,
-        servizio,
-        operatore: document.getElementById("ct-operatore").value.trim(),
-        dataAttivazione,
-        importo: document.getElementById("ct-importo").value,
-        stato: document.getElementById("ct-stato").value,
-        note: document.getElementById("ct-note").value.trim(),
-        creatoIl: new Date().toISOString()
-      };
+    function setDefaultDates() {
+      const oggi = new Date();
+      const yyyy = oggi.getFullYear();
+      const mm = String(oggi.getMonth() + 1).padStart(2, "0");
+      const dd = String(oggi.getDate()).padStart(2, "0");
+      const todayStr = `${yyyy}-${mm}-${dd}`;
+      document.getElementById("ct-data-contratto").value = todayStr;
+      document.getElementById("ct-data-attivazione").value = todayStr;
+    }
 
-      DB.contratti.push(nuovoContratto);
-      saveData(DB);
-
-      this.reset();
-      renderContrattiTable();
-      alert("Contratto salvato");
+    // Event listeners
+    btnCercaCliente.addEventListener("click", cercaCliente);
+    btnPulisciCliente.addEventListener("click", () => {
+      pulisciAnagrafica(false);
+      mostraMessaggio("", "");
     });
-
-    // -------------------------
-    // EVENTI FILTRI DASHBOARD
-    // -------------------------
-    document.getElementById("filtro-dashboard-testuale").addEventListener("input", renderContrattiTable);
-    document.getElementById("filtro-dashboard-stato").addEventListener("change", renderContrattiTable);
-    document.getElementById("filtro-dashboard-mese").addEventListener("change", renderContrattiTable);
-
-    document.getElementById("btn-reset-dashboard").addEventListener("click", function () {
-      document.getElementById("filtro-dashboard-testuale").value = "";
-      document.getElementById("filtro-dashboard-stato").value = "";
-      document.getElementById("filtro-dashboard-mese").value = "";
-      renderContrattiTable();
+    cfInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        cercaCliente();
+      }
     });
+    formContratto.addEventListener("submit", salvaContratto);
 
-    // -------------------------
-    // GESTIONE TAB
-    // -------------------------
-    document.querySelectorAll(".tab-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-
-        const tab = btn.dataset.tab;
-        document.getElementById("tab-clienti").style.display = tab === "clienti" ? "block" : "none";
-        document.getElementById("tab-contratti").style.display = tab === "contratti" ? "block" : "none";
-        document.getElementById("tab-dashboard").style.display = tab === "dashboard" ? "block" : "none";
-      });
-    });
-
-    // -------------------------
-    // INIT
-    // -------------------------
-    // Se oggi serve un valore di default per data contratto
-    const oggi = new Date();
-    const yyyy = oggi.getFullYear();
-    const mm = String(oggi.getMonth() + 1).padStart(2, "0");
-    const dd = String(oggi.getDate()).padStart(2, "0");
-    document.getElementById("ct-data").value = `${yyyy}-${mm}-${dd}`;
-
-    renderClientiTable();
-    renderClientiSelect();
-    renderContrattiTable();
+    // Init
+    setDefaultDates();
   </script>
 </body>
 </html>
