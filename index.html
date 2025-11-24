@@ -504,7 +504,7 @@
   </div>
 
   <script>
-    // ===== URL Apps Script NUOVO =====
+    // ===== URL Apps Script =====
     const API_URL = 'https://script.google.com/macros/s/AKfycbzR7IjTHav2JDDfnHSAWS5ybFFp5oNB6FJbmOHwT-Xl0CflfGjUF22zUjTxEpM9FVVEyg/exec';
 
     let clienti = [];
@@ -1222,6 +1222,7 @@
       btnCsvImport.disabled = false;
     });
 
+    // ---- NUOVA VERSIONE runCsvImport ----
     async function runCsvImport() {
       if (!csvRows.length) {
         alert('Prima fai una Anteprima del CSV.');
@@ -1229,6 +1230,8 @@
       }
       csvProgressWrapper.style.display = 'block';
       let processed = 0;
+      let ok = 0;
+      let ko = 0;
       const total = csvRows.length;
       csvProgressText.textContent = `0 / ${total}`;
       csvProgressBar.style.width = '0%';
@@ -1249,6 +1252,7 @@
             note: row.note_cliente || ''
           };
           const idCliente = await ensureClienteEsistente(clientData);
+
           const payload = {
             action: 'createContratto',
             id_cliente: idCliente,
@@ -1273,21 +1277,32 @@
             data_fine_vincolo_offerta: row.data_fine_vincolo_offerta || '',
             data_fine_vincolo_telefono: row.data_fine_vincolo_telefono || ''
           };
-          await fetch(API_URL, {
+
+          const res = await fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
           });
+          const data = await res.json();
+
+          if (data.success) {
+            ok++;
+          } else {
+            ko++;
+            console.error('Errore createContratto:', data.error);
+          }
         } catch (err) {
+          ko++;
           console.error('Errore riga CSV', err);
         }
+
         processed++;
         csvProgressText.textContent = `${processed} / ${total}`;
         const perc = Math.round(processed * 100 / total);
         csvProgressBar.style.width = perc + '%';
       }
 
-      setStatus(`Import completato: ${csvRows.length} righe.`);
+      setStatus(`Import finito. OK: ${ok}, Errori: ${ko}`);
       btnCsvImport.disabled = false;
       btnCsvPreview.disabled = false;
       await loadClienti();
