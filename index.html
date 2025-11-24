@@ -399,7 +399,6 @@
           setStatoCliente("ok", "Cliente trovato (ID: " + (c.id || "N/D") + ")");
           mostraMessaggio("Cliente esistente caricato dall'anagrafica.", "success");
         } else {
-          // nuovo cliente
           clNome.value = "";
           clCognome.value = "";
           clTelefono.value = "";
@@ -427,7 +426,6 @@
         return;
       }
 
-      // Controllo minimo su nome/cognome
       if (!clNome.value.trim() || !clCognome.value.trim()) {
         const conferma = confirm("Nome e cognome non sono compilati. Vuoi continuare lo stesso?");
         if (!conferma) return;
@@ -459,11 +457,10 @@
         mesiVincoloTelefono: document.getElementById("ct-mesi-vincolo-telefono").value
       };
 
-      // Controllo campi obbligatori principali
       if (!payload.dataContratto || !payload.tipoCliente || !payload.tipoAttivazione ||
           !payload.tecnologia || !payload.convergenza || !payload.mnp || !payload.dataAttivazione ||
           !payload.telefonoIncluso) {
-        alert("Compila tutti i campi obbligatori del contratto (quelli con menu a tendina e le date).");
+        alert("Compila tutti i campi obbligatori del contratto (menu a tendina e le date).");
         return;
       }
 
@@ -472,11 +469,12 @@
       btnSalva.textContent = "Salvataggio in corso...";
 
       try {
+        // Nessun Content-Type per evitare preflight CORS
         const res = await fetch(API_URL, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
+
         if (!res.ok) throw new Error("Errore HTTP " + res.status);
 
         const data = await res.json();
@@ -489,11 +487,7 @@
                     (data.nuovoClienteCreato ? "(nuovo cliente creato)." : "(cliente esistente).");
 
         mostraMessaggio(msg, "success");
-
-        // Pulisci solo i dati contratto, mantieni il cliente
         formContratto.reset();
-
-        // Reimposta date con oggi come default
         setDefaultDates();
       } catch (err) {
         console.error(err);
@@ -514,7 +508,6 @@
       document.getElementById("ct-data-attivazione").value = todayStr;
     }
 
-    // Event listeners
     btnCercaCliente.addEventListener("click", cercaCliente);
     btnPulisciCliente.addEventListener("click", () => {
       pulisciAnagrafica(false);
@@ -528,7 +521,6 @@
     });
     formContratto.addEventListener("submit", salvaContratto);
 
-    // Init
     setDefaultDates();
   </script>
 </body>
