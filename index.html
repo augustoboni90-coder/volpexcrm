@@ -1,932 +1,925 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <title>CRM Contratti - Negozio</title>
+  <title>CRM Clienti & Contratti</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    * { box-sizing: border-box; }
     body {
-      margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f3f4f6;
-      color: #111827;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
     }
     header {
-      background: #111827;
-      color: #f9fafb;
-      padding: 1rem 1.5rem;
+      background: #1f2933;
+      color: white;
+      padding: 16px 24px;
     }
     header h1 {
       margin: 0;
-      font-size: 1.3rem;
+      font-size: 20px;
     }
-    header small {
-      color: #9ca3af;
-      font-size: 0.8rem;
+    .container {
+      padding: 16px 24px 32px;
     }
-    main {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 1rem;
+    .top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 16px;
     }
-    .card {
-      background: #ffffff;
-      border-radius: 0.75rem;
-      padding: 1rem;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-      margin-bottom: 1rem;
-    }
-    h2 {
-      font-size: 1.1rem;
-      margin: 0 0 0.5rem 0;
-    }
-    .section-title {
-      font-weight: 600;
-      font-size: 0.95rem;
-      margin-top: 0.5rem;
-      margin-bottom: 0.25rem;
-      color: #374151;
-    }
-    .grid {
-      display: grid;
-      gap: 0.75rem;
-    }
-    @media (min-width: 768px) {
-      .grid-2 {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-      .grid-3 {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-    }
-    label {
-      display: block;
-      font-size: 0.85rem;
-      margin-bottom: 0.2rem;
-      color: #4b5563;
-    }
-    .required::after {
-      content: " *";
-      color: #b91c1c;
-      font-weight: 600;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 0.4rem 0.5rem;
-      border-radius: 0.5rem;
-      border: 1px solid #d1d5db;
-      font-size: 0.9rem;
-      background: #ffffff;
-    }
-    textarea {
-      min-height: 60px;
-      resize: vertical;
+    .top-bar input[type="text"] {
+      flex: 1;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      min-width: 200px;
     }
     button {
-      border-radius: 0.5rem;
+      padding: 8px 14px;
+      border-radius: 6px;
       border: none;
-      padding: 0.5rem 0.9rem;
-      font-size: 0.9rem;
       cursor: pointer;
+      font-size: 14px;
     }
     .btn-primary {
       background: #2563eb;
-      color: #ffffff;
+      color: #fff;
     }
     .btn-secondary {
       background: #e5e7eb;
       color: #111827;
     }
-    .btn-outline {
-      background: transparent;
-      border: 1px solid #d1d5db;
-    }
-    .btn-primary:disabled,
-    .btn-secondary:disabled {
-      opacity: 0.6;
-      cursor: default;
+    .btn-danger {
+      background: #dc2626;
+      color: #fff;
     }
     .status {
-      font-size: 0.8rem;
-      padding: 0.25rem 0.5rem;
-      border-radius: 999px;
-      display: inline-block;
+      font-size: 13px;
+      color: #4b5563;
+      margin-left: auto;
     }
-    .status-ok {
-      background: #dcfce7;
-      color: #166534;
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.7fr);
+      gap: 16px;
     }
-    .status-new {
-      background: #e0f2fe;
-      color: #1d4ed8;
-    }
-    .status-none {
-      background: #fee2e2;
-      color: #b91c1c;
-    }
-    .flex {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .flex-between {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .mt-1 { margin-top: 0.25rem; }
-    .mt-2 { margin-top: 0.5rem; }
-    .mb-1 { margin-bottom: 0.25rem; }
-    .mb-2 { margin-bottom: 0.5rem; }
-    .mb-3 { margin-bottom: 0.75rem; }
-    .text-sm { font-size: 0.85rem; }
-    .text-muted { color: #6b7280; }
-    .alert {
-      padding: 0.5rem 0.75rem;
-      border-radius: 0.5rem;
-      font-size: 0.85rem;
-      margin-top: 0.5rem;
-    }
-    .alert-success {
-      background: #dcfce7;
-      color: #166534;
-    }
-    .alert-error {
-      background: #fee2e2;
-      color: #b91c1c;
-    }
-    .subtle {
-      font-size: 0.78rem;
-      color: #9ca3af;
-    }
-    .hidden {
-      display: none !important;
+    @media (max-width: 1000px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.8rem;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+    }
+    thead {
+      background: #111827;
+      color: #f9fafb;
     }
     th, td {
-      padding: 0.35rem 0.4rem;
+      padding: 6px 8px;
+      font-size: 12px;
       border-bottom: 1px solid #e5e7eb;
-      text-align: left;
     }
-    th {
+    tbody tr {
+      cursor: pointer;
+    }
+    tbody tr:hover {
       background: #f9fafb;
-      font-weight: 600;
     }
-    tr:hover td {
-      background: #f3f4f6;
+    tbody tr.selected {
+      background: #dbeafe;
+    }
+    form {
+      background: white;
+      padding: 16px;
+      border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    form h2 {
+      margin: 0 0 4px;
+      font-size: 16px;
+    }
+    label {
+      font-size: 13px;
+      font-weight: 500;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="date"],
+    input[type="number"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid #d1d5db;
+      font-size: 13px;
+      box-sizing: border-box;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .form-actions {
+      margin-top: 8px;
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+    small {
+      font-size: 11px;
+      color: #6b7280;
+    }
+    h3 {
+      margin: 8px 0;
+      font-size: 14px;
+    }
+    .section-card {
+      background: white;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>CRM Contratti - Negozio</h1>
-    <small>Gestione contratti collegati ai clienti tramite codice fiscale</small>
+    <h1>CRM Clienti & Contratti (Google Sheet)</h1>
   </header>
 
-  <main>
-    <!-- SEZIONE 1: NUOVO CONTRATTO -->
-    <section class="card">
-      <div class="flex-between mb-1">
-        <h2>Nuovo contratto</h2>
-        <span class="subtle">Passo 1 e 2</span>
-      </div>
+  <div class="container">
+    <div class="top-bar">
+      <input type="text" id="searchClienti" placeholder="Cerca cliente per nome, cognome, telefono, email..." />
+      <button class="btn-primary" id="btnNewCliente">Nuovo cliente</button>
+      <span class="status" id="status">Caricamento...</span>
+    </div>
 
-      <div class="section-title">Dati cliente</div>
-      <p class="text-sm text-muted mb-2">
-        1️⃣ Inserisci il <strong>codice fiscale</strong> e premi "Cerca cliente".
-      </p>
-
-      <div class="grid grid-3 mb-2">
-        <div>
-          <label for="cl-cf" class="required">Codice fiscale</label>
-          <input type="text" id="cl-cf" maxlength="16" placeholder="es. RSSMRA85M01H501Z" />
-        </div>
-        <div class="flex mt-2">
-          <button type="button" class="btn-secondary" id="btn-cerca-cliente">Cerca cliente</button>
-          <button type="button" class="btn-outline" id="btn-pulisci-cliente">Pulisci</button>
-        </div>
-        <div class="mt-2">
-          <span id="stato-cliente" class="status status-none">Cliente non ancora verificato</span>
-        </div>
-      </div>
-
-      <div class="grid grid-3 mb-3">
-        <div>
-          <label for="cl-nome">Nome</label>
-          <input type="text" id="cl-nome" />
-        </div>
-        <div>
-          <label for="cl-cognome">Cognome</label>
-          <input type="text" id="cl-cognome" />
-        </div>
-        <div>
-          <label for="cl-telefono">Telefono</label>
-          <input type="tel" id="cl-telefono" />
-        </div>
-        <div>
-          <label for="cl-email">Email</label>
-          <input type="email" id="cl-email" />
-        </div>
-        <div class="grid-1">
-          <label for="cl-note">Note cliente</label>
-          <textarea id="cl-note"></textarea>
-        </div>
-      </div>
-
-      <div class="section-title">Dati contratto</div>
-
-      <form id="form-contratto" class="grid">
-        <div>
-          <div class="section-title">Contratto</div>
-          <div class="grid grid-3">
-            <div>
-              <label for="ct-data-contratto" class="required">Data contratto</label>
-              <input type="date" id="ct-data-contratto" required />
-            </div>
-            <div>
-              <label for="ct-tipo-cliente" class="required">Tipo cliente</label>
-              <select id="ct-tipo-cliente" required>
-                <option value="">Seleziona...</option>
-                <option value="privato">Privato</option>
-                <option value="partitaiva">Partita IVA</option>
-              </select>
-            </div>
-            <div>
-              <label for="ct-tipo-attivazione" class="required">Tipo attivazione</label>
-              <select id="ct-tipo-attivazione" required>
-                <option value="">Seleziona...</option>
-                <option value="Mobile">Mobile</option>
-                <option value="Fisso">Fisso</option>
-                <option value="TV">TV</option>
-                <option value="Luce">Luce</option>
-                <option value="Gas">Gas</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <div class="section-title">Linea & portabilità</div>
-          <div class="grid grid-3">
-            <div>
-              <label for="ct-tecnologia" class="required">Tecnologia</label>
-              <select id="ct-tecnologia" required>
-                <option value="">Seleziona...</option>
-                <option value="SIM">SIM</option>
-                <option value="FTTC">FTTC</option>
-                <option value="FTTH">FTTH</option>
-                <option value="FWA">FWA</option>
-                <option value="Luce">Luce</option>
-                <option value="Gas">Gas</option>
-                <option value="TV">TV</option>
-              </select>
-            </div>
-            <div>
-              <label for="ct-convergenza" class="required">Convergenza</label>
-              <select id="ct-convergenza" required>
-                <option value="">Seleziona...</option>
-                <option value="SI">SI</option>
-                <option value="NO">NO</option>
-              </select>
-            </div>
-            <div>
-              <label for="ct-mnp" class="required">MNP</label>
-              <select id="ct-mnp" required>
-                <option value="">Seleziona...</option>
-                <option value="SI">SI</option>
-                <option value="NO">NO</option>
-              </select>
-            </div>
-            <div>
-              <label for="ct-data-attivazione" class="required">Data attivazione</label>
-              <input type="date" id="ct-data-attivazione" required />
-            </div>
-            <div>
-              <label for="ct-numero-lavorato">Numero lavorato</label>
-              <input type="text" id="ct-numero-lavorato" />
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <div class="section-title">Offerta & telefono</div>
-          <div class="grid grid-3">
-            <div>
-              <label for="ct-nome-offerta">Nome offerta</label>
-              <input type="text" id="ct-nome-offerta" />
-            </div>
-            <div>
-              <label for="ct-costo-offerta">Costo offerta (€/mese)</label>
-              <input type="number" step="0.01" id="ct-costo-offerta" />
-            </div>
-            <div>
-              <label for="ct-vincolo-offerta-mesi">Vincolo offerta (mesi)</label>
-              <input type="number" min="0" id="ct-vincolo-offerta-mesi" />
-            </div>
-            <div>
-              <label for="ct-tipo-pagamento">Tipo pagamento</label>
-              <select id="ct-tipo-pagamento">
-                <option value="">Seleziona...</option>
-                <option value="SDD">SDD</option>
-                <option value="Carta di credito">Carta di credito</option>
-                <option value="Compass">Compass</option>
-              </select>
-            </div>
-            <div>
-              <label for="ct-telefono-incluso" class="required">Telefono incluso</label>
-              <select id="ct-telefono-incluso" required>
-                <option value="">Seleziona...</option>
-                <option value="SI">SI</option>
-                <option value="NO">NO</option>
-              </select>
-            </div>
-          </div>
-
-          <div id="blocco-telefono" class="mt-2">
-            <div class="section-title">Dettagli telefono</div>
-            <div class="grid grid-3">
-              <div>
-                <label for="ct-imei">IMEI telefono</label>
-                <input type="text" id="ct-imei" />
-              </div>
-              <div>
-                <label for="ct-modello">Modello telefono</label>
-                <input type="text" id="ct-modello" />
-              </div>
-              <div>
-                <label for="ct-mesi-vincolo-telefono">Mesi vincolo telefono</label>
-                <input type="number" min="0" id="ct-mesi-vincolo-telefono" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-2">
-          <button type="submit" class="btn-primary" id="btn-salva-contratto">
-            Salva contratto
-          </button>
-        </div>
-      </form>
-
-      <div id="messaggi" class="mt-2"></div>
-    </section>
-
-    <!-- SEZIONE 2: GESTIONE CLIENTI & CONTRATTI -->
-    <section class="card">
-      <div class="flex-between mb-1">
-        <h2>Gestione clienti & contratti</h2>
-        <span class="subtle">Ricerca e modifica anagrafica</span>
-      </div>
-
-      <div class="grid grid-3 mb-2">
-        <div>
-          <label for="gest-search">Cerca cliente</label>
-          <input type="text" id="gest-search" placeholder="Nome, cognome, telefono, CF..." />
-        </div>
-        <div class="flex mt-2">
-          <button type="button" class="btn-secondary" id="btn-gest-search">Cerca</button>
-          <button type="button" class="btn-outline" id="btn-gest-reset">Reset</button>
-        </div>
-      </div>
-
-      <div style="max-height: 220px; overflow-y: auto; margin-bottom: 0.75rem;">
+    <div class="layout">
+      <!-- COLONNA SINISTRA: CLIENTI -->
+      <div>
         <table>
           <thead>
             <tr>
               <th>Nome</th>
-              <th>CF</th>
+              <th>Cognome</th>
               <th>Telefono</th>
               <th>Email</th>
-              <th></th>
             </tr>
           </thead>
-          <tbody id="gest-tabella-clienti"></tbody>
+          <tbody id="tbodyClienti">
+            <!-- righe clienti -->
+          </tbody>
         </table>
+
+        <form id="formCliente">
+          <h2>Dati cliente</h2>
+          <input type="hidden" id="cli_id_cliente" />
+
+          <div class="form-row">
+            <div>
+              <label for="cli_nome">Nome</label>
+              <input type="text" id="cli_nome" required />
+            </div>
+            <div>
+              <label for="cli_cognome">Cognome</label>
+              <input type="text" id="cli_cognome" required />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div>
+              <label for="cli_telefono">Telefono</label>
+              <input type="text" id="cli_telefono" />
+            </div>
+            <div>
+              <label for="cli_email">Email</label>
+              <input type="email" id="cli_email" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div>
+              <label for="cli_codice_fiscale">Codice fiscale</label>
+              <input type="text" id="cli_codice_fiscale" />
+            </div>
+            <div>
+              <label for="cli_data_nascita">Data nascita</label>
+              <input type="date" id="cli_data_nascita" />
+            </div>
+          </div>
+
+          <div>
+            <label for="cli_note">Note</label>
+            <textarea id="cli_note"></textarea>
+          </div>
+
+          <small id="cli_info"></small>
+
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" id="btnClearCliente">Svuota</button>
+            <button type="button" class="btn-danger" id="btnDeleteCliente">Elimina cliente</button>
+            <button type="submit" class="btn-primary">Salva cliente</button>
+          </div>
+        </form>
       </div>
 
-      <div id="gest-dettagli" class="hidden">
-        <div class="section-title">Anagrafica selezionata</div>
-        <div class="grid grid-3 mb-2">
-          <div>
-            <label>ID cliente</label>
-            <input type="text" id="gest-id" readonly />
-          </div>
-          <div>
-            <label>Codice fiscale</label>
-            <input type="text" id="gest-cf" readonly />
-          </div>
-          <div>
-            <label>Data nascita</label>
-            <input type="text" id="gest-nascita" readonly />
-          </div>
-
-          <div>
-            <label for="gest-nome">Nome</label>
-            <input type="text" id="gest-nome" />
-          </div>
-          <div>
-            <label for="gest-cognome">Cognome</label>
-            <input type="text" id="gest-cognome" />
-          </div>
-          <div>
-            <label for="gest-telefono">Telefono</label>
-            <input type="text" id="gest-telefono" />
-          </div>
-          <div>
-            <label for="gest-email">Email</label>
-            <input type="text" id="gest-email" />
-          </div>
-          <div class="grid-1">
-            <label for="gest-note">Note</label>
-            <textarea id="gest-note"></textarea>
-          </div>
-        </div>
-        <button type="button" class="btn-primary mb-2" id="btn-gest-salva-anagrafica">Salva anagrafica</button>
-
-        <div class="section-title">Contratti del cliente</div>
-        <div style="max-height: 220px; overflow-y: auto;">
+      <!-- COLONNA DESTRA: CONTRATTI -->
+      <div>
+        <div class="section-card">
+          <h3>Contratti del cliente selezionato</h3>
           <table>
             <thead>
               <tr>
-                <th>Data contratto</th>
-                <th>Tipo</th>
+                <th>ID contratto</th>
+                <th>Data</th>
+                <th>Tipo cliente</th>
                 <th>Tecnologia</th>
                 <th>Offerta</th>
-                <th>Costo</th>
+                <th>Numero</th>
               </tr>
             </thead>
-            <tbody id="gest-tabella-contratti-cliente"></tbody>
+            <tbody id="tbodyContratti">
+              <!-- righe contratti -->
+            </tbody>
           </table>
         </div>
-      </div>
-    </section>
 
-    <!-- SEZIONE 3: ULTIMI CONTRATTI -->
-    <section class="card">
-      <div class="flex-between mb-1">
-        <h2>Ultimi contratti</h2>
-        <span class="subtle">Filtro per mese / tipo / offerta</span>
-      </div>
+        <form id="formContratto">
+          <h2>Dati contratto</h2>
+          <input type="hidden" id="ctr_id_contratto" />
 
-      <div class="grid grid-3 mb-2">
-        <div>
-          <label for="ult-mese">Mese (data contratto)</label>
-          <input type="month" id="ult-mese" />
-        </div>
-        <div>
-          <label for="ult-tipo-attivazione">Tipo attivazione</label>
-          <select id="ult-tipo-attivazione">
-            <option value="">Tutti</option>
-            <option value="Mobile">Mobile</option>
-            <option value="Fisso">Fisso</option>
-            <option value="TV">TV</option>
-            <option value="Luce">Luce</option>
-            <option value="Gas">Gas</option>
-          </select>
-        </div>
-        <div>
-          <label for="ult-operatore">Operatore / offerta</label>
-          <input type="text" id="ult-operatore" placeholder="TIM, Vodafone, 'Super Fibra'..." />
-        </div>
-      </div>
+          <div class="form-row">
+            <div>
+              <label>ID cliente</label>
+              <input type="text" id="ctr_id_cliente" readonly />
+            </div>
+            <div>
+              <label>Codice fiscale</label>
+              <input type="text" id="ctr_codice_fiscale" />
+            </div>
+          </div>
 
-      <div style="max-height: 260px; overflow-y: auto;">
-        <table>
-          <thead>
-            <tr>
-              <th>Data contratto</th>
-              <th>CF</th>
-              <th>Tipo</th>
-              <th>Tecnologia</th>
-              <th>Offerta</th>
-              <th>Costo</th>
-            </tr>
-          </thead>
-          <tbody id="ult-tabella-contratti"></tbody>
-        </table>
+          <div class="form-row">
+            <div>
+              <label>Data contratto</label>
+              <input type="date" id="ctr_data_contratto" />
+            </div>
+            <div>
+              <label>Tipo cliente</label>
+              <select id="ctr_tipo_cliente">
+                <option value="">--</option>
+                <option value="privato">Privato</option>
+                <option value="business">Business</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div>
+              <label>Tipo attivazione</label>
+              <input type="text" id="ctr_tipo_attivazione" placeholder="Mobile / Fisso / etc." />
+            </div>
+            <div>
+              <label>Tecnologia</label>
+              <input type="text" id="ctr_tecnologia" placeholder="SIM / FTTH / etc." />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div>
+              <label>Convergenza</label>
+              <select id="ctr_convergenza">
+                <option value="">--</option>
+                <option value="SI">SI</option>
+                <option value="NO">NO</option>
+              </select>
+            </div>
+            <div>
+              <label>MNP</label>
+              <select id="ctr_mnp">
+                <option value="">--</option>
+                <option value="SI">SI</option>
+                <option value="NO">NO</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div>
+              <label>Data attivazione</label>
+              <input type="date" id="ctr_data_attivazione" />
+            </div>
+            <div>
+              <label>Data portabilità</label>
+              <input type="date" id="ctr_data_portabilita" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div>
+              <label>Numero lavorato</label>
+              <input type="text" id="ctr_numero_lavorato" />
+            </div>
+            <div>
+              <label>Nome offerta</label>
+              <input type="text" id="ctr_nome_offerta" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div>
+              <label>Costo offerta (€)</label>
+              <input type="number" step="0.01" id="ctr_costo_offerta" />
+            </div>
+            <div>
+              <label>Vincolo offerta (mesi)</label>
+              <input type="number" id="ctr_vincolo_offerta_mesi" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div>
+              <label>Telefono incluso</label>
+              <select id="ctr_telefono_incluso">
+                <option value="">--</option>
+                <option value="SI">SI</option>
+                <option value="NO">NO</option>
+              </select>
+            </div>
+            <div>
+              <label>IMEI</label>
+              <input type="text" id="ctr_imei" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div>
+              <label>Modello telefono</label>
+              <input type="text" id="ctr_modello" />
+            </div>
+            <div>
+              <label>Tipo pagamento</label>
+              <input type="text" id="ctr_tipo_pagamento" placeholder="RID / Carta / Bollettino" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div>
+              <label>Mesi vincolo telefono</label>
+              <input type="number" id="ctr_mesi_vincolo_telefono" />
+            </div>
+            <div>
+              <label>Fine vincolo offerta</label>
+              <input type="date" id="ctr_data_fine_vincolo_offerta" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div>
+              <label>Fine vincolo telefono</label>
+              <input type="date" id="ctr_data_fine_vincolo_telefono" />
+            </div>
+            <div></div>
+          </div>
+
+          <small id="ctr_info"></small>
+
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" id="btnClearContratto">Svuota</button>
+            <button type="button" class="btn-danger" id="btnDeleteContratto">Elimina contratto</button>
+            <button type="submit" class="btn-primary">Salva contratto</button>
+          </div>
+        </form>
       </div>
-    </section>
-  </main>
+    </div>
+  </div>
 
   <script>
-    // URL della tua Web App
-    const API_URL = "https://script.google.com/macros/s/AKfycbw9vio2ZXFx4Jcr0gXUJ9w5FjV78GqoSPtr9Jnv-UzgPNEXH481xH6oi5J69ovetuoC/exec";
+    // URL della tua web app Apps Script
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxb0GIQqFXKJl8HRfXzFG7A-sdQHxzBWUotromEyF2zN_pS2RUmL2f20EQ0g7kSMga7/exec';
 
-    function buildUrl(params) {
-      const sep = API_URL.includes("?") ? "&" : "?";
-      return API_URL + sep + params;
+    let clienti = [];
+    let contratti = [];
+    let selectedClienteId = null;
+    let selectedContrattoId = null;
+
+    const statusEl = document.getElementById('status');
+
+    const searchClientiEl = document.getElementById('searchClienti');
+    const tbodyClienti = document.getElementById('tbodyClienti');
+
+    const formCliente = document.getElementById('formCliente');
+    const cli_id_cliente = document.getElementById('cli_id_cliente');
+    const cli_nome = document.getElementById('cli_nome');
+    const cli_cognome = document.getElementById('cli_cognome');
+    const cli_telefono = document.getElementById('cli_telefono');
+    const cli_email = document.getElementById('cli_email');
+    const cli_codice_fiscale = document.getElementById('cli_codice_fiscale');
+    const cli_data_nascita = document.getElementById('cli_data_nascita');
+    const cli_note = document.getElementById('cli_note');
+    const cli_info = document.getElementById('cli_info');
+    const btnNewCliente = document.getElementById('btnNewCliente');
+    const btnClearCliente = document.getElementById('btnClearCliente');
+    const btnDeleteCliente = document.getElementById('btnDeleteCliente');
+
+    const tbodyContratti = document.getElementById('tbodyContratti');
+    const formContratto = document.getElementById('formContratto');
+    const ctr_id_contratto = document.getElementById('ctr_id_contratto');
+    const ctr_id_cliente = document.getElementById('ctr_id_cliente');
+    const ctr_codice_fiscale = document.getElementById('ctr_codice_fiscale');
+    const ctr_data_contratto = document.getElementById('ctr_data_contratto');
+    const ctr_tipo_cliente = document.getElementById('ctr_tipo_cliente');
+    const ctr_tipo_attivazione = document.getElementById('ctr_tipo_attivazione');
+    const ctr_tecnologia = document.getElementById('ctr_tecnologia');
+    const ctr_convergenza = document.getElementById('ctr_convergenza');
+    const ctr_mnp = document.getElementById('ctr_mnp');
+    const ctr_data_attivazione = document.getElementById('ctr_data_attivazione');
+    const ctr_data_portabilita = document.getElementById('ctr_data_portabilita');
+    const ctr_numero_lavorato = document.getElementById('ctr_numero_lavorato');
+    const ctr_nome_offerta = document.getElementById('ctr_nome_offerta');
+    const ctr_costo_offerta = document.getElementById('ctr_costo_offerta');
+    const ctr_vincolo_offerta_mesi = document.getElementById('ctr_vincolo_offerta_mesi');
+    const ctr_telefono_incluso = document.getElementById('ctr_telefono_incluso');
+    const ctr_imei = document.getElementById('ctr_imei');
+    const ctr_modello = document.getElementById('ctr_modello');
+    const ctr_tipo_pagamento = document.getElementById('ctr_tipo_pagamento');
+    const ctr_mesi_vincolo_telefono = document.getElementById('ctr_mesi_vincolo_telefono');
+    const ctr_data_fine_vincolo_offerta = document.getElementById('ctr_data_fine_vincolo_offerta');
+    const ctr_data_fine_vincolo_telefono = document.getElementById('ctr_data_fine_vincolo_telefono');
+    const ctr_info = document.getElementById('ctr_info');
+    const btnClearContratto = document.getElementById('btnClearContratto');
+    const btnDeleteContratto = document.getElementById('btnDeleteContratto');
+
+    function setStatus(msg) {
+      statusEl.textContent = msg || '';
     }
 
-    // RIFERIMENTI DOM
-    const cfInput = document.getElementById("cl-cf");
-    const statoClienteSpan = document.getElementById("stato-cliente");
-    const btnCercaCliente = document.getElementById("btn-cerca-cliente");
-    const btnPulisciCliente = document.getElementById("btn-pulisci-cliente");
-    const formContratto = document.getElementById("form-contratto");
-    const messaggiDiv = document.getElementById("messaggi");
-    const bloccoTelefono = document.getElementById("blocco-telefono");
-    const selectTelefonoIncluso = document.getElementById("ct-telefono-incluso");
-
-    const clNome = document.getElementById("cl-nome");
-    const clCognome = document.getElementById("cl-cognome");
-    const clTelefono = document.getElementById("cl-telefono");
-    const clEmail = document.getElementById("cl-email");
-    const clNote = document.getElementById("cl-note");
-
-    const campoIMEI = document.getElementById("ct-imei");
-    const campoModello = document.getElementById("ct-modello");
-    const campoMesiTel = document.getElementById("ct-mesi-vincolo-telefono");
-
-    const gestSearchInput = document.getElementById("gest-search");
-    const gestBtnSearch = document.getElementById("btn-gest-search");
-    const gestBtnReset = document.getElementById("btn-gest-reset");
-    const gestTabellaClienti = document.getElementById("gest-tabella-clienti");
-    const gestDettagli = document.getElementById("gest-dettagli");
-    const gestId = document.getElementById("gest-id");
-    const gestCf = document.getElementById("gest-cf");
-    const gestNascita = document.getElementById("gest-nascita");
-    const gestNome = document.getElementById("gest-nome");
-    const gestCognome = document.getElementById("gest-cognome");
-    const gestTelefono = document.getElementById("gest-telefono");
-    const gestEmail = document.getElementById("gest-email");
-    const gestNote = document.getElementById("gest-note");
-    const gestBtnSalvaAnagrafica = document.getElementById("btn-gest-salva-anagrafica");
-    const gestTabellaContrattiCliente = document.getElementById("gest-tabella-contratti-cliente");
-
-    const ultMese = document.getElementById("ult-mese");
-    const ultTipoAttivazione = document.getElementById("ult-tipo-attivazione");
-    const ultOperatore = document.getElementById("ult-operatore");
-    const ultTabellaContratti = document.getElementById("ult-tabella-contratti");
-
-    let cacheClienti = [];
-    let cacheContratti = [];
-
-    function setStatoCliente(tipo, testo) {
-      statoClienteSpan.className = "status";
-      if (tipo === "ok") statoClienteSpan.classList.add("status-ok");
-      else if (tipo === "new") statoClienteSpan.classList.add("status-new");
-      else statoClienteSpan.classList.add("status-none");
-      statoClienteSpan.textContent = testo;
-    }
-
-    function pulisciAnagrafica(mantieniCF = true) {
-      if (!mantieniCF) cfInput.value = "";
-      clNome.value = "";
-      clCognome.value = "";
-      clTelefono.value = "";
-      clEmail.value = "";
-      clNote.value = "";
-      setStatoCliente("none", "Cliente non ancora verificato");
-    }
-
-    function mostraMessaggio(testo, tipo) {
-      messaggiDiv.innerHTML = "";
-      if (!testo) return;
-      const div = document.createElement("div");
-      div.className = "alert " + (tipo === "error" ? "alert-error" : "alert-success");
-      div.textContent = testo;
-      messaggiDiv.appendChild(div);
-    }
-
-    async function cercaCliente() {
-      const cf = cfInput.value.trim().toUpperCase();
-      mostraMessaggio("", "");
-      if (!cf || cf.length < 11) {
-        alert("Inserisci un codice fiscale valido.");
-        return;
-      }
-
-      btnCercaCliente.disabled = true;
-      setStatoCliente("none", "Ricerca in corso...");
-
+    async function loadClienti() {
+      setStatus('Caricamento clienti...');
       try {
-        const url = buildUrl("action=getClienteByCF&cf=" + encodeURIComponent(cf));
-        const res = await fetch(url);
-        if (!res.ok) throw new Error("HTTP " + res.status);
+        const res = await fetch(API_URL + '?action=listClienti');
         const data = await res.json();
-
-        if (data.success && data.found && data.cliente) {
-          const c = data.cliente;
-          clNome.value = c.nome || "";
-          clCognome.value = c.cognome || "";
-          clTelefono.value = c.telefono || "";
-          clEmail.value = c.email || "";
-          clNote.value = c.note || "";
-          setStatoCliente("ok", "Cliente trovato (ID: " + (c.id || "N/D") + ")");
-          mostraMessaggio("Cliente esistente caricato.", "success");
-        } else {
-          pulisciAnagrafica(true);
-          setStatoCliente("new", "Nuovo cliente (non presente)");
-          mostraMessaggio("Nessun cliente trovato con questo CF. Verrà creato alla prima attivazione.", "error");
-        }
-      } catch (err) {
-        console.error(err);
-        setStatoCliente("none", "Errore durante la ricerca");
-        mostraMessaggio("Errore nella comunicazione con il server: " + err.message, "error");
-      } finally {
-        btnCercaCliente.disabled = false;
-      }
-    }
-
-    function aggiornaBloccoTelefono() {
-      const attivo = (selectTelefonoIncluso.value === "SI");
-      bloccoTelefono.classList.toggle("hidden", !attivo);
-      campoIMEI.disabled = !attivo;
-      campoModello.disabled = !attivo;
-      campoMesiTel.disabled = !attivo;
-      if (!attivo) {
-        campoIMEI.value = "";
-        campoModello.value = "";
-        campoMesiTel.value = "";
-      }
-    }
-
-    async function salvaContratto(e) {
-      e.preventDefault();
-      mostraMessaggio("", "");
-
-      const cf = cfInput.value.trim().toUpperCase();
-      if (!cf || cf.length < 11) {
-        alert("Devi inserire un codice fiscale valido.");
-        return;
-      }
-
-      const payload = {
-        action: "addContrattoByCF",
-        cf: cf,
-        nome: clNome.value.trim(),
-        cognome: clCognome.value.trim(),
-        telefono: clTelefono.value.trim(),
-        email: clEmail.value.trim(),
-        noteCliente: clNote.value.trim(),
-        dataContratto: document.getElementById("ct-data-contratto").value,
-        tipoCliente: document.getElementById("ct-tipo-cliente").value,
-        tipoAttivazione: document.getElementById("ct-tipo-attivazione").value,
-        tecnologia: document.getElementById("ct-tecnologia").value,
-        convergenza: document.getElementById("ct-convergenza").value,
-        mnp: document.getElementById("ct-mnp").value,
-        dataAttivazione: document.getElementById("ct-data-attivazione").value,
-        numeroLavorato: document.getElementById("ct-numero-lavorato").value.trim(),
-        nomeOfferta: document.getElementById("ct-nome-offerta").value.trim(),
-        costoOfferta: document.getElementById("ct-costo-offerta").value,
-        vincoloOffertaMesi: document.getElementById("ct-vincolo-offerta-mesi").value,
-        telefonoIncluso: document.getElementById("ct-telefono-incluso").value,
-        imei: campoIMEI.value.trim(),
-        modello: campoModello.value.trim(),
-        tipoPagamento: document.getElementById("ct-tipo-pagamento").value,
-        mesiVincoloTelefono: campoMesiTel.value
-      };
-
-      if (!payload.dataContratto || !payload.tipoCliente || !payload.tipoAttivazione ||
-          !payload.tecnologia || !payload.convergenza || !payload.mnp ||
-          !payload.dataAttivazione || !payload.telefonoIncluso) {
-        alert("Compila tutti i campi obbligatori del contratto.");
-        return;
-      }
-
-      const btnSalva = document.getElementById("btn-salva-contratto");
-      btnSalva.disabled = true;
-      btnSalva.textContent = "Salvataggio...";
-
-      try {
-        const res = await fetch(API_URL, {
-          method: "POST",
-          body: JSON.stringify(payload)
-        });
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        const data = await res.json();
-        if (!data.success) throw new Error(data.error || "Errore server");
-
-        mostraMessaggio(
-          "Contratto salvato. ID contratto: " + (data.contrattoId || "N/D") +
-          ", cliente ID: " + (data.clienteId || "N/D") +
-          (data.nuovoClienteCreato ? " (nuovo cliente creato)." : " (cliente esistente)."),
-          "success"
-        );
-
-        formContratto.reset();
-        aggiornaBloccoTelefono();
-        setDefaultDates();
-        caricaDatiMaster();
-      } catch (err) {
-        console.error(err);
-        mostraMessaggio("Errore nel salvataggio del contratto: " + err.message, "error");
-      } finally {
-        btnSalva.disabled = false;
-        btnSalva.textContent = "Salva contratto";
-      }
-    }
-
-    function setDefaultDates() {
-      const oggi = new Date();
-      const yyyy = oggi.getFullYear();
-      const mm = String(oggi.getMonth() + 1).padStart(2, "0");
-      const dd = String(oggi.getDate()).padStart(2, "0");
-      const todayStr = `${yyyy}-${mm}-${dd}`;
-      document.getElementById("ct-data-contratto").value = todayStr;
-      document.getElementById("ct-data-attivazione").value = todayStr;
-    }
-
-    async function caricaDatiMaster() {
-      try {
-        const [resClienti, resContratti] = await Promise.all([
-          fetch(buildUrl("action=listClienti")),
-          fetch(buildUrl("action=listContratti"))
-        ]);
-        if (!resClienti.ok || !resContratti.ok) throw new Error("HTTP listClienti/listContratti");
-
-        const dataClienti = await resClienti.json();
-        const dataContratti = await resContratti.json();
-
-        if (!dataClienti.success || !dataContratti.success) {
-          console.error("Errore listClienti/listContratti", dataClienti, dataContratti);
+        if (!data.success) {
+          setStatus('Errore: ' + (data.error || 'Errore sconosciuto'));
           return;
         }
-
-        cacheClienti = dataClienti.clienti || [];
-        cacheContratti = dataContratti.contratti || [];
-
-        renderListaClienti("");
-        renderUltimiContratti();
+        clienti = data.data || [];
+        renderClienti();
+        setStatus(clienti.length + ' clienti caricati');
       } catch (err) {
-        console.error("Errore caricamento master:", err);
+        console.error(err);
+        setStatus('Errore di rete nel caricamento clienti');
       }
     }
 
-    function renderListaClienti(filtro) {
-      const search = (filtro || "").toLowerCase();
-      gestTabellaClienti.innerHTML = "";
-
-      const filtrati = cacheClienti.filter(c => {
-        const testo = [c.nome, c.cognome, c.telefono, c.email, c.cf].join(" ").toLowerCase();
-        return !search || testo.includes(search);
-      });
-
-      filtrati
-        .sort((a, b) => (a.cognome + " " + a.nome).localeCompare(b.cognome + " " + b.nome))
-        .forEach(c => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${c.cognome || ""} ${c.nome || ""}</td>
-            <td>${c.cf || ""}</td>
-            <td>${c.telefono || ""}</td>
-            <td>${c.email || ""}</td>
-            <td><button type="button" class="btn-secondary btn-xs" data-id="${c.id}">Apri</button></td>
-          `;
-          gestTabellaClienti.appendChild(tr);
-        });
-
-      gestTabellaClienti.querySelectorAll("button[data-id]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const id = btn.getAttribute("data-id");
-          selezionaClienteGestione(id);
-        });
-      });
+    async function loadContratti(clienteId) {
+      if (!clienteId) {
+        contratti = [];
+        renderContratti();
+        return;
+      }
+      setStatus('Caricamento contratti...');
+      try {
+        const res = await fetch(API_URL + '?action=listContratti&clienteId=' + encodeURIComponent(clienteId));
+        const data = await res.json();
+        if (!data.success) {
+          setStatus('Errore: ' + (data.error || 'Errore sconosciuto'));
+          return;
+        }
+        contratti = data.data || [];
+        renderContratti();
+        setStatus(contratti.length + ' contratti caricati');
+      } catch (err) {
+        console.error(err);
+        setStatus('Errore di rete nel caricamento contratti');
+      }
     }
 
-    function selezionaClienteGestione(id) {
-      const c = cacheClienti.find(x => x.id === id);
+    function renderClienti() {
+      const term = (searchClientiEl.value || '').toLowerCase();
+      tbodyClienti.innerHTML = '';
+
+      const filtered = clienti.filter(c => {
+        if (!term) return true;
+        const text = [
+          c.nome,
+          c.cognome,
+          c.telefono,
+          c.email,
+          c.codice_fiscale
+        ].join(' ').toLowerCase();
+        return text.includes(term);
+      });
+
+      filtered.forEach(c => {
+        const tr = document.createElement('tr');
+        tr.dataset.id = c.id_cliente;
+
+        if (c.id_cliente === selectedClienteId) {
+          tr.classList.add('selected');
+        }
+
+        tr.innerHTML = `
+          <td>${c.nome || ''}</td>
+          <td>${c.cognome || ''}</td>
+          <td>${c.telefono || ''}</td>
+          <td>${c.email || ''}</td>
+        `;
+
+        tr.addEventListener('click', () => {
+          selectCliente(c.id_cliente);
+        });
+
+        tbodyClienti.appendChild(tr);
+      });
+
+      if (!filtered.length) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 4;
+        td.textContent = 'Nessun cliente trovato';
+        tr.appendChild(td);
+        tbodyClienti.appendChild(tr);
+      }
+    }
+
+    function renderContratti() {
+      tbodyContratti.innerHTML = '';
+
+      contratti.forEach(c => {
+        const tr = document.createElement('tr');
+        tr.dataset.id = c.id_contratto;
+        if (c.id_contratto === selectedContrattoId) {
+          tr.classList.add('selected');
+        }
+
+        tr.innerHTML = `
+          <td>${c.id_contratto || ''}</td>
+          <td>${c.data_contratto || ''}</td>
+          <td>${c.tipo_cliente || ''}</td>
+          <td>${c.tecnologia || ''}</td>
+          <td>${c.nome_offerta || ''}</td>
+          <td>${c.numero_lavorato || ''}</td>
+        `;
+
+        tr.addEventListener('click', () => {
+          selectContratto(c.id_contratto);
+        });
+
+        tbodyContratti.appendChild(tr);
+      });
+
+      if (!contratti.length) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 6;
+        td.textContent = selectedClienteId
+          ? 'Nessun contratto per questo cliente'
+          : 'Seleziona un cliente per vedere i contratti';
+        tr.appendChild(td);
+        tbodyContratti.appendChild(tr);
+      }
+    }
+
+    function clearClienteForm() {
+      selectedClienteId = null;
+      cli_id_cliente.value = '';
+      cli_nome.value = '';
+      cli_cognome.value = '';
+      cli_telefono.value = '';
+      cli_email.value = '';
+      cli_codice_fiscale.value = '';
+      cli_data_nascita.value = '';
+      cli_note.value = '';
+      cli_info.textContent = '';
+      Array.from(tbodyClienti.querySelectorAll('tr')).forEach(tr => tr.classList.remove('selected'));
+      // anche contratti
+      contratti = [];
+      renderContratti();
+      clearContrattoForm();
+    }
+
+    function selectCliente(id) {
+      const c = clienti.find(x => x.id_cliente === id);
       if (!c) return;
+      selectedClienteId = id;
 
-      gestId.value = c.id || "";
-      gestCf.value = c.cf || "";
-      gestNascita.value = c.nascita || "";
-      gestNome.value = c.nome || "";
-      gestCognome.value = c.cognome || "";
-      gestTelefono.value = c.telefono || "";
-      gestEmail.value = c.email || "";
-      gestNote.value = c.note || "";
+      cli_id_cliente.value = c.id_cliente || '';
+      cli_nome.value = c.nome || '';
+      cli_cognome.value = c.cognome || '';
+      cli_telefono.value = c.telefono || '';
+      cli_email.value = c.email || '';
+      cli_codice_fiscale.value = c.codice_fiscale || '';
+      cli_data_nascita.value = c.data_nascita || '';
+      cli_note.value = c.note || '';
+      cli_info.textContent = 'ID cliente: ' + c.id_cliente;
 
-      const contrattiCliente = cacheContratti.filter(ct => ct.clienteId === id);
-      gestTabellaContrattiCliente.innerHTML = "";
-      contrattiCliente
-        .sort((a, b) => (b.dataContratto || "").localeCompare(a.dataContratto || ""))
-        .forEach(ct => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${ct.dataContratto || ""}</td>
-            <td>${ct.tipoAttivazione || ""}</td>
-            <td>${ct.tecnologia || ""}</td>
-            <td>${ct.nomeOfferta || ""}</td>
-            <td>${ct.costoOfferta || ""}</td>
-          `;
-          gestTabellaContrattiCliente.appendChild(tr);
-        });
+      // evidenzia riga
+      Array.from(tbodyClienti.querySelectorAll('tr')).forEach(tr => {
+        tr.classList.toggle('selected', tr.dataset.id === id);
+      });
 
-      gestDettagli.classList.remove("hidden");
+      // collega form contratto
+      ctr_id_cliente.value = c.id_cliente || '';
+      if (!ctr_codice_fiscale.value) {
+        ctr_codice_fiscale.value = c.codice_fiscale || '';
+      }
+
+      loadContratti(c.id_cliente);
     }
 
-    async function salvaAnagraficaGestione() {
-      const id = gestId.value.trim();
-      if (!id) {
-        alert("Seleziona prima un cliente dalla lista.");
+    function clearContrattoForm() {
+      selectedContrattoId = null;
+      ctr_id_contratto.value = '';
+      // ctr_id_cliente NON si svuota, resta il cliente selezionato
+      ctr_data_contratto.value = '';
+      ctr_codice_fiscale.value = '';
+      ctr_tipo_cliente.value = '';
+      ctr_tipo_attivazione.value = '';
+      ctr_tecnologia.value = '';
+      ctr_convergenza.value = '';
+      ctr_mnp.value = '';
+      ctr_data_attivazione.value = '';
+      ctr_data_portabilita.value = '';
+      ctr_numero_lavorato.value = '';
+      ctr_nome_offerta.value = '';
+      ctr_costo_offerta.value = '';
+      ctr_vincolo_offerta_mesi.value = '';
+      ctr_telefono_incluso.value = '';
+      ctr_imei.value = '';
+      ctr_modello.value = '';
+      ctr_tipo_pagamento.value = '';
+      ctr_mesi_vincolo_telefono.value = '';
+      ctr_data_fine_vincolo_offerta.value = '';
+      ctr_data_fine_vincolo_telefono.value = '';
+      ctr_info.textContent = '';
+      Array.from(tbodyContratti.querySelectorAll('tr')).forEach(tr => tr.classList.remove('selected'));
+    }
+
+    function selectContratto(idContratto) {
+      const c = contratti.find(x => x.id_contratto === idContratto);
+      if (!c) return;
+      selectedContrattoId = idContratto;
+
+      ctr_id_contratto.value = c.id_contratto || '';
+      ctr_id_cliente.value = c.id_cliente || '';
+      ctr_codice_fiscale.value = c.codice_fiscale || '';
+      ctr_data_contratto.value = c.data_contratto || '';
+      ctr_tipo_cliente.value = c.tipo_cliente || '';
+      ctr_tipo_attivazione.value = c.tipo_attivazione || '';
+      ctr_tecnologia.value = c.tecnologia || '';
+      ctr_convergenza.value = c.convergenza || '';
+      ctr_mnp.value = c.mnp || '';
+      ctr_data_attivazione.value = c.data_attivazione || '';
+      ctr_data_portabilita.value = c.data_portabilita || '';
+      ctr_numero_lavorato.value = c.numero_lavorato || '';
+      ctr_nome_offerta.value = c.nome_offerta || '';
+      ctr_costo_offerta.value = c.costo_offerta || '';
+      ctr_vincolo_offerta_mesi.value = c.vincolo_offerta_mesi || '';
+      ctr_telefono_incluso.value = c.telefono_incluso || '';
+      ctr_imei.value = c.imei || '';
+      ctr_modello.value = c.modello || '';
+      ctr_tipo_pagamento.value = c.tipo_pagamento || '';
+      ctr_mesi_vincolo_telefono.value = c.mesi_vincolo_telefono || '';
+      ctr_data_fine_vincolo_offerta.value = c.data_fine_vincolo_offerta || '';
+      ctr_data_fine_vincolo_telefono.value = c.data_fine_vincolo_telefono || '';
+      ctr_info.textContent = 'ID contratto: ' + c.id_contratto;
+
+      Array.from(tbodyContratti.querySelectorAll('tr')).forEach(tr => {
+        tr.classList.toggle('selected', tr.dataset.id === idContratto);
+      });
+    }
+
+    // ---------- SALVATAGGIO CLIENTE ----------
+
+    async function saveCliente(evt) {
+      evt.preventDefault();
+
+      const payload = {
+        id_cliente: cli_id_cliente.value || null,
+        nome: cli_nome.value.trim(),
+        cognome: cli_cognome.value.trim(),
+        telefono: cli_telefono.value.trim(),
+        email: cli_email.value.trim(),
+        codice_fiscale: cli_codice_fiscale.value.trim(),
+        data_nascita: cli_data_nascita.value,
+        note: cli_note.value.trim()
+      };
+
+      if (!payload.nome || !payload.cognome) {
+        alert('Nome e cognome sono obbligatori');
+        return;
+      }
+
+      const isNew = !payload.id_cliente;
+      const action = isNew ? 'createCliente' : 'updateCliente';
+
+      setStatus((isNew ? 'Creazione cliente...' : 'Aggiornamento cliente...'));
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action, ...payload })
+        });
+        const data = await res.json();
+        if (!data.success) {
+          setStatus('Errore: ' + (data.error || 'Errore sconosciuto'));
+          return;
+        }
+        await loadClienti();
+
+        if (isNew) {
+          selectedClienteId = data.id_cliente;
+          cli_id_cliente.value = data.id_cliente;
+          cli_info.textContent = 'ID cliente: ' + data.id_cliente;
+          setStatus('Cliente creato');
+        } else {
+          selectedClienteId = payload.id_cliente;
+          setStatus('Cliente aggiornato');
+        }
+        selectCliente(selectedClienteId);
+      } catch (err) {
+        console.error(err);
+        setStatus('Errore di rete durante il salvataggio cliente');
+      }
+    }
+
+    async function deleteCliente() {
+      if (!cli_id_cliente.value) {
+        alert('Seleziona prima un cliente');
+        return;
+      }
+      if (!confirm('Sei sicuro di voler eliminare questo cliente e i suoi contratti?')) {
+        return;
+      }
+
+      setStatus('Eliminazione cliente in corso...');
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'deleteCliente',
+            id_cliente: cli_id_cliente.value
+          })
+        });
+        const data = await res.json();
+        if (!data.success) {
+          setStatus('Errore: ' + (data.error || 'Errore sconosciuto'));
+          return;
+        }
+        clearClienteForm();
+        await loadClienti();
+        setStatus('Cliente eliminato');
+      } catch (err) {
+        console.error(err);
+        setStatus('Errore di rete durante l\'eliminazione cliente');
+      }
+    }
+
+    // ---------- SALVATAGGIO CONTRATTO ----------
+
+    async function saveContratto(evt) {
+      evt.preventDefault();
+
+      if (!ctr_id_cliente.value) {
+        alert('Prima seleziona un cliente');
         return;
       }
 
       const payload = {
-        action: "updateCliente",
-        id: id,
-        nome: gestNome.value.trim(),
-        cognome: gestCognome.value.trim(),
-        telefono: gestTelefono.value.trim(),
-        email: gestEmail.value.trim(),
-        note: gestNote.value.trim()
+        id_contratto: ctr_id_contratto.value || null,
+        id_cliente: ctr_id_cliente.value,
+        codice_fiscale: ctr_codice_fiscale.value.trim(),
+        data_contratto: ctr_data_contratto.value,
+        tipo_cliente: ctr_tipo_cliente.value,
+        tipo_attivazione: ctr_tipo_attivazione.value.trim(),
+        tecnologia: ctr_tecnologia.value.trim(),
+        convergenza: ctr_convergenza.value,
+        mnp: ctr_mnp.value,
+        data_attivazione: ctr_data_attivazione.value,
+        data_portabilita: ctr_data_portabilita.value,
+        numero_lavorato: ctr_numero_lavorato.value.trim(),
+        nome_offerta: ctr_nome_offerta.value.trim(),
+        costo_offerta: ctr_costo_offerta.value,
+        vincolo_offerta_mesi: ctr_vincolo_offerta_mesi.value,
+        telefono_incluso: ctr_telefono_incluso.value,
+        imei: ctr_imei.value.trim(),
+        modello: ctr_modello.value.trim(),
+        tipo_pagamento: ctr_tipo_pagamento.value.trim(),
+        mesi_vincolo_telefono: ctr_mesi_vincolo_telefono.value,
+        data_fine_vincolo_offerta: ctr_data_fine_vincolo_offerta.value,
+        data_fine_vincolo_telefono: ctr_data_fine_vincolo_telefono.value
       };
 
-      gestBtnSalvaAnagrafica.disabled = true;
-      gestBtnSalvaAnagrafica.textContent = "Salvataggio...";
+      if (!payload.nome_offerta) {
+        // opzionale ma utile
+        // alert('Nome offerta consigliato');
+      }
+
+      const isNew = !payload.id_contratto;
+      const action = isNew ? 'createContratto' : 'updateContratto';
+
+      setStatus((isNew ? 'Creazione contratto...' : 'Aggiornamento contratto...'));
 
       try {
         const res = await fetch(API_URL, {
-          method: "POST",
-          body: JSON.stringify(payload)
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action, ...payload })
         });
-        if (!res.ok) throw new Error("HTTP " + res.status);
         const data = await res.json();
-        if (!data.success) throw new Error(data.error || "Errore server");
+        if (!data.success) {
+          setStatus('Errore: ' + (data.error || 'Errore sconosciuto'));
+          return;
+        }
+        await loadContratti(ctr_id_cliente.value);
 
-        alert("Anagrafica aggiornata.");
-        await caricaDatiMaster();
+        if (isNew) {
+          ctr_id_contratto.value = data.id_contratto;
+          selectedContrattoId = data.id_contratto;
+          ctr_info.textContent = 'ID contratto: ' + data.id_contratto;
+          setStatus('Contratto creato');
+        } else {
+          selectedContrattoId = payload.id_contratto;
+          setStatus('Contratto aggiornato');
+        }
       } catch (err) {
         console.error(err);
-        alert("Errore nel salvataggio anagrafica: " + err.message);
-      } finally {
-        gestBtnSalvaAnagrafica.disabled = false;
-        gestBtnSalvaAnagrafica.textContent = "Salva anagrafica";
+        setStatus('Errore di rete durante il salvataggio contratto');
       }
     }
 
-    function renderUltimiContratti() {
-      ultTabellaContratti.innerHTML = "";
-      const filtroMese = ultMese.value;
-      const filtroTipo = ultTipoAttivazione.value;
-      const filtroOperatore = (ultOperatore.value || "").toLowerCase();
+    async function deleteContratto() {
+      if (!ctr_id_contratto.value) {
+        alert('Seleziona prima un contratto');
+        return;
+      }
+      if (!confirm('Sei sicuro di voler eliminare questo contratto?')) {
+        return;
+      }
 
-      const ordinati = [...cacheContratti].sort((a, b) => (b.dataContratto || "").localeCompare(a.dataContratto || ""));
-      let count = 0;
+      setStatus('Eliminazione contratto in corso...');
 
-      for (const ct of ordinati) {
-        if (filtroMese && (!ct.dataContratto || !ct.dataContratto.startsWith(filtroMese))) continue;
-        if (filtroTipo && ct.tipoAttivazione !== filtroTipo) continue;
-
-        const testoOfferta = (ct.nomeOfferta || "").toLowerCase();
-        if (filtroOperatore && !testoOfferta.includes(filtroOperatore)) continue;
-
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${ct.dataContratto || ""}</td>
-          <td>${ct.cf || ""}</td>
-          <td>${ct.tipoAttivazione || ""}</td>
-          <td>${ct.tecnologia || ""}</td>
-          <td>${ct.nomeOfferta || ""}</td>
-          <td>${ct.costoOfferta || ""}</td>
-        `;
-        ultTabellaContratti.appendChild(tr);
-
-        count++;
-        if (count >= 100) break;
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'deleteContratto',
+            id_contratto: ctr_id_contratto.value
+          })
+        });
+        const data = await res.json();
+        if (!data.success) {
+          setStatus('Errore: ' + (data.error || 'Errore sconosciuto'));
+          return;
+        }
+        const cliId = ctr_id_cliente.value;
+        clearContrattoForm();
+        await loadContratti(cliId);
+        setStatus('Contratto eliminato');
+      } catch (err) {
+        console.error(err);
+        setStatus('Errore di rete durante l\'eliminazione contratto');
       }
     }
 
-    // EVENTI
-    btnCercaCliente.addEventListener("click", cercaCliente);
-    btnPulisciCliente.addEventListener("click", () => {
-      pulisciAnagrafica(false);
-      mostraMessaggio("", "");
-    });
-    cfInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        cercaCliente();
-      }
-    });
-    formContratto.addEventListener("submit", salvaContratto);
-    selectTelefonoIncluso.addEventListener("change", aggiornaBloccoTelefono);
+    // ---------- EVENTI ----------
 
-    gestBtnSearch.addEventListener("click", () => {
-      renderListaClienti(gestSearchInput.value);
-    });
-    gestBtnReset.addEventListener("click", () => {
-      gestSearchInput.value = "";
-      renderListaClienti("");
-      gestDettagli.classList.add("hidden");
-    });
-    gestBtnSalvaAnagrafica.addEventListener("click", salvaAnagraficaGestione);
+    document.addEventListener('DOMContentLoaded', () => {
+      loadClienti();
 
-    ultMese.addEventListener("change", renderUltimiContratti);
-    ultTipoAttivazione.addEventListener("change", renderUltimiContratti);
-    ultOperatore.addEventListener("input", renderUltimiContratti);
+      searchClientiEl.addEventListener('input', renderClienti);
 
-    // INIT
-    setDefaultDates();
-    aggiornaBloccoTelefono();
-    caricaDatiMaster();
+      formCliente.addEventListener('submit', saveCliente);
+      btnNewCliente.addEventListener('click', clearClienteForm);
+      btnClearCliente.addEventListener('click', clearClienteForm);
+      btnDeleteCliente.addEventListener('click', deleteCliente);
+
+      formContratto.addEventListener('submit', saveContratto);
+      btnClearContratto.addEventListener('click', clearContrattoForm);
+      btnDeleteContratto.addEventListener('click', deleteContratto);
+    });
   </script>
 </body>
 </html>
