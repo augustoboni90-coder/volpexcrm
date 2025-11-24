@@ -7,7 +7,89 @@
   <link rel="stylesheet" href="volpex.css" />
 </head>
 <body>
-  <div id="app"></div>
+  <div class="layout">
+    <!-- SIDEBAR FISSA -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-mark">🦊</div>
+        <div>
+          <div class="logo-text-main">VOLPEX CRM</div>
+          <div class="logo-text-sub">Clienti • Contratti • Device</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section-label">Navigazione</div>
+      <nav class="sidebar-nav">
+        <button type="button" class="nav-btn nav-btn-active">
+          <span>🏠</span><span>Home</span>
+        </button>
+        <button type="button" class="nav-btn">
+          <span>👥</span><span>Clienti</span>
+        </button>
+        <button type="button" class="nav-btn">
+          <span>📄</span><span>Contratti</span>
+        </button>
+        <button type="button" class="nav-btn">
+          <span>📱</span><span>Device</span>
+        </button>
+        <button type="button" class="nav-btn">
+          <span>📊</span><span>Report / Query</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-section-label">Stato</div>
+      <div class="sidebar-status-box">
+        <div class="status-dot"></div>
+        <div>
+          <div class="status-title">Volpex Sheet Sync</div>
+          <div class="status-sub">Ultimo aggiornamento: automatico</div>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-footer-title">VOLPEX CRM</div>
+        <div class="sidebar-footer-sub">Il cockpit per i tuoi dati.</div>
+      </div>
+    </aside>
+
+    <!-- AREA PRINCIPALE -->
+    <main class="main">
+      <!-- HOME / HEADER -->
+      <header class="home-hero">
+        <div>
+          <h1 class="hero-title">Benvenuto in Volpex CRM</h1>
+          <p class="hero-subtitle">Gestisci clienti, contratti e device in un unico posto.</p>
+          <p class="hero-quote" id="volpex-quote"></p>
+        </div>
+      </header>
+
+      <!-- QUI DENTRO RIMANE IL TUO CRM ATTUALE -->
+      <section class="app-shell">
+        <div id="app"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Frasi motivazionali random -->
+  <script>
+    (function () {
+      const quotes = [
+        "La creatività ti porta i clienti, i numeri ti dicono come tenerli.",
+        "Ogni contratto è una relazione, non solo una riga di Excel.",
+        "Piccoli miglioramenti ogni giorno battono il colpo di fortuna una volta sola.",
+        "Se puoi misurarlo, puoi migliorarlo.",
+        "Il futuro del tuo business è già scritto nei tuoi dati: devi solo leggerli.",
+        "Volpex: meno caos, più contratti chiusi."
+      ];
+      const el = document.getElementById("volpex-quote");
+      if (el) {
+        const q = quotes[Math.floor(Math.random() * quotes.length)];
+        el.textContent = "“" + q + "”";
+      }
+    })();
+  </script>
+
+  <!-- Il tuo JS esistente: NON toccarlo -->
   <script src="volpex.js"></script>
 </body>
 </html>
