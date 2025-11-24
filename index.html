@@ -181,14 +181,6 @@
     tr:hover td {
       background: #f3f4f6;
     }
-    .badge {
-      display: inline-block;
-      padding: 0.1rem 0.4rem;
-      border-radius: 999px;
-      font-size: 0.7rem;
-      background: #eef2ff;
-      color: #4338ca;
-    }
   </style>
 </head>
 <body>
@@ -205,10 +197,9 @@
         <span class="subtle">Passo 1 e 2</span>
       </div>
 
-      <!-- DATI CLIENTE -->
       <div class="section-title">Dati cliente</div>
       <p class="text-sm text-muted mb-2">
-        1️⃣ Inserisci il <strong>codice fiscale</strong> e premi "Cerca cliente". Se esiste carica l'anagrafica, altrimenti puoi inserirla e sarà creato in automatico.
+        1️⃣ Inserisci il <strong>codice fiscale</strong> e premi "Cerca cliente".
       </p>
 
       <div class="grid grid-3 mb-2">
@@ -244,18 +235,13 @@
         </div>
         <div class="grid-1">
           <label for="cl-note">Note cliente</label>
-          <textarea id="cl-note" placeholder="Note interne (opzionale)"></textarea>
+          <textarea id="cl-note"></textarea>
         </div>
       </div>
 
-      <!-- DATI CONTRATTO -->
       <div class="section-title">Dati contratto</div>
-      <p class="text-sm text-muted mb-2">
-        2️⃣ Compila i dati. Le date di portabilità e fine vincoli saranno calcolate automaticamente nel foglio Google.
-      </p>
 
       <form id="form-contratto" class="grid">
-        <!-- BLOCCO 1: CONTRATTO BASE -->
         <div>
           <div class="section-title">Contratto</div>
           <div class="grid grid-3">
@@ -285,7 +271,6 @@
           </div>
         </div>
 
-        <!-- BLOCCO 2: LINEA & PORTABILITÀ -->
         <div>
           <div class="section-title">Linea & portabilità</div>
           <div class="grid grid-3">
@@ -311,14 +296,13 @@
               </select>
             </div>
             <div>
-              <label for="ct-mnp" class="required">MNP (portabilità)</label>
+              <label for="ct-mnp" class="required">MNP</label>
               <select id="ct-mnp" required>
                 <option value="">Seleziona...</option>
                 <option value="SI">SI</option>
                 <option value="NO">NO</option>
               </select>
             </div>
-
             <div>
               <label for="ct-data-attivazione" class="required">Data attivazione</label>
               <input type="date" id="ct-data-attivazione" required />
@@ -330,7 +314,6 @@
           </div>
         </div>
 
-        <!-- BLOCCO 3: OFFERTA & TELEFONO -->
         <div>
           <div class="section-title">Offerta & telefono</div>
           <div class="grid grid-3">
@@ -346,7 +329,6 @@
               <label for="ct-vincolo-offerta-mesi">Vincolo offerta (mesi)</label>
               <input type="number" min="0" id="ct-vincolo-offerta-mesi" />
             </div>
-
             <div>
               <label for="ct-tipo-pagamento">Tipo pagamento</label>
               <select id="ct-tipo-pagamento">
@@ -367,7 +349,7 @@
           </div>
 
           <div id="blocco-telefono" class="mt-2">
-            <div class="section-title">Dettagli telefono (se incluso)</div>
+            <div class="section-title">Dettagli telefono</div>
             <div class="grid grid-3">
               <div>
                 <label for="ct-imei">IMEI telefono</label>
@@ -404,8 +386,8 @@
 
       <div class="grid grid-3 mb-2">
         <div>
-          <label for="gest-search">Cerca cliente (nome / cognome / telefono / CF)</label>
-          <input type="text" id="gest-search" placeholder="es. Rossi, 333..., RSSMRA..." />
+          <label for="gest-search">Cerca cliente</label>
+          <input type="text" id="gest-search" placeholder="Nome, cognome, telefono, CF..." />
         </div>
         <div class="flex mt-2">
           <button type="button" class="btn-secondary" id="btn-gest-search">Cerca</button>
@@ -440,7 +422,7 @@
             <input type="text" id="gest-cf" readonly />
           </div>
           <div>
-            <label>Data nascita (da CF)</label>
+            <label>Data nascita</label>
             <input type="text" id="gest-nascita" readonly />
           </div>
 
@@ -489,7 +471,7 @@
     <section class="card">
       <div class="flex-between mb-1">
         <h2>Ultimi contratti</h2>
-        <span class="subtle">Filtri per mese / tipo attivazione / operatore</span>
+        <span class="subtle">Filtro per mese / tipo / offerta</span>
       </div>
 
       <div class="grid grid-3 mb-2">
@@ -509,8 +491,8 @@
           </select>
         </div>
         <div>
-          <label for="ult-operatore">Operatore / nome offerta</label>
-          <input type="text" id="ult-operatore" placeholder="es. TIM, Vodafone, 'Super Fibra'..." />
+          <label for="ult-operatore">Operatore / offerta</label>
+          <input type="text" id="ult-operatore" placeholder="TIM, Vodafone, 'Super Fibra'..." />
         </div>
       </div>
 
@@ -533,16 +515,15 @@
   </main>
 
   <script>
-    // URL Web App Google (googleusercontent) SENZA action
-    const API_URL = "https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLhsATaIMWU1qoPQriL4cCDAF6nMiKWD8cahBip0ZSY5A4bd5dZ43mqwC4jnzb6dN9phTbWpLAWFwlXEfZGcedArJqOPTvmOJUeHjr4YbD9qrb64d7a86pAHmDRb1xIh155savjhE3aL6RlfyN6GGFrrU-rZMJMKN4ZciN8f-MD3H6vc9Izk9sZrs_HY1c18sk5Qd2F_65AaTIWLPthC62bqsRV4O6yGm14EllDeh6uz4pwtwPP3yG2lqWldI6e7e90t0gA5Up4SWSRPOXRL6YUpjhLV4A&lib=M3JvULdzC_x-BNHHc2759ENIbbIa8tKKf";
+    // URL della tua Web App
+    const API_URL = "https://script.google.com/macros/s/AKfycbw9vio2ZXFx4Jcr0gXUJ9w5FjV78GqoSPtr9Jnv-UzgPNEXH481xH6oi5J69ovetuoC/exec";
 
-    // helper per costruire correttamente gli URL GET aggiungendo &action=...
     function buildUrl(params) {
       const sep = API_URL.includes("?") ? "&" : "?";
       return API_URL + sep + params;
     }
 
-    // NUOVO CONTRATTO - riferimenti
+    // RIFERIMENTI DOM
     const cfInput = document.getElementById("cl-cf");
     const statoClienteSpan = document.getElementById("stato-cliente");
     const btnCercaCliente = document.getElementById("btn-cerca-cliente");
@@ -562,7 +543,6 @@
     const campoModello = document.getElementById("ct-modello");
     const campoMesiTel = document.getElementById("ct-mesi-vincolo-telefono");
 
-    // GESTIONE CLIENTI
     const gestSearchInput = document.getElementById("gest-search");
     const gestBtnSearch = document.getElementById("btn-gest-search");
     const gestBtnReset = document.getElementById("btn-gest-reset");
@@ -579,7 +559,6 @@
     const gestBtnSalvaAnagrafica = document.getElementById("btn-gest-salva-anagrafica");
     const gestTabellaContrattiCliente = document.getElementById("gest-tabella-contratti-cliente");
 
-    // ULTIMI CONTRATTI
     const ultMese = document.getElementById("ult-mese");
     const ultTipoAttivazione = document.getElementById("ult-tipo-attivazione");
     const ultOperatore = document.getElementById("ult-operatore");
@@ -590,13 +569,9 @@
 
     function setStatoCliente(tipo, testo) {
       statoClienteSpan.className = "status";
-      if (tipo === "ok") {
-        statoClienteSpan.classList.add("status-ok");
-      } else if (tipo === "new") {
-        statoClienteSpan.classList.add("status-new");
-      } else {
-        statoClienteSpan.classList.add("status-none");
-      }
+      if (tipo === "ok") statoClienteSpan.classList.add("status-ok");
+      else if (tipo === "new") statoClienteSpan.classList.add("status-new");
+      else statoClienteSpan.classList.add("status-none");
       statoClienteSpan.textContent = testo;
     }
 
@@ -623,17 +598,17 @@
       const cf = cfInput.value.trim().toUpperCase();
       mostraMessaggio("", "");
       if (!cf || cf.length < 11) {
-        alert("Inserisci un codice fiscale valido (almeno 11 caratteri).");
+        alert("Inserisci un codice fiscale valido.");
         return;
       }
 
       btnCercaCliente.disabled = true;
-      setStatoCliente("none", "Ricerca cliente in corso...");
+      setStatoCliente("none", "Ricerca in corso...");
 
       try {
         const url = buildUrl("action=getClienteByCF&cf=" + encodeURIComponent(cf));
         const res = await fetch(url);
-        if (!res.ok) throw new Error("Errore HTTP " + res.status);
+        if (!res.ok) throw new Error("HTTP " + res.status);
         const data = await res.json();
 
         if (data.success && data.found && data.cliente) {
@@ -643,17 +618,12 @@
           clTelefono.value = c.telefono || "";
           clEmail.value = c.email || "";
           clNote.value = c.note || "";
-
           setStatoCliente("ok", "Cliente trovato (ID: " + (c.id || "N/D") + ")");
-          mostraMessaggio("Cliente esistente caricato dall'anagrafica.", "success");
+          mostraMessaggio("Cliente esistente caricato.", "success");
         } else {
-          clNome.value = "";
-          clCognome.value = "";
-          clTelefono.value = "";
-          clEmail.value = "";
-          clNote.value = "";
-          setStatoCliente("new", "Nuovo cliente (non presente in anagrafica)");
-          mostraMessaggio("Nessun cliente trovato con questo CF. Puoi inserire l'anagrafica e verrà creato.", "error");
+          pulisciAnagrafica(true);
+          setStatoCliente("new", "Nuovo cliente (non presente)");
+          mostraMessaggio("Nessun cliente trovato con questo CF. Verrà creato alla prima attivazione.", "error");
         }
       } catch (err) {
         console.error(err);
@@ -665,8 +635,7 @@
     }
 
     function aggiornaBloccoTelefono() {
-      const valore = selectTelefonoIncluso.value;
-      const attivo = (valore === "SI");
+      const attivo = (selectTelefonoIncluso.value === "SI");
       bloccoTelefono.classList.toggle("hidden", !attivo);
       campoIMEI.disabled = !attivo;
       campoModello.disabled = !attivo;
@@ -684,13 +653,8 @@
 
       const cf = cfInput.value.trim().toUpperCase();
       if (!cf || cf.length < 11) {
-        alert("Devi inserire un codice fiscale valido prima di salvare il contratto.");
+        alert("Devi inserire un codice fiscale valido.");
         return;
-      }
-
-      if (!clNome.value.trim() || !clCognome.value.trim()) {
-        const conferma = confirm("Nome e cognome non sono compilati. Vuoi continuare lo stesso?");
-        if (!conferma) return;
       }
 
       const payload = {
@@ -720,38 +684,35 @@
       };
 
       if (!payload.dataContratto || !payload.tipoCliente || !payload.tipoAttivazione ||
-          !payload.tecnologia || !payload.convergenza || !payload.mnp || !payload.dataAttivazione ||
-          !payload.telefonoIncluso) {
-        alert("Compila tutti i campi obbligatori del contratto (quelli con * e le date).");
+          !payload.tecnologia || !payload.convergenza || !payload.mnp ||
+          !payload.dataAttivazione || !payload.telefonoIncluso) {
+        alert("Compila tutti i campi obbligatori del contratto.");
         return;
       }
 
       const btnSalva = document.getElementById("btn-salva-contratto");
       btnSalva.disabled = true;
-      btnSalva.textContent = "Salvataggio in corso...";
+      btnSalva.textContent = "Salvataggio...";
 
       try {
         const res = await fetch(API_URL, {
           method: "POST",
           body: JSON.stringify(payload)
         });
-
-        if (!res.ok) throw new Error("Errore HTTP " + res.status);
+        if (!res.ok) throw new Error("HTTP " + res.status);
         const data = await res.json();
-        if (!data.success) {
-          throw new Error(data.error || "Errore sconosciuto dal server");
-        }
+        if (!data.success) throw new Error(data.error || "Errore server");
 
-        const msg = `Contratto salvato correttamente. ID contratto: ${data.contrattoId || "N/D"}, ` +
-                    `ID cliente: ${data.clienteId || "N/D"} ` +
-                    (data.nuovoClienteCreato ? "(nuovo cliente creato)." : "(cliente esistente).");
+        mostraMessaggio(
+          "Contratto salvato. ID contratto: " + (data.contrattoId || "N/D") +
+          ", cliente ID: " + (data.clienteId || "N/D") +
+          (data.nuovoClienteCreato ? " (nuovo cliente creato)." : " (cliente esistente)."),
+          "success"
+        );
 
-        mostraMessaggio(msg, "success");
         formContratto.reset();
         aggiornaBloccoTelefono();
         setDefaultDates();
-
-        // ricarico cache per far vedere subito i nuovi contratti
         caricaDatiMaster();
       } catch (err) {
         console.error(err);
@@ -772,21 +733,19 @@
       document.getElementById("ct-data-attivazione").value = todayStr;
     }
 
-    // --------- GESTIONE: CARICAMENTO CACHE ---------
     async function caricaDatiMaster() {
       try {
         const [resClienti, resContratti] = await Promise.all([
           fetch(buildUrl("action=listClienti")),
           fetch(buildUrl("action=listContratti"))
         ]);
-        if (!resClienti.ok || !resContratti.ok) throw new Error("Errore HTTP in listClienti/listContratti");
+        if (!resClienti.ok || !resContratti.ok) throw new Error("HTTP listClienti/listContratti");
 
         const dataClienti = await resClienti.json();
         const dataContratti = await resContratti.json();
 
         if (!dataClienti.success || !dataContratti.success) {
           console.error("Errore listClienti/listContratti", dataClienti, dataContratti);
-          alert("Errore nel caricamento clienti/contratti.\nControlla in Apps Script le azioni listClienti/listContratti e i fogli 'Clienti' e 'Contratti'.");
           return;
         }
 
@@ -800,7 +759,6 @@
       }
     }
 
-    // --------- GESTIONE: LISTA CLIENTI ---------
     function renderListaClienti(filtro) {
       const search = (filtro || "").toLowerCase();
       gestTabellaClienti.innerHTML = "";
@@ -845,7 +803,6 @@
       gestEmail.value = c.email || "";
       gestNote.value = c.note || "";
 
-      // contratti del cliente
       const contrattiCliente = cacheContratti.filter(ct => ct.clienteId === id);
       gestTabellaContrattiCliente.innerHTML = "";
       contrattiCliente
@@ -890,11 +847,11 @@
           method: "POST",
           body: JSON.stringify(payload)
         });
-        if (!res.ok) throw new Error("Errore HTTP " + res.status);
+        if (!res.ok) throw new Error("HTTP " + res.status);
         const data = await res.json();
-        if (!data.success) throw new Error(data.error || "Errore dal server");
+        if (!data.success) throw new Error(data.error || "Errore server");
 
-        alert("Anagrafica aggiornata correttamente.");
+        alert("Anagrafica aggiornata.");
         await caricaDatiMaster();
       } catch (err) {
         console.error(err);
@@ -905,16 +862,15 @@
       }
     }
 
-    // --------- ULTIMI CONTRATTI ---------
     function renderUltimiContratti() {
       ultTabellaContratti.innerHTML = "";
-      const filtroMese = ultMese.value; // YYYY-MM
+      const filtroMese = ultMese.value;
       const filtroTipo = ultTipoAttivazione.value;
       const filtroOperatore = (ultOperatore.value || "").toLowerCase();
 
       const ordinati = [...cacheContratti].sort((a, b) => (b.dataContratto || "").localeCompare(a.dataContratto || ""));
-
       let count = 0;
+
       for (const ct of ordinati) {
         if (filtroMese && (!ct.dataContratto || !ct.dataContratto.startsWith(filtroMese))) continue;
         if (filtroTipo && ct.tipoAttivazione !== filtroTipo) continue;
@@ -934,11 +890,11 @@
         ultTabellaContratti.appendChild(tr);
 
         count++;
-        if (count >= 100) break; // limitiamo a 100 righe per leggibilità
+        if (count >= 100) break;
       }
     }
 
-    // --------- EVENTI ---------
+    // EVENTI
     btnCercaCliente.addEventListener("click", cercaCliente);
     btnPulisciCliente.addEventListener("click", () => {
       pulisciAnagrafica(false);
