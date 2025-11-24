@@ -962,7 +962,7 @@
       setStatus('Creazione nuovo cliente...');
       const res = await fetch(API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({
           action: 'createCliente',
           nome: clientData.nome,
@@ -1058,7 +1058,7 @@
       try {
         const res = await fetch(API_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify(contractPayload)
         });
         const data = await res.json();
@@ -1222,7 +1222,7 @@
       btnCsvImport.disabled = false;
     });
 
-    // ---- NUOVA VERSIONE runCsvImport ----
+    // ---- runCsvImport (con conteggio OK/Errori) ----
     async function runCsvImport() {
       if (!csvRows.length) {
         alert('Prima fai una Anteprima del CSV.');
@@ -1280,7 +1280,7 @@
 
           const res = await fetch(API_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(payload)
           });
           const data = await res.json();
