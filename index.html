@@ -197,6 +197,7 @@
     <div class="nav-tabs">
       <button data-view="view-dashboard" class="active">Dashboard</button>
       <button data-view="view-search">Ricerca</button>
+      <button data-view="view-report">Report</button>
       <button data-view="view-new-contract">Nuovo contratto</button>
       <button data-view="view-import">Import CSV</button>
     </div>
@@ -310,6 +311,111 @@
       </div>
 
       <div id="contratto-detail"></div>
+    </section>
+
+    <!-- REPORT -->
+    <section id="view-report" class="view">
+      <h2>Report & Analisi</h2>
+
+      <!-- COMPLEANNI -->
+      <div class="section-card">
+        <h3>Compleanni</h3>
+        <small>La data di nascita viene letta dal campo "Data nascita" oppure calcolata dal Codice fiscale.</small>
+
+        <h4 style="margin-top:10px;">Compleanni di oggi</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Cognome</th>
+              <th>Data nascita</th>
+              <th>Età che compie</th>
+              <th>Telefono</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-birth-today">
+            <tr><td colspan="5">Nessun compleanno oggi.</td></tr>
+          </tbody>
+        </table>
+
+        <h4 style="margin-top:12px;">Compleanni per mese</h4>
+        <div class="search-row">
+          <label for="birthMonthSelect" style="font-size:13px;">Mese compleanno:</label>
+          <select id="birthMonthSelect" style="max-width:180px;"></select>
+          <button class="btn-primary" type="button" id="btnBirthMonthSearch">Mostra</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Giorno</th>
+              <th>Nome</th>
+              <th>Cognome</th>
+              <th>Data nascita</th>
+              <th>Telefono</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-birth-month">
+            <tr><td colspan="5">Seleziona un mese.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- CONTRATTI PER COMPAGNIA + TECNOLOGIA -->
+      <div class="section-card">
+        <h3>Contratti per compagnia e tecnologia</h3>
+        <div class="search-row">
+          <input type="text" id="filtroCompagnia"
+                 placeholder="Compagnia (es. TIM, Vodafone) – si cerca nel Nome offerta" />
+          <input type="text" id="filtroTecnologia"
+                 placeholder="Tecnologia (es. SIM, FTTH)" style="max-width:200px;" />
+          <button class="btn-primary" type="button" id="btnFilterCompTech">Filtra</button>
+          <button class="btn-secondary" type="button" id="btnClearCompTech">Pulisci</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Data contratto</th>
+              <th>Cliente</th>
+              <th>Compagnia / Offerta</th>
+              <th>Tecnologia</th>
+              <th>Numero</th>
+              <th>Tipo cliente</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-comp-tech">
+            <tr><td colspan="6">Inserisci almeno un filtro e premi "Filtra".</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- CONTRATTI IN SCADENZA -->
+      <div class="section-card">
+        <h3>Contratti in scadenza</h3>
+        <div class="search-row">
+          <label for="expMonth" style="font-size:13px;">Mese:</label>
+          <select id="expMonth" style="max-width:160px;"></select>
+          <label for="expYear" style="font-size:13px;">Anno:</label>
+          <select id="expYear" style="max-width:120px;"></select>
+          <button class="btn-primary" type="button" id="btnExpSearch">Cerca</button>
+        </div>
+        <small>Vengono considerate le date "Fine vincolo offerta" e "Fine vincolo telefono".</small>
+        <table>
+          <thead>
+            <tr>
+              <th>Data scadenza</th>
+              <th>Tipo</th>
+              <th>Cliente</th>
+              <th>Numero</th>
+              <th>Offerta</th>
+              <th>Tecnologia</th>
+              <th>Tipo cliente</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-expiring">
+            <tr><td colspan="7">Seleziona mese e anno.</td></tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <!-- NUOVO CONTRATTO -->
@@ -514,6 +620,11 @@
     const statusEl = document.getElementById('status');
     function setStatus(msg) { statusEl.textContent = msg || ''; }
 
+    const MONTH_NAMES_IT = [
+      'Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno',
+      'Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'
+    ];
+
     // ===== NAVIGAZIONE VISTE =====
     const views = document.querySelectorAll('.view');
     const tabButtons = document.querySelectorAll('.nav-tabs button');
@@ -537,6 +648,8 @@
         clienti = data.data || [];
         renderSearchClienti();
         updateDashboard();
+        renderBirthdaysToday();
+        renderBirthdaysByMonth();
       } catch (err) {
         console.error(err);
         setStatus('Errore di rete nel caricamento clienti');
@@ -554,6 +667,7 @@
         contratti = data.data || [];
         updateDashboard();
         renderSearchContratti();
+        updateExpYearOptions();
       } catch (err) {
         console.error(err);
         setStatus('Errore di rete nel caricamento contratti');
@@ -606,7 +720,6 @@
       contrattiOggiEl.textContent = countToday;
       contrattiOggiSubEl.textContent = todayStr.split('-').reverse().join('/');
 
-      // Ultimi contratti
       const tbodyLatest = document.getElementById('tbody-latest-contratti');
       tbodyLatest.innerHTML = '';
       if (!contratti.length) {
@@ -940,7 +1053,7 @@
       nc_info.textContent = `Nuovo contratto per cliente esistente (ID: ${cli.id_cliente})`;
     }
 
-    // funzione comune: cerca cliente per CF, mail, telefono, se non c'è lo crea
+    // Cerca cliente per CF/mail/telefono, se non c'è lo crea
     async function ensureClienteEsistente(clientData) {
       if (clientData.codice_fiscale) {
         const cf = clientData.codice_fiscale.toUpperCase();
@@ -958,7 +1071,6 @@
         if (found) return found.id_cliente;
       }
 
-      // non trovato -> crea cliente
       setStatus('Creazione nuovo cliente...');
       const res = await fetch(API_URL, {
         method: 'POST',
@@ -990,6 +1102,8 @@
       });
       renderSearchClienti();
       updateDashboard();
+      renderBirthdaysToday();
+      renderBirthdaysByMonth();
       return newId;
     }
 
@@ -1074,6 +1188,327 @@
         setStatus('Errore di rete durante il salvataggio contratto');
       }
     });
+
+    // ===== REPORT: COMPLEANNI =====
+    const tbodyBirthToday = document.getElementById('tbody-birth-today');
+    const tbodyBirthMonth = document.getElementById('tbody-birth-month');
+    const birthMonthSelect = document.getElementById('birthMonthSelect');
+    const btnBirthMonthSearch = document.getElementById('btnBirthMonthSearch');
+
+    function getBirthDateFromCliente(cli) {
+      if (cli.data_nascita) {
+        const d = parseDate(cli.data_nascita);
+        if (d) return d;
+      }
+      const cf = (cli.codice_fiscale || '').toUpperCase();
+      if (cf.length < 11) return null;
+      try {
+        const yearStr = cf.substring(6, 8);
+        const monthChar = cf.charAt(8);
+        const dayStr = cf.substring(9, 11);
+        const yy = parseInt(yearStr, 10);
+        if (isNaN(yy)) return null;
+        const monthMap = {A:1,B:2,C:3,D:4,E:5,H:6,L:7,M:8,P:9,R:10,S:11,T:12};
+        const month = monthMap[monthChar];
+        if (!month) return null;
+        let day = parseInt(dayStr, 10);
+        if (isNaN(day)) return null;
+        if (day > 40) day = day - 40; // CF donne
+        const currentYear = new Date().getFullYear();
+        const currentYY = currentYear % 100;
+        const fullYear = yy <= currentYY ? 2000 + yy : 1900 + yy;
+        const d = new Date(fullYear, month - 1, day);
+        if (isNaN(d.getTime())) return null;
+        return d;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function getBirthInfo(cli) {
+      const d = getBirthDateFromCliente(cli);
+      if (!d) return null;
+      const today = new Date();
+      let age = today.getFullYear() - d.getFullYear();
+      const bThisYear = new Date(today.getFullYear(), d.getMonth(), d.getDate());
+      if (today < bThisYear) age--;
+      return { date: d, age };
+    }
+
+    function initBirthMonthSelect() {
+      if (!birthMonthSelect) return;
+      birthMonthSelect.innerHTML = '';
+      for (let m = 1; m <= 12; m++) {
+        const opt = document.createElement('option');
+        opt.value = String(m);
+        opt.textContent = `${m.toString().padStart(2, '0')} - ${MONTH_NAMES_IT[m-1]}`;
+        birthMonthSelect.appendChild(opt);
+      }
+      birthMonthSelect.value = String(new Date().getMonth() + 1);
+    }
+
+    function renderBirthdaysToday() {
+      if (!tbodyBirthToday) return;
+      const today = new Date();
+      const day = today.getDate();
+      const month = today.getMonth();
+      tbodyBirthToday.innerHTML = '';
+      const list = [];
+      clienti.forEach(cli => {
+        const info = getBirthInfo(cli);
+        if (!info) return;
+        if (info.date.getDate() === day && info.date.getMonth() === month) {
+          list.push({ cli, info });
+        }
+      });
+      if (!list.length) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 5;
+        td.textContent = 'Nessun compleanno oggi.';
+        tr.appendChild(td);
+        tbodyBirthToday.appendChild(tr);
+        return;
+      }
+      list.sort((a, b) => a.info.date.getFullYear() - b.info.date.getFullYear());
+      list.forEach(item => {
+        const cli = item.cli;
+        const info = item.info;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${cli.nome || ''}</td>
+          <td>${cli.cognome || ''}</td>
+          <td>${formatDateShort(info.date.toISOString().slice(0,10))}</td>
+          <td>${info.age}</td>
+          <td>${cli.telefono || ''}</td>
+        `;
+        tbodyBirthToday.appendChild(tr);
+      });
+    }
+
+    function renderBirthdaysByMonth() {
+      if (!tbodyBirthMonth || !birthMonthSelect) return;
+      const monthSelected = parseInt(birthMonthSelect.value, 10);
+      tbodyBirthMonth.innerHTML = '';
+      if (!monthSelected || isNaN(monthSelected)) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 5;
+        td.textContent = 'Seleziona un mese.';
+        tr.appendChild(td);
+        tbodyBirthMonth.appendChild(tr);
+        return;
+      }
+      const list = [];
+      clienti.forEach(cli => {
+        const info = getBirthInfo(cli);
+        if (!info) return;
+        if (info.date.getMonth() + 1 === monthSelected) {
+          list.push({ cli, info });
+        }
+      });
+      if (!list.length) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 5;
+        td.textContent = 'Nessun compleanno in questo mese.';
+        tr.appendChild(td);
+        tbodyBirthMonth.appendChild(tr);
+        return;
+      }
+      list.sort((a, b) => a.info.date.getDate() - b.info.date.getDate());
+      list.forEach(item => {
+        const cli = item.cli;
+        const info = item.info;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${info.date.getDate().toString().padStart(2,'0')}</td>
+          <td>${cli.nome || ''}</td>
+          <td>${cli.cognome || ''}</td>
+          <td>${formatDateShort(info.date.toISOString().slice(0,10))}</td>
+          <td>${cli.telefono || ''}</td>
+        `;
+        tbodyBirthMonth.appendChild(tr);
+      });
+    }
+
+    if (btnBirthMonthSearch) {
+      btnBirthMonthSearch.addEventListener('click', renderBirthdaysByMonth);
+    }
+
+    // ===== REPORT: COMPAGNIA + TECNOLOGIA =====
+    const filtroCompagnia = document.getElementById('filtroCompagnia');
+    const filtroTecnologia = document.getElementById('filtroTecnologia');
+    const tbodyCompTech = document.getElementById('tbody-comp-tech');
+    const btnFilterCompTech = document.getElementById('btnFilterCompTech');
+    const btnClearCompTech = document.getElementById('btnClearCompTech');
+
+    function renderCompTech() {
+      if (!tbodyCompTech) return;
+      const comp = (filtroCompagnia.value || '').toLowerCase();
+      const tech = (filtroTecnologia.value || '').toLowerCase();
+      tbodyCompTech.innerHTML = '';
+      if (!comp && !tech) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 6;
+        td.textContent = 'Inserisci almeno un filtro e premi "Filtra".';
+        tr.appendChild(td);
+        tbodyCompTech.appendChild(tr);
+        return;
+      }
+      const clienteMap = new Map(clienti.map(c => [c.id_cliente, c]));
+      let filtered = contratti;
+      if (comp) {
+        filtered = filtered.filter(c =>
+          (c.nome_offerta || '').toLowerCase().includes(comp)
+        );
+      }
+      if (tech) {
+        filtered = filtered.filter(c =>
+          (c.tecnologia || '').toLowerCase().includes(tech)
+        );
+      }
+      if (!filtered.length) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 6;
+        td.textContent = 'Nessun contratto trovato con questi filtri.';
+        tr.appendChild(td);
+        tbodyCompTech.appendChild(tr);
+        return;
+      }
+      filtered.forEach(c => {
+        const cli = clienteMap.get(c.id_cliente);
+        const nomeCli = cli ? `${cli.nome || ''} ${cli.cognome || ''}`.trim() : (c.codice_fiscale || '');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${formatDateShort(c.data_contratto)}</td>
+          <td>${nomeCli || '-'}</td>
+          <td>${c.nome_offerta || ''}</td>
+          <td>${c.tecnologia || ''}</td>
+          <td>${c.numero_lavorato || ''}</td>
+          <td>${c.tipo_cliente || ''}</td>
+        `;
+        tbodyCompTech.appendChild(tr);
+      });
+    }
+
+    if (btnFilterCompTech) {
+      btnFilterCompTech.addEventListener('click', renderCompTech);
+    }
+    if (btnClearCompTech) {
+      btnClearCompTech.addEventListener('click', () => {
+        filtroCompagnia.value = '';
+        filtroTecnologia.value = '';
+        renderCompTech();
+      });
+    }
+
+    // ===== REPORT: CONTRATTI IN SCADENZA =====
+    const expMonthSelect = document.getElementById('expMonth');
+    const expYearSelect = document.getElementById('expYear');
+    const tbodyExpiring = document.getElementById('tbody-expiring');
+    const btnExpSearch = document.getElementById('btnExpSearch');
+
+    function initExpMonthSelect() {
+      if (!expMonthSelect) return;
+      expMonthSelect.innerHTML = '';
+      for (let m = 1; m <= 12; m++) {
+        const opt = document.createElement('option');
+        opt.value = String(m);
+        opt.textContent = `${m.toString().padStart(2,'0')} - ${MONTH_NAMES_IT[m-1]}`;
+        expMonthSelect.appendChild(opt);
+      }
+      expMonthSelect.value = String(new Date().getMonth() + 1);
+    }
+
+    function updateExpYearOptions() {
+      if (!expYearSelect) return;
+      const yearsSet = new Set();
+      contratti.forEach(c => {
+        ['data_fine_vincolo_offerta','data_fine_vincolo_telefono'].forEach(field => {
+          const d = parseDate(c[field]);
+          if (d) yearsSet.add(d.getFullYear());
+        });
+      });
+      if (!yearsSet.size) {
+        yearsSet.add(new Date().getFullYear());
+      }
+      const years = Array.from(yearsSet).sort((a,b) => a - b);
+      expYearSelect.innerHTML = '';
+      years.forEach(y => {
+        const opt = document.createElement('option');
+        opt.value = String(y);
+        opt.textContent = String(y);
+        expYearSelect.appendChild(opt);
+      });
+      const currentYear = new Date().getFullYear();
+      if (years.includes(currentYear)) {
+        expYearSelect.value = String(currentYear);
+      }
+    }
+
+    function renderExpiringContracts() {
+      if (!tbodyExpiring || !expMonthSelect || !expYearSelect) return;
+      const m = parseInt(expMonthSelect.value, 10);
+      const y = parseInt(expYearSelect.value, 10);
+      tbodyExpiring.innerHTML = '';
+      if (!m || !y || isNaN(m) || isNaN(y)) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 7;
+        td.textContent = 'Seleziona mese e anno.';
+        tr.appendChild(td);
+        tbodyExpiring.appendChild(tr);
+        return;
+      }
+      const clienteMap = new Map(clienti.map(c => [c.id_cliente, c]));
+      const list = [];
+      contratti.forEach(c => {
+        ['data_fine_vincolo_offerta','data_fine_vincolo_telefono'].forEach(field => {
+          const d = parseDate(c[field]);
+          if (!d) return;
+          if (d.getFullYear() === y && (d.getMonth() + 1) === m) {
+            list.push({
+              c,
+              date: d,
+              tipo: field === 'data_fine_vincolo_offerta' ? 'Offerta' : 'Telefono'
+            });
+          }
+        });
+      });
+      if (!list.length) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 7;
+        td.textContent = 'Nessun contratto in scadenza nel mese selezionato.';
+        tr.appendChild(td);
+        tbodyExpiring.appendChild(tr);
+        return;
+      }
+      list.sort((a,b) => a.date - b.date);
+      list.forEach(item => {
+        const c = item.c;
+        const cli = clienteMap.get(c.id_cliente);
+        const nomeCli = cli ? `${cli.nome || ''} ${cli.cognome || ''}`.trim() : (c.codice_fiscale || '');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${formatDateShort(item.date.toISOString().slice(0,10))}</td>
+          <td>${item.tipo}</td>
+          <td>${nomeCli || '-'}</td>
+          <td>${c.numero_lavorato || ''}</td>
+          <td>${c.nome_offerta || ''}</td>
+          <td>${c.tecnologia || ''}</td>
+          <td>${c.tipo_cliente || ''}</td>
+        `;
+        tbodyExpiring.appendChild(tr);
+      });
+    }
+
+    if (btnExpSearch) {
+      btnExpSearch.addEventListener('click', renderExpiringContracts);
+    }
 
     // ===== IMPORT CSV =====
     const csvFileInput = document.getElementById('csvFile');
@@ -1222,7 +1657,6 @@
       btnCsvImport.disabled = false;
     });
 
-    // ---- runCsvImport (con conteggio OK/Errori) ----
     async function runCsvImport() {
       if (!csvRows.length) {
         alert('Prima fai una Anteprima del CSV.');
@@ -1307,6 +1741,8 @@
       btnCsvPreview.disabled = false;
       await loadClienti();
       await loadContrattiAll();
+      renderBirthdaysToday();
+      renderBirthdaysByMonth();
     }
 
     btnCsvImport.addEventListener('click', runCsvImport);
@@ -1314,6 +1750,8 @@
     // ===== INIT =====
     document.addEventListener('DOMContentLoaded', async () => {
       resetNewContractForm();
+      initBirthMonthSelect();
+      initExpMonthSelect();
       setStatus('Caricamento clienti e contratti...');
       await loadClienti();
       await loadContrattiAll();
