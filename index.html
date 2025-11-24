@@ -5,9 +5,7 @@
   <title>CRM – Clienti & Contratti</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       margin: 0;
@@ -23,22 +21,17 @@
       align-items: center;
       justify-content: space-between;
     }
-    header h1 {
-      margin: 0;
-      font-size: 20px;
-    }
+    header h1 { margin: 0; font-size: 20px; }
     .container {
       padding: 16px 24px 32px;
       max-width: 1200px;
       margin: 0 auto;
     }
-
     .status-bar {
       font-size: 13px;
       color: #4b5563;
       margin-bottom: 12px;
     }
-
     .nav-tabs {
       display: flex;
       gap: 8px;
@@ -58,7 +51,6 @@
       background: #2563eb;
       color: white;
     }
-
     .btn-primary {
       background: #2563eb;
       color: #fff;
@@ -77,14 +69,12 @@
       cursor: pointer;
       font-size: 14px;
     }
-
-    .view {
-      display: none;
+    .btn-primary:disabled, .btn-secondary:disabled {
+      opacity: 0.6;
+      cursor: default;
     }
-    .view.active {
-      display: block;
-    }
-
+    .view { display: none; }
+    .view.active { display: block; }
     .cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -111,16 +101,8 @@
       color: #9ca3af;
       margin-top: 2px;
     }
-
-    h2 {
-      font-size: 18px;
-      margin: 0 0 10px;
-    }
-    h3 {
-      font-size: 16px;
-      margin: 12px 0 8px;
-    }
-
+    h2 { font-size: 18px; margin: 0 0 10px; }
+    h3 { font-size: 16px; margin: 12px 0 8px; }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -130,22 +112,14 @@
       box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
       margin-top: 8px;
     }
-    thead {
-      background: #111827;
-      color: #f9fafb;
-    }
+    thead { background: #111827; color: #f9fafb; }
     th, td {
       padding: 6px 8px;
       font-size: 12px;
       border-bottom: 1px solid #e5e7eb;
     }
-    tbody tr:hover {
-      background: #f9fafb;
-    }
-    tbody tr.clickable {
-      cursor: pointer;
-    }
-
+    tbody tr:hover { background: #f9fafb; }
+    tbody tr.clickable { cursor: pointer; }
     .section-card {
       background: white;
       border-radius: 10px;
@@ -153,7 +127,6 @@
       box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
       margin-bottom: 12px;
     }
-
     input[type="text"],
     input[type="email"],
     input[type="date"],
@@ -187,10 +160,7 @@
       margin-top: 10px;
       flex-wrap: wrap;
     }
-    .field-group {
-      margin-bottom: 8px;
-    }
-
+    .field-group { margin-bottom: 8px; }
     .search-row {
       display: flex;
       gap: 8px;
@@ -202,12 +172,10 @@
       flex: 1;
       min-width: 220px;
     }
-
     small {
       font-size: 11px;
       color: #6b7280;
     }
-
     @media (max-width: 700px) {
       header {
         flex-direction: column;
@@ -230,6 +198,7 @@
       <button data-view="view-dashboard" class="active">Dashboard</button>
       <button data-view="view-search">Ricerca</button>
       <button data-view="view-new-contract">Nuovo contratto</button>
+      <button data-view="view-import">Import CSV</button>
     </div>
 
     <!-- DASHBOARD -->
@@ -494,44 +463,69 @@
         <small id="nc_info"></small>
       </form>
     </section>
+
+    <!-- IMPORT CSV -->
+    <section id="view-import" class="view">
+      <h2>Import clienti & contratti (CSV)</h2>
+      <small>
+        Ogni riga = 1 contratto.  
+        Se il codice fiscale esiste → aggiunge solo il contratto.  
+        Se non esiste → crea anche il cliente.
+      </small>
+
+      <div class="section-card">
+        <div class="field-group">
+          <label for="csvFile">Carica file CSV</label>
+          <input type="file" id="csvFile" accept=".csv,text/csv" />
+        </div>
+
+        <div class="field-group">
+          <label for="csvText">Oppure incolla il contenuto CSV</label>
+          <textarea id="csvText" placeholder="Intestazioni consigliate: CodiceFiscale, Nome, Cognome, Telefono, Email, DataNascita, NoteCliente, DataContratto, TipoCliente, TipoAttivazione, Tecnologia, Convergenza, MNP, DataAttivazione, DataPortabilita, NumeroLavorato, NomeOfferta, CostoOfferta, VincoloOffertaMesi, TelefonoIncluso, IMEI, Modello, TipoPagamento, MesiVincoloTelefono, DataFineVincoloOfferta, DataFineVincoloTelefono"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-secondary" type="button" id="btnCsvPreview">Anteprima</button>
+          <button class="btn-primary" type="button" id="btnCsvImport" disabled>Avvia import</button>
+        </div>
+
+        <div id="csvPreviewWrapper"></div>
+
+        <div id="csvProgressWrapper" style="margin-top:10px; display:none;">
+          <div style="font-size:12px; margin-bottom:4px;">
+            Stato import: <span id="csvProgressText">0 / 0</span>
+          </div>
+          <div style="width:100%; background:#e5e7eb; border-radius:999px; overflow:hidden;">
+            <div id="csvProgressBar" style="height:8px; width:0%; background:#2563eb;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 
   <script>
-    // ===== URL della tua web app Apps Script =====
+    // ===== URL Apps Script =====
     const API_URL = 'https://script.google.com/macros/s/AKfycbxb0GIQqFXKJl8HRfXzFG7A-sdQHxzBWUotromEyF2zN_pS2RUmL2f20EQ0g7kSMga7/exec';
 
     let clienti = [];
     let contratti = [];
+    let csvRows = [];
 
     const statusEl = document.getElementById('status');
-
-    function setStatus(msg) {
-      statusEl.textContent = msg || '';
-    }
+    function setStatus(msg) { statusEl.textContent = msg || ''; }
 
     // ===== NAVIGAZIONE VISTE =====
     const views = document.querySelectorAll('.view');
     const tabButtons = document.querySelectorAll('.nav-tabs button');
-
     function showView(id) {
-      views.forEach(v => {
-        v.classList.toggle('active', v.id === id);
-      });
-      tabButtons.forEach(b => {
-        b.classList.toggle('active', b.dataset.view === id);
-      });
+      views.forEach(v => v.classList.toggle('active', v.id === id));
+      tabButtons.forEach(b => b.classList.toggle('active', b.dataset.view === id));
     }
-
     document.getElementById('goToSearch1').addEventListener('click', () => showView('view-search'));
     document.getElementById('goToNew1').addEventListener('click', () => showView('view-new-contract'));
+    tabButtons.forEach(btn => btn.addEventListener('click', () => showView(btn.dataset.view)));
 
-    tabButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        showView(btn.dataset.view);
-      });
-    });
-
-    // ===== CARICAMENTO DATI =====
+    // ===== CARICAMENTO DATI BASE =====
     async function loadClienti() {
       try {
         const res = await fetch(API_URL + '?action=listClienti');
@@ -541,7 +535,6 @@
           return;
         }
         clienti = data.data || [];
-        setStatus(`Clienti: ${clienti.length}`);
         renderSearchClienti();
         updateDashboard();
       } catch (err) {
@@ -559,7 +552,6 @@
           return;
         }
         contratti = data.data || [];
-        setStatus('Contratti: ' + contratti.length);
         updateDashboard();
         renderSearchContratti();
       } catch (err) {
@@ -573,7 +565,6 @@
       const d = new Date(str);
       return isNaN(d.getTime()) ? null : d;
     }
-
     function formatDateShort(str) {
       if (!str) return '';
       const d = parseDate(str);
@@ -627,7 +618,6 @@
         tbodyLatest.appendChild(tr);
         return;
       }
-
       const clienteMap = new Map(clienti.map(c => [c.id_cliente, c]));
       const sorted = [...contratti].sort((a, b) =>
         (b.data_contratto || '').localeCompare(a.data_contratto || '')
@@ -712,9 +702,7 @@
           <td>${c.codice_fiscale || ''}</td>
           <td>${counts[c.id_cliente] || 0}</td>
         `;
-        tr.addEventListener('click', () => {
-          showClienteDetail(c.id_cliente);
-        });
+        tr.addEventListener('click', () => showClienteDetail(c.id_cliente));
         tbodySearchClienti.appendChild(tr);
       });
     }
@@ -771,28 +759,19 @@
                 <th>Tecnologia</th>
               </tr>
             </thead>
-            <tbody>
-              ${contrRows}
-            </tbody>
+            <tbody>${contrRows}</tbody>
           </table>
         </div>
       `;
-
-      const btnNewCtr = document.getElementById('btnNewContractForClient');
-      btnNewCtr.addEventListener('click', () => {
-        openNewContractForClient(cli);
-      });
+      document.getElementById('btnNewContractForClient')
+        .addEventListener('click', () => openNewContractForClient(cli));
     }
 
     // ===== RICERCA CONTRATTI =====
     const searchContrattiEl = document.getElementById('searchContratti');
     const tbodySearchContratti = document.getElementById('tbody-search-contratti');
     const contrattoDetailWrapper = document.getElementById('contratto-detail');
-
-    document.getElementById('btnSearchContratti').addEventListener('click', () => {
-      renderSearchContratti();
-    });
-
+    document.getElementById('btnSearchContratti').addEventListener('click', renderSearchContratti);
     document.getElementById('btnClearSearchContratti').addEventListener('click', () => {
       searchContrattiEl.value = '';
       renderSearchContratti();
@@ -802,7 +781,6 @@
     function renderSearchContratti() {
       const term = (searchContrattiEl.value || '').toLowerCase();
       tbodySearchContratti.innerHTML = '';
-
       const clienteMap = new Map(clienti.map(c => [c.id_cliente, c]));
 
       let filtered = contratti;
@@ -847,9 +825,7 @@
           <td>${c.nome_offerta || ''}</td>
           <td>${c.tecnologia || ''}</td>
         `;
-        tr.addEventListener('click', () => {
-          showContrattoDetail(c.id_contratto);
-        });
+        tr.addEventListener('click', () => showContrattoDetail(c.id_contratto));
         tbodySearchContratti.appendChild(tr);
       });
     }
@@ -861,7 +837,6 @@
         return;
       }
       const cli = clienti.find(c => c.id_cliente === ctr.id_cliente);
-
       contrattoDetailWrapper.innerHTML = `
         <div class="section-card">
           <h3>Dettaglio contratto</h3>
@@ -886,10 +861,9 @@
       `;
     }
 
-    // ===== NUOVO CONTRATTO =====
+    // ===== NUOVO CONTRATTO MANUALE =====
     const formNewContract = document.getElementById('form-new-contract');
     const nc_info = document.getElementById('nc_info');
-
     const nc_id_cliente = document.getElementById('nc_id_cliente');
     const nc_nome = document.getElementById('nc_nome');
     const nc_cognome = document.getElementById('nc_cognome');
@@ -898,7 +872,6 @@
     const nc_codice_fiscale = document.getElementById('nc_codice_fiscale');
     const nc_data_nascita = document.getElementById('nc_data_nascita');
     const nc_note = document.getElementById('nc_note');
-
     const nc_data_contratto = document.getElementById('nc_data_contratto');
     const nc_tipo_cliente = document.getElementById('nc_tipo_cliente');
     const nc_tipo_attivazione = document.getElementById('nc_tipo_attivazione');
@@ -919,10 +892,7 @@
     const nc_data_fine_vincolo_offerta = document.getElementById('nc_data_fine_vincolo_offerta');
     const nc_data_fine_vincolo_telefono = document.getElementById('nc_data_fine_vincolo_telefono');
 
-    document.getElementById('btnResetNew').addEventListener('click', () => {
-      resetNewContractForm();
-    });
-
+    document.getElementById('btnResetNew').addEventListener('click', resetNewContractForm);
     function resetNewContractForm() {
       nc_id_cliente.value = '';
       nc_nome.value = '';
@@ -932,10 +902,8 @@
       nc_codice_fiscale.value = '';
       nc_data_nascita.value = '';
       nc_note.value = '';
-
       const todayStr = new Date().toISOString().slice(0, 10);
       nc_data_contratto.value = todayStr;
-
       nc_tipo_cliente.value = '';
       nc_tipo_attivazione.value = '';
       nc_tecnologia.value = '';
@@ -959,7 +927,6 @@
 
     function openNewContractForClient(cli) {
       showView('view-new-contract');
-      // precompila anagrafica
       nc_id_cliente.value = cli.id_cliente || '';
       nc_nome.value = cli.nome || '';
       nc_cognome.value = cli.cognome || '';
@@ -968,35 +935,30 @@
       nc_codice_fiscale.value = cli.codice_fiscale || '';
       nc_data_nascita.value = cli.data_nascita || '';
       nc_note.value = cli.note || '';
-
       const todayStr = new Date().toISOString().slice(0, 10);
-      if (!nc_data_contratto.value) {
-        nc_data_contratto.value = todayStr;
-      }
+      if (!nc_data_contratto.value) nc_data_contratto.value = todayStr;
       nc_info.textContent = `Nuovo contratto per cliente esistente (ID: ${cli.id_cliente})`;
     }
 
+    // funzione comune: cerca cliente per CF, mail, telefono, se non c'è lo crea
     async function ensureClienteEsistente(clientData) {
-      // 1) per codice fiscale
       if (clientData.codice_fiscale) {
         const cf = clientData.codice_fiscale.toUpperCase();
         const found = clienti.find(c => (c.codice_fiscale || '').toUpperCase() === cf);
         if (found) return found.id_cliente;
       }
-      // 2) per email
       if (clientData.email) {
         const em = clientData.email.toLowerCase();
         const found = clienti.find(c => (c.email || '').toLowerCase() === em);
         if (found) return found.id_cliente;
       }
-      // 3) per telefono
       if (clientData.telefono) {
         const tel = clientData.telefono;
         const found = clienti.find(c => (c.telefono || '') === tel);
         if (found) return found.id_cliente;
       }
 
-      // 4) se non trovato, crea nuovo cliente
+      // non trovato -> crea cliente
       setStatus('Creazione nuovo cliente...');
       const res = await fetch(API_URL, {
         method: 'POST',
@@ -1013,12 +975,9 @@
         })
       });
       const data = await res.json();
-      if (!data.success) {
-        throw new Error(data.error || 'Errore creazione cliente');
-      }
+      if (!data.success) throw new Error(data.error || 'Errore creazione cliente');
 
       const newId = data.id_cliente;
-      // aggiorna cache locale
       clienti.push({
         id_cliente: newId,
         nome: clientData.nome,
@@ -1036,7 +995,6 @@
 
     formNewContract.addEventListener('submit', async (evt) => {
       evt.preventDefault();
-
       if (!nc_nome.value.trim() || !nc_cognome.value.trim()) {
         alert('Nome e cognome cliente sono obbligatori');
         return;
@@ -1061,11 +1019,7 @@
       try {
         if (clientData.id_cliente) {
           const found = clienti.find(c => c.id_cliente === clientData.id_cliente);
-          if (found) {
-            idCliente = found.id_cliente;
-          } else {
-            idCliente = await ensureClienteEsistente(clientData);
-          }
+          idCliente = found ? found.id_cliente : await ensureClienteEsistente(clientData);
         } else {
           idCliente = await ensureClienteEsistente(clientData);
         }
@@ -1075,7 +1029,6 @@
         return;
       }
 
-      // Ora idCliente è garantito
       setStatus('Creazione contratto...');
       const contractPayload = {
         action: 'createContratto',
@@ -1113,16 +1066,235 @@
           setStatus('Errore creazione contratto: ' + (data.error || 'sconosciuto'));
           return;
         }
-
         setStatus('Contratto creato correttamente');
         nc_info.textContent = `Contratto creato (ID: ${data.id_contratto || ''}) per cliente ID: ${idCliente}`;
         await loadContrattiAll();
-        updateDashboard();
       } catch (err) {
         console.error(err);
         setStatus('Errore di rete durante il salvataggio contratto');
       }
     });
+
+    // ===== IMPORT CSV =====
+    const csvFileInput = document.getElementById('csvFile');
+    const csvTextArea = document.getElementById('csvText');
+    const btnCsvPreview = document.getElementById('btnCsvPreview');
+    const btnCsvImport = document.getElementById('btnCsvImport');
+    const csvPreviewWrapper = document.getElementById('csvPreviewWrapper');
+    const csvProgressWrapper = document.getElementById('csvProgressWrapper');
+    const csvProgressText = document.getElementById('csvProgressText');
+    const csvProgressBar = document.getElementById('csvProgressBar');
+
+    const headerMapping = {
+      idcliente: 'id_cliente',
+      idcontratto: 'id_contratto',
+      nome: 'nome',
+      cognome: 'cognome',
+      telefono: 'telefono',
+      email: 'email',
+      codicefiscale: 'codice_fiscale',
+      datanascita: 'data_nascita',
+      notecliente: 'note_cliente',
+      datacontratto: 'data_contratto',
+      tipocliente: 'tipo_cliente',
+      tipoattivazione: 'tipo_attivazione',
+      tecnologia: 'tecnologia',
+      convergenza: 'convergenza',
+      mnp: 'mnp',
+      dataattivazione: 'data_attivazione',
+      dataportabilita: 'data_portabilita',
+      numerolavorato: 'numero_lavorato',
+      nomeofferta: 'nome_offerta',
+      costoofferta: 'costo_offerta',
+      vincolooffertamesi: 'vincolo_offerta_mesi',
+      telefonoincluso: 'telefono_incluso',
+      imei: 'imei',
+      modello: 'modello',
+      tipopagamento: 'tipo_pagamento',
+      mesivincolotelefono: 'mesi_vincolo_telefono',
+      datafinevincoloofferta: 'data_fine_vincolo_offerta',
+      datafinevincolotelefono: 'data_fine_vincolo_telefono'
+    };
+
+    function normalizeHeader(h) {
+      return h.toLowerCase().replace(/\s+/g, '').replace(/_/g, '');
+    }
+
+    function parseCsvText(text) {
+      const lines = text.trim().split(/\r?\n/).filter(l => l.trim());
+      if (!lines.length) return [];
+      const first = lines[0];
+      const sep = (first.split(';').length > first.split(',').length) ? ';' : ',';
+      const rawHeaders = first.split(sep).map(h => h.trim());
+      const headerKeys = rawHeaders.map(normalizeHeader);
+      const indexToField = {};
+      headerKeys.forEach((hk, idx) => {
+        if (headerMapping[hk]) indexToField[idx] = headerMapping[hk];
+      });
+
+      const rows = [];
+      for (let i = 1; i < lines.length; i++) {
+        const cols = lines[i].split(sep);
+        if (cols.length === 1 && !cols[0].trim()) continue;
+        const obj = {
+          id_cliente: '',
+          id_contratto: '',
+          nome: '',
+          cognome: '',
+          telefono: '',
+          email: '',
+          codice_fiscale: '',
+          data_nascita: '',
+          note_cliente: '',
+          data_contratto: '',
+          tipo_cliente: '',
+          tipo_attivazione: '',
+          tecnologia: '',
+          convergenza: '',
+          mnp: '',
+          data_attivazione: '',
+          data_portabilita: '',
+          numero_lavorato: '',
+          nome_offerta: '',
+          costo_offerta: '',
+          vincolo_offerta_mesi: '',
+          telefono_incluso: '',
+          imei: '',
+          modello: '',
+          tipo_pagamento: '',
+          mesi_vincolo_telefono: '',
+          data_fine_vincolo_offerta: '',
+          data_fine_vincolo_telefono: ''
+        };
+        cols.forEach((val, idx) => {
+          const key = indexToField[idx];
+          if (key) obj[key] = val.trim();
+        });
+        rows.push(obj);
+      }
+      return rows;
+    }
+
+    btnCsvPreview.addEventListener('click', async () => {
+      csvRows = [];
+      csvPreviewWrapper.innerHTML = '';
+      csvProgressWrapper.style.display = 'none';
+      btnCsvImport.disabled = true;
+
+      let text = '';
+      const file = csvFileInput.files[0];
+      if (file) {
+        text = await file.text();
+      } else {
+        text = csvTextArea.value;
+      }
+      if (!text.trim()) {
+        alert('Seleziona un file CSV o incolla i dati.');
+        return;
+      }
+      csvRows = parseCsvText(text);
+      if (!csvRows.length) {
+        alert('Nessuna riga trovata nel CSV (controlla le intestazioni).');
+        return;
+      }
+
+      const maxRows = Math.min(csvRows.length, 20);
+      let html = `<small>Anteprima ${maxRows} righe su ${csvRows.length}</small>`;
+      html += `<table><thead><tr>
+        <th>CF</th><th>Nome</th><th>Cognome</th><th>Telefono</th><th>Email</th>
+        <th>Data contratto</th><th>Offerta</th><th>Numero</th>
+      </tr></thead><tbody>`;
+      for (let i = 0; i < maxRows; i++) {
+        const r = csvRows[i];
+        html += `<tr>
+          <td>${r.codice_fiscale || ''}</td>
+          <td>${r.nome || ''}</td>
+          <td>${r.cognome || ''}</td>
+          <td>${r.telefono || ''}</td>
+          <td>${r.email || ''}</td>
+          <td>${r.data_contratto || ''}</td>
+          <td>${r.nome_offerta || ''}</td>
+          <td>${r.numero_lavorato || ''}</td>
+        </tr>`;
+      }
+      html += '</tbody></table>';
+      csvPreviewWrapper.innerHTML = html;
+      btnCsvImport.disabled = false;
+    });
+
+    async function runCsvImport() {
+      if (!csvRows.length) {
+        alert('Prima fai una Anteprima del CSV.');
+        return;
+      }
+      csvProgressWrapper.style.display = 'block';
+      let processed = 0;
+      const total = csvRows.length;
+      csvProgressText.textContent = `0 / ${total}`;
+      csvProgressBar.style.width = '0%';
+      btnCsvImport.disabled = true;
+      btnCsvPreview.disabled = true;
+      setStatus('Import in corso...');
+
+      for (const row of csvRows) {
+        try {
+          const clientData = {
+            id_cliente: row.id_cliente || null,
+            nome: row.nome || '',
+            cognome: row.cognome || '',
+            telefono: row.telefono || '',
+            email: row.email || '',
+            codice_fiscale: row.codice_fiscale || '',
+            data_nascita: row.data_nascita || '',
+            note: row.note_cliente || ''
+          };
+          const idCliente = await ensureClienteEsistente(clientData);
+          const payload = {
+            action: 'createContratto',
+            id_cliente: idCliente,
+            codice_fiscale: row.codice_fiscale || '',
+            data_contratto: row.data_contratto || '',
+            tipo_cliente: row.tipo_cliente || '',
+            tipo_attivazione: row.tipo_attivazione || '',
+            tecnologia: row.tecnologia || '',
+            convergenza: row.convergenza || '',
+            mnp: row.mnp || '',
+            data_attivazione: row.data_attivazione || '',
+            data_portabilita: row.data_portabilita || '',
+            numero_lavorato: row.numero_lavorato || '',
+            nome_offerta: row.nome_offerta || '',
+            costo_offerta: row.costo_offerta || '',
+            vincolo_offerta_mesi: row.vincolo_offerta_mesi || '',
+            telefono_incluso: row.telefono_incluso || '',
+            imei: row.imei || '',
+            modello: row.modello || '',
+            tipo_pagamento: row.tipo_pagamento || '',
+            mesi_vincolo_telefono: row.mesi_vincolo_telefono || '',
+            data_fine_vincolo_offerta: row.data_fine_vincolo_offerta || '',
+            data_fine_vincolo_telefono: row.data_fine_vincolo_telefono || ''
+          };
+          await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        } catch (err) {
+          console.error('Errore riga CSV', err);
+        }
+        processed++;
+        csvProgressText.textContent = `${processed} / ${total}`;
+        const perc = Math.round(processed * 100 / total);
+        csvProgressBar.style.width = perc + '%';
+      }
+
+      setStatus(`Import completato: ${csvRows.length} righe.`);
+      btnCsvImport.disabled = false;
+      btnCsvPreview.disabled = false;
+      await loadClienti();
+      await loadContrattiAll();
+    }
+
+    btnCsvImport.addEventListener('click', runCsvImport);
 
     // ===== INIT =====
     document.addEventListener('DOMContentLoaded', async () => {
