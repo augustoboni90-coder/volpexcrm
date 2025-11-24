@@ -533,7 +533,14 @@
   </main>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbyieuxmd0QTNC_N9Vyl1Xdwl_cirgnAo3pWykRgwBHOWdd2YWz31BB6bg6D1aYgUsu7/exec";
+    // URL Web App Google (googleusercontent) SENZA action
+    const API_URL = "https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLhsATaIMWU1qoPQriL4cCDAF6nMiKWD8cahBip0ZSY5A4bd5dZ43mqwC4jnzb6dN9phTbWpLAWFwlXEfZGcedArJqOPTvmOJUeHjr4YbD9qrb64d7a86pAHmDRb1xIh155savjhE3aL6RlfyN6GGFrrU-rZMJMKN4ZciN8f-MD3H6vc9Izk9sZrs_HY1c18sk5Qd2F_65AaTIWLPthC62bqsRV4O6yGm14EllDeh6uz4pwtwPP3yG2lqWldI6e7e90t0gA5Up4SWSRPOXRL6YUpjhLV4A&lib=M3JvULdzC_x-BNHHc2759ENIbbIa8tKKf";
+
+    // helper per costruire correttamente gli URL GET aggiungendo &action=...
+    function buildUrl(params) {
+      const sep = API_URL.includes("?") ? "&" : "?";
+      return API_URL + sep + params;
+    }
 
     // NUOVO CONTRATTO - riferimenti
     const cfInput = document.getElementById("cl-cf");
@@ -624,7 +631,7 @@
       setStatoCliente("none", "Ricerca cliente in corso...");
 
       try {
-        const url = API_URL + "?action=getClienteByCF&cf=" + encodeURIComponent(cf);
+        const url = buildUrl("action=getClienteByCF&cf=" + encodeURIComponent(cf));
         const res = await fetch(url);
         if (!res.ok) throw new Error("Errore HTTP " + res.status);
         const data = await res.json();
@@ -769,8 +776,8 @@
     async function caricaDatiMaster() {
       try {
         const [resClienti, resContratti] = await Promise.all([
-          fetch(API_URL + "?action=listClienti"),
-          fetch(API_URL + "?action=listContratti")
+          fetch(buildUrl("action=listClienti")),
+          fetch(buildUrl("action=listContratti"))
         ]);
         if (!resClienti.ok || !resContratti.ok) throw new Error("Errore HTTP in listClienti/listContratti");
 
@@ -778,7 +785,8 @@
         const dataContratti = await resContratti.json();
 
         if (!dataClienti.success || !dataContratti.success) {
-          console.error(dataClienti, dataContratti);
+          console.error("Errore listClienti/listContratti", dataClienti, dataContratti);
+          alert("Errore nel caricamento clienti/contratti.\nControlla in Apps Script le azioni listClienti/listContratti e i fogli 'Clienti' e 'Contratti'.");
           return;
         }
 
