@@ -41,10 +41,6 @@
       font-size: 1.1rem;
       margin: 0 0 0.5rem 0;
     }
-    h3 {
-      font-size: 1rem;
-      margin: 0.75rem 0 0.5rem 0;
-    }
     .section-title {
       font-weight: 600;
       font-size: 0.95rem;
@@ -168,6 +164,31 @@
     .hidden {
       display: none !important;
     }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+    th, td {
+      padding: 0.35rem 0.4rem;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: left;
+    }
+    th {
+      background: #f9fafb;
+      font-weight: 600;
+    }
+    tr:hover td {
+      background: #f3f4f6;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.1rem 0.4rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      background: #eef2ff;
+      color: #4338ca;
+    }
   </style>
 </head>
 <body>
@@ -177,15 +198,17 @@
   </header>
 
   <main>
-    <!-- DATI CLIENTE -->
+    <!-- SEZIONE 1: NUOVO CONTRATTO -->
     <section class="card">
       <div class="flex-between mb-1">
-        <h2>Dati cliente</h2>
-        <span class="subtle">Passo 1 di 2</span>
+        <h2>Nuovo contratto</h2>
+        <span class="subtle">Passo 1 e 2</span>
       </div>
+
+      <!-- DATI CLIENTE -->
+      <div class="section-title">Dati cliente</div>
       <p class="text-sm text-muted mb-2">
-        1️⃣ Inserisci il <strong>codice fiscale</strong> e premi "Cerca cliente".<br>
-        Se il cliente esiste viene caricata l'anagrafica, altrimenti puoi inserirla e sarà creato in automatico.
+        1️⃣ Inserisci il <strong>codice fiscale</strong> e premi "Cerca cliente". Se esiste carica l'anagrafica, altrimenti puoi inserirla e sarà creato in automatico.
       </p>
 
       <div class="grid grid-3 mb-2">
@@ -202,7 +225,7 @@
         </div>
       </div>
 
-      <div class="grid grid-3">
+      <div class="grid grid-3 mb-3">
         <div>
           <label for="cl-nome">Nome</label>
           <input type="text" id="cl-nome" />
@@ -224,16 +247,11 @@
           <textarea id="cl-note" placeholder="Note interne (opzionale)"></textarea>
         </div>
       </div>
-    </section>
 
-    <!-- DATI CONTRATTO -->
-    <section class="card">
-      <div class="flex-between mb-1">
-        <h2>Dati contratto</h2>
-        <span class="subtle">Passo 2 di 2</span>
-      </div>
+      <!-- DATI CONTRATTO -->
+      <div class="section-title">Dati contratto</div>
       <p class="text-sm text-muted mb-2">
-        2️⃣ Compila i dati del contratto. Le date di portabilità e fine vincoli saranno calcolate automaticamente nel foglio Google.
+        2️⃣ Compila i dati. Le date di portabilità e fine vincoli saranno calcolate automaticamente nel foglio Google.
       </p>
 
       <form id="form-contratto" class="grid">
@@ -376,12 +394,148 @@
 
       <div id="messaggi" class="mt-2"></div>
     </section>
+
+    <!-- SEZIONE 2: GESTIONE CLIENTI & CONTRATTI -->
+    <section class="card">
+      <div class="flex-between mb-1">
+        <h2>Gestione clienti & contratti</h2>
+        <span class="subtle">Ricerca e modifica anagrafica</span>
+      </div>
+
+      <div class="grid grid-3 mb-2">
+        <div>
+          <label for="gest-search">Cerca cliente (nome / cognome / telefono / CF)</label>
+          <input type="text" id="gest-search" placeholder="es. Rossi, 333..., RSSMRA..." />
+        </div>
+        <div class="flex mt-2">
+          <button type="button" class="btn-secondary" id="btn-gest-search">Cerca</button>
+          <button type="button" class="btn-outline" id="btn-gest-reset">Reset</button>
+        </div>
+      </div>
+
+      <div style="max-height: 220px; overflow-y: auto; margin-bottom: 0.75rem;">
+        <table>
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>CF</th>
+              <th>Telefono</th>
+              <th>Email</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="gest-tabella-clienti"></tbody>
+        </table>
+      </div>
+
+      <div id="gest-dettagli" class="hidden">
+        <div class="section-title">Anagrafica selezionata</div>
+        <div class="grid grid-3 mb-2">
+          <div>
+            <label>ID cliente</label>
+            <input type="text" id="gest-id" readonly />
+          </div>
+          <div>
+            <label>Codice fiscale</label>
+            <input type="text" id="gest-cf" readonly />
+          </div>
+          <div>
+            <label>Data nascita (da CF)</label>
+            <input type="text" id="gest-nascita" readonly />
+          </div>
+
+          <div>
+            <label for="gest-nome">Nome</label>
+            <input type="text" id="gest-nome" />
+          </div>
+          <div>
+            <label for="gest-cognome">Cognome</label>
+            <input type="text" id="gest-cognome" />
+          </div>
+          <div>
+            <label for="gest-telefono">Telefono</label>
+            <input type="text" id="gest-telefono" />
+          </div>
+          <div>
+            <label for="gest-email">Email</label>
+            <input type="text" id="gest-email" />
+          </div>
+          <div class="grid-1">
+            <label for="gest-note">Note</label>
+            <textarea id="gest-note"></textarea>
+          </div>
+        </div>
+        <button type="button" class="btn-primary mb-2" id="btn-gest-salva-anagrafica">Salva anagrafica</button>
+
+        <div class="section-title">Contratti del cliente</div>
+        <div style="max-height: 220px; overflow-y: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Data contratto</th>
+                <th>Tipo</th>
+                <th>Tecnologia</th>
+                <th>Offerta</th>
+                <th>Costo</th>
+              </tr>
+            </thead>
+            <tbody id="gest-tabella-contratti-cliente"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEZIONE 3: ULTIMI CONTRATTI -->
+    <section class="card">
+      <div class="flex-between mb-1">
+        <h2>Ultimi contratti</h2>
+        <span class="subtle">Filtri per mese / tipo attivazione / operatore</span>
+      </div>
+
+      <div class="grid grid-3 mb-2">
+        <div>
+          <label for="ult-mese">Mese (data contratto)</label>
+          <input type="month" id="ult-mese" />
+        </div>
+        <div>
+          <label for="ult-tipo-attivazione">Tipo attivazione</label>
+          <select id="ult-tipo-attivazione">
+            <option value="">Tutti</option>
+            <option value="Mobile">Mobile</option>
+            <option value="Fisso">Fisso</option>
+            <option value="TV">TV</option>
+            <option value="Luce">Luce</option>
+            <option value="Gas">Gas</option>
+          </select>
+        </div>
+        <div>
+          <label for="ult-operatore">Operatore / nome offerta</label>
+          <input type="text" id="ult-operatore" placeholder="es. TIM, Vodafone, 'Super Fibra'..." />
+        </div>
+      </div>
+
+      <div style="max-height: 260px; overflow-y: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Data contratto</th>
+              <th>CF</th>
+              <th>Tipo</th>
+              <th>Tecnologia</th>
+              <th>Offerta</th>
+              <th>Costo</th>
+            </tr>
+          </thead>
+          <tbody id="ult-tabella-contratti"></tbody>
+        </table>
+      </div>
+    </section>
   </main>
 
   <script>
-    // URL della tua Web App Apps Script
     const API_URL = "https://script.google.com/macros/s/AKfycbyieuxmd0QTNC_N9Vyl1Xdwl_cirgnAo3pWykRgwBHOWdd2YWz31BB6bg6D1aYgUsu7/exec";
 
+    // NUOVO CONTRATTO - riferimenti
     const cfInput = document.getElementById("cl-cf");
     const statoClienteSpan = document.getElementById("stato-cliente");
     const btnCercaCliente = document.getElementById("btn-cerca-cliente");
@@ -400,6 +554,32 @@
     const campoIMEI = document.getElementById("ct-imei");
     const campoModello = document.getElementById("ct-modello");
     const campoMesiTel = document.getElementById("ct-mesi-vincolo-telefono");
+
+    // GESTIONE CLIENTI
+    const gestSearchInput = document.getElementById("gest-search");
+    const gestBtnSearch = document.getElementById("btn-gest-search");
+    const gestBtnReset = document.getElementById("btn-gest-reset");
+    const gestTabellaClienti = document.getElementById("gest-tabella-clienti");
+    const gestDettagli = document.getElementById("gest-dettagli");
+    const gestId = document.getElementById("gest-id");
+    const gestCf = document.getElementById("gest-cf");
+    const gestNascita = document.getElementById("gest-nascita");
+    const gestNome = document.getElementById("gest-nome");
+    const gestCognome = document.getElementById("gest-cognome");
+    const gestTelefono = document.getElementById("gest-telefono");
+    const gestEmail = document.getElementById("gest-email");
+    const gestNote = document.getElementById("gest-note");
+    const gestBtnSalvaAnagrafica = document.getElementById("btn-gest-salva-anagrafica");
+    const gestTabellaContrattiCliente = document.getElementById("gest-tabella-contratti-cliente");
+
+    // ULTIMI CONTRATTI
+    const ultMese = document.getElementById("ult-mese");
+    const ultTipoAttivazione = document.getElementById("ult-tipo-attivazione");
+    const ultOperatore = document.getElementById("ult-operatore");
+    const ultTabellaContratti = document.getElementById("ult-tabella-contratti");
+
+    let cacheClienti = [];
+    let cacheContratti = [];
 
     function setStatoCliente(tipo, testo) {
       statoClienteSpan.className = "status";
@@ -544,14 +724,12 @@
       btnSalva.textContent = "Salvataggio in corso...";
 
       try {
-        // Nessun Content-Type per evitare preflight CORS
         const res = await fetch(API_URL, {
           method: "POST",
           body: JSON.stringify(payload)
         });
 
         if (!res.ok) throw new Error("Errore HTTP " + res.status);
-
         const data = await res.json();
         if (!data.success) {
           throw new Error(data.error || "Errore sconosciuto dal server");
@@ -565,6 +743,9 @@
         formContratto.reset();
         aggiornaBloccoTelefono();
         setDefaultDates();
+
+        // ricarico cache per far vedere subito i nuovi contratti
+        caricaDatiMaster();
       } catch (err) {
         console.error(err);
         mostraMessaggio("Errore nel salvataggio del contratto: " + err.message, "error");
@@ -584,6 +765,172 @@
       document.getElementById("ct-data-attivazione").value = todayStr;
     }
 
+    // --------- GESTIONE: CARICAMENTO CACHE ---------
+    async function caricaDatiMaster() {
+      try {
+        const [resClienti, resContratti] = await Promise.all([
+          fetch(API_URL + "?action=listClienti"),
+          fetch(API_URL + "?action=listContratti")
+        ]);
+        if (!resClienti.ok || !resContratti.ok) throw new Error("Errore HTTP in listClienti/listContratti");
+
+        const dataClienti = await resClienti.json();
+        const dataContratti = await resContratti.json();
+
+        if (!dataClienti.success || !dataContratti.success) {
+          console.error(dataClienti, dataContratti);
+          return;
+        }
+
+        cacheClienti = dataClienti.clienti || [];
+        cacheContratti = dataContratti.contratti || [];
+
+        renderListaClienti("");
+        renderUltimiContratti();
+      } catch (err) {
+        console.error("Errore caricamento master:", err);
+      }
+    }
+
+    // --------- GESTIONE: LISTA CLIENTI ---------
+    function renderListaClienti(filtro) {
+      const search = (filtro || "").toLowerCase();
+      gestTabellaClienti.innerHTML = "";
+
+      const filtrati = cacheClienti.filter(c => {
+        const testo = [c.nome, c.cognome, c.telefono, c.email, c.cf].join(" ").toLowerCase();
+        return !search || testo.includes(search);
+      });
+
+      filtrati
+        .sort((a, b) => (a.cognome + " " + a.nome).localeCompare(b.cognome + " " + b.nome))
+        .forEach(c => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${c.cognome || ""} ${c.nome || ""}</td>
+            <td>${c.cf || ""}</td>
+            <td>${c.telefono || ""}</td>
+            <td>${c.email || ""}</td>
+            <td><button type="button" class="btn-secondary btn-xs" data-id="${c.id}">Apri</button></td>
+          `;
+          gestTabellaClienti.appendChild(tr);
+        });
+
+      gestTabellaClienti.querySelectorAll("button[data-id]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-id");
+          selezionaClienteGestione(id);
+        });
+      });
+    }
+
+    function selezionaClienteGestione(id) {
+      const c = cacheClienti.find(x => x.id === id);
+      if (!c) return;
+
+      gestId.value = c.id || "";
+      gestCf.value = c.cf || "";
+      gestNascita.value = c.nascita || "";
+      gestNome.value = c.nome || "";
+      gestCognome.value = c.cognome || "";
+      gestTelefono.value = c.telefono || "";
+      gestEmail.value = c.email || "";
+      gestNote.value = c.note || "";
+
+      // contratti del cliente
+      const contrattiCliente = cacheContratti.filter(ct => ct.clienteId === id);
+      gestTabellaContrattiCliente.innerHTML = "";
+      contrattiCliente
+        .sort((a, b) => (b.dataContratto || "").localeCompare(a.dataContratto || ""))
+        .forEach(ct => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${ct.dataContratto || ""}</td>
+            <td>${ct.tipoAttivazione || ""}</td>
+            <td>${ct.tecnologia || ""}</td>
+            <td>${ct.nomeOfferta || ""}</td>
+            <td>${ct.costoOfferta || ""}</td>
+          `;
+          gestTabellaContrattiCliente.appendChild(tr);
+        });
+
+      gestDettagli.classList.remove("hidden");
+    }
+
+    async function salvaAnagraficaGestione() {
+      const id = gestId.value.trim();
+      if (!id) {
+        alert("Seleziona prima un cliente dalla lista.");
+        return;
+      }
+
+      const payload = {
+        action: "updateCliente",
+        id: id,
+        nome: gestNome.value.trim(),
+        cognome: gestCognome.value.trim(),
+        telefono: gestTelefono.value.trim(),
+        email: gestEmail.value.trim(),
+        note: gestNote.value.trim()
+      };
+
+      gestBtnSalvaAnagrafica.disabled = true;
+      gestBtnSalvaAnagrafica.textContent = "Salvataggio...";
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error("Errore HTTP " + res.status);
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error || "Errore dal server");
+
+        alert("Anagrafica aggiornata correttamente.");
+        await caricaDatiMaster();
+      } catch (err) {
+        console.error(err);
+        alert("Errore nel salvataggio anagrafica: " + err.message);
+      } finally {
+        gestBtnSalvaAnagrafica.disabled = false;
+        gestBtnSalvaAnagrafica.textContent = "Salva anagrafica";
+      }
+    }
+
+    // --------- ULTIMI CONTRATTI ---------
+    function renderUltimiContratti() {
+      ultTabellaContratti.innerHTML = "";
+      const filtroMese = ultMese.value; // YYYY-MM
+      const filtroTipo = ultTipoAttivazione.value;
+      const filtroOperatore = (ultOperatore.value || "").toLowerCase();
+
+      const ordinati = [...cacheContratti].sort((a, b) => (b.dataContratto || "").localeCompare(a.dataContratto || ""));
+
+      let count = 0;
+      for (const ct of ordinati) {
+        if (filtroMese && (!ct.dataContratto || !ct.dataContratto.startsWith(filtroMese))) continue;
+        if (filtroTipo && ct.tipoAttivazione !== filtroTipo) continue;
+
+        const testoOfferta = (ct.nomeOfferta || "").toLowerCase();
+        if (filtroOperatore && !testoOfferta.includes(filtroOperatore)) continue;
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${ct.dataContratto || ""}</td>
+          <td>${ct.cf || ""}</td>
+          <td>${ct.tipoAttivazione || ""}</td>
+          <td>${ct.tecnologia || ""}</td>
+          <td>${ct.nomeOfferta || ""}</td>
+          <td>${ct.costoOfferta || ""}</td>
+        `;
+        ultTabellaContratti.appendChild(tr);
+
+        count++;
+        if (count >= 100) break; // limitiamo a 100 righe per leggibilità
+      }
+    }
+
+    // --------- EVENTI ---------
     btnCercaCliente.addEventListener("click", cercaCliente);
     btnPulisciCliente.addEventListener("click", () => {
       pulisciAnagrafica(false);
@@ -598,8 +945,24 @@
     formContratto.addEventListener("submit", salvaContratto);
     selectTelefonoIncluso.addEventListener("change", aggiornaBloccoTelefono);
 
+    gestBtnSearch.addEventListener("click", () => {
+      renderListaClienti(gestSearchInput.value);
+    });
+    gestBtnReset.addEventListener("click", () => {
+      gestSearchInput.value = "";
+      renderListaClienti("");
+      gestDettagli.classList.add("hidden");
+    });
+    gestBtnSalvaAnagrafica.addEventListener("click", salvaAnagraficaGestione);
+
+    ultMese.addEventListener("change", renderUltimiContratti);
+    ultTipoAttivazione.addEventListener("change", renderUltimiContratti);
+    ultOperatore.addEventListener("input", renderUltimiContratti);
+
+    // INIT
     setDefaultDates();
     aggiornaBloccoTelefono();
+    caricaDatiMaster();
   </script>
 </body>
 </html>
