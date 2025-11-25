@@ -179,6 +179,8 @@
       font-size: 11px;
       color: #6b7280;
     }
+    .view { display: none; }
+    .view.active { display: block; }
     @media (max-width: 700px) {
       header {
         flex-direction: column;
@@ -891,7 +893,6 @@
       'Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'
     ];
 
-    // helper WhatsApp
     function buildWhatsAppLink(phoneRaw) {
       if (!phoneRaw) return null;
       const digits = String(phoneRaw).replace(/\D+/g, '');
@@ -907,7 +908,6 @@
       return `<a href="${url}" target="_blank" class="btn-secondary" style="padding:4px 8px; font-size:11px;">WhatsApp</a>`;
     }
 
-    // DATE
     function parseDate(str) {
       if (!str) return null;
       const d = new Date(str);
@@ -933,7 +933,6 @@
       return `${yyyy}-${mm}-${dd}`;
     }
 
-    // NAVIGAZIONE
     const views = document.querySelectorAll('.view');
     const tabButtons = document.querySelectorAll('.nav-tabs button');
     function showView(id) {
@@ -944,7 +943,6 @@
     document.getElementById('goToNew1').addEventListener('click', () => showView('view-new-contract'));
     tabButtons.forEach(btn => btn.addEventListener('click', () => showView(btn.dataset.view)));
 
-    // CARICAMENTO DATI BASE
     async function loadClienti() {
       try {
         const res = await fetch(API_URL + '?action=listClienti');
@@ -1014,7 +1012,6 @@
       }
     }
 
-    // DASHBOARD
     function updateDashboard() {
       const totalClientiEl = document.getElementById('stat-total-clienti');
       const totalContrattiEl = document.getElementById('stat-total-contratti');
@@ -1077,7 +1074,6 @@
       });
     }
 
-    // ===== RICERCA CLIENTI =====
     const searchClientiEl = document.getElementById('searchClienti');
     const tbodySearchClienti = document.getElementById('tbody-search-clienti');
     const clienteDetailEl = document.getElementById('cliente-detail');
@@ -1208,7 +1204,6 @@
         .addEventListener('click', () => openNewContractForClient(cli));
     }
 
-    // ===== RICERCA CONTRATTI =====
     const searchContrattiEl = document.getElementById('searchContratti');
     const tbodySearchContratti = document.getElementById('tbody-search-contratti');
     const contrattoDetailWrapper = document.getElementById('contratto-detail');
@@ -1307,7 +1302,6 @@
       `;
     }
 
-    // ===== FUNZIONE COMUNE: CREA/RIUSA CLIENTE =====
     async function ensureClienteEsistente(clientData) {
       if (clientData.codice_fiscale) {
         const cf = clientData.codice_fiscale.toUpperCase();
@@ -1361,7 +1355,6 @@
       return newId;
     }
 
-    // ===== NUOVO CONTRATTO (FORM) =====
     const formNewContract = document.getElementById('form-new-contract');
     const nc_info = document.getElementById('nc_info');
     const nc_id_cliente = document.getElementById('nc_id_cliente');
@@ -1532,7 +1525,6 @@
       }
     });
 
-    // ===== REPORT: COMPLEANNI =====
     const tbodyBirthToday = document.getElementById('tbody-birth-today');
     const tbodyBirthMonth = document.getElementById('tbody-birth-month');
     const birthMonthSelect = document.getElementById('birthMonthSelect');
@@ -1685,7 +1677,6 @@
       btnBirthMonthSearch.addEventListener('click', renderBirthdaysByMonth);
     }
 
-    // ===== REPORT COMPAGNIA+TECNOLOGIA =====
     const filtroCompagnia = document.getElementById('filtroCompagnia');
     const filtroTecnologia = document.getElementById('filtroTecnologia');
     const tbodyCompTech = document.getElementById('tbody-comp-tech');
@@ -1755,7 +1746,6 @@
       });
     }
 
-    // ===== CONTRATTI IN SCADENZA =====
     const expMonthSelect = document.getElementById('expMonth');
     const expYearSelect = document.getElementById('expYear');
     const tbodyExpiring = document.getElementById('tbody-expiring');
@@ -1860,7 +1850,6 @@
       btnExpSearch.addEventListener('click', renderExpiringContracts);
     }
 
-    // ===== DEVICE: FORM & TABELLA =====
     const formDevice = document.getElementById('form-device');
     const dv_info = document.getElementById('dv_info');
     const tbodyDevice = document.getElementById('tbody-device');
@@ -2059,7 +2048,6 @@
       }
     });
 
-    // ===== RIPARAZIONI: FORM & TABELLA =====
     const formRip = document.getElementById('form-riparazione');
     const rp_info = document.getElementById('rp_info');
     const tbodyRip = document.getElementById('tbody-riparazioni');
@@ -2199,7 +2187,6 @@
       }
     });
 
-    // ===== IMPORT CSV =====
     const csvFileInput = document.getElementById('csvFile');
     const csvTextArea = document.getElementById('csvText');
     const btnCsvPreview = document.getElementById('btnCsvPreview');
@@ -2446,7 +2433,6 @@
 
     btnCsvImport.addEventListener('click', runCsvImport);
 
-    // INIT
     document.addEventListener('DOMContentLoaded', async () => {
       const todayStr = new Date().toISOString().slice(0,10);
       if (dv_data_vendita) dv_data_vendita.value = todayStr;
