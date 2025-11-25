@@ -442,6 +442,8 @@
         </small>
 
         <form id="form-device">
+          <input type="hidden" id="dv_id_vendita" />
+
           <h4>Dati cliente</h4>
           <div class="form-grid-2">
             <div class="field-group">
@@ -568,6 +570,8 @@
         </small>
 
         <form id="form-riparazione">
+          <input type="hidden" id="rp_id_riparazione" />
+
           <h4>Dati cliente</h4>
           <div class="form-grid-2">
             <div class="field-group">
@@ -682,6 +686,7 @@
       <form id="form-new-contract" class="section-card">
         <h3>Dati cliente</h3>
         <input type="hidden" id="nc_id_cliente" />
+        <input type="hidden" id="nc_id_contratto" />
 
         <div class="form-grid-2">
           <div class="field-group">
@@ -875,7 +880,7 @@
 
   <script>
     // ===== URL Apps Script =====
-    const API_URL = 'https://script.google.com/macros/s/AKfycbw0-dtao8wjqH1NiaQDy8SSiRCuyK3who15CXVdNY-OfIGYW2LWx1KrsmVXRKVQb1OY/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbwwZN7PpcPVjemEF9e7iU607Z3yHZgDWj-UYbv5yfsRg4rudlcZdNAEDh4suKNj0SfX/exec';
 
     let clienti = [];
     let contratti = [];
@@ -1146,22 +1151,88 @@
         clienteDetailEl.innerHTML = '';
         return;
       }
+
       const contrCli = contratti.filter(c => c.id_cliente === clienteId);
+      const devCli = deviceVendite.filter(d =>
+        d.id_cliente === clienteId ||
+        (d.codice_fiscale && cli.codice_fiscale && d.codice_fiscale === cli.codice_fiscale)
+      );
+      const ripCli = riparazioni.filter(r =>
+        r.id_cliente === clienteId ||
+        (r.codice_fiscale && cli.codice_fiscale && r.codice_fiscale === cli.codice_fiscale)
+      );
 
       let contrRows = '';
       if (!contrCli.length) {
-        contrRows = `<tr><td colspan="5">Nessun contratto per questo cliente</td></tr>`;
+        contrRows = `<tr><td colspan="6">Nessun contratto per questo cliente</td></tr>`;
       } else {
         const sorted = [...contrCli].sort((a, b) =>
           (b.data_contratto || '').localeCompare(a.data_contratto || '')
         );
         contrRows = sorted.map(c => `
-          <tr>
+          <tr data-contratto-id="${c.id_contratto || ''}">
             <td>${c.id_contratto || ''}</td>
             <td>${formatDateShort(c.data_contratto)}</td>
             <td>${c.numero_lavorato || ''}</td>
             <td>${c.nome_offerta || ''}</td>
             <td>${c.tecnologia || ''}</td>
+            <td>
+              <button type="button" class="btn-secondary btn-edit-contratto"
+                      data-id="${c.id_contratto || ''}"
+                      style="font-size:11px; padding:3px 6px;">
+                Modifica
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      let devRows = '';
+      if (!devCli.length) {
+        devRows = `<tr><td colspan="6">Nessuna vendita device per questo cliente</td></tr>`;
+      } else {
+        const sortedD = [...devCli].sort((a, b) =>
+          (b.data_vendita || '').localeCompare(a.data_vendita || '')
+        );
+        devRows = sortedD.map(v => `
+          <tr data-vendita-id="${v.id_vendita || ''}">
+            <td>${formatDateShort(v.data_vendita)}</td>
+            <td>${(v.marca || '') + ' ' + (v.modello || '')}</td>
+            <td>${v.imei || ''}</td>
+            <td>${v.prezzo || ''}</td>
+            <td>${v.tipo_pagamento || ''}</td>
+            <td>
+              <button type="button" class="btn-secondary btn-edit-device"
+                      data-id="${v.id_vendita || ''}"
+                      style="font-size:11px; padding:3px 6px;">
+                Modifica
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      let ripRows = '';
+      if (!ripCli.length) {
+        ripRows = `<tr><td colspan="6">Nessuna riparazione per questo cliente</td></tr>`;
+      } else {
+        const sortedR = [...ripCli].sort((a, b) =>
+          (b.data_apertura || '').localeCompare(a.data_apertura || '')
+        );
+        ripRows = sortedR.map(r => `
+          <tr data-riparazione-id="${r.id_riparazione || ''}">
+            <td>${formatDateShort(r.data_apertura)}</td>
+            <td>${(r.marca || '') + ' ' + (r.modello || '')}</td>
+            <td>${r.imei || ''}</td>
+            <td>${r.tipo_guasto || ''}</td>
+            <td>${r.stato || ''}</td>
+            <td>
+              <button type="button" class="btn-secondary btn-edit-rip"
+                      data-id="${r.id_riparazione || ''}"
+                      style="font-size:11px; padding:3px 6px;">
+                Modifica
+              </button>
+            </td>
           </tr>
         `).join('');
       }
@@ -1182,6 +1253,7 @@
             Nuovo contratto per questo cliente
           </button>
         </div>
+
         <div class="section-card">
           <h3>Contratti</h3>
           <table>
@@ -1192,14 +1264,74 @@
                 <th>Numero</th>
                 <th>Offerta</th>
                 <th>Tecnologia</th>
+                <th>Azioni</th>
               </tr>
             </thead>
             <tbody>${contrRows}</tbody>
           </table>
         </div>
+
+        <div class="section-card">
+          <h3>Device venduti</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Data vendita</th>
+                <th>Device</th>
+                <th>IMEI</th>
+                <th>Prezzo</th>
+                <th>Pagamento</th>
+                <th>Azioni</th>
+              </tr>
+            </thead>
+            <tbody>${devRows}</tbody>
+          </table>
+        </div>
+
+        <div class="section-card">
+          <h3>Riparazioni</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Data apertura</th>
+                <th>Device</th>
+                <th>IMEI</th>
+                <th>Guasto</th>
+                <th>Stato</th>
+                <th>Azioni</th>
+              </tr>
+            </thead>
+            <tbody>${ripRows}</tbody>
+          </table>
+        </div>
       `;
+
       document.getElementById('btnNewContractForClient')
         .addEventListener('click', () => openNewContractForClient(cli));
+
+      clienteDetailEl.querySelectorAll('.btn-edit-contratto').forEach(btn => {
+        const id = btn.dataset.id;
+        btn.addEventListener('click', () => {
+          const ctr = contratti.find(c => c.id_contratto === id);
+          if (ctr) openEditContract(ctr, cli);
+        });
+      });
+
+      clienteDetailEl.querySelectorAll('.btn-edit-device').forEach(btn => {
+        const id = btn.dataset.id;
+        btn.addEventListener('click', () => {
+          const v = deviceVendite.find(d => d.id_vendita === id);
+          if (v) openEditDevice(v, cli);
+        });
+      });
+
+      clienteDetailEl.querySelectorAll('.btn-edit-rip').forEach(btn => {
+        const id = btn.dataset.id;
+        btn.addEventListener('click', () => {
+          const r = riparazioni.find(x => x.id_riparazione === id);
+          if (r) openEditRiparazione(r, cli);
+        });
+      });
     }
 
     const searchContrattiEl = document.getElementById('searchContratti');
@@ -1356,6 +1488,7 @@
     const formNewContract = document.getElementById('form-new-contract');
     const nc_info = document.getElementById('nc_info');
     const nc_id_cliente = document.getElementById('nc_id_cliente');
+    const nc_id_contratto = document.getElementById('nc_id_contratto');
     const nc_nome = document.getElementById('nc_nome');
     const nc_cognome = document.getElementById('nc_cognome');
     const nc_telefono = document.getElementById('nc_telefono');
@@ -1390,6 +1523,7 @@
 
     function resetNewContractForm() {
       nc_id_cliente.value = '';
+      nc_id_contratto.value = '';
       nc_nome.value = '';
       nc_cognome.value = '';
       nc_telefono.value = '';
@@ -1425,6 +1559,7 @@
 
     function openNewContractForClient(cli) {
       showView('view-new-contract');
+      nc_id_contratto.value = '';
       nc_id_cliente.value = cli.id_cliente || '';
       nc_nome.value = cli.nome || '';
       nc_cognome.value = cli.cognome || '';
@@ -1436,6 +1571,48 @@
       const todayStr = new Date().toISOString().slice(0,10);
       if (!nc_data_contratto.value) nc_data_contratto.value = todayStr;
       nc_info.textContent = `Nuovo contratto per cliente esistente (ID: ${cli.id_cliente})`;
+    }
+
+    function openEditContract(ctr, cli) {
+      showView('view-new-contract');
+
+      nc_id_contratto.value = ctr.id_contratto || '';
+      nc_id_cliente.value = ctr.id_cliente || (cli ? cli.id_cliente : '');
+
+      if (cli) {
+        nc_nome.value = cli.nome || '';
+        nc_cognome.value = cli.cognome || '';
+        nc_telefono.value = cli.telefono || '';
+        nc_email.value = cli.email || '';
+        nc_codice_fiscale.value = cli.codice_fiscale || '';
+        nc_data_nascita.value = cli.data_nascita || '';
+        nc_note.value = cli.note || '';
+      }
+
+      nc_data_contratto.value = (ctr.data_contratto || '').slice(0,10);
+      nc_tipo_cliente.value = ctr.tipo_cliente || '';
+      nc_tipo_attivazione.value = ctr.tipo_attivazione || '';
+      nc_tecnologia.value = ctr.tecnologia || '';
+      nc_compagnia.value = ctr.compagnia || '';
+      nc_convergenza.value = ctr.convergenza || '';
+      nc_mnp.value = ctr.mnp || '';
+      nc_iccid_vecchio.value = ctr.iccid_vecchio || '';
+      nc_iccid_nuovo.value = ctr.iccid_nuovo || '';
+      nc_data_attivazione.value = (ctr.data_attivazione || '').slice(0,10);
+      nc_data_portabilita.value = (ctr.data_portabilita || '').slice(0,10);
+      nc_numero_lavorato.value = ctr.numero_lavorato || '';
+      nc_nome_offerta.value = ctr.nome_offerta || '';
+      nc_costo_offerta.value = ctr.costo_offerta || '';
+      nc_vincolo_offerta_mesi.value = ctr.vincolo_offerta_mesi || '';
+      nc_telefono_incluso.value = ctr.telefono_incluso || '';
+      nc_imei.value = ctr.imei || '';
+      nc_modello.value = ctr.modello || '';
+      nc_tipo_pagamento.value = ctr.tipo_pagamento || '';
+      nc_mesi_vincolo_telefono.value = ctr.mesi_vincolo_telefono || '';
+      nc_data_fine_vincolo_offerta.value = (ctr.data_fine_vincolo_offerta || '').slice(0,10);
+      nc_data_fine_vincolo_telefono.value = (ctr.data_fine_vincolo_telefono || '').slice(0,10);
+
+      nc_info.textContent = `Modifica contratto (ID: ${ctr.id_contratto || ''})`;
     }
 
     formNewContract.addEventListener('submit', async (evt) => {
@@ -1474,9 +1651,12 @@
         return;
       }
 
-      setStatus('Creazione contratto...');
+      const isEditContratto = !!nc_id_contratto.value;
+
+      setStatus(isEditContratto ? 'Aggiornamento contratto...' : 'Creazione contratto...');
       const contractPayload = {
-        action: 'createContratto',
+        action: isEditContratto ? 'updateContratto' : 'createContratto',
+        id_contratto: isEditContratto ? nc_id_contratto.value : undefined,
         id_cliente: idCliente,
         codice_fiscale: clientData.codice_fiscale,
         data_contratto: nc_data_contratto.value,
@@ -1511,11 +1691,17 @@
         });
         const data = await res.json();
         if (!data.success) {
-          setStatus('Errore creazione contratto: ' + (data.error || 'sconosciuto'));
+          setStatus('Errore salvataggio contratto: ' + (data.error || 'sconosciuto'));
           return;
         }
-        setStatus('Contratto creato correttamente');
-        nc_info.textContent = `Contratto creato (ID: ${data.id_contratto || ''}) per cliente ID: ${idCliente}`;
+        setStatus(isEditContratto
+          ? 'Contratto aggiornato correttamente'
+          : 'Contratto creato correttamente'
+        );
+        nc_info.textContent = (isEditContratto
+          ? `Contratto aggiornato (ID: ${data.id_contratto || nc_id_contratto.value}) per cliente ID: ${idCliente}`
+          : `Contratto creato (ID: ${data.id_contratto || ''}) per cliente ID: ${idCliente}`
+        );
         await loadContrattiAll();
       } catch (err) {
         console.error(err);
@@ -1852,6 +2038,7 @@
     const dv_info = document.getElementById('dv_info');
     const tbodyDevice = document.getElementById('tbody-device');
 
+    const dv_id_vendita = document.getElementById('dv_id_vendita');
     const dv_nome = document.getElementById('dv_nome');
     const dv_cognome = document.getElementById('dv_cognome');
     const dv_telefono = document.getElementById('dv_telefono');
@@ -1873,6 +2060,7 @@
     const dv_note = document.getElementById('dv_note');
 
     function resetDeviceForm() {
+      dv_id_vendita.value = '';
       dv_nome.value = '';
       dv_cognome.value = '';
       dv_telefono.value = '';
@@ -1903,86 +2091,72 @@
         return;
       }
       const dateStr = dv_data_vendita.value;
-      const mesi = parseInt(dv_durata_finanziamento_mesi.value || '0', 10);
+      const mesi = parseInt(dv_durata_finanziamento_mesi.value, 10);
       if (!dateStr || !mesi) {
         dv_data_fine_finanziamento.value = '';
         return;
       }
       dv_data_fine_finanziamento.value = addMonthsToDateStrLocal(dateStr, mesi);
     }
+    dv_data_vendita.addEventListener('change', calcFinEndDate);
+    dv_durata_finanziamento_mesi.addEventListener('input', calcFinEndDate);
+    dv_tipo_pagamento.addEventListener('change', calcFinEndDate);
+
     function calcGaranziaEndDate() {
       const dateStr = dv_data_vendita.value;
-      const mesi = parseInt(dv_garanzia_mesi.value || '0', 10);
+      const mesi = parseInt(dv_garanzia_mesi.value, 10);
       if (!dateStr || !mesi) {
         dv_data_fine_garanzia.value = '';
         return;
       }
       dv_data_fine_garanzia.value = addMonthsToDateStrLocal(dateStr, mesi);
     }
-
-    dv_tipo_pagamento.addEventListener('change', () => {
-      const isFin = dv_tipo_pagamento.value === 'finanziamento';
-      dv_durata_finanziamento_mesi.disabled = !isFin;
-      dv_anticipo.disabled = !isFin;
-      dv_costo_rata.disabled = !isFin;
-      if (!isFin) {
-        dv_durata_finanziamento_mesi.value = '';
-        dv_anticipo.value = '';
-        dv_costo_rata.value = '';
-        dv_data_fine_finanziamento.value = '';
-      } else {
-        calcFinEndDate();
-      }
-    });
-    dv_durata_finanziamento_mesi.addEventListener('input', calcFinEndDate);
-    dv_data_vendita.addEventListener('change', () => {
-      calcFinEndDate();
-      calcGaranziaEndDate();
-    });
+    dv_data_vendita.addEventListener('change', calcGaranziaEndDate);
     dv_garanzia_mesi.addEventListener('input', calcGaranziaEndDate);
 
-    function renderDeviceTable() {
-      if (!tbodyDevice) return;
-      tbodyDevice.innerHTML = '';
-      if (!deviceVendite.length) {
-        const tr = document.createElement('tr');
-        const td = document.createElement('td');
-        td.colSpan = 7;
-        td.textContent = 'Nessuna vendita registrata.';
-        tr.appendChild(td);
-        tbodyDevice.appendChild(tr);
-        return;
+    function openEditDevice(v, cli) {
+      showView('view-device');
+      document.getElementById('form-device').scrollIntoView({ behavior: 'smooth' });
+
+      dv_id_vendita.value = v.id_vendita || '';
+
+      if (cli) {
+        dv_nome.value = cli.nome || '';
+        dv_cognome.value = cli.cognome || '';
+        dv_telefono.value = cli.telefono || '';
+        dv_email.value = cli.email || '';
+        dv_codice_fiscale.value = cli.codice_fiscale || '';
+      } else {
+        dv_codice_fiscale.value = v.codice_fiscale || '';
       }
-      const clienteMap = new Map(clienti.map(c => [c.id_cliente, c]));
-      const sorted = [...deviceVendite].sort((a,b) =>
-        (b.data_vendita || '').localeCompare(a.data_vendita || '')
-      );
-      sorted.slice(0, 20).forEach(v => {
-        const cli = clienteMap.get(v.id_cliente);
-        const nomeCli = cli ? `${cli.nome || ''} ${cli.cognome || ''}`.trim() : (v.codice_fiscale || '');
-        const tel = cli ? cli.telefono : '';
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${formatDateShort(v.data_vendita)}</td>
-          <td>${nomeCli || '-'}</td>
-          <td>${(v.marca || '') + ' ' + (v.modello || '')}</td>
-          <td>${v.imei || ''}</td>
-          <td>${v.prezzo || ''}</td>
-          <td>${v.tipo_pagamento || ''}</td>
-          <td>${whatsappButtonHtml(tel)}</td>
-        `;
-        tbodyDevice.appendChild(tr);
-      });
+
+      dv_data_vendita.value = (v.data_vendita || '').slice(0,10);
+      dv_marca.value = v.marca || '';
+      dv_modello.value = v.modello || '';
+      dv_imei.value = v.imei || '';
+      dv_prezzo.value = v.prezzo || '';
+      dv_tipo_pagamento.value = v.tipo_pagamento || '';
+      dv_durata_finanziamento_mesi.value = v.durata_finanziamento_mesi || '';
+      dv_anticipo.value = v.anticipo || '';
+      dv_costo_rata.value = v.costo_rata || '';
+      dv_data_fine_finanziamento.value = (v.data_fine_finanziamento || '').slice(0,10);
+      dv_garanzia_mesi.value = v.garanzia_mesi || '';
+      dv_data_fine_garanzia.value = (v.data_fine_garanzia || '').slice(0,10);
+      dv_id_contratto.value = v.id_contratto || '';
+      dv_note.value = v.note || '';
+
+      dv_info.textContent = `Modifica vendita device (ID: ${v.id_vendita || ''})`;
     }
 
     formDevice.addEventListener('submit', async (evt) => {
       evt.preventDefault();
       if (!dv_codice_fiscale.value.trim()) {
-        alert('Codice fiscale obbligatorio per associare il device al cliente.');
+        alert('Codice fiscale cliente obbligatorio per la vendita device');
         return;
       }
 
       const clientData = {
+        id_cliente: null,
         nome: dv_nome.value.trim(),
         cognome: dv_cognome.value.trim(),
         telefono: dv_telefono.value.trim(),
@@ -1998,15 +2172,16 @@
         idCliente = await ensureClienteEsistente(clientData);
       } catch (err) {
         console.error(err);
-        setStatus('Errore gestione cliente (device): ' + err.message);
+        setStatus('Errore gestione cliente per device: ' + err.message);
         return;
       }
 
-      calcFinEndDate();
-      calcGaranziaEndDate();
+      const isEditDevice = !!dv_id_vendita.value;
 
+      setStatus(isEditDevice ? 'Aggiornamento vendita device...' : 'Salvataggio vendita device...');
       const payload = {
-        action: 'createVenditaDevice',
+        action: isEditDevice ? 'updateVenditaDevice' : 'createVenditaDevice',
+        id_vendita: isEditDevice ? dv_id_vendita.value : undefined,
         id_cliente: idCliente,
         id_contratto: dv_id_contratto.value.trim(),
         codice_fiscale: clientData.codice_fiscale,
@@ -2026,7 +2201,6 @@
       };
 
       try {
-        setStatus('Salvataggio vendita device...');
         const res = await fetch(API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -2034,11 +2208,17 @@
         });
         const data = await res.json();
         if (!data.success) {
-          setStatus('Errore creazione vendita device: ' + (data.error || 'sconosciuto'));
+          setStatus('Errore salvataggio device: ' + (data.error || 'sconosciuto'));
           return;
         }
-        setStatus('Vendita device salvata correttamente');
-        dv_info.textContent = `Vendita salvata (ID: ${data.id_vendita || ''}) per cliente ID: ${idCliente}`;
+        setStatus(isEditDevice
+          ? 'Vendita device aggiornata correttamente'
+          : 'Vendita device salvata correttamente'
+        );
+        dv_info.textContent = (isEditDevice
+          ? `Vendita aggiornata (ID: ${data.id_vendita || dv_id_vendita.value}) per cliente ID: ${idCliente}`
+          : `Vendita salvata (ID: ${data.id_vendita || ''}) per cliente ID: ${idCliente}`
+        );
         await loadDevice();
       } catch (err) {
         console.error(err);
@@ -2046,10 +2226,43 @@
       }
     });
 
+    function renderDeviceTable() {
+      tbodyDevice.innerHTML = '';
+      if (!deviceVendite.length) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 7;
+        td.textContent = 'Nessuna vendita registrata.';
+        tr.appendChild(td);
+        tbodyDevice.appendChild(tr);
+        return;
+      }
+      const clienteMap = new Map(clienti.map(c => [c.id_cliente, c]));
+      const sorted = [...deviceVendite].sort((a, b) =>
+        (b.data_vendita || '').localeCompare(a.data_vendita || '')
+      ).slice(0, 20);
+      sorted.forEach(v => {
+        const cli = clienteMap.get(v.id_cliente);
+        const nomeCli = cli ? `${cli.nome || ''} ${cli.cognome || ''}`.trim() : (v.codice_fiscale || '');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${formatDateShort(v.data_vendita)}</td>
+          <td>${nomeCli || '-'}</td>
+          <td>${(v.marca || '') + ' ' + (v.modello || '')}</td>
+          <td>${v.imei || ''}</td>
+          <td>${v.prezzo || ''}</td>
+          <td>${v.tipo_pagamento || ''}</td>
+          <td>${cli ? whatsappButtonHtml(cli.telefono) : ''}</td>
+        `;
+        tbodyDevice.appendChild(tr);
+      });
+    }
+
     const formRip = document.getElementById('form-riparazione');
     const rp_info = document.getElementById('rp_info');
     const tbodyRip = document.getElementById('tbody-riparazioni');
 
+    const rp_id_riparazione = document.getElementById('rp_id_riparazione');
     const rp_nome = document.getElementById('rp_nome');
     const rp_cognome = document.getElementById('rp_cognome');
     const rp_telefono = document.getElementById('rp_telefono');
@@ -2067,6 +2280,7 @@
     const rp_note = document.getElementById('rp_note');
 
     function resetRipForm() {
+      rp_id_riparazione.value = '';
       rp_nome.value = '';
       rp_cognome.value = '';
       rp_telefono.value = '';
@@ -2087,48 +2301,45 @@
     }
     document.getElementById('btnResetRiparazione').addEventListener('click', resetRipForm);
 
-    function renderRiparazioniTable() {
-      if (!tbodyRip) return;
-      tbodyRip.innerHTML = '';
-      if (!riparazioni.length) {
-        const tr = document.createElement('tr');
-        const td = document.createElement('td');
-        td.colSpan = 7;
-        td.textContent = 'Nessuna riparazione registrata.';
-        tr.appendChild(td);
-        tbodyRip.appendChild(tr);
-        return;
+    function openEditRiparazione(r, cli) {
+      showView('view-device');
+      document.getElementById('form-riparazione').scrollIntoView({ behavior: 'smooth' });
+
+      rp_id_riparazione.value = r.id_riparazione || '';
+
+      if (cli) {
+        rp_nome.value = cli.nome || '';
+        rp_cognome.value = cli.cognome || '';
+        rp_telefono.value = cli.telefono || '';
+        rp_email.value = cli.email || '';
+        rp_codice_fiscale.value = cli.codice_fiscale || '';
+      } else {
+        rp_codice_fiscale.value = r.codice_fiscale || '';
       }
-      const clienteMap = new Map(clienti.map(c => [c.id_cliente, c]));
-      const sorted = [...riparazioni].sort((a,b) =>
-        (b.data_apertura || '').localeCompare(a.data_apertura || '')
-      );
-      sorted.slice(0, 20).forEach(r => {
-        const cli = clienteMap.get(r.id_cliente);
-        const nomeCli = cli ? `${cli.nome || ''} ${cli.cognome || ''}`.trim() : (r.codice_fiscale || '');
-        const tel = cli ? cli.telefono : '';
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${formatDateShort(r.data_apertura)}</td>
-          <td>${nomeCli || '-'}</td>
-          <td>${(r.marca || '') + ' ' + (r.modello || '')}</td>
-          <td>${r.imei || ''}</td>
-          <td>${r.tipo_guasto || ''}</td>
-          <td>${r.stato || ''}</td>
-          <td>${whatsappButtonHtml(tel)}</td>
-        `;
-        tbodyRip.appendChild(tr);
-      });
+
+      rp_data_apertura.value = (r.data_apertura || '').slice(0,10);
+      rp_marca.value = r.marca || '';
+      rp_modello.value = r.modello || '';
+      rp_imei.value = r.imei || '';
+      rp_tipo_guasto.value = r.tipo_guasto || '';
+      rp_stato.value = r.stato || 'Aperta';
+      rp_costo_previsto.value = r.costo_previsto || '';
+      rp_costo_effettivo.value = r.costo_effettivo || '';
+      rp_data_chiusura.value = (r.data_chiusura || '').slice(0,10);
+      rp_note.value = r.note || '';
+
+      rp_info.textContent = `Modifica riparazione (ID: ${r.id_riparazione || ''})`;
     }
 
     formRip.addEventListener('submit', async (evt) => {
       evt.preventDefault();
       if (!rp_codice_fiscale.value.trim()) {
-        alert('Codice fiscale obbligatorio per associare la riparazione al cliente.');
+        alert('Codice fiscale cliente obbligatorio per la riparazione');
         return;
       }
 
       const clientData = {
+        id_cliente: null,
         nome: rp_nome.value.trim(),
         cognome: rp_cognome.value.trim(),
         telefono: rp_telefono.value.trim(),
@@ -2144,12 +2355,16 @@
         idCliente = await ensureClienteEsistente(clientData);
       } catch (err) {
         console.error(err);
-        setStatus('Errore gestione cliente (riparazione): ' + err.message);
+        setStatus('Errore gestione cliente per riparazione: ' + err.message);
         return;
       }
 
+      const isEditRip = !!rp_id_riparazione.value;
+
+      setStatus(isEditRip ? 'Aggiornamento riparazione...' : 'Salvataggio riparazione...');
       const payload = {
-        action: 'createRiparazione',
+        action: isEditRip ? 'updateRiparazione' : 'createRiparazione',
+        id_riparazione: isEditRip ? rp_id_riparazione.value : undefined,
         id_cliente: idCliente,
         codice_fiscale: clientData.codice_fiscale,
         data_apertura: rp_data_apertura.value,
@@ -2165,7 +2380,6 @@
       };
 
       try {
-        setStatus('Salvataggio riparazione...');
         const res = await fetch(API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -2173,17 +2387,55 @@
         });
         const data = await res.json();
         if (!data.success) {
-          setStatus('Errore creazione riparazione: ' + (data.error || 'sconosciuto'));
+          setStatus('Errore salvataggio riparazione: ' + (data.error || 'sconosciuto'));
           return;
         }
-        setStatus('Riparazione salvata correttamente');
-        rp_info.textContent = `Riparazione salvata (ID: ${data.id_riparazione || ''}) per cliente ID: ${idCliente}`;
+        setStatus(isEditRip
+          ? 'Riparazione aggiornata correttamente'
+          : 'Riparazione salvata correttamente'
+        );
+        rp_info.textContent = (isEditRip
+          ? `Riparazione aggiornata (ID: ${data.id_riparazione || rp_id_riparazione.value}) per cliente ID: ${idCliente}`
+          : `Riparazione salvata (ID: ${data.id_riparazione || ''}) per cliente ID: ${idCliente}`
+        );
         await loadRiparazioni();
       } catch (err) {
         console.error(err);
         setStatus('Errore di rete durante il salvataggio riparazione');
       }
     });
+
+    function renderRiparazioniTable() {
+      tbodyRip.innerHTML = '';
+      if (!riparazioni.length) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 7;
+        td.textContent = 'Nessuna riparazione registrata.';
+        tr.appendChild(td);
+        tbodyRip.appendChild(tr);
+        return;
+      }
+      const clienteMap = new Map(clienti.map(c => [c.id_cliente, c]));
+      const sorted = [...riparazioni].sort((a, b) =>
+        (b.data_apertura || '').localeCompare(a.data_apertura || '')
+      ).slice(0, 20);
+      sorted.forEach(r => {
+        const cli = clienteMap.get(r.id_cliente);
+        const nomeCli = cli ? `${cli.nome || ''} ${cli.cognome || ''}`.trim() : (r.codice_fiscale || '');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${formatDateShort(r.data_apertura)}</td>
+          <td>${nomeCli || '-'}</td>
+          <td>${(r.marca || '') + ' ' + (r.modello || '')}</td>
+          <td>${r.imei || ''}</td>
+          <td>${r.tipo_guasto || ''}</td>
+          <td>${r.stato || ''}</td>
+          <td>${cli ? whatsappButtonHtml(cli.telefono) : ''}</td>
+        `;
+        tbodyRip.appendChild(tr);
+      });
+    }
 
     const csvFileInput = document.getElementById('csvFile');
     const csvTextArea = document.getElementById('csvText');
@@ -2194,206 +2446,128 @@
     const csvProgressText = document.getElementById('csvProgressText');
     const csvProgressBar = document.getElementById('csvProgressBar');
 
-    const headerMapping = {
-      idcliente: 'id_cliente',
-      idcontratto: 'id_contratto',
-      nome: 'nome',
-      cognome: 'cognome',
-      telefono: 'telefono',
-      email: 'email',
-      codicefiscale: 'codice_fiscale',
-      datanascita: 'data_nascita',
-      notecliente: 'note_cliente',
-      datacontratto: 'data_contratto',
-      tipocliente: 'tipo_cliente',
-      tipoattivazione: 'tipo_attivazione',
-      tecnologia: 'tecnologia',
-      compagnia: 'compagnia',
-      convergenza: 'convergenza',
-      mnp: 'mnp',
-      iccidvecchio: 'iccid_vecchio',
-      iccidnuovo: 'iccid_nuovo',
-      dataattivazione: 'data_attivazione',
-      dataportabilita: 'data_portabilita',
-      numerolavorato: 'numero_lavorato',
-      nomeofferta: 'nome_offerta',
-      costoofferta: 'costo_offerta',
-      vincolooffertamesi: 'vincolo_offerta_mesi',
-      telefonoincluso: 'telefono_incluso',
-      imei: 'imei',
-      modello: 'modello',
-      tipopagamento: 'tipo_pagamento',
-      mesivincolotelefono: 'mesi_vincolo_telefono',
-      datafinevincoloofferta: 'data_fine_vincolo_offerta',
-      datafinevincolotelefono: 'data_fine_vincolo_telefono'
-    };
+    csvFileInput.addEventListener('change', () => {
+      if (csvFileInput.files && csvFileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          csvTextArea.value = e.target.result;
+        };
+        reader.readAsText(csvFileInput.files[0], 'utf-8');
+      }
+    });
 
-    function normalizeHeader(h) {
-      return h.toLowerCase().replace(/\s+/g, '').replace(/_/g, '');
-    }
-
-    function parseCsvText(text) {
-      const lines = text.trim().split(/\r?\n/).filter(l => l.trim());
+    function parseCsv(text) {
+      const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l);
       if (!lines.length) return [];
-      const first = lines[0];
-      const sep = (first.split(';').length > first.split(',').length) ? ';' : ',';
-      const rawHeaders = first.split(sep).map(h => h.trim());
-      const headerKeys = rawHeaders.map(normalizeHeader);
-      const indexToField = {};
-      headerKeys.forEach((hk, idx) => {
-        if (headerMapping[hk]) indexToField[idx] = headerMapping[hk];
-      });
-
+      const headers = lines[0].split(';').length > 1
+        ? lines[0].split(';')
+        : lines[0].split(',');
       const rows = [];
       for (let i = 1; i < lines.length; i++) {
-        const cols = lines[i].split(sep);
-        if (cols.length === 1 && !cols[0].trim()) continue;
-        const obj = {
-          id_cliente: '',
-          id_contratto: '',
-          nome: '',
-          cognome: '',
-          telefono: '',
-          email: '',
-          codice_fiscale: '',
-          data_nascita: '',
-          note_cliente: '',
-          data_contratto: '',
-          tipo_cliente: '',
-          tipo_attivazione: '',
-          tecnologia: '',
-          compagnia: '',
-          convergenza: '',
-          mnp: '',
-          iccid_vecchio: '',
-          iccid_nuovo: '',
-          data_attivazione: '',
-          data_portabilita: '',
-          numero_lavorato: '',
-          nome_offerta: '',
-          costo_offerta: '',
-          vincolo_offerta_mesi: '',
-          telefono_incluso: '',
-          imei: '',
-          modello: '',
-          tipo_pagamento: '',
-          mesi_vincolo_telefono: '',
-          data_fine_vincolo_offerta: '',
-          data_fine_vincolo_telefono: ''
-        };
-        cols.forEach((val, idx) => {
-          const key = indexToField[idx];
-          if (key) obj[key] = val.trim();
+        const line = lines[i];
+        const cols = line.split(';').length > 1
+          ? line.split(';')
+          : line.split(',');
+        const obj = {};
+        headers.forEach((h, idx) => {
+          const key = h.trim();
+          obj[key] = (cols[idx] || '').trim();
         });
         rows.push(obj);
       }
       return rows;
     }
 
-    btnCsvPreview.addEventListener('click', async () => {
-      csvRows = [];
-      csvPreviewWrapper.innerHTML = '';
-      csvProgressWrapper.style.display = 'none';
-      btnCsvImport.disabled = true;
-
-      let text = '';
-      const file = csvFileInput.files[0];
-      if (file) {
-        text = await file.text();
-      } else {
-        text = csvTextArea.value;
-      }
-      if (!text.trim()) {
-        alert('Seleziona un file CSV o incolla i dati.');
+    btnCsvPreview.addEventListener('click', () => {
+      const text = csvTextArea.value.trim();
+      if (!text) {
+        alert('Carica un file CSV o incolla il testo.');
         return;
       }
-      csvRows = parseCsvText(text);
+      csvRows = parseCsv(text);
       if (!csvRows.length) {
-        alert('Nessuna riga trovata nel CSV (controlla le intestazioni).');
+        alert('Nessuna riga trovata nel CSV.');
         return;
       }
+      btnCsvImport.disabled = false;
 
-      const maxRows = Math.min(csvRows.length, 20);
-      let html = `<small>Anteprima ${maxRows} righe su ${csvRows.length}</small>`;
-      html += `<table><thead><tr>
-        <th>CF</th><th>Nome</th><th>Cognome</th><th>Telefono</th><th>Email</th>
-        <th>Data contratto</th><th>Compagnia</th><th>Offerta</th><th>Numero</th>
-      </tr></thead><tbody>`;
-      for (let i = 0; i < maxRows; i++) {
-        const r = csvRows[i];
-        html += `<tr>
-          <td>${r.codice_fiscale || ''}</td>
-          <td>${r.nome || ''}</td>
-          <td>${r.cognome || ''}</td>
-          <td>${r.telefono || ''}</td>
-          <td>${r.email || ''}</td>
-          <td>${r.data_contratto || ''}</td>
-          <td>${r.compagnia || ''}</td>
-          <td>${r.nome_offerta || ''}</td>
-          <td>${r.numero_lavorato || ''}</td>
-        </tr>`;
+      const maxPreview = 20;
+      const headers = Object.keys(csvRows[0]);
+      let html = '<h3>Anteprima CSV</h3>';
+      html += '<table><thead><tr>';
+      headers.forEach(h => { html += `<th>${h}</th>`; });
+      html += '</tr></thead><tbody>';
+      csvRows.slice(0, maxPreview).forEach(r => {
+        html += '<tr>';
+        headers.forEach(h => { html += `<td>${r[h] || ''}</td>`; });
+        html += '</tr>';
+      });
+      if (csvRows.length > maxPreview) {
+        html += `<tr><td colspan="${headers.length}">... e altre ${csvRows.length - maxPreview} righe</td></tr>`;
       }
       html += '</tbody></table>';
       csvPreviewWrapper.innerHTML = html;
-      btnCsvImport.disabled = false;
+      csvProgressWrapper.style.display = 'none';
+      csvProgressBar.style.width = '0%';
+      csvProgressText.textContent = `0 / ${csvRows.length}`;
     });
 
-    async function runCsvImport() {
+    btnCsvImport.addEventListener('click', async () => {
       if (!csvRows.length) {
-        alert('Prima fai una Anteprima del CSV.');
+        alert('Nessuna riga da importare. Fai prima l’anteprima.');
         return;
       }
+      if (!confirm(`Avvia import di ${csvRows.length} righe?`)) return;
+
       csvProgressWrapper.style.display = 'block';
-      let processed = 0;
-      let ok = 0;
-      let ko = 0;
-      const total = csvRows.length;
-      csvProgressText.textContent = `0 / ${total}`;
       csvProgressBar.style.width = '0%';
-      btnCsvImport.disabled = true;
-      btnCsvPreview.disabled = true;
+      csvProgressText.textContent = `0 / ${csvRows.length}`;
       setStatus('Import in corso...');
 
-      for (const row of csvRows) {
+      let ok = 0;
+      let ko = 0;
+
+      for (let i = 0; i < csvRows.length; i++) {
+        const r = csvRows[i];
         try {
           const clientData = {
-            id_cliente: row.id_cliente || null,
-            nome: row.nome || '',
-            cognome: row.cognome || '',
-            telefono: row.telefono || '',
-            email: row.email || '',
-            codice_fiscale: row.codice_fiscale || '',
-            data_nascita: row.data_nascita || '',
-            note: row.note_cliente || ''
+            id_cliente: null,
+            nome: r['Nome'] || '',
+            cognome: r['Cognome'] || '',
+            telefono: r['Telefono'] || '',
+            email: r['Email'] || '',
+            codice_fiscale: r['CodiceFiscale'] || '',
+            data_nascita: r['DataNascita'] || '',
+            note: r['NoteCliente'] || ''
           };
           const idCliente = await ensureClienteEsistente(clientData);
 
           const payload = {
             action: 'createContratto',
             id_cliente: idCliente,
-            codice_fiscale: row.codice_fiscale || '',
-            data_contratto: row.data_contratto || '',
-            tipo_cliente: row.tipo_cliente || '',
-            tipo_attivazione: row.tipo_attivazione || '',
-            tecnologia: row.tecnologia || '',
-            compagnia: row.compagnia || '',
-            convergenza: row.convergenza || '',
-            mnp: row.mnp || '',
-            iccid_vecchio: row.iccid_vecchio || '',
-            iccid_nuovo: row.iccid_nuovo || '',
-            data_attivazione: row.data_attivazione || '',
-            data_portabilita: row.data_portabilita || '',
-            numero_lavorato: row.numero_lavorato || '',
-            nome_offerta: row.nome_offerta || '',
-            costo_offerta: row.costo_offerta || '',
-            vincolo_offerta_mesi: row.vincolo_offerta_mesi || '',
-            telefono_incluso: row.telefono_incluso || '',
-            imei: row.imei || '',
-            modello: row.modello || '',
-            tipo_pagamento: row.tipo_pagamento || '',
-            mesi_vincolo_telefono: row.mesi_vincolo_telefono || '',
-            data_fine_vincolo_offerta: row.data_fine_vincolo_offerta || '',
-            data_fine_vincolo_telefono: row.data_fine_vincolo_telefono || ''
+            codice_fiscale: clientData.codice_fiscale,
+            data_contratto: r['DataContratto'] || '',
+            tipo_cliente: r['TipoCliente'] || '',
+            tipo_attivazione: r['TipoAttivazione'] || '',
+            tecnologia: r['Tecnologia'] || '',
+            compagnia: r['Compagnia'] || '',
+            convergenza: r['Convergenza'] || '',
+            mnp: r['MNP'] || '',
+            iccid_vecchio: r['ICCID_vecchio'] || '',
+            iccid_nuovo: r['ICCID_nuovo'] || '',
+            data_attivazione: r['DataAttivazione'] || '',
+            data_portabilita: r['DataPortabilita'] || '',
+            numero_lavorato: r['NumeroLavorato'] || '',
+            nome_offerta: r['NomeOfferta'] || '',
+            costo_offerta: r['CostoOfferta'] || '',
+            vincolo_offerta_mesi: r['VincoloOffertaMesi'] || '',
+            telefono_incluso: r['TelefonoIncluso'] || '',
+            imei: r['IMEI'] || '',
+            modello: r['Modello'] || '',
+            tipo_pagamento: r['TipoPagamento'] || '',
+            mesi_vincolo_telefono: r['MesiVincoloTelefono'] || '',
+            data_fine_vincolo_offerta: r['DataFineVincoloOfferta'] || '',
+            data_fine_vincolo_telefono: r['DataFineVincoloTelefono'] || ''
           };
 
           const res = await fetch(API_URL, {
@@ -2402,52 +2576,36 @@
             body: JSON.stringify(payload)
           });
           const data = await res.json();
-
-          if (data.success) {
-            ok++;
-          } else {
-            ko++;
-            console.error('Errore createContratto:', data.error);
-          }
+          if (data.success) ok++;
+          else ko++;
         } catch (err) {
+          console.error('Errore riga CSV', i, err);
           ko++;
-          console.error('Errore riga CSV', err);
         }
 
-        processed++;
-        csvProgressText.textContent = `${processed} / ${total}`;
-        const perc = Math.round(processed * 100 / total);
+        const done = i + 1;
+        const perc = Math.round((done / csvRows.length) * 100);
         csvProgressBar.style.width = perc + '%';
+        csvProgressText.textContent = `${done} / ${csvRows.length}`;
       }
 
       setStatus(`Import finito. OK: ${ok}, Errori: ${ko}`);
-      btnCsvImport.disabled = false;
-      btnCsvPreview.disabled = false;
-      await loadClienti();
+      alert(`Import finito.\nOK: ${ok}\nErrori: ${ko}`);
       await loadContrattiAll();
-      renderBirthdaysToday();
-      renderBirthdaysByMonth();
-    }
+    });
 
-    btnCsvImport.addEventListener('click', runCsvImport);
-
-    document.addEventListener('DOMContentLoaded', async () => {
-      const todayStr = new Date().toISOString().slice(0,10);
-      if (dv_data_vendita) dv_data_vendita.value = todayStr;
-      if (rp_data_apertura) rp_data_apertura.value = todayStr;
-      resetNewContractForm();
-      resetDeviceForm();
-      resetRipForm();
+    function init() {
+      setStatus('Caricamento dati...');
       initBirthMonthSelect();
       initExpMonthSelect();
-      setStatus('Caricamento clienti e contratti...');
-      await loadClienti();
-      await loadContrattiAll();
-      await loadDevice();
-      await loadRiparazioni();
-      setStatus('Dati aggiornati');
-      searchClientiEl.addEventListener('input', renderSearchClienti);
-    });
+      loadClienti();
+      loadContrattiAll();
+      loadDevice();
+      loadRiparazioni();
+      setStatus('Pronto.');
+    }
+
+    window.addEventListener('load', init);
   </script>
 </body>
 </html>
