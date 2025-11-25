@@ -105,6 +105,7 @@
     }
     h2 { font-size: 18px; margin: 0 0 10px; }
     h3 { font-size: 16px; margin: 12px 0 8px; }
+    h4 { font-size: 14px; margin: 8px 0 4px; }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -375,7 +376,7 @@
         <h3>Contratti per compagnia e tecnologia</h3>
         <div class="search-row">
           <input type="text" id="filtroCompagnia"
-                 placeholder="Compagnia (es. TIM, Vodafone) – si cerca nel Nome offerta" />
+                 placeholder="Compagnia (es. TIM, Vodafone, Enel...) – cerca anche nel Nome offerta" />
           <input type="text" id="filtroTecnologia"
                  placeholder="Tecnologia (es. SIM, FTTH)" style="max-width:200px;" />
           <button class="btn-primary" type="button" id="btnFilterCompTech">Filtra</button>
@@ -436,7 +437,7 @@
       <div class="section-card">
         <h3>Nuova vendita device</h3>
         <small>
-          Viene collegata al cliente tramite Codice fiscale / telefono / email (come per i contratti).  
+          Viene collegata al cliente tramite Codice fiscale / telefono / email.  
           Se il cliente non esiste, viene creato.
         </small>
 
@@ -670,20 +671,211 @@
     </section>
 
     <!-- NUOVO CONTRATTO -->
-    <!-- (SEZIONE UGUALE A PRIMA – NON LA RISPIEGO, SOLO AGGIORNATA CON IL RESTO) -->
-    <!-- ... PER BREVEZZA HO LASCIATO IDENTICA LA SEZIONE NUOVO CONTRATTO E IMPORT CSV
-         COME TE LE AVEVO DATE NEL MESSAGGIO PRECEDENTE, SOLO INCASTRATE CON QUESTE NUOVE.
-         (SONO ESATTAMENTE LE STESSE DELLA VERSIONE CHE TI FUNZIONAVA) -->
+    <section id="view-new-contract" class="view">
+      <h2>Nuovo contratto</h2>
+      <small>
+        Compila i dati cliente + contratto.  
+        Se il cliente non esiste verrà creato, altrimenti il contratto verrà aggiunto all’anagrafica esistente
+        (match su codice fiscale / email / telefono).
+      </small>
 
-    <!-- Per non esplodere di righe qui:
-         puoi riusare la sezione Nuovo contratto e Import CSV
-         dal file che ti avevo già dato: incollale esattamente sotto,
-         lasciando intatto il <script> che arriva ora. -->
+      <form id="form-new-contract" class="section-card">
+        <h3>Dati cliente</h3>
+        <input type="hidden" id="nc_id_cliente" />
+
+        <div class="form-grid-2">
+          <div class="field-group">
+            <label for="nc_nome">Nome</label>
+            <input type="text" id="nc_nome" required />
+          </div>
+          <div class="field-group">
+            <label for="nc_cognome">Cognome</label>
+            <input type="text" id="nc_cognome" required />
+          </div>
+          <div class="field-group">
+            <label for="nc_telefono">Telefono</label>
+            <input type="text" id="nc_telefono" />
+          </div>
+          <div class="field-group">
+            <label for="nc_email">Email</label>
+            <input type="email" id="nc_email" />
+          </div>
+          <div class="field-group">
+            <label for="nc_codice_fiscale">Codice fiscale</label>
+            <input type="text" id="nc_codice_fiscale" required />
+          </div>
+          <div class="field-group">
+            <label for="nc_data_nascita">Data nascita</label>
+            <input type="date" id="nc_data_nascita" />
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="nc_note">Note cliente</label>
+          <textarea id="nc_note"></textarea>
+        </div>
+
+        <hr style="margin:10px 0; border:none; border-top:1px solid #e5e7eb;" />
+
+        <h3>Dati contratto</h3>
+
+        <div class="form-grid-2">
+          <div class="field-group">
+            <label for="nc_data_contratto">Data contratto</label>
+            <input type="date" id="nc_data_contratto" />
+          </div>
+          <div class="field-group">
+            <label for="nc_tipo_cliente">Tipo cliente</label>
+            <select id="nc_tipo_cliente">
+              <option value="">--</option>
+              <option value="privato">Privato</option>
+              <option value="business">Business</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label for="nc_tipo_attivazione">Tipo attivazione</label>
+            <input type="text" id="nc_tipo_attivazione" placeholder="Mobile / Fisso / Luce / Gas / TV..." />
+          </div>
+          <div class="field-group">
+            <label for="nc_tecnologia">Tecnologia</label>
+            <input type="text" id="nc_tecnologia" placeholder="SIM / FTTH / FWA / ..." />
+          </div>
+          <div class="field-group">
+            <label for="nc_compagnia">Compagnia</label>
+            <input type="text" id="nc_compagnia" placeholder="TIM, Vodafone, Enel, Eni, Sky, ecc." />
+          </div>
+          <div class="field-group">
+            <label for="nc_convergenza">Convergenza</label>
+            <select id="nc_convergenza">
+              <option value="">--</option>
+              <option value="SI">SI</option>
+              <option value="NO">NO</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label for="nc_mnp">MNP</label>
+            <select id="nc_mnp">
+              <option value="">--</option>
+              <option value="SI">SI</option>
+              <option value="NO">NO</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label for="nc_iccid_vecchio">ICCID vecchio (se MNP)</label>
+            <input type="text" id="nc_iccid_vecchio" />
+          </div>
+          <div class="field-group">
+            <label for="nc_iccid_nuovo">ICCID nuovo (se MNP)</label>
+            <input type="text" id="nc_iccid_nuovo" />
+          </div>
+          <div class="field-group">
+            <label for="nc_data_attivazione">Data attivazione</label>
+            <input type="date" id="nc_data_attivazione" />
+          </div>
+          <div class="field-group">
+            <label for="nc_data_portabilita">Data portabilità</label>
+            <input type="date" id="nc_data_portabilita" />
+          </div>
+          <div class="field-group">
+            <label for="nc_numero_lavorato">Numero lavorato</label>
+            <input type="text" id="nc_numero_lavorato" />
+          </div>
+          <div class="field-group">
+            <label for="nc_nome_offerta">Nome offerta</label>
+            <input type="text" id="nc_nome_offerta" />
+          </div>
+          <div class="field-group">
+            <label for="nc_costo_offerta">Costo offerta (€)</label>
+            <input type="number" step="0.01" id="nc_costo_offerta" />
+          </div>
+          <div class="field-group">
+            <label for="nc_vincolo_offerta_mesi">Vincolo offerta (mesi)</label>
+            <input type="number" id="nc_vincolo_offerta_mesi" />
+          </div>
+          <div class="field-group">
+            <label for="nc_telefono_incluso">Telefono incluso</label>
+            <select id="nc_telefono_incluso">
+              <option value="">--</option>
+              <option value="SI">SI</option>
+              <option value="NO">NO</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label for="nc_imei">IMEI</label>
+            <input type="text" id="nc_imei" />
+          </div>
+          <div class="field-group">
+            <label for="nc_modello">Modello telefono</label>
+            <input type="text" id="nc_modello" />
+          </div>
+          <div class="field-group">
+            <label for="nc_tipo_pagamento">Tipo pagamento</label>
+            <input type="text" id="nc_tipo_pagamento" placeholder="RID / Carta / Bollettino" />
+          </div>
+          <div class="field-group">
+            <label for="nc_mesi_vincolo_telefono">Mesi vincolo telefono</label>
+            <input type="number" id="nc_mesi_vincolo_telefono" />
+          </div>
+          <div class="field-group">
+            <label for="nc_data_fine_vincolo_offerta">Fine vincolo offerta</label>
+            <input type="date" id="nc_data_fine_vincolo_offerta" />
+          </div>
+          <div class="field-group">
+            <label for="nc_data_fine_vincolo_telefono">Fine vincolo telefono</label>
+            <input type="date" id="nc_data_fine_vincolo_telefono" />
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-secondary" type="button" id="btnResetNew">Svuota</button>
+          <button class="btn-primary" type="submit">Salva contratto</button>
+        </div>
+        <small id="nc_info"></small>
+      </form>
+    </section>
+
+    <!-- IMPORT CSV -->
+    <section id="view-import" class="view">
+      <h2>Import clienti & contratti (CSV)</h2>
+      <small>
+        Ogni riga = 1 contratto.  
+        Se il codice fiscale esiste → aggiunge solo il contratto.  
+        Se non esiste → crea anche il cliente.
+      </small>
+
+      <div class="section-card">
+        <div class="field-group">
+          <label for="csvFile">Carica file CSV</label>
+          <input type="file" id="csvFile" accept=".csv,text/csv" />
+        </div>
+
+        <div class="field-group">
+          <label for="csvText">Oppure incolla il contenuto CSV</label>
+          <textarea id="csvText" placeholder="Intestazioni consigliate: CodiceFiscale, Nome, Cognome, Telefono, Email, DataNascita, NoteCliente, DataContratto, TipoCliente, TipoAttivazione, Tecnologia, Compagnia, Convergenza, MNP, ICCID_vecchio, ICCID_nuovo, DataAttivazione, DataPortabilita, NumeroLavorato, NomeOfferta, CostoOfferta, VincoloOffertaMesi, TelefonoIncluso, IMEI, Modello, TipoPagamento, MesiVincoloTelefono, DataFineVincoloOfferta, DataFineVincoloTelefono"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-secondary" type="button" id="btnCsvPreview">Anteprima</button>
+          <button class="btn-primary" type="button" id="btnCsvImport" disabled>Avvia import</button>
+        </div>
+
+        <div id="csvPreviewWrapper"></div>
+
+        <div id="csvProgressWrapper" style="margin-top:10px; display:none;">
+          <div style="font-size:12px; margin-bottom:4px;">
+            Stato import: <span id="csvProgressText">0 / 0</span>
+          </div>
+          <div style="width:100%; background:#e5e7eb; border-radius:999px; overflow:hidden;">
+            <div id="csvProgressBar" style="height:8px; width:0%; background:#2563eb;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 
   <script>
     // ===== URL Apps Script =====
-    const API_URL = 'https://script.google.com/macros/s/AKfycbzR7IjTHav2JDDfnHSAWS5ybFFp5oNB6FJbmOHwT-Xl0CflfGjUF22zUjTxEpM9FVVEyg/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxb0GIQqFXKJl8HRfXzFG7A-sdQHxzBWUotromEyF2zN_pS2RUmL2f20EQ0g7kSMga7/exec';
 
     let clienti = [];
     let contratti = [];
@@ -715,17 +907,6 @@
       return `<a href="${url}" target="_blank" class="btn-secondary" style="padding:4px 8px; font-size:11px;">WhatsApp</a>`;
     }
 
-    // NAVIGAZIONE
-    const views = document.querySelectorAll('.view');
-    const tabButtons = document.querySelectorAll('.nav-tabs button');
-    function showView(id) {
-      views.forEach(v => v.classList.toggle('active', v.id === id));
-      tabButtons.forEach(b => b.classList.toggle('active', b.dataset.view === id));
-    }
-    document.getElementById('goToSearch1').addEventListener('click', () => showView('view-search'));
-    document.getElementById('goToNew1').addEventListener('click', () => showView('view-new-contract'));
-    tabButtons.forEach(btn => btn.addEventListener('click', () => showView(btn.dataset.view)));
-
     // DATE
     function parseDate(str) {
       if (!str) return null;
@@ -752,7 +933,18 @@
       return `${yyyy}-${mm}-${dd}`;
     }
 
-    // CARICAMENTO DATI
+    // NAVIGAZIONE
+    const views = document.querySelectorAll('.view');
+    const tabButtons = document.querySelectorAll('.nav-tabs button');
+    function showView(id) {
+      views.forEach(v => v.classList.toggle('active', v.id === id));
+      tabButtons.forEach(b => b.classList.toggle('active', b.dataset.view === id));
+    }
+    document.getElementById('goToSearch1').addEventListener('click', () => showView('view-search'));
+    document.getElementById('goToNew1').addEventListener('click', () => showView('view-new-contract'));
+    tabButtons.forEach(btn => btn.addEventListener('click', () => showView(btn.dataset.view)));
+
+    // CARICAMENTO DATI BASE
     async function loadClienti() {
       try {
         const res = await fetch(API_URL + '?action=listClienti');
@@ -1044,6 +1236,7 @@
             c.tecnologia,
             c.tipo_cliente,
             c.codice_fiscale,
+            c.compagnia,
             cliName
           ].join(' ').toLowerCase();
           return txt.includes(term);
@@ -1094,9 +1287,13 @@
             <strong>Data contratto:</strong> ${formatDateShort(ctr.data_contratto) || '-'}<br/>
             <strong>Numero:</strong> ${ctr.numero_lavorato || '-'}<br/>
             <strong>Offerta:</strong> ${ctr.nome_offerta || '-'}<br/>
+            <strong>Compagnia:</strong> ${ctr.compagnia || '-'}<br/>
             <strong>Costo:</strong> ${ctr.costo_offerta || '-'} €<br/>
             <strong>Tecnologia:</strong> ${ctr.tecnologia || '-'}<br/>
             <strong>Tipo cliente:</strong> ${ctr.tipo_cliente || '-'}<br/>
+            <strong>MNP:</strong> ${ctr.mnp || '-'}<br/>
+            <strong>ICCID vecchio:</strong> ${ctr.iccid_vecchio || '-'}<br/>
+            <strong>ICCID nuovo:</strong> ${ctr.iccid_nuovo || '-'}<br/>
             <strong>CF:</strong> ${ctr.codice_fiscale || '-'}
           </p>
           ${cli ? `
@@ -1110,14 +1307,232 @@
       `;
     }
 
-    // ===== NUOVO CONTRATTO (usa ensureClienteEsistente) =====
-    // (mantiene esattamente la logica che avevamo prima: non la riscrivo tutta per non allungare
-    // ma puoi lasciare invariata la tua se stava funzionando, usando ensureClienteEsistente)
+    // ===== FUNZIONE COMUNE: CREA/RIUSA CLIENTE =====
+    async function ensureClienteEsistente(clientData) {
+      if (clientData.codice_fiscale) {
+        const cf = clientData.codice_fiscale.toUpperCase();
+        const found = clienti.find(c => (c.codice_fiscale || '').toUpperCase() === cf);
+        if (found) return found.id_cliente;
+      }
+      if (clientData.email) {
+        const em = clientData.email.toLowerCase();
+        const found = clienti.find(c => (c.email || '').toLowerCase() === em);
+        if (found) return found.id_cliente;
+      }
+      if (clientData.telefono) {
+        const tel = clientData.telefono;
+        const found = clienti.find(c => (c.telefono || '') === tel);
+        if (found) return found.id_cliente;
+      }
 
-    // ---- QUI RIPORTA IL CODICE DEL FORM NUOVO CONTRATTO E IMPORT CSV
-    //      CHE HAI GIA' TESTATO (DAI MESSAGGI PRECEDENTI) ----
+      setStatus('Creazione nuovo cliente...');
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          action: 'createCliente',
+          nome: clientData.nome,
+          cognome: clientData.cognome,
+          telefono: clientData.telefono,
+          email: clientData.email,
+          codice_fiscale: clientData.codice_fiscale,
+          data_nascita: clientData.data_nascita || '',
+          note: clientData.note || ''
+        })
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error || 'Errore creazione cliente');
 
-    // ===== REPORT COMPLEANNI =====
+      const newId = data.id_cliente;
+      clienti.push({
+        id_cliente: newId,
+        nome: clientData.nome,
+        cognome: clientData.cognome,
+        telefono: clientData.telefono,
+        email: clientData.email,
+        codice_fiscale: clientData.codice_fiscale,
+        data_nascita: clientData.data_nascita || '',
+        note: clientData.note || ''
+      });
+      renderSearchClienti();
+      updateDashboard();
+      renderBirthdaysToday();
+      renderBirthdaysByMonth();
+      return newId;
+    }
+
+    // ===== NUOVO CONTRATTO (FORM) =====
+    const formNewContract = document.getElementById('form-new-contract');
+    const nc_info = document.getElementById('nc_info');
+    const nc_id_cliente = document.getElementById('nc_id_cliente');
+    const nc_nome = document.getElementById('nc_nome');
+    const nc_cognome = document.getElementById('nc_cognome');
+    const nc_telefono = document.getElementById('nc_telefono');
+    const nc_email = document.getElementById('nc_email');
+    const nc_codice_fiscale = document.getElementById('nc_codice_fiscale');
+    const nc_data_nascita = document.getElementById('nc_data_nascita');
+    const nc_note = document.getElementById('nc_note');
+    const nc_data_contratto = document.getElementById('nc_data_contratto');
+    const nc_tipo_cliente = document.getElementById('nc_tipo_cliente');
+    const nc_tipo_attivazione = document.getElementById('nc_tipo_attivazione');
+    const nc_tecnologia = document.getElementById('nc_tecnologia');
+    const nc_compagnia = document.getElementById('nc_compagnia');
+    const nc_convergenza = document.getElementById('nc_convergenza');
+    const nc_mnp = document.getElementById('nc_mnp');
+    const nc_iccid_vecchio = document.getElementById('nc_iccid_vecchio');
+    const nc_iccid_nuovo = document.getElementById('nc_iccid_nuovo');
+    const nc_data_attivazione = document.getElementById('nc_data_attivazione');
+    const nc_data_portabilita = document.getElementById('nc_data_portabilita');
+    const nc_numero_lavorato = document.getElementById('nc_numero_lavorato');
+    const nc_nome_offerta = document.getElementById('nc_nome_offerta');
+    const nc_costo_offerta = document.getElementById('nc_costo_offerta');
+    const nc_vincolo_offerta_mesi = document.getElementById('nc_vincolo_offerta_mesi');
+    const nc_telefono_incluso = document.getElementById('nc_telefono_incluso');
+    const nc_imei = document.getElementById('nc_imei');
+    const nc_modello = document.getElementById('nc_modello');
+    const nc_tipo_pagamento = document.getElementById('nc_tipo_pagamento');
+    const nc_mesi_vincolo_telefono = document.getElementById('nc_mesi_vincolo_telefono');
+    const nc_data_fine_vincolo_offerta = document.getElementById('nc_data_fine_vincolo_offerta');
+    const nc_data_fine_vincolo_telefono = document.getElementById('nc_data_fine_vincolo_telefono');
+
+    document.getElementById('btnResetNew').addEventListener('click', resetNewContractForm);
+
+    function resetNewContractForm() {
+      nc_id_cliente.value = '';
+      nc_nome.value = '';
+      nc_cognome.value = '';
+      nc_telefono.value = '';
+      nc_email.value = '';
+      nc_codice_fiscale.value = '';
+      nc_data_nascita.value = '';
+      nc_note.value = '';
+      const todayStr = new Date().toISOString().slice(0, 10);
+      nc_data_contratto.value = todayStr;
+      nc_tipo_cliente.value = '';
+      nc_tipo_attivazione.value = '';
+      nc_tecnologia.value = '';
+      nc_compagnia.value = '';
+      nc_convergenza.value = '';
+      nc_mnp.value = '';
+      nc_iccid_vecchio.value = '';
+      nc_iccid_nuovo.value = '';
+      nc_data_attivazione.value = '';
+      nc_data_portabilita.value = '';
+      nc_numero_lavorato.value = '';
+      nc_nome_offerta.value = '';
+      nc_costo_offerta.value = '';
+      nc_vincolo_offerta_mesi.value = '';
+      nc_telefono_incluso.value = '';
+      nc_imei.value = '';
+      nc_modello.value = '';
+      nc_tipo_pagamento.value = '';
+      nc_mesi_vincolo_telefono.value = '';
+      nc_data_fine_vincolo_offerta.value = '';
+      nc_data_fine_vincolo_telefono.value = '';
+      nc_info.textContent = '';
+    }
+
+    function openNewContractForClient(cli) {
+      showView('view-new-contract');
+      nc_id_cliente.value = cli.id_cliente || '';
+      nc_nome.value = cli.nome || '';
+      nc_cognome.value = cli.cognome || '';
+      nc_telefono.value = cli.telefono || '';
+      nc_email.value = cli.email || '';
+      nc_codice_fiscale.value = cli.codice_fiscale || '';
+      nc_data_nascita.value = cli.data_nascita || '';
+      nc_note.value = cli.note || '';
+      const todayStr = new Date().toISOString().slice(0,10);
+      if (!nc_data_contratto.value) nc_data_contratto.value = todayStr;
+      nc_info.textContent = `Nuovo contratto per cliente esistente (ID: ${cli.id_cliente})`;
+    }
+
+    formNewContract.addEventListener('submit', async (evt) => {
+      evt.preventDefault();
+      if (!nc_nome.value.trim() || !nc_cognome.value.trim()) {
+        alert('Nome e cognome cliente sono obbligatori');
+        return;
+      }
+      if (!nc_codice_fiscale.value.trim()) {
+        if (!confirm('Codice fiscale vuoto. Vuoi continuare lo stesso?')) return;
+      }
+
+      const clientData = {
+        id_cliente: nc_id_cliente.value || null,
+        nome: nc_nome.value.trim(),
+        cognome: nc_cognome.value.trim(),
+        telefono: nc_telefono.value.trim(),
+        email: nc_email.value.trim(),
+        codice_fiscale: nc_codice_fiscale.value.trim(),
+        data_nascita: nc_data_nascita.value,
+        note: nc_note.value.trim()
+      };
+
+      setStatus('Verifica cliente / creazione se necessario...');
+      let idCliente;
+      try {
+        if (clientData.id_cliente) {
+          const found = clienti.find(c => c.id_cliente === clientData.id_cliente);
+          idCliente = found ? found.id_cliente : await ensureClienteEsistente(clientData);
+        } else {
+          idCliente = await ensureClienteEsistente(clientData);
+        }
+      } catch (err) {
+        console.error(err);
+        setStatus('Errore gestione cliente: ' + err.message);
+        return;
+      }
+
+      setStatus('Creazione contratto...');
+      const contractPayload = {
+        action: 'createContratto',
+        id_cliente: idCliente,
+        codice_fiscale: clientData.codice_fiscale,
+        data_contratto: nc_data_contratto.value,
+        tipo_cliente: nc_tipo_cliente.value,
+        tipo_attivazione: nc_tipo_attivazione.value.trim(),
+        tecnologia: nc_tecnologia.value.trim(),
+        compagnia: nc_compagnia.value.trim(),
+        convergenza: nc_convergenza.value,
+        mnp: nc_mnp.value,
+        iccid_vecchio: nc_iccid_vecchio.value.trim(),
+        iccid_nuovo: nc_iccid_nuovo.value.trim(),
+        data_attivazione: nc_data_attivazione.value,
+        data_portabilita: nc_data_portabilita.value,
+        numero_lavorato: nc_numero_lavorato.value.trim(),
+        nome_offerta: nc_nome_offerta.value.trim(),
+        costo_offerta: nc_costo_offerta.value,
+        vincolo_offerta_mesi: nc_vincolo_offerta_mesi.value,
+        telefono_incluso: nc_telefono_incluso.value,
+        imei: nc_imei.value.trim(),
+        modello: nc_modello.value.trim(),
+        tipo_pagamento: nc_tipo_pagamento.value.trim(),
+        mesi_vincolo_telefono: nc_mesi_vincolo_telefono.value,
+        data_fine_vincolo_offerta: nc_data_fine_vincolo_offerta.value,
+        data_fine_vincolo_telefono: nc_data_fine_vincolo_telefono.value
+      };
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(contractPayload)
+        });
+        const data = await res.json();
+        if (!data.success) {
+          setStatus('Errore creazione contratto: ' + (data.error || 'sconosciuto'));
+          return;
+        }
+        setStatus('Contratto creato correttamente');
+        nc_info.textContent = `Contratto creato (ID: ${data.id_contratto || ''}) per cliente ID: ${idCliente}`;
+        await loadContrattiAll();
+      } catch (err) {
+        console.error(err);
+        setStatus('Errore di rete durante il salvataggio contratto');
+      }
+    });
+
+    // ===== REPORT: COMPLEANNI =====
     const tbodyBirthToday = document.getElementById('tbody-birth-today');
     const tbodyBirthMonth = document.getElementById('tbody-birth-month');
     const birthMonthSelect = document.getElementById('birthMonthSelect');
@@ -1294,9 +1709,10 @@
       const clienteMap = new Map(clienti.map(c => [c.id_cliente, c]));
       let filtered = contratti;
       if (comp) {
-        filtered = filtered.filter(c =>
-          (c.nome_offerta || '').toLowerCase().includes(comp)
-        );
+        filtered = filtered.filter(c => {
+          const sorgente = ((c.compagnia || '') + ' ' + (c.nome_offerta || '')).toLowerCase();
+          return sorgente.includes(comp);
+        });
       }
       if (tech) {
         filtered = filtered.filter(c =>
@@ -1319,7 +1735,7 @@
         tr.innerHTML = `
           <td>${formatDateShort(c.data_contratto)}</td>
           <td>${nomeCli || '-'}</td>
-          <td>${c.nome_offerta || ''}</td>
+          <td>${(c.compagnia || '') + (c.nome_offerta ? ' - ' + c.nome_offerta : '')}</td>
           <td>${c.tecnologia || ''}</td>
           <td>${c.numero_lavorato || ''}</td>
           <td>${c.tipo_cliente || ''}</td>
@@ -1572,60 +1988,6 @@
       });
     }
 
-    // ensureClienteEsistente (già usato per contratti)
-    async function ensureClienteEsistente(clientData) {
-      if (clientData.codice_fiscale) {
-        const cf = clientData.codice_fiscale.toUpperCase();
-        const found = clienti.find(c => (c.codice_fiscale || '').toUpperCase() === cf);
-        if (found) return found.id_cliente;
-      }
-      if (clientData.email) {
-        const em = clientData.email.toLowerCase();
-        const found = clienti.find(c => (c.email || '').toLowerCase() === em);
-        if (found) return found.id_cliente;
-      }
-      if (clientData.telefono) {
-        const tel = clientData.telefono;
-        const found = clienti.find(c => (c.telefono || '') === tel);
-        if (found) return found.id_cliente;
-      }
-
-      setStatus('Creazione nuovo cliente...');
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          action: 'createCliente',
-          nome: clientData.nome,
-          cognome: clientData.cognome,
-          telefono: clientData.telefono,
-          email: clientData.email,
-          codice_fiscale: clientData.codice_fiscale,
-          data_nascita: clientData.data_nascita || '',
-          note: clientData.note || ''
-        })
-      });
-      const data = await res.json();
-      if (!data.success) throw new Error(data.error || 'Errore creazione cliente');
-
-      const newId = data.id_cliente;
-      clienti.push({
-        id_cliente: newId,
-        nome: clientData.nome,
-        cognome: clientData.cognome,
-        telefono: clientData.telefono,
-        email: clientData.email,
-        codice_fiscale: clientData.codice_fiscale,
-        data_nascita: clientData.data_nascita || '',
-        note: clientData.note || ''
-      });
-      renderSearchClienti();
-      updateDashboard();
-      renderBirthdaysToday();
-      renderBirthdaysByMonth();
-      return newId;
-    }
-
     formDevice.addEventListener('submit', async (evt) => {
       evt.preventDefault();
       if (!dv_codice_fiscale.value.trim()) {
@@ -1837,13 +2199,261 @@
       }
     });
 
+    // ===== IMPORT CSV =====
+    const csvFileInput = document.getElementById('csvFile');
+    const csvTextArea = document.getElementById('csvText');
+    const btnCsvPreview = document.getElementById('btnCsvPreview');
+    const btnCsvImport = document.getElementById('btnCsvImport');
+    const csvPreviewWrapper = document.getElementById('csvPreviewWrapper');
+    const csvProgressWrapper = document.getElementById('csvProgressWrapper');
+    const csvProgressText = document.getElementById('csvProgressText');
+    const csvProgressBar = document.getElementById('csvProgressBar');
+
+    const headerMapping = {
+      idcliente: 'id_cliente',
+      idcontratto: 'id_contratto',
+      nome: 'nome',
+      cognome: 'cognome',
+      telefono: 'telefono',
+      email: 'email',
+      codicefiscale: 'codice_fiscale',
+      datanascita: 'data_nascita',
+      notecliente: 'note_cliente',
+      datacontratto: 'data_contratto',
+      tipocliente: 'tipo_cliente',
+      tipoattivazione: 'tipo_attivazione',
+      tecnologia: 'tecnologia',
+      compagnia: 'compagnia',
+      convergenza: 'convergenza',
+      mnp: 'mnp',
+      iccidvecchio: 'iccid_vecchio',
+      iccidnuovo: 'iccid_nuovo',
+      dataattivazione: 'data_attivazione',
+      dataportabilita: 'data_portabilita',
+      numerolavorato: 'numero_lavorato',
+      nomeofferta: 'nome_offerta',
+      costoofferta: 'costo_offerta',
+      vincolooffertamesi: 'vincolo_offerta_mesi',
+      telefonoincluso: 'telefono_incluso',
+      imei: 'imei',
+      modello: 'modello',
+      tipopagamento: 'tipo_pagamento',
+      mesivincolotelefono: 'mesi_vincolo_telefono',
+      datafinevincoloofferta: 'data_fine_vincolo_offerta',
+      datafinevincolotelefono: 'data_fine_vincolo_telefono'
+    };
+
+    function normalizeHeader(h) {
+      return h.toLowerCase().replace(/\s+/g, '').replace(/_/g, '');
+    }
+
+    function parseCsvText(text) {
+      const lines = text.trim().split(/\r?\n/).filter(l => l.trim());
+      if (!lines.length) return [];
+      const first = lines[0];
+      const sep = (first.split(';').length > first.split(',').length) ? ';' : ',';
+      const rawHeaders = first.split(sep).map(h => h.trim());
+      const headerKeys = rawHeaders.map(normalizeHeader);
+      const indexToField = {};
+      headerKeys.forEach((hk, idx) => {
+        if (headerMapping[hk]) indexToField[idx] = headerMapping[hk];
+      });
+
+      const rows = [];
+      for (let i = 1; i < lines.length; i++) {
+        const cols = lines[i].split(sep);
+        if (cols.length === 1 && !cols[0].trim()) continue;
+        const obj = {
+          id_cliente: '',
+          id_contratto: '',
+          nome: '',
+          cognome: '',
+          telefono: '',
+          email: '',
+          codice_fiscale: '',
+          data_nascita: '',
+          note_cliente: '',
+          data_contratto: '',
+          tipo_cliente: '',
+          tipo_attivazione: '',
+          tecnologia: '',
+          compagnia: '',
+          convergenza: '',
+          mnp: '',
+          iccid_vecchio: '',
+          iccid_nuovo: '',
+          data_attivazione: '',
+          data_portabilita: '',
+          numero_lavorato: '',
+          nome_offerta: '',
+          costo_offerta: '',
+          vincolo_offerta_mesi: '',
+          telefono_incluso: '',
+          imei: '',
+          modello: '',
+          tipo_pagamento: '',
+          mesi_vincolo_telefono: '',
+          data_fine_vincolo_offerta: '',
+          data_fine_vincolo_telefono: ''
+        };
+        cols.forEach((val, idx) => {
+          const key = indexToField[idx];
+          if (key) obj[key] = val.trim();
+        });
+        rows.push(obj);
+      }
+      return rows;
+    }
+
+    btnCsvPreview.addEventListener('click', async () => {
+      csvRows = [];
+      csvPreviewWrapper.innerHTML = '';
+      csvProgressWrapper.style.display = 'none';
+      btnCsvImport.disabled = true;
+
+      let text = '';
+      const file = csvFileInput.files[0];
+      if (file) {
+        text = await file.text();
+      } else {
+        text = csvTextArea.value;
+      }
+      if (!text.trim()) {
+        alert('Seleziona un file CSV o incolla i dati.');
+        return;
+      }
+      csvRows = parseCsvText(text);
+      if (!csvRows.length) {
+        alert('Nessuna riga trovata nel CSV (controlla le intestazioni).');
+        return;
+      }
+
+      const maxRows = Math.min(csvRows.length, 20);
+      let html = `<small>Anteprima ${maxRows} righe su ${csvRows.length}</small>`;
+      html += `<table><thead><tr>
+        <th>CF</th><th>Nome</th><th>Cognome</th><th>Telefono</th><th>Email</th>
+        <th>Data contratto</th><th>Compagnia</th><th>Offerta</th><th>Numero</th>
+      </tr></thead><tbody>`;
+      for (let i = 0; i < maxRows; i++) {
+        const r = csvRows[i];
+        html += `<tr>
+          <td>${r.codice_fiscale || ''}</td>
+          <td>${r.nome || ''}</td>
+          <td>${r.cognome || ''}</td>
+          <td>${r.telefono || ''}</td>
+          <td>${r.email || ''}</td>
+          <td>${r.data_contratto || ''}</td>
+          <td>${r.compagnia || ''}</td>
+          <td>${r.nome_offerta || ''}</td>
+          <td>${r.numero_lavorato || ''}</td>
+        </tr>`;
+      }
+      html += '</tbody></table>';
+      csvPreviewWrapper.innerHTML = html;
+      btnCsvImport.disabled = false;
+    });
+
+    async function runCsvImport() {
+      if (!csvRows.length) {
+        alert('Prima fai una Anteprima del CSV.');
+        return;
+      }
+      csvProgressWrapper.style.display = 'block';
+      let processed = 0;
+      let ok = 0;
+      let ko = 0;
+      const total = csvRows.length;
+      csvProgressText.textContent = `0 / ${total}`;
+      csvProgressBar.style.width = '0%';
+      btnCsvImport.disabled = true;
+      btnCsvPreview.disabled = true;
+      setStatus('Import in corso...');
+
+      for (const row of csvRows) {
+        try {
+          const clientData = {
+            id_cliente: row.id_cliente || null,
+            nome: row.nome || '',
+            cognome: row.cognome || '',
+            telefono: row.telefono || '',
+            email: row.email || '',
+            codice_fiscale: row.codice_fiscale || '',
+            data_nascita: row.data_nascita || '',
+            note: row.note_cliente || ''
+          };
+          const idCliente = await ensureClienteEsistente(clientData);
+
+          const payload = {
+            action: 'createContratto',
+            id_cliente: idCliente,
+            codice_fiscale: row.codice_fiscale || '',
+            data_contratto: row.data_contratto || '',
+            tipo_cliente: row.tipo_cliente || '',
+            tipo_attivazione: row.tipo_attivazione || '',
+            tecnologia: row.tecnologia || '',
+            compagnia: row.compagnia || '',
+            convergenza: row.convergenza || '',
+            mnp: row.mnp || '',
+            iccid_vecchio: row.iccid_vecchio || '',
+            iccid_nuovo: row.iccid_nuovo || '',
+            data_attivazione: row.data_attivazione || '',
+            data_portabilita: row.data_portabilita || '',
+            numero_lavorato: row.numero_lavorato || '',
+            nome_offerta: row.nome_offerta || '',
+            costo_offerta: row.costo_offerta || '',
+            vincolo_offerta_mesi: row.vincolo_offerta_mesi || '',
+            telefono_incluso: row.telefono_incluso || '',
+            imei: row.imei || '',
+            modello: row.modello || '',
+            tipo_pagamento: row.tipo_pagamento || '',
+            mesi_vincolo_telefono: row.mesi_vincolo_telefono || '',
+            data_fine_vincolo_offerta: row.data_fine_vincolo_offerta || '',
+            data_fine_vincolo_telefono: row.data_fine_vincolo_telefono || ''
+          };
+
+          const res = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
+          });
+          const data = await res.json();
+
+          if (data.success) {
+            ok++;
+          } else {
+            ko++;
+            console.error('Errore createContratto:', data.error);
+          }
+        } catch (err) {
+          ko++;
+          console.error('Errore riga CSV', err);
+        }
+
+        processed++;
+        csvProgressText.textContent = `${processed} / ${total}`;
+        const perc = Math.round(processed * 100 / total);
+        csvProgressBar.style.width = perc + '%';
+      }
+
+      setStatus(`Import finito. OK: ${ok}, Errori: ${ko}`);
+      btnCsvImport.disabled = false;
+      btnCsvPreview.disabled = false;
+      await loadClienti();
+      await loadContrattiAll();
+      renderBirthdaysToday();
+      renderBirthdaysByMonth();
+    }
+
+    btnCsvImport.addEventListener('click', runCsvImport);
+
     // INIT
     document.addEventListener('DOMContentLoaded', async () => {
-      // qui richiami anche resetNewContractForm() e init CSV che hai già
       const todayStr = new Date().toISOString().slice(0,10);
       if (dv_data_vendita) dv_data_vendita.value = todayStr;
       if (rp_data_apertura) rp_data_apertura.value = todayStr;
-
+      resetNewContractForm();
+      resetDeviceForm();
+      resetRipForm();
       initBirthMonthSelect();
       initExpMonthSelect();
       setStatus('Caricamento clienti e contratti...');
