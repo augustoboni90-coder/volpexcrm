@@ -437,7 +437,7 @@
       <div class="section-card">
         <h3>Nuova vendita device</h3>
         <small>
-          Viene collegata al cliente tramite Codice fiscale / telefono / email.  
+          Viene collegata al cliente tramite Codice fiscale / telefono / email.
           Se il cliente non esiste, viene creato.
         </small>
 
@@ -678,7 +678,7 @@
     <section id="view-new-contract" class="view">
       <h2>Nuovo contratto</h2>
       <small>
-        Compila i dati cliente + contratto.  
+        Compila i dati cliente + contratto.
         Se il cliente non esiste verrà creato, altrimenti il contratto verrà aggiunto all’anagrafica esistente
         (match su codice fiscale / email / telefono).
       </small>
@@ -843,8 +843,8 @@
     <section id="view-import" class="view">
       <h2>Import clienti & contratti (CSV)</h2>
       <small>
-        Ogni riga = 1 contratto.  
-        Se il codice fiscale esiste → aggiunge solo il contratto.  
+        Ogni riga = 1 contratto.
+        Se il codice fiscale esiste → aggiunge solo il contratto.
         Se non esiste → crea anche il cliente.
       </small>
 
@@ -1155,11 +1155,11 @@
       const contrCli = contratti.filter(c => c.id_cliente === clienteId);
       const devCli = deviceVendite.filter(d =>
         d.id_cliente === clienteId ||
-        (d.codice_fiscale && cli.codice_fiscale && d.codice_fiscale === cli.codice_fiscale)
+        (d.codice_fiscale && cli.codice_fiscale && String(d.codice_fiscale) === String(cli.codice_fiscale))
       );
       const ripCli = riparazioni.filter(r =>
         r.id_cliente === clienteId ||
-        (r.codice_fiscale && cli.codice_fiscale && r.codice_fiscale === cli.codice_fiscale)
+        (r.codice_fiscale && cli.codice_fiscale && String(r.codice_fiscale) === String(cli.codice_fiscale))
       );
 
       let contrRows = '';
@@ -1434,8 +1434,11 @@
 
     async function ensureClienteEsistente(clientData) {
       if (clientData.codice_fiscale) {
-        const cf = clientData.codice_fiscale.toUpperCase();
-        const found = clienti.find(c => (c.codice_fiscale || '').toUpperCase() === cf);
+        const cf = String(clientData.codice_fiscale).toUpperCase();
+        const found = clienti.find(c => {
+          const cCf = c.codice_fiscale == null ? '' : String(c.codice_fiscale);
+          return cCf.toUpperCase() === cf;
+        });
         if (found) return found.id_cliente;
       }
       if (clientData.email) {
@@ -1719,7 +1722,9 @@
         const d = parseDate(cli.data_nascita);
         if (d) return d;
       }
-      const cf = (cli.codice_fiscale || '').toUpperCase();
+      // forza sempre a stringa per evitare errori se è numero
+      const rawCf = cli.codice_fiscale == null ? '' : String(cli.codice_fiscale);
+      const cf = rawCf.toUpperCase();
       if (cf.length < 11) return null;
       try {
         const yearStr = cf.substring(6, 8);
