@@ -1,0 +1,389 @@
+/* RESET BASE */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #e5e7eb;
+  color: #111827;
+}
+
+/* LAYOUT TIPO KOLME: SIDEBAR + CONTENUTO */
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* SIDEBAR SINISTRA */
+.sidebar {
+  width: 260px;
+  background: #0f172a;
+  color: #e5e7eb;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+.sidebar-logo {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.sidebar-user {
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+  font-size: 13px;
+}
+
+.sidebar-user-name {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.sidebar-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.sidebar-summary-box {
+  background: rgba(15, 118, 110, 0.25);
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: 11px;
+}
+
+.sidebar-summary-label {
+  color: #cbd5f5;
+}
+
+.sidebar-summary-value {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* MENU LATERALE */
+.sidebar-menu {
+  flex: 1;
+  margin-top: 8px;
+  padding: 8px 0;
+}
+
+.sidebar-section-title {
+  padding: 8px 20px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b;
+}
+
+.sidebar-nav {
+  list-style: none;
+}
+
+.sidebar-nav li {
+  margin: 2px 0;
+}
+
+.sidebar-nav button {
+  width: 100%;
+  text-align: left;
+  padding: 8px 20px;
+  border: none;
+  background: transparent;
+  color: #e5e7eb;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sidebar-nav button span.badge {
+  margin-left: auto;
+  background: #ef4444;
+  color: #f9fafb;
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 999px;
+}
+
+.sidebar-nav button:hover {
+  background: rgba(148, 163, 184, 0.18);
+}
+
+.sidebar-nav button.active {
+  background: #2563eb;
+  color: #f9fafb;
+}
+
+/* FOOTER SIDEBAR */
+.sidebar-footer {
+  padding: 10px 20px 12px;
+  border-top: 1px solid rgba(148, 163, 184, 0.3);
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+.sidebar-footer a {
+  color: #93c5fd;
+  text-decoration: none;
+}
+
+/* CONTENUTO PRINCIPALE */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* HEADER SUPERIORE */
+header {
+  background: #111827;
+  color: #f9fafb;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+header h1 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* BREADCRUMB / TITOLO PAGINA */
+.page-header {
+  padding: 12px 24px 0;
+  font-size: 13px;
+  color: #6b7280;
+}
+.page-header span {
+  color: #2563eb;
+}
+
+/* CONTENITORE PRINCIPALE */
+.container {
+  padding: 12px 24px 24px;
+}
+
+/* STATUS BAR */
+.status-bar {
+  font-size: 12px;
+  color: #4b5563;
+  margin-bottom: 12px;
+}
+
+/* TAB ORIZZONTALI (SIMULANO LE VOCI CENTRALI DELLA PAGINA) */
+.nav-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.nav-tabs button {
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-size: 12px;
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.nav-tabs button.active {
+  background: #2563eb;
+  color: white;
+  border-color: #1d4ed8;
+}
+
+/* BOTTONI GENERICI */
+.btn-primary {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.btn-secondary {
+  background: #e5e7eb;
+  color: #111827;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn-primary:disabled,
+.btn-secondary:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* CARD E TABELLE (STILE PANNELLI BIANCHI) */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.18);
+}
+
+.card-title {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+.card-value {
+  font-size: 20px;
+  font-weight: 600;
+}
+.card-sub {
+  font-size: 11px;
+  color: #9ca3af;
+  margin-top: 2px;
+}
+
+.section-card {
+  background: white;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.18);
+  margin-bottom: 12px;
+}
+
+/* TABELLE */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.16);
+  margin-top: 6px;
+}
+thead {
+  background: #0f172a;
+  color: #f9fafb;
+}
+th, td {
+  padding: 6px 8px;
+  font-size: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+tbody tr:hover {
+  background: #f9fafb;
+}
+tbody tr.clickable {
+  cursor: pointer;
+}
+
+/* FORM */
+label {
+  font-size: 13px;
+  font-weight: 500;
+}
+input[type="text"],
+input[type="email"],
+input[type="date"],
+input[type="number"],
+textarea,
+select {
+  width: 100%;
+  padding: 5px 7px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 13px;
+  margin-top: 2px;
+}
+textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+.field-group {
+  margin-bottom: 8px;
+}
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+}
+.form-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+/* VISTE */
+.view { display: none; }
+.view.active { display: block; }
+
+h2 { font-size: 18px; margin-bottom: 8px; }
+h3 { font-size: 16px; margin: 10px 0 6px; }
+h4 { font-size: 14px; margin: 8px 0 4px; }
+
+small {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+/* NEWS / IFRAME MONDOMOBILEWEB */
+.news-frame-wrapper {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.25);
+  background: #fff;
+  margin-top: 8px;
+}
+.news-frame-wrapper iframe {
+  width: 100%;
+  height: 600px;
+  border: none;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .app-shell {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+  .sidebar-header,
+  .sidebar-user,
+  .sidebar-menu,
+  .sidebar-footer {
+    border: none;
+  }
+  .sidebar-menu {
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+  }
+  .sidebar-nav button {
+    padding: 8px 12px;
+  }
+}
