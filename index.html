@@ -233,6 +233,11 @@
           <div class="card-value" id="stat-total-clienti">0</div>
           <div class="card-sub">Persone/aziende in anagrafica</div>
         </div>
+        <div class="card">
+          <div class="card-title">Compleanni oggi</div>
+          <div class="card-value" id="stat-birthday-today">0</div>
+          <div class="card-sub">Clienti che compiono gli anni oggi</div>
+        </div>
       </div>
 
       <h3>Ultimi contratti inseriti</h3>
@@ -331,10 +336,11 @@
               <th>Data nascita</th>
               <th>Età che compie</th>
               <th>Telefono</th>
+              <th>WhatsApp</th>
             </tr>
           </thead>
           <tbody id="tbody-birth-today">
-            <tr><td colspan="5">Nessun compleanno oggi.</td></tr>
+            <tr><td colspan="6">Nessun compleanno oggi.</td></tr>
           </tbody>
         </table>
 
@@ -352,10 +358,11 @@
               <th>Cognome</th>
               <th>Data nascita</th>
               <th>Telefono</th>
+              <th>WhatsApp</th>
             </tr>
           </thead>
           <tbody id="tbody-birth-month">
-            <tr><td colspan="5">Seleziona un mese.</td></tr>
+            <tr><td colspan="6">Seleziona un mese.</td></tr>
           </tbody>
         </table>
       </div>
@@ -625,6 +632,22 @@
       'Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'
     ];
 
+    // helper per WhatsApp
+    function buildWhatsAppLink(phoneRaw) {
+      if (!phoneRaw) return null;
+      const digits = String(phoneRaw).replace(/\D+/g, '');
+      if (!digits) return null;
+      let num = digits;
+      if (num.startsWith('0')) num = num.slice(1); // togli eventuale 0 iniziale
+      const full = '39' + num; // prefisso Italia
+      return 'https://wa.me/' + full;
+    }
+    function whatsappButtonHtml(phoneRaw) {
+      const url = buildWhatsAppLink(phoneRaw);
+      if (!url) return '';
+      return `<a href="${url}" target="_blank" class="btn-secondary" style="padding:4px 8px; font-size:11px; text-decoration:none;">WhatsApp</a>`;
+    }
+
     // ===== NAVIGAZIONE VISTE =====
     const views = document.querySelectorAll('.view');
     const tabButtons = document.querySelectorAll('.nav-tabs button');
@@ -851,7 +874,9 @@
           <h3>Dettaglio cliente</h3>
           <p>
             <strong>${cli.nome || ''} ${cli.cognome || ''}</strong><br/>
-            Tel: ${cli.telefono || '-'}<br/>
+            Tel: ${cli.telefono || '-'}
+            ${whatsappButtonHtml(cli.telefono)}
+            <br/>
             Email: ${cli.email || '-'}<br/>
             CF: ${cli.codice_fiscale || '-'}<br/>
             ID cliente: ${cli.id_cliente || '-'}
@@ -966,7 +991,7 @@
           ${cli ? `
           <p>
             <strong>Cliente:</strong> ${cli.nome || ''} ${cli.cognome || ''}<br/>
-            Tel: ${cli.telefono || '-'}<br/>
+            Tel: ${cli.telefono || '-'} ${whatsappButtonHtml(cli.telefono)}<br/>
             Email: ${cli.email || '-'}<br/>
             ID cliente: ${cli.id_cliente || '-'}
           </p>` : ''}
@@ -1261,10 +1286,15 @@
           list.push({ cli, info });
         }
       });
+
+      // aggiorna card in dashboard
+      const statBirth = document.getElementById('stat-birthday-today');
+      if (statBirth) statBirth.textContent = list.length;
+
       if (!list.length) {
         const tr = document.createElement('tr');
         const td = document.createElement('td');
-        td.colSpan = 5;
+        td.colSpan = 6;
         td.textContent = 'Nessun compleanno oggi.';
         tr.appendChild(td);
         tbodyBirthToday.appendChild(tr);
@@ -1281,6 +1311,7 @@
           <td>${formatDateShort(info.date.toISOString().slice(0,10))}</td>
           <td>${info.age}</td>
           <td>${cli.telefono || ''}</td>
+          <td>${whatsappButtonHtml(cli.telefono)}</td>
         `;
         tbodyBirthToday.appendChild(tr);
       });
@@ -1293,7 +1324,7 @@
       if (!monthSelected || isNaN(monthSelected)) {
         const tr = document.createElement('tr');
         const td = document.createElement('td');
-        td.colSpan = 5;
+        td.colSpan = 6;
         td.textContent = 'Seleziona un mese.';
         tr.appendChild(td);
         tbodyBirthMonth.appendChild(tr);
@@ -1310,7 +1341,7 @@
       if (!list.length) {
         const tr = document.createElement('tr');
         const td = document.createElement('td');
-        td.colSpan = 5;
+        td.colSpan = 6;
         td.textContent = 'Nessun compleanno in questo mese.';
         tr.appendChild(td);
         tbodyBirthMonth.appendChild(tr);
@@ -1327,6 +1358,7 @@
           <td>${cli.cognome || ''}</td>
           <td>${formatDateShort(info.date.toISOString().slice(0,10))}</td>
           <td>${cli.telefono || ''}</td>
+          <td>${whatsappButtonHtml(cli.telefono)}</td>
         `;
         tbodyBirthMonth.appendChild(tr);
       });
