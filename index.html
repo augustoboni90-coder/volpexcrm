@@ -4,880 +4,784 @@
   <meta charset="UTF-8" />
   <title>CRM – Clienti, Contratti, Device & Riparazioni</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f3f4f6;
-      color: #111827;
-    }
-    header {
-      background: #111827;
-      color: #f9fafb;
-      padding: 16px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    header h1 { margin: 0; font-size: 20px; }
-    .container {
-      padding: 16px 24px 32px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    .status-bar {
-      font-size: 13px;
-      color: #4b5563;
-      margin-bottom: 12px;
-    }
-    .nav-tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-    }
-    .nav-tabs button {
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      background: #e5e7eb;
-      color: #111827;
-    }
-    .nav-tabs button.active {
-      background: #2563eb;
-      color: white;
-    }
-    .btn-primary {
-      background: #2563eb;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 8px 14px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-    .btn-secondary {
-      background: #e5e7eb;
-      color: #111827;
-      border: none;
-      border-radius: 8px;
-      padding: 8px 14px;
-      cursor: pointer;
-      font-size: 14px;
-      text-decoration: none;
-      display: inline-block;
-    }
-    .btn-primary:disabled, .btn-secondary:disabled {
-      opacity: 0.6;
-      cursor: default;
-    }
-    .view { display: none; }
-    .view.active { display: block; }
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-    .card {
-      background: white;
-      border-radius: 12px;
-      padding: 12px 14px;
-      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
-    }
-    .card-title {
-      font-size: 13px;
-      color: #6b7280;
-      margin-bottom: 4px;
-    }
-    .card-value {
-      font-size: 20px;
-      font-weight: 600;
-    }
-    .card-sub {
-      font-size: 11px;
-      color: #9ca3af;
-      margin-top: 2px;
-    }
-    h2 { font-size: 18px; margin: 0 0 10px; }
-    h3 { font-size: 16px; margin: 12px 0 8px; }
-    h4 { font-size: 14px; margin: 8px 0 4px; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
-      margin-top: 8px;
-    }
-    thead { background: #111827; color: #f9fafb; }
-    th, td {
-      padding: 6px 8px;
-      font-size: 12px;
-      border-bottom: 1px solid #e5e7eb;
-    }
-    tbody tr:hover { background: #f9fafb; }
-    tbody tr.clickable { cursor: pointer; }
-    .section-card {
-      background: white;
-      border-radius: 10px;
-      padding: 12px;
-      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
-      margin-bottom: 12px;
-    }
-    input[type="text"],
-    input[type="email"],
-    input[type="date"],
-    input[type="number"],
-    textarea,
-    select {
-      width: 100%;
-      padding: 6px 8px;
-      border-radius: 6px;
-      border: 1px solid #d1d5db;
-      font-size: 13px;
-      margin-top: 2px;
-    }
-    textarea {
-      resize: vertical;
-      min-height: 60px;
-    }
-    label {
-      font-size: 13px;
-      font-weight: 500;
-    }
-    .form-grid-2 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 10px;
-    }
-    .form-actions {
-      display: flex;
-      gap: 8px;
-      justify-content: flex-end;
-      margin-top: 10px;
-      flex-wrap: wrap;
-    }
-    .field-group { margin-bottom: 8px; }
-    .search-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-    }
-    .search-row input[type="text"] {
-      flex: 1;
-      min-width: 220px;
-    }
-    small {
-      font-size: 11px;
-      color: #6b7280;
-    }
-    @media (max-width: 700px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
-      }
-    }
-  </style>
+  <!-- Stile tipo Kolme -->
+  <link rel="stylesheet" href="crm.css">
 </head>
 <body>
-  <header>
-    <h1>CRM – Clienti, Contratti, Device & Riparazioni</h1>
-    <div style="font-size: 13px; color:#d1d5db;">Collegato a Google Sheets</div>
-  </header>
+  <div class="app-shell">
+    <!-- SIDEBAR SINISTRA -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">kolme-CRM</div>
+      </div>
 
-  <div class="container">
-    <div class="status-bar" id="status">Caricamento dati...</div>
+      <div class="sidebar-user">
+        <div class="sidebar-user-name">Benvenuto Augusto Boni</div>
+        <div style="font-size:12px;">Partner: Aurora</div>
 
-    <div class="nav-tabs">
-      <button data-view="view-dashboard" class="active">Dashboard</button>
-      <button data-view="view-search">Ricerca</button>
-      <button data-view="view-report">Report</button>
-      <button data-view="view-device">Device & Riparazioni</button>
-      <button data-view="view-new-contract">Nuovo contratto</button>
-      <button data-view="view-import">Import CSV</button>
+        <div class="sidebar-summary">
+          <div class="sidebar-summary-box">
+            <div class="sidebar-summary-label">Mobile</div>
+            <div class="sidebar-summary-value" id="sb-mobile-count">0</div>
+          </div>
+          <div class="sidebar-summary-box">
+            <div class="sidebar-summary-label">Fisso</div>
+            <div class="sidebar-summary-value" id="sb-fisso-count">0</div>
+          </div>
+          <div class="sidebar-summary-box">
+            <div class="sidebar-summary-label">Luce/Gas</div>
+            <div class="sidebar-summary-value" id="sb-energy-count">0</div>
+          </div>
+          <div class="sidebar-summary-box">
+            <div class="sidebar-summary-label">Device</div>
+            <div class="sidebar-summary-value" id="sb-device-count">0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-menu">
+        <div class="sidebar-section-title">MENU</div>
+        <ul class="sidebar-nav">
+          <li><button data-view="view-dashboard" class="active">I Miei Numeri</button></li>
+          <li><button data-view="view-search">Ricerca</button></li>
+          <li><button data-view="view-new-contract">Attivazioni</button></li>
+          <li><button data-view="view-device">Vendita Device & Riparazioni</button></li>
+          <li><button data-view="view-report">Report</button></li>
+          <li><button data-view="view-import">Import</button></li>
+          <li><button data-view="view-news">News &amp; Guide</button></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <a href="#">Cambia password</a>
+        <a href="#">Esci</a>
+      </div>
+    </aside>
+
+    <!-- CONTENUTO PRINCIPALE -->
+    <div class="main">
+      <header>
+        <h1>CRM – Clienti, Contratti, Device &amp; Riparazioni</h1>
+        <div style="font-size: 13px; color:#d1d5db;">Collegato a Google Sheets</div>
+      </header>
+
+      <div class="page-header">
+        I MIEI NUMERI / <span>AVANZAMENTO GARE</span>
+      </div>
+
+      <div class="container">
+        <div class="status-bar" id="status">Caricamento dati...</div>
+
+        <!-- Tab orizzontali interni (facoltativi ma comodi) -->
+        <div class="nav-tabs">
+          <button data-view="view-dashboard" class="active">Dashboard</button>
+          <button data-view="view-search">Ricerca</button>
+          <button data-view="view-report">Report</button>
+          <button data-view="view-device">Device &amp; Riparazioni</button>
+          <button data-view="view-new-contract">Nuovo contratto</button>
+          <button data-view="view-import">Import CSV</button>
+          <button data-view="view-news">News</button>
+        </div>
+
+        <!-- DASHBOARD -->
+        <section id="view-dashboard" class="view active">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
+            <h2 style="margin:0;">Panoramica contratti</h2>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button class="btn-secondary" type="button" id="goToSearch1">Cerca</button>
+              <button class="btn-primary" type="button" id="goToNew1">Nuovo contratto</button>
+            </div>
+          </div>
+
+          <div class="cards-grid">
+            <div class="card">
+              <div class="card-title">Contratti totali</div>
+              <div class="card-value" id="stat-total-contratti">0</div>
+              <div class="card-sub" id="stat-total-contratti-sub"></div>
+            </div>
+            <div class="card">
+              <div class="card-title">Contratti ultimo mese</div>
+              <div class="card-value" id="stat-contratti-mese">0</div>
+              <div class="card-sub">Ultimi 30 giorni</div>
+            </div>
+            <div class="card">
+              <div class="card-title">Contratti oggi</div>
+              <div class="card-value" id="stat-contratti-oggi">0</div>
+              <div class="card-sub" id="stat-contratti-oggi-sub"></div>
+            </div>
+            <div class="card">
+              <div class="card-title">Clienti totali</div>
+              <div class="card-value" id="stat-total-clienti">0</div>
+              <div class="card-sub">Persone/aziende in anagrafica</div>
+            </div>
+            <div class="card">
+              <div class="card-title">Compleanni oggi</div>
+              <div class="card-value" id="stat-birthday-today">0</div>
+              <div class="card-sub">Clienti che compiono gli anni oggi</div>
+            </div>
+          </div>
+
+          <h3>Ultimi contratti inseriti</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Cliente</th>
+                <th>Numero</th>
+                <th>Offerta</th>
+                <th>Tipo</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-latest-contratti">
+              <tr><td colspan="5">Nessun contratto</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- RICERCA -->
+        <section id="view-search" class="view">
+          <h2>Ricerca</h2>
+
+          <!-- RICERCA CLIENTI -->
+          <h3>Ricerca clienti</h3>
+          <div class="search-row">
+            <input type="text" id="searchClienti" placeholder="Cerca per nome, cognome, telefono, email o codice fiscale..." />
+            <button class="btn-primary" type="button" id="btnSearchClienti">Cerca</button>
+            <button class="btn-secondary" type="button" id="btnClearSearch">Pulisci</button>
+          </div>
+
+          <div class="section-card">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Cognome</th>
+                  <th>Telefono</th>
+                  <th>Email</th>
+                  <th>Codice fiscale</th>
+                  <th># Contratti</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-search-clienti">
+                <tr><td colspan="6">Nessun cliente</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div id="cliente-detail"></div>
+
+          <!-- RICERCA CONTRATTI -->
+          <h3 style="margin-top:20px;">Ricerca contratti</h3>
+          <div class="search-row">
+            <input type="text" id="searchContratti" placeholder="Cerca per numero, offerta, tecnologia, CF, ID contratto..." />
+            <button class="btn-primary" type="button" id="btnSearchContratti">Cerca</button>
+            <button class="btn-secondary" type="button" id="btnClearSearchContratti">Pulisci</button>
+          </div>
+
+          <div class="section-card">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>ID contratto</th>
+                  <th>Cliente</th>
+                  <th>Numero</th>
+                  <th>Offerta</th>
+                  <th>Tecnologia</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-search-contratti">
+                <tr><td colspan="6">Nessun contratto</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div id="contratto-detail"></div>
+        </section>
+
+        <!-- REPORT -->
+        <section id="view-report" class="view">
+          <h2>Report &amp; Analisi</h2>
+
+          <!-- COMPLEANNI -->
+          <div class="section-card">
+            <h3>Compleanni</h3>
+            <small>La data di nascita viene letta dal campo "Data nascita" oppure calcolata dal Codice fiscale.</small>
+
+            <h4 style="margin-top:10px;">Compleanni di oggi</h4>
+            <table>
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Cognome</th>
+                  <th>Data nascita</th>
+                  <th>Età che compie</th>
+                  <th>Telefono</th>
+                  <th>WhatsApp</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-birth-today">
+                <tr><td colspan="6">Nessun compleanno oggi.</td></tr>
+              </tbody>
+            </table>
+
+            <h4 style="margin-top:12px;">Compleanni per mese</h4>
+            <div class="search-row">
+              <label for="birthMonthSelect" style="font-size:13px;">Mese compleanno:</label>
+              <select id="birthMonthSelect" style="max-width:180px;"></select>
+              <button class="btn-primary" type="button" id="btnBirthMonthSearch">Mostra</button>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Giorno</th>
+                  <th>Nome</th>
+                  <th>Cognome</th>
+                  <th>Data nascita</th>
+                  <th>Telefono</th>
+                  <th>WhatsApp</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-birth-month">
+                <tr><td colspan="6">Seleziona un mese.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- CONTRATTI PER COMPAGNIA + TECNOLOGIA -->
+          <div class="section-card">
+            <h3>Contratti per compagnia e tecnologia</h3>
+            <div class="search-row">
+              <input type="text" id="filtroCompagnia"
+                     placeholder="Compagnia (es. TIM, Vodafone, Enel...) – cerca anche nel Nome offerta" />
+              <input type="text" id="filtroTecnologia"
+                     placeholder="Tecnologia (es. SIM, FTTH)" style="max-width:200px;" />
+              <button class="btn-primary" type="button" id="btnFilterCompTech">Filtra</button>
+              <button class="btn-secondary" type="button" id="btnClearCompTech">Pulisci</button>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Data contratto</th>
+                  <th>Cliente</th>
+                  <th>Compagnia / Offerta</th>
+                  <th>Tecnologia</th>
+                  <th>Numero</th>
+                  <th>Tipo cliente</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-comp-tech">
+                <tr><td colspan="6">Inserisci almeno un filtro e premi "Filtra".</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- CONTRATTI IN SCADENZA -->
+          <div class="section-card">
+            <h3>Contratti in scadenza</h3>
+            <div class="search-row">
+              <label for="expMonth" style="font-size:13px;">Mese:</label>
+              <select id="expMonth" style="max-width:160px;"></select>
+              <label for="expYear" style="font-size:13px;">Anno:</label>
+              <select id="expYear" style="max-width:120px;"></select>
+              <button class="btn-primary" type="button" id="btnExpSearch">Cerca</button>
+            </div>
+            <small>Vengono considerate le date "Fine vincolo offerta" e "Fine vincolo telefono".</small>
+            <table>
+              <thead>
+                <tr>
+                  <th>Data scadenza</th>
+                  <th>Tipo</th>
+                  <th>Cliente</th>
+                  <th>Numero</th>
+                  <th>Offerta</th>
+                  <th>Tecnologia</th>
+                  <th>Tipo cliente</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-expiring">
+                <tr><td colspan="7">Seleziona mese e anno.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- DEVICE & RIPARAZIONI -->
+        <section id="view-device" class="view">
+          <h2>Device &amp; Riparazioni</h2>
+
+          <!-- VENDITA DEVICE -->
+          <div class="section-card">
+            <h3>Nuova vendita device</h3>
+            <small>
+              Viene collegata al cliente tramite Codice fiscale / telefono / email.
+              Se il cliente non esiste, viene creato.
+            </small>
+
+            <form id="form-device">
+              <input type="hidden" id="dv_id_vendita" />
+
+              <h4>Dati cliente</h4>
+              <div class="form-grid-2">
+                <div class="field-group">
+                  <label for="dv_nome">Nome</label>
+                  <input type="text" id="dv_nome" />
+                </div>
+                <div class="field-group">
+                  <label for="dv_cognome">Cognome</label>
+                  <input type="text" id="dv_cognome" />
+                </div>
+                <div class="field-group">
+                  <label for="dv_telefono">Telefono</label>
+                  <input type="text" id="dv_telefono" />
+                </div>
+                <div class="field-group">
+                  <label for="dv_email">Email</label>
+                  <input type="email" id="dv_email" />
+                </div>
+                <div class="field-group">
+                  <label for="dv_codice_fiscale">Codice fiscale</label>
+                  <input type="text" id="dv_codice_fiscale" required />
+                </div>
+              </div>
+
+              <h4 style="margin-top:10px;">Dati device</h4>
+              <div class="form-grid-2">
+                <div class="field-group">
+                  <label for="dv_data_vendita">Data vendita</label>
+                  <input type="date" id="dv_data_vendita" />
+                </div>
+                <div class="field-group">
+                  <label for="dv_marca">Marca</label>
+                  <input type="text" id="dv_marca" />
+                </div>
+                <div class="field-group">
+                  <label for="dv_modello">Modello</label>
+                  <input type="text" id="dv_modello" />
+                </div>
+                <div class="field-group">
+                  <label for="dv_imei">IMEI</label>
+                  <input type="text" id="dv_imei" />
+                </div>
+                <div class="field-group">
+                  <label for="dv_prezzo">Prezzo (€)</label>
+                  <input type="number" step="0.01" id="dv_prezzo" />
+                </div>
+                <div class="field-group">
+                  <label for="dv_tipo_pagamento">Tipo pagamento</label>
+                  <select id="dv_tipo_pagamento">
+                    <option value="">--</option>
+                    <option value="cash">cash</option>
+                    <option value="carta">carta</option>
+                    <option value="finanziamento">finanziamento</option>
+                  </select>
+                </div>
+                <div class="field-group">
+                  <label for="dv_durata_finanziamento_mesi">Durata finanziamento (mesi)</label>
+                  <input type="number" id="dv_durata_finanziamento_mesi" />
+                </div>
+                <div class="field-group">
+                  <label for="dv_anticipo">Anticipo (€)</label>
+                  <input type="number" step="0.01" id="dv_anticipo" />
+                </div>
+                <div class="field-group">
+                  <label for="dv_costo_rata">Costo rata (€)</label>
+                  <input type="number" step="0.01" id="dv_costo_rata" />
+                </div>
+                <div class="field-group">
+                  <label for="dv_data_fine_finanziamento">Data fine finanziamento</label>
+                  <input type="date" id="dv_data_fine_finanziamento" readonly />
+                </div>
+                <div class="field-group">
+                  <label for="dv_garanzia_mesi">Garanzia (mesi)</label>
+                  <input type="number" id="dv_garanzia_mesi" />
+                </div>
+                <div class="field-group">
+                  <label for="dv_data_fine_garanzia">Data fine garanzia</label>
+                  <input type="date" id="dv_data_fine_garanzia" readonly />
+                </div>
+                <div class="field-group">
+                  <label for="dv_id_contratto">ID contratto (opzionale)</label>
+                  <input type="text" id="dv_id_contratto" />
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label for="dv_note">Note</label>
+                <textarea id="dv_note"></textarea>
+              </div>
+
+              <div class="form-actions">
+                <button class="btn-secondary" type="button" id="btnResetDevice">Svuota</button>
+                <button class="btn-primary" type="submit">Salva vendita</button>
+              </div>
+              <small id="dv_info"></small>
+            </form>
+          </div>
+
+          <div class="section-card">
+            <h3>Ultime vendite device</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Cliente</th>
+                  <th>Device</th>
+                  <th>IMEI</th>
+                  <th>Prezzo</th>
+                  <th>Pagamento</th>
+                  <th>WhatsApp</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-device">
+                <tr><td colspan="7">Nessuna vendita registrata.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- RIPARAZIONI -->
+          <div class="section-card">
+            <h3>Nuova riparazione</h3>
+            <small>
+              Anche qui il cliente è gestito come per i contratti: se non esiste, viene creato.
+            </small>
+
+            <form id="form-riparazione">
+              <input type="hidden" id="rp_id_riparazione" />
+
+              <h4>Dati cliente</h4>
+              <div class="form-grid-2">
+                <div class="field-group">
+                  <label for="rp_nome">Nome</label>
+                  <input type="text" id="rp_nome" />
+                </div>
+                <div class="field-group">
+                  <label for="rp_cognome">Cognome</label>
+                  <input type="text" id="rp_cognome" />
+                </div>
+                <div class="field-group">
+                  <label for="rp_telefono">Telefono</label>
+                  <input type="text" id="rp_telefono" />
+                </div>
+                <div class="field-group">
+                  <label for="rp_email">Email</label>
+                  <input type="email" id="rp_email" />
+                </div>
+                <div class="field-group">
+                  <label for="rp_codice_fiscale">Codice fiscale</label>
+                  <input type="text" id="rp_codice_fiscale" required />
+                </div>
+              </div>
+
+              <h4 style="margin-top:10px;">Dati riparazione</h4>
+              <div class="form-grid-2">
+                <div class="field-group">
+                  <label for="rp_data_apertura">Data apertura</label>
+                  <input type="date" id="rp_data_apertura" />
+                </div>
+                <div class="field-group">
+                  <label for="rp_marca">Marca</label>
+                  <input type="text" id="rp_marca" />
+                </div>
+                <div class="field-group">
+                  <label for="rp_modello">Modello</label>
+                  <input type="text" id="rp_modello" />
+                </div>
+                <div class="field-group">
+                  <label for="rp_imei">IMEI</label>
+                  <input type="text" id="rp_imei" />
+                </div>
+                <div class="field-group">
+                  <label for="rp_tipo_guasto">Tipo guasto</label>
+                  <input type="text" id="rp_tipo_guasto" />
+                </div>
+                <div class="field-group">
+                  <label for="rp_stato">Stato</label>
+                  <select id="rp_stato">
+                    <option value="Aperta">Aperta</option>
+                    <option value="In lavorazione">In lavorazione</option>
+                    <option value="Chiusa">Chiusa</option>
+                  </select>
+                </div>
+                <div class="field-group">
+                  <label for="rp_costo_previsto">Costo previsto (€)</label>
+                  <input type="number" step="0.01" id="rp_costo_previsto" />
+                </div>
+                <div class="field-group">
+                  <label for="rp_costo_effettivo">Costo effettivo (€)</label>
+                  <input type="number" step="0.01" id="rp_costo_effettivo" />
+                </div>
+                <div class="field-group">
+                  <label for="rp_data_chiusura">Data chiusura</label>
+                  <input type="date" id="rp_data_chiusura" />
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label for="rp_note">Note</label>
+                <textarea id="rp_note"></textarea>
+              </div>
+
+              <div class="form-actions">
+                <button class="btn-secondary" type="button" id="btnResetRiparazione">Svuota</button>
+                <button class="btn-primary" type="submit">Salva riparazione</button>
+              </div>
+              <small id="rp_info"></small>
+            </form>
+          </div>
+
+          <div class="section-card">
+            <h3>Riparazioni recenti</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Data apertura</th>
+                  <th>Cliente</th>
+                  <th>Device</th>
+                  <th>IMEI</th>
+                  <th>Guasto</th>
+                  <th>Stato</th>
+                  <th>WhatsApp</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-riparazioni">
+                <tr><td colspan="7">Nessuna riparazione registrata.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- NUOVO CONTRATTO -->
+        <section id="view-new-contract" class="view">
+          <h2>Nuovo contratto</h2>
+          <small>
+            Compila i dati cliente + contratto.
+            Se il cliente non esiste verrà creato, altrimenti il contratto verrà aggiunto all’anagrafica esistente
+            (match su codice fiscale / email / telefono).
+          </small>
+
+          <form id="form-new-contract" class="section-card">
+            <h3>Dati cliente</h3>
+            <input type="hidden" id="nc_id_cliente" />
+            <input type="hidden" id="nc_id_contratto" />
+
+            <div class="form-grid-2">
+              <div class="field-group">
+                <label for="nc_nome">Nome</label>
+                <input type="text" id="nc_nome" required />
+              </div>
+              <div class="field-group">
+                <label for="nc_cognome">Cognome</label>
+                <input type="text" id="nc_cognome" required />
+              </div>
+              <div class="field-group">
+                <label for="nc_telefono">Telefono</label>
+                <input type="text" id="nc_telefono" />
+              </div>
+              <div class="field-group">
+                <label for="nc_email">Email</label>
+                <input type="email" id="nc_email" />
+              </div>
+              <div class="field-group">
+                <label for="nc_codice_fiscale">Codice fiscale</label>
+                <input type="text" id="nc_codice_fiscale" required />
+              </div>
+              <div class="field-group">
+                <label for="nc_data_nascita">Data nascita</label>
+                <input type="date" id="nc_data_nascita" />
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label for="nc_note">Note cliente</label>
+              <textarea id="nc_note"></textarea>
+            </div>
+
+            <hr style="margin:10px 0; border:none; border-top:1px solid #e5e7eb;" />
+
+            <h3>Dati contratto</h3>
+
+            <div class="form-grid-2">
+              <div class="field-group">
+                <label for="nc_data_contratto">Data contratto</label>
+                <input type="date" id="nc_data_contratto" />
+              </div>
+              <div class="field-group">
+                <label for="nc_tipo_cliente">Tipo cliente</label>
+                <select id="nc_tipo_cliente">
+                  <option value="">--</option>
+                  <option value="privato">Privato</option>
+                  <option value="business">Business</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label for="nc_tipo_attivazione">Tipo attivazione</label>
+                <input type="text" id="nc_tipo_attivazione" placeholder="Mobile / Fisso / Luce / Gas / TV..." />
+              </div>
+              <div class="field-group">
+                <label for="nc_tecnologia">Tecnologia</label>
+                <input type="text" id="nc_tecnologia" placeholder="SIM / FTTH / FWA / ..." />
+              </div>
+              <div class="field-group">
+                <label for="nc_compagnia">Compagnia</label>
+                <input type="text" id="nc_compagnia" placeholder="TIM, Vodafone, Enel, Eni, Sky, ecc." />
+              </div>
+              <div class="field-group">
+                <label for="nc_convergenza">Convergenza</label>
+                <select id="nc_convergenza">
+                  <option value="">--</option>
+                  <option value="SI">SI</option>
+                  <option value="NO">NO</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label for="nc_mnp">MNP</label>
+                <select id="nc_mnp">
+                  <option value="">--</option>
+                  <option value="SI">SI</option>
+                  <option value="NO">NO</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label for="nc_iccid_vecchio">ICCID vecchio (se MNP)</label>
+                <input type="text" id="nc_iccid_vecchio" />
+              </div>
+              <div class="field-group">
+                <label for="nc_iccid_nuovo">ICCID nuovo (se MNP)</label>
+                <input type="text" id="nc_iccid_nuovo" />
+              </div>
+              <div class="field-group">
+                <label for="nc_data_attivazione">Data attivazione</label>
+                <input type="date" id="nc_data_attivazione" />
+              </div>
+              <div class="field-group">
+                <label for="nc_data_portabilita">Data portabilità</label>
+                <input type="date" id="nc_data_portabilita" />
+              </div>
+              <div class="field-group">
+                <label for="nc_numero_lavorato">Numero lavorato</label>
+                <input type="text" id="nc_numero_lavorato" />
+              </div>
+              <div class="field-group">
+                <label for="nc_nome_offerta">Nome offerta</label>
+                <input type="text" id="nc_nome_offerta" />
+              </div>
+              <div class="field-group">
+                <label for="nc_costo_offerta">Costo offerta (€)</label>
+                <input type="number" step="0.01" id="nc_costo_offerta" />
+              </div>
+              <div class="field-group">
+                <label for="nc_vincolo_offerta_mesi">Vincolo offerta (mesi)</label>
+                <input type="number" id="nc_vincolo_offerta_mesi" />
+              </div>
+              <div class="field-group">
+                <label for="nc_telefono_incluso">Telefono incluso</label>
+                <select id="nc_telefono_incluso">
+                  <option value="">--</option>
+                  <option value="SI">SI</option>
+                  <option value="NO">NO</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label for="nc_imei">IMEI</label>
+                <input type="text" id="nc_imei" />
+              </div>
+              <div class="field-group">
+                <label for="nc_modello">Modello telefono</label>
+                <input type="text" id="nc_modello" />
+              </div>
+              <div class="field-group">
+                <label for="nc_tipo_pagamento">Tipo pagamento</label>
+                <input type="text" id="nc_tipo_pagamento" placeholder="RID / Carta / Bollettino" />
+              </div>
+              <div class="field-group">
+                <label for="nc_mesi_vincolo_telefono">Mesi vincolo telefono</label>
+                <input type="number" id="nc_mesi_vincolo_telefono" />
+              </div>
+              <div class="field-group">
+                <label for="nc_data_fine_vincolo_offerta">Fine vincolo offerta</label>
+                <input type="date" id="nc_data_fine_vincolo_offerta" />
+              </div>
+              <div class="field-group">
+                <label for="nc_data_fine_vincolo_telefono">Fine vincolo telefono</label>
+                <input type="date" id="nc_data_fine_vincolo_telefono" />
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn-secondary" type="button" id="btnResetNew">Svuota</button>
+              <button class="btn-primary" type="submit">Salva contratto</button>
+            </div>
+            <small id="nc_info"></small>
+          </form>
+        </section>
+
+        <!-- IMPORT CSV -->
+        <section id="view-import" class="view">
+          <h2>Import clienti &amp; contratti (CSV)</h2>
+          <small>
+            Ogni riga = 1 contratto.
+            Se il codice fiscale esiste → aggiunge solo il contratto.
+            Se non esiste → crea anche il cliente.
+          </small>
+
+          <div class="section-card">
+            <div class="field-group">
+              <label for="csvFile">Carica file CSV</label>
+              <input type="file" id="csvFile" accept=".csv,text/csv" />
+            </div>
+
+            <div class="field-group">
+              <label for="csvText">Oppure incolla il contenuto CSV</label>
+              <textarea id="csvText" placeholder="Intestazioni consigliate: CodiceFiscale, Nome, Cognome, Telefono, Email, DataNascita, NoteCliente, DataContratto, TipoCliente, TipoAttivazione, Tecnologia, Compagnia, Convergenza, MNP, ICCID_vecchio, ICCID_nuovo, DataAttivazione, DataPortabilita, NumeroLavorato, NomeOfferta, CostoOfferta, VincoloOffertaMesi, TelefonoIncluso, IMEI, Modello, TipoPagamento, MesiVincoloTelefono, DataFineVincoloOfferta, DataFineVincoloTelefono"></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn-secondary" type="button" id="btnCsvPreview">Anteprima</button>
+              <button class="btn-primary" type="button" id="btnCsvImport" disabled>Avvia import</button>
+            </div>
+
+            <div id="csvPreviewWrapper"></div>
+
+            <div id="csvProgressWrapper" style="margin-top:10px; display:none;">
+              <div style="font-size:12px; margin-bottom:4px;">
+                Stato import: <span id="csvProgressText">0 / 0</span>
+              </div>
+              <div style="width:100%; background:#e5e7eb; border-radius:999px; overflow:hidden;">
+                <div id="csvProgressBar" style="height:8px; width:0%; background:#2563eb;"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- NEWS & GUIDE -->
+        <section id="view-news" class="view">
+          <h2>News &amp; Guide</h2>
+          <p>
+            News e aggiornamenti dal mondo della telefonia:
+            <a href="https://www.mondomobileweb.it/" target="_blank" rel="noopener noreferrer">
+              apri Mondomobileweb in una nuova scheda
+            </a>.
+          </p>
+
+          <div class="news-frame-wrapper">
+            <iframe
+              src="https://www.mondomobileweb.it/"
+              title="News Mondomobileweb"
+              loading="lazy">
+            </iframe>
+          </div>
+
+          <small>
+            Se il sito non appare correttamente dentro il riquadro, potrebbe bloccare gli iframe:
+            usa il link qui sopra per aprirlo in un’altra scheda.
+          </small>
+        </section>
+      </div>
     </div>
-
-    <!-- DASHBOARD -->
-    <section id="view-dashboard" class="view active">
-      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
-        <h2 style="margin:0;">Panoramica contratti</h2>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <button class="btn-secondary" type="button" id="goToSearch1">Cerca</button>
-          <button class="btn-primary" type="button" id="goToNew1">Nuovo contratto</button>
-        </div>
-      </div>
-
-      <div class="cards-grid">
-        <div class="card">
-          <div class="card-title">Contratti totali</div>
-          <div class="card-value" id="stat-total-contratti">0</div>
-          <div class="card-sub" id="stat-total-contratti-sub"></div>
-        </div>
-        <div class="card">
-          <div class="card-title">Contratti ultimo mese</div>
-          <div class="card-value" id="stat-contratti-mese">0</div>
-          <div class="card-sub">Ultimi 30 giorni</div>
-        </div>
-        <div class="card">
-          <div class="card-title">Contratti oggi</div>
-          <div class="card-value" id="stat-contratti-oggi">0</div>
-          <div class="card-sub" id="stat-contratti-oggi-sub"></div>
-        </div>
-        <div class="card">
-          <div class="card-title">Clienti totali</div>
-          <div class="card-value" id="stat-total-clienti">0</div>
-          <div class="card-sub">Persone/aziende in anagrafica</div>
-        </div>
-        <div class="card">
-          <div class="card-title">Compleanni oggi</div>
-          <div class="card-value" id="stat-birthday-today">0</div>
-          <div class="card-sub">Clienti che compiono gli anni oggi</div>
-        </div>
-      </div>
-
-      <h3>Ultimi contratti inseriti</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th>Cliente</th>
-            <th>Numero</th>
-            <th>Offerta</th>
-            <th>Tipo</th>
-          </tr>
-        </thead>
-        <tbody id="tbody-latest-contratti">
-          <tr><td colspan="5">Nessun contratto</td></tr>
-        </tbody>
-      </table>
-    </section>
-
-    <!-- RICERCA -->
-    <section id="view-search" class="view">
-      <h2>Ricerca</h2>
-
-      <!-- RICERCA CLIENTI -->
-      <h3>Ricerca clienti</h3>
-      <div class="search-row">
-        <input type="text" id="searchClienti" placeholder="Cerca per nome, cognome, telefono, email o codice fiscale..." />
-        <button class="btn-primary" type="button" id="btnSearchClienti">Cerca</button>
-        <button class="btn-secondary" type="button" id="btnClearSearch">Pulisci</button>
-      </div>
-
-      <div class="section-card">
-        <table>
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Cognome</th>
-              <th>Telefono</th>
-              <th>Email</th>
-              <th>Codice fiscale</th>
-              <th># Contratti</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-search-clienti">
-            <tr><td colspan="6">Nessun cliente</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div id="cliente-detail"></div>
-
-      <!-- RICERCA CONTRATTI -->
-      <h3 style="margin-top:20px;">Ricerca contratti</h3>
-      <div class="search-row">
-        <input type="text" id="searchContratti" placeholder="Cerca per numero, offerta, tecnologia, CF, ID contratto..." />
-        <button class="btn-primary" type="button" id="btnSearchContratti">Cerca</button>
-        <button class="btn-secondary" type="button" id="btnClearSearchContratti">Pulisci</button>
-      </div>
-
-      <div class="section-card">
-        <table>
-          <thead>
-            <tr>
-              <th>Data</th>
-              <th>ID contratto</th>
-              <th>Cliente</th>
-              <th>Numero</th>
-              <th>Offerta</th>
-              <th>Tecnologia</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-search-contratti">
-            <tr><td colspan="6">Nessun contratto</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div id="contratto-detail"></div>
-    </section>
-
-    <!-- REPORT -->
-    <section id="view-report" class="view">
-      <h2>Report & Analisi</h2>
-
-      <!-- COMPLEANNI -->
-      <div class="section-card">
-        <h3>Compleanni</h3>
-        <small>La data di nascita viene letta dal campo "Data nascita" oppure calcolata dal Codice fiscale.</small>
-
-        <h4 style="margin-top:10px;">Compleanni di oggi</h4>
-        <table>
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Cognome</th>
-              <th>Data nascita</th>
-              <th>Età che compie</th>
-              <th>Telefono</th>
-              <th>WhatsApp</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-birth-today">
-            <tr><td colspan="6">Nessun compleanno oggi.</td></tr>
-          </tbody>
-        </table>
-
-        <h4 style="margin-top:12px;">Compleanni per mese</h4>
-        <div class="search-row">
-          <label for="birthMonthSelect" style="font-size:13px;">Mese compleanno:</label>
-          <select id="birthMonthSelect" style="max-width:180px;"></select>
-          <button class="btn-primary" type="button" id="btnBirthMonthSearch">Mostra</button>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Giorno</th>
-              <th>Nome</th>
-              <th>Cognome</th>
-              <th>Data nascita</th>
-              <th>Telefono</th>
-              <th>WhatsApp</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-birth-month">
-            <tr><td colspan="6">Seleziona un mese.</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- CONTRATTI PER COMPAGNIA + TECNOLOGIA -->
-      <div class="section-card">
-        <h3>Contratti per compagnia e tecnologia</h3>
-        <div class="search-row">
-          <input type="text" id="filtroCompagnia"
-                 placeholder="Compagnia (es. TIM, Vodafone, Enel...) – cerca anche nel Nome offerta" />
-          <input type="text" id="filtroTecnologia"
-                 placeholder="Tecnologia (es. SIM, FTTH)" style="max-width:200px;" />
-          <button class="btn-primary" type="button" id="btnFilterCompTech">Filtra</button>
-          <button class="btn-secondary" type="button" id="btnClearCompTech">Pulisci</button>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Data contratto</th>
-              <th>Cliente</th>
-              <th>Compagnia / Offerta</th>
-              <th>Tecnologia</th>
-              <th>Numero</th>
-              <th>Tipo cliente</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-comp-tech">
-            <tr><td colspan="6">Inserisci almeno un filtro e premi "Filtra".</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- CONTRATTI IN SCADENZA -->
-      <div class="section-card">
-        <h3>Contratti in scadenza</h3>
-        <div class="search-row">
-          <label for="expMonth" style="font-size:13px;">Mese:</label>
-          <select id="expMonth" style="max-width:160px;"></select>
-          <label for="expYear" style="font-size:13px;">Anno:</label>
-          <select id="expYear" style="max-width:120px;"></select>
-          <button class="btn-primary" type="button" id="btnExpSearch">Cerca</button>
-        </div>
-        <small>Vengono considerate le date "Fine vincolo offerta" e "Fine vincolo telefono".</small>
-        <table>
-          <thead>
-            <tr>
-              <th>Data scadenza</th>
-              <th>Tipo</th>
-              <th>Cliente</th>
-              <th>Numero</th>
-              <th>Offerta</th>
-              <th>Tecnologia</th>
-              <th>Tipo cliente</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-expiring">
-            <tr><td colspan="7">Seleziona mese e anno.</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- DEVICE & RIPARAZIONI -->
-    <section id="view-device" class="view">
-      <h2>Device & Riparazioni</h2>
-
-      <!-- VENDITA DEVICE -->
-      <div class="section-card">
-        <h3>Nuova vendita device</h3>
-        <small>
-          Viene collegata al cliente tramite Codice fiscale / telefono / email.
-          Se il cliente non esiste, viene creato.
-        </small>
-
-        <form id="form-device">
-          <input type="hidden" id="dv_id_vendita" />
-
-          <h4>Dati cliente</h4>
-          <div class="form-grid-2">
-            <div class="field-group">
-              <label for="dv_nome">Nome</label>
-              <input type="text" id="dv_nome" />
-            </div>
-            <div class="field-group">
-              <label for="dv_cognome">Cognome</label>
-              <input type="text" id="dv_cognome" />
-            </div>
-            <div class="field-group">
-              <label for="dv_telefono">Telefono</label>
-              <input type="text" id="dv_telefono" />
-            </div>
-            <div class="field-group">
-              <label for="dv_email">Email</label>
-              <input type="email" id="dv_email" />
-            </div>
-            <div class="field-group">
-              <label for="dv_codice_fiscale">Codice fiscale</label>
-              <input type="text" id="dv_codice_fiscale" required />
-            </div>
-          </div>
-
-          <h4 style="margin-top:10px;">Dati device</h4>
-          <div class="form-grid-2">
-            <div class="field-group">
-              <label for="dv_data_vendita">Data vendita</label>
-              <input type="date" id="dv_data_vendita" />
-            </div>
-            <div class="field-group">
-              <label for="dv_marca">Marca</label>
-              <input type="text" id="dv_marca" />
-            </div>
-            <div class="field-group">
-              <label for="dv_modello">Modello</label>
-              <input type="text" id="dv_modello" />
-            </div>
-            <div class="field-group">
-              <label for="dv_imei">IMEI</label>
-              <input type="text" id="dv_imei" />
-            </div>
-            <div class="field-group">
-              <label for="dv_prezzo">Prezzo (€)</label>
-              <input type="number" step="0.01" id="dv_prezzo" />
-            </div>
-            <div class="field-group">
-              <label for="dv_tipo_pagamento">Tipo pagamento</label>
-              <select id="dv_tipo_pagamento">
-                <option value="">--</option>
-                <option value="cash">cash</option>
-                <option value="carta">carta</option>
-                <option value="finanziamento">finanziamento</option>
-              </select>
-            </div>
-            <div class="field-group">
-              <label for="dv_durata_finanziamento_mesi">Durata finanziamento (mesi)</label>
-              <input type="number" id="dv_durata_finanziamento_mesi" />
-            </div>
-            <div class="field-group">
-              <label for="dv_anticipo">Anticipo (€)</label>
-              <input type="number" step="0.01" id="dv_anticipo" />
-            </div>
-            <div class="field-group">
-              <label for="dv_costo_rata">Costo rata (€)</label>
-              <input type="number" step="0.01" id="dv_costo_rata" />
-            </div>
-            <div class="field-group">
-              <label for="dv_data_fine_finanziamento">Data fine finanziamento</label>
-              <input type="date" id="dv_data_fine_finanziamento" readonly />
-            </div>
-            <div class="field-group">
-              <label for="dv_garanzia_mesi">Garanzia (mesi)</label>
-              <input type="number" id="dv_garanzia_mesi" />
-            </div>
-            <div class="field-group">
-              <label for="dv_data_fine_garanzia">Data fine garanzia</label>
-              <input type="date" id="dv_data_fine_garanzia" readonly />
-            </div>
-            <div class="field-group">
-              <label for="dv_id_contratto">ID contratto (opzionale)</label>
-              <input type="text" id="dv_id_contratto" />
-            </div>
-          </div>
-
-          <div class="field-group">
-            <label for="dv_note">Note</label>
-            <textarea id="dv_note"></textarea>
-          </div>
-
-          <div class="form-actions">
-            <button class="btn-secondary" type="button" id="btnResetDevice">Svuota</button>
-            <button class="btn-primary" type="submit">Salva vendita</button>
-          </div>
-          <small id="dv_info"></small>
-        </form>
-      </div>
-
-      <div class="section-card">
-        <h3>Ultime vendite device</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Data</th>
-              <th>Cliente</th>
-              <th>Device</th>
-              <th>IMEI</th>
-              <th>Prezzo</th>
-              <th>Pagamento</th>
-              <th>WhatsApp</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-device">
-            <tr><td colspan="7">Nessuna vendita registrata.</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- RIPARAZIONI -->
-      <div class="section-card">
-        <h3>Nuova riparazione</h3>
-        <small>
-          Anche qui il cliente è gestito come per i contratti: se non esiste, viene creato.
-        </small>
-
-        <form id="form-riparazione">
-          <input type="hidden" id="rp_id_riparazione" />
-
-          <h4>Dati cliente</h4>
-          <div class="form-grid-2">
-            <div class="field-group">
-              <label for="rp_nome">Nome</label>
-              <input type="text" id="rp_nome" />
-            </div>
-            <div class="field-group">
-              <label for="rp_cognome">Cognome</label>
-              <input type="text" id="rp_cognome" />
-            </div>
-            <div class="field-group">
-              <label for="rp_telefono">Telefono</label>
-              <input type="text" id="rp_telefono" />
-            </div>
-            <div class="field-group">
-              <label for="rp_email">Email</label>
-              <input type="email" id="rp_email" />
-            </div>
-            <div class="field-group">
-              <label for="rp_codice_fiscale">Codice fiscale</label>
-              <input type="text" id="rp_codice_fiscale" required />
-            </div>
-          </div>
-
-          <h4 style="margin-top:10px;">Dati riparazione</h4>
-          <div class="form-grid-2">
-            <div class="field-group">
-              <label for="rp_data_apertura">Data apertura</label>
-              <input type="date" id="rp_data_apertura" />
-            </div>
-            <div class="field-group">
-              <label for="rp_marca">Marca</label>
-              <input type="text" id="rp_marca" />
-            </div>
-            <div class="field-group">
-              <label for="rp_modello">Modello</label>
-              <input type="text" id="rp_modello" />
-            </div>
-            <div class="field-group">
-              <label for="rp_imei">IMEI</label>
-              <input type="text" id="rp_imei" />
-            </div>
-            <div class="field-group">
-              <label for="rp_tipo_guasto">Tipo guasto</label>
-              <input type="text" id="rp_tipo_guasto" />
-            </div>
-            <div class="field-group">
-              <label for="rp_stato">Stato</label>
-              <select id="rp_stato">
-                <option value="Aperta">Aperta</option>
-                <option value="In lavorazione">In lavorazione</option>
-                <option value="Chiusa">Chiusa</option>
-              </select>
-            </div>
-            <div class="field-group">
-              <label for="rp_costo_previsto">Costo previsto (€)</label>
-              <input type="number" step="0.01" id="rp_costo_previsto" />
-            </div>
-            <div class="field-group">
-              <label for="rp_costo_effettivo">Costo effettivo (€)</label>
-              <input type="number" step="0.01" id="rp_costo_effettivo" />
-            </div>
-            <div class="field-group">
-              <label for="rp_data_chiusura">Data chiusura</label>
-              <input type="date" id="rp_data_chiusura" />
-            </div>
-          </div>
-
-          <div class="field-group">
-            <label for="rp_note">Note</label>
-            <textarea id="rp_note"></textarea>
-          </div>
-
-          <div class="form-actions">
-            <button class="btn-secondary" type="button" id="btnResetRiparazione">Svuota</button>
-            <button class="btn-primary" type="submit">Salva riparazione</button>
-          </div>
-          <small id="rp_info"></small>
-        </form>
-      </div>
-
-      <div class="section-card">
-        <h3>Riparazioni recenti</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Data apertura</th>
-              <th>Cliente</th>
-              <th>Device</th>
-              <th>IMEI</th>
-              <th>Guasto</th>
-              <th>Stato</th>
-              <th>WhatsApp</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-riparazioni">
-            <tr><td colspan="7">Nessuna riparazione registrata.</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- NUOVO CONTRATTO -->
-    <section id="view-new-contract" class="view">
-      <h2>Nuovo contratto</h2>
-      <small>
-        Compila i dati cliente + contratto.
-        Se il cliente non esiste verrà creato, altrimenti il contratto verrà aggiunto all’anagrafica esistente
-        (match su codice fiscale / email / telefono).
-      </small>
-
-      <form id="form-new-contract" class="section-card">
-        <h3>Dati cliente</h3>
-        <input type="hidden" id="nc_id_cliente" />
-        <input type="hidden" id="nc_id_contratto" />
-
-        <div class="form-grid-2">
-          <div class="field-group">
-            <label for="nc_nome">Nome</label>
-            <input type="text" id="nc_nome" required />
-          </div>
-          <div class="field-group">
-            <label for="nc_cognome">Cognome</label>
-            <input type="text" id="nc_cognome" required />
-          </div>
-          <div class="field-group">
-            <label for="nc_telefono">Telefono</label>
-            <input type="text" id="nc_telefono" />
-          </div>
-          <div class="field-group">
-            <label for="nc_email">Email</label>
-            <input type="email" id="nc_email" />
-          </div>
-          <div class="field-group">
-            <label for="nc_codice_fiscale">Codice fiscale</label>
-            <input type="text" id="nc_codice_fiscale" required />
-          </div>
-          <div class="field-group">
-            <label for="nc_data_nascita">Data nascita</label>
-            <input type="date" id="nc_data_nascita" />
-          </div>
-        </div>
-
-        <div class="field-group">
-          <label for="nc_note">Note cliente</label>
-          <textarea id="nc_note"></textarea>
-        </div>
-
-        <hr style="margin:10px 0; border:none; border-top:1px solid #e5e7eb;" />
-
-        <h3>Dati contratto</h3>
-
-        <div class="form-grid-2">
-          <div class="field-group">
-            <label for="nc_data_contratto">Data contratto</label>
-            <input type="date" id="nc_data_contratto" />
-          </div>
-          <div class="field-group">
-            <label for="nc_tipo_cliente">Tipo cliente</label>
-            <select id="nc_tipo_cliente">
-              <option value="">--</option>
-              <option value="privato">Privato</option>
-              <option value="business">Business</option>
-            </select>
-          </div>
-          <div class="field-group">
-            <label for="nc_tipo_attivazione">Tipo attivazione</label>
-            <input type="text" id="nc_tipo_attivazione" placeholder="Mobile / Fisso / Luce / Gas / TV..." />
-          </div>
-          <div class="field-group">
-            <label for="nc_tecnologia">Tecnologia</label>
-            <input type="text" id="nc_tecnologia" placeholder="SIM / FTTH / FWA / ..." />
-          </div>
-          <div class="field-group">
-            <label for="nc_compagnia">Compagnia</label>
-            <input type="text" id="nc_compagnia" placeholder="TIM, Vodafone, Enel, Eni, Sky, ecc." />
-          </div>
-          <div class="field-group">
-            <label for="nc_convergenza">Convergenza</label>
-            <select id="nc_convergenza">
-              <option value="">--</option>
-              <option value="SI">SI</option>
-              <option value="NO">NO</option>
-            </select>
-          </div>
-          <div class="field-group">
-            <label for="nc_mnp">MNP</label>
-            <select id="nc_mnp">
-              <option value="">--</option>
-              <option value="SI">SI</option>
-              <option value="NO">NO</option>
-            </select>
-          </div>
-          <div class="field-group">
-            <label for="nc_iccid_vecchio">ICCID vecchio (se MNP)</label>
-            <input type="text" id="nc_iccid_vecchio" />
-          </div>
-          <div class="field-group">
-            <label for="nc_iccid_nuovo">ICCID nuovo (se MNP)</label>
-            <input type="text" id="nc_iccid_nuovo" />
-          </div>
-          <div class="field-group">
-            <label for="nc_data_attivazione">Data attivazione</label>
-            <input type="date" id="nc_data_attivazione" />
-          </div>
-          <div class="field-group">
-            <label for="nc_data_portabilita">Data portabilità</label>
-            <input type="date" id="nc_data_portabilita" />
-          </div>
-          <div class="field-group">
-            <label for="nc_numero_lavorato">Numero lavorato</label>
-            <input type="text" id="nc_numero_lavorato" />
-          </div>
-          <div class="field-group">
-            <label for="nc_nome_offerta">Nome offerta</label>
-            <input type="text" id="nc_nome_offerta" />
-          </div>
-          <div class="field-group">
-            <label for="nc_costo_offerta">Costo offerta (€)</label>
-            <input type="number" step="0.01" id="nc_costo_offerta" />
-          </div>
-          <div class="field-group">
-            <label for="nc_vincolo_offerta_mesi">Vincolo offerta (mesi)</label>
-            <input type="number" id="nc_vincolo_offerta_mesi" />
-          </div>
-          <div class="field-group">
-            <label for="nc_telefono_incluso">Telefono incluso</label>
-            <select id="nc_telefono_incluso">
-              <option value="">--</option>
-              <option value="SI">SI</option>
-              <option value="NO">NO</option>
-            </select>
-          </div>
-          <div class="field-group">
-            <label for="nc_imei">IMEI</label>
-            <input type="text" id="nc_imei" />
-          </div>
-          <div class="field-group">
-            <label for="nc_modello">Modello telefono</label>
-            <input type="text" id="nc_modello" />
-          </div>
-          <div class="field-group">
-            <label for="nc_tipo_pagamento">Tipo pagamento</label>
-            <input type="text" id="nc_tipo_pagamento" placeholder="RID / Carta / Bollettino" />
-          </div>
-          <div class="field-group">
-            <label for="nc_mesi_vincolo_telefono">Mesi vincolo telefono</label>
-            <input type="number" id="nc_mesi_vincolo_telefono" />
-          </div>
-          <div class="field-group">
-            <label for="nc_data_fine_vincolo_offerta">Fine vincolo offerta</label>
-            <input type="date" id="nc_data_fine_vincolo_offerta" />
-          </div>
-          <div class="field-group">
-            <label for="nc_data_fine_vincolo_telefono">Fine vincolo telefono</label>
-            <input type="date" id="nc_data_fine_vincolo_telefono" />
-          </div>
-        </div>
-
-        <div class="form-actions">
-          <button class="btn-secondary" type="button" id="btnResetNew">Svuota</button>
-          <button class="btn-primary" type="submit">Salva contratto</button>
-        </div>
-        <small id="nc_info"></small>
-      </form>
-    </section>
-
-    <!-- IMPORT CSV -->
-    <section id="view-import" class="view">
-      <h2>Import clienti & contratti (CSV)</h2>
-      <small>
-        Ogni riga = 1 contratto.
-        Se il codice fiscale esiste → aggiunge solo il contratto.
-        Se non esiste → crea anche il cliente.
-      </small>
-
-      <div class="section-card">
-        <div class="field-group">
-          <label for="csvFile">Carica file CSV</label>
-          <input type="file" id="csvFile" accept=".csv,text/csv" />
-        </div>
-
-        <div class="field-group">
-          <label for="csvText">Oppure incolla il contenuto CSV</label>
-          <textarea id="csvText" placeholder="Intestazioni consigliate: CodiceFiscale, Nome, Cognome, Telefono, Email, DataNascita, NoteCliente, DataContratto, TipoCliente, TipoAttivazione, Tecnologia, Compagnia, Convergenza, MNP, ICCID_vecchio, ICCID_nuovo, DataAttivazione, DataPortabilita, NumeroLavorato, NomeOfferta, CostoOfferta, VincoloOffertaMesi, TelefonoIncluso, IMEI, Modello, TipoPagamento, MesiVincoloTelefono, DataFineVincoloOfferta, DataFineVincoloTelefono"></textarea>
-        </div>
-
-        <div class="form-actions">
-          <button class="btn-secondary" type="button" id="btnCsvPreview">Anteprima</button>
-          <button class="btn-primary" type="button" id="btnCsvImport" disabled>Avvia import</button>
-        </div>
-
-        <div id="csvPreviewWrapper"></div>
-
-        <div id="csvProgressWrapper" style="margin-top:10px; display:none;">
-          <div style="font-size:12px; margin-bottom:4px;">
-            Stato import: <span id="csvProgressText">0 / 0</span>
-          </div>
-          <div style="width:100%; background:#e5e7eb; border-radius:999px; overflow:hidden;">
-            <div id="csvProgressBar" style="height:8px; width:0%; background:#2563eb;"></div>
-          </div>
-        </div>
-      </div>
-    </section>
   </div>
 
+  <!-- ==================== SCRIPT JS ==================== -->
   <script>
     // ===== URL Apps Script =====
     const API_URL = 'https://script.google.com/macros/s/AKfycbwwZN7PpcPVjemEF9e7iU607Z3yHZgDWj-UYbv5yfsRg4rudlcZdNAEDh4suKNj0SfX/exec';
@@ -938,13 +842,17 @@
 
     const views = document.querySelectorAll('.view');
     const tabButtons = document.querySelectorAll('.nav-tabs button');
+    const sideButtons = document.querySelectorAll('.sidebar-nav button');
+
     function showView(id) {
       views.forEach(v => v.classList.toggle('active', v.id === id));
       tabButtons.forEach(b => b.classList.toggle('active', b.dataset.view === id));
+      sideButtons.forEach(b => b.classList.toggle('active', b.dataset.view === id));
     }
     document.getElementById('goToSearch1').addEventListener('click', () => showView('view-search'));
     document.getElementById('goToNew1').addEventListener('click', () => showView('view-new-contract'));
     tabButtons.forEach(btn => btn.addEventListener('click', () => showView(btn.dataset.view)));
+    sideButtons.forEach(btn => btn.addEventListener('click', () => showView(btn.dataset.view)));
 
     async function loadClienti() {
       try {
@@ -1035,16 +943,29 @@
 
       let countToday = 0;
       let countMonth = 0;
+      let mobile = 0, fisso = 0, energy = 0;
+
       contratti.forEach(c => {
         const d = parseDate(c.data_contratto);
         if (!d) return;
         if (d.toISOString().slice(0, 10) === todayStr) countToday++;
         if (d >= thirtyDaysAgo && d <= today) countMonth++;
+
+        const tipoAtt = (c.tipo_attivazione || '').toLowerCase();
+        if (tipoAtt.includes('mobile') || tipoAtt.includes('sim')) mobile++;
+        else if (tipoAtt.includes('fisso') || tipoAtt.includes('fibra')) fisso++;
+        else if (tipoAtt.includes('luce') || tipoAtt.includes('gas') || tipoAtt.includes('energy')) energy++;
       });
 
       contrattiMeseEl.textContent = countMonth;
       contrattiOggiEl.textContent = countToday;
       contrattiOggiSubEl.textContent = todayStr.split('-').reverse().join('/');
+
+      // Riepilogo in sidebar
+      document.getElementById('sb-mobile-count').textContent = mobile;
+      document.getElementById('sb-fisso-count').textContent = fisso;
+      document.getElementById('sb-energy-count').textContent = energy;
+      document.getElementById('sb-device-count').textContent = deviceVendite.length;
 
       const tbodyLatest = document.getElementById('tbody-latest-contratti');
       tbodyLatest.innerHTML = '';
@@ -1722,7 +1643,6 @@
         const d = parseDate(cli.data_nascita);
         if (d) return d;
       }
-      // forza sempre a stringa per evitare errori se è numero
       const rawCf = cli.codice_fiscale == null ? '' : String(cli.codice_fiscale);
       const cf = rawCf.toUpperCase();
       if (cf.length < 11) return null;
@@ -2396,7 +2316,7 @@
           return;
         }
         setStatus(isEditRip
-          ? 'Riparazione aggiornata correttamente'
+          ? 'Riparazione aggiornate correttamente'
           : 'Riparazione salvata correttamente'
         );
         rp_info.textContent = (isEditRip
