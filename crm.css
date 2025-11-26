@@ -31,10 +31,22 @@ body {
   border-bottom: 1px solid rgba(148, 163, 184, 0.4);
 }
 
+/* LOGO VOLPEX */
 .sidebar-logo {
-  font-size: 22px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+}
+
+.sidebar-logo img,
+.logo-img {
+  height: 26px;
+  width: auto;
+  display: block;
 }
 
 .sidebar-user {
@@ -122,7 +134,7 @@ body {
 }
 
 .sidebar-nav button.active {
-  background: #2563eb;
+  background: #f97316; /* arancione Volpex */
   color: #f9fafb;
 }
 
@@ -182,7 +194,7 @@ header h1 {
   margin-bottom: 12px;
 }
 
-/* TAB ORIZZONTALI (SIMULANO LE VOCI CENTRALI DELLA PAGINA) */
+/* TAB ORIZZONTALI */
 .nav-tabs {
   display: flex;
   gap: 6px;
@@ -200,40 +212,55 @@ header h1 {
   color: #111827;
 }
 
+/* TAB ATTIVA = ARANCIONE VOLPEX */
 .nav-tabs button.active {
-  background: #2563eb;
-  color: white;
-  border-color: #1d4ed8;
+  background: #f97316;
+  color: #fff;
+  border-color: #ea580c;
 }
 
-/* BOTTONI GENERICI */
+/* BOTTONI */
 .btn-primary {
-  background: #2563eb;
+  background: #f97316;        /* arancione Volpex */
   color: #fff;
   border: none;
   border-radius: 8px;
   padding: 6px 12px;
   cursor: pointer;
   font-size: 13px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.25);
+  transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
+
+.btn-primary:hover:not(:disabled) {
+  background: #ea580c;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(15, 23, 42, 0.25);
+}
+
 .btn-secondary {
   background: #e5e7eb;
   color: #111827;
-  border: none;
+  border: 1px solid #d1d5db;
   border-radius: 8px;
   padding: 6px 12px;
   cursor: pointer;
   font-size: 13px;
-  text-decoration: none;
-  display: inline-block;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
+
+.btn-secondary:hover:not(:disabled) {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
 .btn-primary:disabled,
 .btn-secondary:disabled {
   opacity: 0.6;
   cursor: default;
 }
 
-/* CARD E TABELLE (STILE PANNELLI BIANCHI) */
+/* CARD E TABELLE */
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -271,7 +298,6 @@ header h1 {
   margin-bottom: 12px;
 }
 
-/* TABELLE */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -348,7 +374,7 @@ small {
   color: #6b7280;
 }
 
-/* NEWS / IFRAME MONDOMOBILEWEB */
+/* WRAPPER NEWS / IFRAME MONDOMOBILEWEB */
 .news-frame-wrapper {
   border-radius: 12px;
   overflow: hidden;
@@ -356,9 +382,12 @@ small {
   background: #fff;
   margin-top: 8px;
 }
+
+/* IFRAME NEWS = 70% ALTEZZA FINESTRA */
 .news-frame-wrapper iframe {
   width: 100%;
-  height: 600px;
+  height: 70vh;
+  min-height: 420px;
   border: none;
 }
 
@@ -385,5 +414,13 @@ small {
   }
   .sidebar-nav button {
     padding: 8px 12px;
+  }
+}
+
+/* IFRAME NEWS RESPONSIVE SU MOBILE */
+@media (max-width: 768px) {
+  .news-frame-wrapper iframe {
+    height: 60vh;
+    min-height: 360px;
   }
 }
