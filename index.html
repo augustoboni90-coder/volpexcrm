@@ -2,9 +2,9 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <title>CRM – Clienti, Contratti, Device & Riparazioni</title>
+  <title>Volpex CRM – Clienti, Contratti, Device & Riparazioni</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Stile tipo Kolme -->
+  <!-- Stile Volpex tipo Kolme -->
   <link rel="stylesheet" href="crm.css">
 </head>
 <body>
@@ -12,7 +12,10 @@
     <!-- SIDEBAR SINISTRA -->
     <aside class="sidebar">
       <div class="sidebar-header">
-        <div class="sidebar-logo">kolme-CRM</div>
+        <div class="sidebar-logo">
+          <img src="logo-volpex.svg" alt="Volpex CRM" class="logo-img">
+          <span>Volpex CRM</span>
+        </div>
       </div>
 
       <div class="sidebar-user">
@@ -61,7 +64,7 @@
     <!-- CONTENUTO PRINCIPALE -->
     <div class="main">
       <header>
-        <h1>CRM – Clienti, Contratti, Device &amp; Riparazioni</h1>
+        <h1>Volpex CRM – Clienti, Contratti, Device &amp; Riparazioni</h1>
         <div style="font-size: 13px; color:#d1d5db;">Collegato a Google Sheets</div>
       </header>
 
@@ -72,7 +75,7 @@
       <div class="container">
         <div class="status-bar" id="status">Caricamento dati...</div>
 
-        <!-- Tab orizzontali interni (facoltativi ma comodi) -->
+        <!-- Tab orizzontali interni -->
         <div class="nav-tabs">
           <button data-view="view-dashboard" class="active">Dashboard</button>
           <button data-view="view-search">Ricerca</button>
@@ -2316,7 +2319,7 @@
           return;
         }
         setStatus(isEditRip
-          ? 'Riparazione aggiornate correttamente'
+          ? 'Riparazione aggiornata correttamente'
           : 'Riparazione salvata correttamente'
         );
         rp_info.textContent = (isEditRip
