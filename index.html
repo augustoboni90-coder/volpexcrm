@@ -1153,11 +1153,33 @@
       });
   }
 
-  /**************** IMPORT CSV ****************/
+  /**************** IMPORT CSV: HELPER ****************/
   function detectDelimiter(headerLine) {
     const comma = (headerLine.match(/,/g) || []).length;
     const semi = (headerLine.match(/;/g) || []).length;
     return semi > comma ? ';' : ',';
+  }
+
+  // Legge un campo con varianti (maiuscole/minuscole, spazi, ecc.)
+  function getField(row, variants) {
+    // prima prova esatta
+    for (let i = 0; i < variants.length; i++) {
+      const key = variants[i];
+      if (row.hasOwnProperty(key) && row[key] !== undefined && row[key] !== null) {
+        return row[key];
+      }
+    }
+    // poi prova a confrontare tutte le chiavi in minuscolo
+    const lowerVariants = variants.map(function (v) {
+      return String(v).toLowerCase();
+    });
+    for (const k in row) {
+      if (!Object.prototype.hasOwnProperty.call(row, k)) continue;
+      if (lowerVariants.indexOf(String(k).toLowerCase()) !== -1) {
+        return row[k];
+      }
+    }
+    return '';
   }
 
   function parseCsvToObjects(csvText) {
@@ -1188,6 +1210,7 @@
     return { header: header, rows: rows };
   }
 
+  /**************** CLIENTE DA CF (per import + form) ****************/
   async function ensureClienteByCF(cf, clienteRowData) {
     const normCF = String(cf || '').toUpperCase();
     if (!normCF) throw new Error('Codice fiscale mancante');
@@ -1197,14 +1220,24 @@
     });
     if (existing) return existing.id_cliente;
 
+    const nome = getField(clienteRowData, ['Nome', 'NOME', 'nome']);
+    const cognome = getField(clienteRowData, ['Cognome', 'COGNOME', 'cognome']);
+    const telefono = getField(clienteRowData, ['Telefono', 'NUMERO', 'telefono', 'numero']);
+    const email = getField(clienteRowData, ['Email', 'EMAIL', 'email']);
+    const dataNascita = getField(
+      clienteRowData,
+      ['Data nascita', 'DATA_NASCITA', 'data_nascita']
+    );
+    const note = getField(clienteRowData, ['Note', 'NOTE', 'note']);
+
     const payloadCliente = {
-      nome: clienteRowData['Nome'] || '',
-      cognome: clienteRowData['Cognome'] || '',
-      telefono: clienteRowData['Telefono'] || '',
-      email: clienteRowData['Email'] || '',
+      nome: nome || '',
+      cognome: cognome || '',
+      telefono: telefono || '',
+      email: email || '',
       codice_fiscale: normCF,
-      data_nascita: clienteRowData['Data nascita'] || '',
-      note: clienteRowData['Note'] || ''
+      data_nascita: dataNascita || '',
+      note: note || ''
     };
 
     const resp = await apiPost('createCliente', payloadCliente);
@@ -1559,43 +1592,69 @@
       const rows = csvParsed.rows;
       let ok = 0;
       let errCnt = 0;
+      let firstErrorMsg = null;
+
       progressBar.style.width = '0%';
       importSummary.textContent = 'Import in corso...';
 
       for (let i = 0; i < rows.length; i++) {
         const r = rows[i];
         try {
-          const cf = (r['Codice fiscale'] || '').toUpperCase();
+          // CF letto in modo robusto
+          const cfRaw = getField(r, [
+            'Codice fiscale',
+            'CODICE FISCALE',
+            'codice fiscale',
+            'CF'
+          ]);
+          const cf = (cfRaw || '').toUpperCase().trim();
           if (!cf) {
             throw new Error('Codice fiscale mancante in riga ' + (i + 2));
           }
+
           const id_cliente = await ensureClienteByCF(cf, r);
 
           const payloadContratto = {
             id_cliente: id_cliente,
             codice_fiscale: cf,
-            data_contratto: r['Data contratto'] || r['Data attivazione'] || '',
-            tipo_cliente: r['Tipo cliente'] || '',
-            tipo_attivazione: r['Tipo attivazione'] || '',
-            tecnologia: r['Tecnologia'] || '',
-            compagnia: r['Compagnia'] || '',
-            convergenza: r['Convergenza'] || '',
-            mnp: r['MNP'] || '',
-            iccid_vecchio: r['ICCID vecchio'] || '',
-            iccid_nuovo: r['ICCID nuovo'] || '',
-            data_attivazione: r['Data attivazione'] || '',
-            data_portabilita: r['Data portabilità'] || '',
-            numero_lavorato: r['Numero lavorato'] || '',
-            nome_offerta: r['Nome offerta'] || '',
-            costo_offerta: r['Costo offerta'] || '',
-            vincolo_offerta_mesi: r['Vincolo offerta (mesi)'] || '',
-            telefono_incluso: r['Telefono incluso'] || '',
-            imei: r['IMEI'] || '',
-            modello: r['Modello'] || '',
-            tipo_pagamento: r['Tipo pagamento'] || '',
-            mesi_vincolo_telefono: r['Mesi vincolo telefono'] || '',
-            data_fine_vincolo_offerta: r['Data fine vincolo offerta'] || '',
-            data_fine_vincolo_telefono: r['Data fine vincolo telefono'] || ''
+            data_contratto:
+              getField(r, ['Data contratto', 'DATA_CONTRATTO', 'data_contratto']) ||
+              getField(r, ['Data attivazione', 'DATA_Attivazione', 'data_attivazione']) ||
+              '',
+            tipo_cliente: getField(r, ['Tipo cliente', 'TIPO_CLIENTE', 'tipo_cliente']) || '',
+            tipo_attivazione:
+              getField(r, ['Tipo attivazione', 'TIPO_ATTIVAZIONE', 'tipo_attivazione']) || '',
+            tecnologia: getField(r, ['Tecnologia', 'TECNOLOGIA', 'tecnologia']) || '',
+            compagnia: getField(r, ['Compagnia', 'COMPAGNIA', 'compagnia']) || '',
+            convergenza: getField(r, ['Convergenza', 'CONVERGENZA', 'convergenza']) || '',
+            mnp: getField(r, ['MNP', 'mnp']) || '',
+            iccid_vecchio:
+              getField(r, ['ICCID vecchio', 'ICCID_VECCHIO', 'iccid_vecchio']) || '',
+            iccid_nuovo:
+              getField(r, ['ICCID nuovo', 'ICCID_NUOVO', 'iccid_nuovo']) || '',
+            data_attivazione:
+              getField(r, ['Data attivazione', 'DATA_Attivazione', 'data_attivazione']) || '',
+            data_portabilita:
+              getField(r, ['Data portabilità', 'DATA_PORTABILITA', 'data_portabilita']) || '',
+            numero_lavorato:
+              getField(r, ['Numero lavorato', 'NUMERO_LAVORATO', 'numero_lavorato']) || '',
+            nome_offerta: getField(r, ['Nome offerta', 'NOME OFFERTA', 'nome_offerta']) || '',
+            costo_offerta:
+              getField(r, ['Costo offerta', 'COSTO_OFFERTA', 'costo_offerta']) || '',
+            vincolo_offerta_mesi:
+              getField(r, ['Vincolo offerta (mesi)', 'VINCOLO_OFFERTA_MESI']) || '',
+            telefono_incluso:
+              getField(r, ['Telefono incluso', 'TELEFONO_INCLUSO', 'telefono_incluso']) || '',
+            imei: getField(r, ['IMEI', 'imei']) || '',
+            modello: getField(r, ['Modello', 'MODELLO', 'modello']) || '',
+            tipo_pagamento:
+              getField(r, ['Tipo pagamento', 'TIPO_PAGAMENTO', 'tipo_pagamento']) || '',
+            mesi_vincolo_telefono:
+              getField(r, ['Mesi vincolo telefono', 'MESI_VINCOLO_TELEFONO']) || '',
+            data_fine_vincolo_offerta:
+              getField(r, ['Data fine vincolo offerta', 'DATA_FINE_VINCOLO_OFFERTA']) || '',
+            data_fine_vincolo_telefono:
+              getField(r, ['Data fine vincolo telefono', 'DATA_FINE_VINCOLO_TELEFONO']) || ''
           };
 
           await apiPost('createContratto', payloadContratto);
@@ -1603,14 +1662,27 @@
         } catch (err) {
           console.error(err);
           errCnt++;
+          if (!firstErrorMsg) {
+            firstErrorMsg = err && err.message ? err.message : String(err);
+          }
         }
 
         const perc = Math.round(((i + 1) / rows.length) * 100);
         progressBar.style.width = perc + '%';
       }
 
-      importSummary.textContent = 'Import finito. OK: ' + ok + ', Errori: ' + errCnt;
-      showToast('Import CSV completato', 'success');
+      let summaryText = 'Import finito. OK: ' + ok + ', Errori: ' + errCnt;
+      if (firstErrorMsg) {
+        summaryText += ' (esempio errore: ' + firstErrorMsg + ')';
+      }
+      importSummary.textContent = summaryText;
+
+      if (ok > 0) {
+        showToast('Import CSV completato', 'success');
+      } else {
+        showToast('Import CSV terminato con soli errori', 'error');
+      }
+
       await refreshAll();
     });
 
