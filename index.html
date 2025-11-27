@@ -4,733 +4,1267 @@
   <meta charset="UTF-8" />
   <title>Volpex CRM</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Foglio di stile -->
-  <link rel="stylesheet" href="crm.css" />
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-alt: #0b1020;
+      --card: #111827;
+      --accent: #f97316;
+      --accent-soft: rgba(249, 115, 22, 0.12);
+      --text: #e5e7eb;
+      --text-soft: #9ca3af;
+      --border: #1f2937;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --sidebar-width: 240px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1e293b 0, #020617 50%, #000 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      font-size: 14px;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .layout {
+      display: flex;
+      width: 100%;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: rgba(15, 23, 42, 0.98);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 16px 12px;
+      gap: 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 0 0, #fb923c, #0f172a 55%);
+      box-shadow: 0 0 25px rgba(249, 115, 22, 0.5);
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: conic-gradient(from 210deg, #fb923c, #fbbf24, #22c55e, #06b6d4, #6366f1, #fb923c);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #020617;
+      font-size: 14px;
+    }
+
+    .logo-text-main {
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-size: 13px;
+    }
+
+    .logo-text-sub {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-soft);
+      margin: 10px 4px 4px;
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-btn {
+      width: 100%;
+      border: none;
+      text-align: left;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--text-soft);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+
+    .nav-btn span.icon {
+      width: 18px;
+      text-align: center;
+      opacity: 0.85;
+    }
+
+    .nav-btn.active,
+    .nav-btn:hover {
+      background: radial-gradient(circle at 0 0, rgba(249, 115, 22, 0.14), transparent);
+      color: var(--text);
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      font-size: 11px;
+      color: var(--text-soft);
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.12);
+      font-size: 10px;
+      margin-top: 4px;
+    }
+
+    .badge span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    /* MAIN */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 16px 18px;
+      gap: 12px;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .top-title {
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .top-sub {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pill {
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      color: var(--text-soft);
+    }
+
+    .btn-primary {
+      border: none;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #fb923c, #f97316);
+      color: #111827;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(249, 115, 22, 0.4);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.05);
+    }
+
+    .btn-outline {
+      border-radius: 999px;
+      padding: 5px 10px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: transparent;
+      color: var(--text-soft);
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* CONTENT AREA */
+    .content {
+      flex: 1;
+      display: flex;
+      gap: 12px;
+      min-height: 0;
+    }
+
+    .left-column {
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .right-column {
+      flex: 1.2;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 260px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top, rgba(15,23,42,0.95), #020617);
+      border-radius: 14px;
+      border: 1px solid rgba(15, 23, 42, 0.9);
+      padding: 10px 12px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.9);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      gap: 8px;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-title-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .card-subtitle {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .grid-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .kpi-card {
+      padding: 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      background: radial-gradient(circle at top, rgba(15,23,42,0.95), #020617);
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-bottom: 4px;
+    }
+
+    .kpi-value {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .kpi-tag {
+      font-size: 10px;
+      color: var(--accent);
+      margin-top: 2px;
+    }
+
+    .news-frame {
+      border-radius: 10px;
+      border: 1px solid rgba(31,41,55,0.9);
+      overflow: hidden;
+      height: 280px;
+    }
+
+    .news-frame iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .table-wrapper {
+      border-radius: 10px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      overflow: hidden;
+      max-height: 260px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    thead {
+      background: rgba(15, 23, 42, 0.95);
+    }
+
+    th,
+    td {
+      padding: 4px 6px;
+      border-bottom: 1px solid rgba(31, 41, 55, 0.8);
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    th {
+      text-align: left;
+      font-weight: 500;
+      color: var(--text-soft);
+    }
+
+    tbody tr:hover {
+      background: rgba(15, 23, 42, 0.75);
+      cursor: pointer;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .section-body {
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 6px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .form-field label {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      border-radius: 7px;
+      padding: 4px 6px;
+      color: var(--text);
+      font-size: 12px;
+    }
+
+    .form-field textarea {
+      resize: vertical;
+      min-height: 50px;
+    }
+
+    .form-actions {
+      margin-top: 4px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    .badge-soft {
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(249, 115, 22, 0.12);
+      color: var(--accent);
+    }
+
+    .cliente-summary {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 12px;
+    }
+
+    .cliente-summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .cliente-summary-label {
+      color: var(--text-soft);
+      min-width: 80px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 16px;
+      left: calc(var(--sidebar-width) + 16px);
+      background: #111827;
+      border-radius: 999px;
+      padding: 6px 12px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 12px;
+      color: var(--text);
+      box-shadow: 0 15px 30px rgba(15, 23, 42, 0.9);
+      z-index: 9999;
+    }
+
+    .toast.info {
+      border-color: var(--accent);
+    }
+
+    .toast.error {
+      border-color: var(--danger);
+      color: #fecaca;
+    }
+
+    .toast.success {
+      border-color: var(--success);
+      color: #bbf7d0;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      margin-top: 4px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #22c55e, #f97316);
+      transition: width 0.15s linear;
+    }
+
+    @media (max-width: 960px) {
+      body {
+        font-size: 13px;
+      }
+      .sidebar {
+        display: none;
+      }
+      .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .content {
+        flex-direction: column;
+      }
+      .form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .grid-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .grid-3 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="app-shell">
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <img src="logo-volpex.svg" alt="Volpex CRM" class="logo-img" />
-        <div class="logo-text">
-          <div class="logo-title">VOLPEX</div>
-          <div class="logo-subtitle">CRM</div>
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-icon">V</div>
+      <div>
+        <div class="logo-text-main">Volpex CRM</div>
+        <div class="logo-text-sub">Store Telco & Device</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section-title">Navigazione</div>
+    <div class="nav">
+      <button class="nav-btn active" data-section="sec-dashboard">
+        <span class="icon">🏠</span> Dashboard
+      </button>
+      <button class="nav-btn" data-section="sec-clienti">
+        <span class="icon">👤</span> Clienti & Storico
+      </button>
+      <button class="nav-btn" data-section="sec-contratti">
+        <span class="icon">📄</span> Nuovo contratto
+      </button>
+      <button class="nav-btn" data-section="sec-device">
+        <span class="icon">📱</span> Vendita device
+      </button>
+      <button class="nav-btn" data-section="sec-riparazioni">
+        <span class="icon">🛠️</span> Riparazioni
+      </button>
+      <button class="nav-btn" data-section="sec-import">
+        <span class="icon">⬆️</span> Import CSV
+      </button>
+      <button class="nav-btn" data-section="sec-report">
+        <span class="icon">📊</span> Report & Scadenze
+      </button>
+    </div>
+
+    <div class="sidebar-section-title">Sistema</div>
+    <div class="nav">
+      <span class="badge">
+        <span class="dot"></span> Online · Volpex
+      </span>
+    </div>
+
+    <div class="sidebar-footer">
+      <div>News partner</div>
+      <div style="font-size:10px;color:#6b7280;">MondoMobileWeb integrato nel pannello</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <header class="top-bar">
+      <div>
+        <div class="top-title">
+          Pannello Volpex
+          <span class="top-sub">Gestione clienti, contratti, device e riparazioni</span>
         </div>
       </div>
-      <nav class="sidebar-nav">
-        <button class="nav-btn active" data-section="dashboard">Dashboard</button>
-        <button class="nav-btn" data-section="clienti">Clienti / Contratti</button>
-        <button class="nav-btn" data-section="device">Vendita device</button>
-        <button class="nav-btn" data-section="riparazioni">Riparazioni</button>
-        <button class="nav-btn" data-section="import">Import CSV</button>
-        <button class="nav-btn" data-section="report">Report</button>
-      </nav>
-      <footer class="sidebar-footer">
-        <small>Volpex CRM</small><br />
-        <small style="opacity:0.7;">by Augusto</small>
-      </footer>
-    </aside>
+      <div class="top-actions">
+        <div class="pill">Google Sheets · ID clienti/contratti centralizzati</div>
+        <button id="btnWhatsApp" class="btn-outline">Apri WhatsApp cliente selezionato</button>
+      </div>
+    </header>
 
-    <!-- MAIN -->
-    <main class="main-area">
-      <!-- TOPBAR -->
-      <header class="topbar">
-        <div>
-          <h1>Volpex CRM</h1>
-          <p class="topbar-subtitle">Gestione centralizzata di clienti, contratti, device e riparazioni</p>
-        </div>
-        <div class="topbar-summary">
-          <div class="summary-pill">
-            <span id="dash_count_clienti">0</span>
-            <small>Clienti</small>
+    <section class="content">
+      <div class="left-column">
+        <!-- SEZIONI CENTRALI -->
+        <div id="sec-dashboard" class="card section active">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="card-title-dot"></span> Dashboard
+            </div>
+            <div class="card-subtitle">Riepilogo rapido attività</div>
           </div>
-          <div class="summary-pill">
-            <span id="dash_count_contratti">0</span>
-            <small>Contratti</small>
-          </div>
-          <div class="summary-pill">
-            <span id="dash_count_device">0</span>
-            <small>Device</small>
-          </div>
-          <div class="summary-pill">
-            <span id="dash_count_riparazioni">0</span>
-            <small>Riparazioni</small>
-          </div>
-        </div>
-      </header>
+          <div class="section-body">
+            <div class="grid grid-4">
+              <div class="kpi-card">
+                <div class="kpi-label">Clienti</div>
+                <div class="kpi-value" id="dash_count_clienti">0</div>
+                <div class="kpi-tag" id="kpi_clienti_tot">0 totali</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Contratti</div>
+                <div class="kpi-value" id="dash_count_contratti">0</div>
+                <div class="kpi-tag" id="kpi_contratti_tot">0 attivi/archiviati</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Device venduti</div>
+                <div class="kpi-value" id="dash_count_device">0</div>
+                <div class="kpi-tag" id="kpi_device_tot">0 totali</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Riparazioni</div>
+                <div class="kpi-value" id="dash_count_riparazioni">0</div>
+                <div class="kpi-tag">
+                  Aperte: <span id="kpi_riparazioni_aperte">0</span>
+                </div>
+              </div>
+            </div>
 
-      <!-- ===================== DASHBOARD ===================== -->
-      <section id="dashboard" class="section active">
-        <div class="section-header">
-          <h2>Dashboard</h2>
-          <p>Panoramica dell’attività e news di settore</p>
-        </div>
-
-        <div class="grid-2">
-          <div class="card">
-            <h3>Riepilogo rapido</h3>
-            <ul class="kpi-list">
-              <li>Clienti totali: <strong id="kpi_clienti_tot">0</strong></li>
-              <li>Contratti registrati: <strong id="kpi_contratti_tot">0</strong></li>
-              <li>Device venduti: <strong id="kpi_device_tot">0</strong></li>
-              <li>Riparazioni aperte: <strong id="kpi_riparazioni_aperte">0</strong></li>
-            </ul>
-          </div>
-
-          <div class="card">
-            <h3>News MondoMobileWeb</h3>
-            <div class="news-frame-wrapper">
-              <iframe
-                src="https://www.mondomobileweb.it"
-                title="News MondoMobileWeb"
-                class="news-iframe"
-              ></iframe>
+            <div class="grid grid-2" style="margin-top:8px;">
+              <div class="card" style="padding:8px;">
+                <div class="card-header">
+                  <div class="card-title">
+                    <span class="card-title-dot"></span> Compleanni oggi
+                  </div>
+                </div>
+                <ul id="listaCompleanniOggi" style="font-size:12px;list-style:none;display:flex;flex-direction:column;gap:3px;margin-top:4px;"></ul>
+              </div>
+              <div class="card" style="padding:8px;">
+                <div class="card-header">
+                  <div class="card-title">
+                    <span class="card-title-dot"></span> News MondoMobileWeb
+                  </div>
+                </div>
+                <div class="news-frame" style="margin-top:4px;">
+                  <iframe src="https://www.mondomobileweb.it/" title="MondoMobileWeb"></iframe>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </section>
 
-      <!-- ===================== CLIENTI & CONTRATTI ===================== -->
-      <section id="clienti" class="section">
-        <div class="section-header">
-          <h2>Clienti &amp; contratti</h2>
-          <p>Cerca i clienti, visualizza lo storico completo e inserisci nuovi contratti.</p>
-        </div>
-
-        <div class="grid-2">
-          <!-- Colonna sinistra -->
-          <div class="col">
-            <div class="card">
-              <h3>Cerca cliente</h3>
-              <div class="field-row">
-                <input
-                  type="text"
-                  id="searchClienteTerm"
-                  placeholder="Nome, cognome, telefono o codice fiscale..."
-                />
-                <button type="button" id="btnSearchCliente">Cerca</button>
+        <!-- CLIENTI & STORICO -->
+        <div id="sec-clienti" class="card section">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="card-title-dot"></span> Clienti & Storico
+            </div>
+            <div class="card-subtitle">Ricerca cliente e visualizzazione storico</div>
+          </div>
+          <div class="section-body">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <div class="form-field" style="flex:1;">
+                <label>Cerca per nome, cognome, telefono o CF</label>
+                <input id="searchClienteTerm" type="text" placeholder="Es. Rossi, 328..., RSSMRA..." />
               </div>
+              <button id="btnSearchCliente" class="btn-primary">Cerca</button>
+            </div>
+
+            <div class="grid grid-2" style="margin-top:4px;">
               <div class="table-wrapper">
-                <table class="data-table">
+                <table>
                   <thead>
-                    <tr>
-                      <th>Nome</th>
-                      <th>Cognome</th>
-                      <th>Telefono</th>
-                      <th>Codice fiscale</th>
-                    </tr>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Cognome</th>
+                    <th>Telefono</th>
+                    <th>CF</th>
+                  </tr>
                   </thead>
                   <tbody id="tabClientiBody"></tbody>
                 </table>
               </div>
+              <div class="card" style="background:none;border:none;box-shadow:none;">
+                <div id="noClienteSelezionato" style="font-size:12px;color:var(--text-soft);margin-top:8px;">
+                  Seleziona un cliente dalla tabella per vedere lo storico.
+                </div>
+                <div id="clienteCard" class="card hidden" style="padding:8px;">
+                  <div class="card-header" style="margin-bottom:4px;">
+                    <div class="card-title">
+                      <span class="card-title-dot"></span> Anagrafica cliente
+                    </div>
+                  </div>
+                  <div class="cliente-summary">
+                    <div class="cliente-summary-row">
+                      <div class="cliente-summary-label">Nome</div>
+                      <div id="detNome"></div>
+                    </div>
+                    <div class="cliente-summary-row">
+                      <div class="cliente-summary-label">Cognome</div>
+                      <div id="detCognome"></div>
+                    </div>
+                    <div class="cliente-summary-row">
+                      <div class="cliente-summary-label">Telefono</div>
+                      <div id="detTelefono"></div>
+                    </div>
+                    <div class="cliente-summary-row">
+                      <div class="cliente-summary-label">Email</div>
+                      <div id="detEmail"></div>
+                    </div>
+                    <div class="cliente-summary-row">
+                      <div class="cliente-summary-label">Cod. fiscale</div>
+                      <div id="detCF"></div>
+                    </div>
+                    <div class="cliente-summary-row">
+                      <div class="cliente-summary-label">Data nascita</div>
+                      <div id="detNascita"></div>
+                    </div>
+                    <div class="cliente-summary-row">
+                      <div class="cliente-summary-label">Note</div>
+                      <div id="detNote"></div>
+                    </div>
+                  </div>
+
+                  <div style="margin-top:8px;font-size:11px;color:var(--text-soft);">Storico contratti</div>
+                  <div class="table-wrapper" style="max-height:100px;margin-top:2px;">
+                    <table>
+                      <thead>
+                      <tr>
+                        <th>Data</th>
+                        <th>Compagnia</th>
+                        <th>Tecnologia</th>
+                        <th>Numero</th>
+                      </tr>
+                      </thead>
+                      <tbody id="tabContrattiCliente"></tbody>
+                    </table>
+                  </div>
+
+                  <div style="margin-top:8px;font-size:11px;color:var(--text-soft);">Storico device</div>
+                  <div class="table-wrapper" style="max-height:80px;margin-top:2px;">
+                    <table>
+                      <thead>
+                      <tr>
+                        <th>Data</th>
+                        <th>Modello</th>
+                        <th>IMEI</th>
+                      </tr>
+                      </thead>
+                      <tbody id="tabDeviceCliente"></tbody>
+                    </table>
+                  </div>
+
+                  <div style="margin-top:8px;font-size:11px;color:var(--text-soft);">Storico riparazioni</div>
+                  <div class="table-wrapper" style="max-height:80px;margin-top:2px;">
+                    <table>
+                      <thead>
+                      <tr>
+                        <th>Data</th>
+                        <th>Modello</th>
+                        <th>Guasto</th>
+                      </tr>
+                      </thead>
+                      <tbody id="tabRiparazioniCliente"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div class="card">
-              <h3>Dettaglio cliente</h3>
-              <p id="noClienteSelezionato" class="muted">Seleziona un cliente dall'elenco sopra.</p>
-              <div id="clienteCard" class="cliente-card hidden">
-                <p><strong>Nome:</strong> <span id="detNome"></span></p>
-                <p><strong>Cognome:</strong> <span id="detCognome"></span></p>
-                <p><strong>Telefono:</strong> <span id="detTelefono"></span></p>
-                <p><strong>Email:</strong> <span id="detEmail"></span></p>
-                <p><strong>Codice fiscale:</strong> <span id="detCF"></span></p>
-                <p><strong>Data nascita:</strong> <span id="detNascita"></span></p>
-                <p><strong>Note:</strong> <span id="detNote"></span></p>
-                <div class="field-row">
-                  <button type="button" id="btnWhatsApp">Apri WhatsApp</button>
+          </div>
+        </div>
+
+        <!-- NUOVO CONTRATTO + CLIENTE -->
+        <div id="sec-contratti" class="card section">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="card-title-dot"></span> Nuovo cliente + contratto
+            </div>
+            <div class="card-subtitle">Se il cliente non esiste viene creato automaticamente</div>
+          </div>
+          <div class="section-body">
+            <form id="formNewClienteContratto">
+              <div class="card-subtitle" style="margin-bottom:4px;">Dati cliente</div>
+              <div class="form-grid">
+                <div class="form-field">
+                  <label>Nome</label>
+                  <input id="nc_nome_cliente" type="text" />
+                </div>
+                <div class="form-field">
+                  <label>Cognome</label>
+                  <input id="nc_cognome_cliente" type="text" />
+                </div>
+                <div class="form-field">
+                  <label>Telefono</label>
+                  <input id="nc_telefono_cliente" type="text" />
+                </div>
+                <div class="form-field">
+                  <label>Email</label>
+                  <input id="nc_email_cliente" type="email" />
+                </div>
+                <div class="form-field">
+                  <label>Codice fiscale *</label>
+                  <input id="nc_cf_cliente" type="text" required />
+                </div>
+                <div class="form-field">
+                  <label>Data nascita</label>
+                  <input id="nc_data_nascita_cliente" type="date" />
+                </div>
+                <div class="form-field" style="grid-column: span 2;">
+                  <label>Note cliente</label>
+                  <input id="nc_note_cliente" type="text" />
+                </div>
+              </div>
+
+              <div class="card-subtitle" style="margin:6px 0 2px;">Dati contratto</div>
+              <div class="form-grid">
+                <div class="form-field">
+                  <label>Data contratto</label>
+                  <input id="nc_data_contratto" type="date" />
+                </div>
+                <div class="form-field">
+                  <label>Tipo cliente</label>
+                  <select id="nc_tipo_cliente">
+                    <option value="Privato">Privato</option>
+                    <option value="Business">Business</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label>Tipo attivazione</label>
+                  <select id="nc_tipo_attivazione">
+                    <option value="Mobile">Mobile</option>
+                    <option value="Fisso">Fisso</option>
+                    <option value="Luce">Luce</option>
+                    <option value="Gas">Gas</option>
+                    <option value="TV">TV</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label>Tecnologia</label>
+                  <select id="nc_tecnologia">
+                    <option value="">-</option>
+                    <option value="SIM">SIM</option>
+                    <option value="FTTC">FTTC</option>
+                    <option value="FTTH">FTTH</option>
+                    <option value="ADSL">ADSL</option>
+                    <option value="Rame">Rame</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label>Compagnia</label>
+                  <input id="nc_compagnia" type="text" placeholder="Es. TIM, Vodafone..." />
+                </div>
+                <div class="form-field">
+                  <label>Convergenza</label>
+                  <select id="nc_convergenza">
+                    <option value="NO">NO</option>
+                    <option value="SI">SI</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label>MNP</label>
+                  <select id="nc_mnp">
+                    <option value="NO">NO</option>
+                    <option value="SI">SI</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label>ICCID vecchio</label>
+                  <input id="nc_iccid_vecchio" type="text" />
+                </div>
+                <div class="form-field">
+                  <label>ICCID nuovo</label>
+                  <input id="nc_iccid_nuovo" type="text" />
+                </div>
+                <div class="form-field">
+                  <label>Data attivazione</label>
+                  <input id="nc_data_attivazione" type="date" />
+                </div>
+                <div class="form-field">
+                  <label>Data portabilità</label>
+                  <input id="nc_data_portabilita" type="date" />
+                </div>
+                <div class="form-field">
+                  <label>Numero lavorato</label>
+                  <input id="nc_numero_lavorato" type="text" />
+                </div>
+                <div class="form-field">
+                  <label>Nome offerta</label>
+                  <input id="nc_nome_offerta" type="text" />
+                </div>
+                <div class="form-field">
+                  <label>Costo offerta</label>
+                  <input id="nc_costo_offerta" type="number" step="0.01" />
+                </div>
+                <div class="form-field">
+                  <label>Vincolo offerta (mesi)</label>
+                  <input id="nc_vincolo_offerta_mesi" type="number" />
+                </div>
+                <div class="form-field">
+                  <label>Telefono incluso</label>
+                  <select id="nc_telefono_incluso">
+                    <option value="NO">NO</option>
+                    <option value="SI">SI</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label>IMEI telefono</label>
+                  <input id="nc_imei" type="text" />
+                </div>
+                <div class="form-field">
+                  <label>Modello telefono</label>
+                  <input id="nc_modello" type="text" />
+                </div>
+                <div class="form-field">
+                  <label>Tipo pagamento</label>
+                  <select id="nc_tipo_pagamento">
+                    <option value="">-</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Carta">Carta</option>
+                    <option value="Finanziamento">Finanziamento</option>
+                    <option value="RID">RID</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label>Mesi vincolo telefono</label>
+                  <input id="nc_mesi_vincolo_telefono" type="number" />
+                </div>
+                <div class="form-field">
+                  <label>Data fine vincolo offerta</label>
+                  <input id="nc_data_fine_vincolo_offerta" type="date" />
+                </div>
+                <div class="form-field">
+                  <label>Data fine vincolo telefono</label>
+                  <input id="nc_data_fine_vincolo_telefono" type="date" />
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn-primary">Salva cliente + contratto</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- VENDITA DEVICE -->
+        <div id="sec-device" class="card section">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="card-title-dot"></span> Vendita device
+            </div>
+            <div class="card-subtitle">Associa il device al cliente (creato da CF se non esiste)</div>
+          </div>
+          <div class="section-body">
+            <form id="formNewDevice">
+              <div class="form-grid">
+                <div class="form-field">
+                  <label>Codice fiscale cliente *</label>
+                  <input id="dv_cf" type="text" required />
+                </div>
+                <div class="form-field">
+                  <label>Data vendita *</label>
+                  <input id="dv_data_vendita" type="date" required />
+                </div>
+                <div class="form-field">
+                  <label>Marca</label>
+                  <input id="dv_marca" type="text" />
+                </div>
+                <div class="form-field">
+                  <label>Modello</label>
+                  <input id="dv_modello" type="text" />
+                </div>
+                <div class="form-field">
+                  <label>IMEI</label>
+                  <input id="dv_imei" type="text" />
+                </div>
+                <div class="form-field">
+                  <label>Prezzo</label>
+                  <input id="dv_prezzo" type="number" step="0.01" />
+                </div>
+                <div class="form-field">
+                  <label>Tipo pagamento</label>
+                  <select id="dv_tipo_pagamento">
+                    <option value="">-</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Carta">Carta</option>
+                    <option value="Finanziamento">Finanziamento</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label>Durata finanziamento (mesi)</label>
+                  <input id="dv_durata_fin_mesi" type="number" />
+                </div>
+                <div class="form-field">
+                  <label>Anticipo</label>
+                  <input id="dv_anticipo" type="number" step="0.01" />
+                </div>
+                <div class="form-field">
+                  <label>Costo rata</label>
+                  <input id="dv_costo_rata" type="number" step="0.01" />
+                </div>
+                <div class="form-field">
+                  <label>Data fine finanziamento</label>
+                  <input id="dv_data_fine_fin" type="date" />
+                </div>
+                <div class="form-field">
+                  <label>Garanzia (mesi)</label>
+                  <input id="dv_garanzia_mesi" type="number" />
+                </div>
+                <div class="form-field">
+                  <label>Data fine garanzia</label>
+                  <input id="dv_data_fine_garanzia" type="date" />
+                </div>
+                <div class="form-field">
+                  <label>ID contratto collegato</label>
+                  <input id="dv_id_contratto" type="text" />
+                </div>
+                <div class="form-field" style="grid-column: span 2;">
+                  <label>Note</label>
+                  <input id="dv_note" type="text" />
+                </div>
+              </div>
+              <div class="form-actions">
+                <button class="btn-primary" type="submit">Salva vendita device</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- RIPARAZIONI -->
+        <div id="sec-riparazioni" class="card section">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="card-title-dot"></span> Riparazioni
+            </div>
+            <div class="card-subtitle">Gestione laboratorio / assistenza</div>
+          </div>
+          <div class="section-body">
+            <form id="formNewRiparazione">
+              <div class="form-grid">
+                <div class="form-field">
+                  <label>Codice fiscale cliente *</label>
+                  <input id="rp_cf" type="text" required />
+                </div>
+                <div class="form-field">
+                  <label>Data apertura *</label>
+                  <input id="rp_data_apertura" type="date" required />
+                </div>
+                <div class="form-field">
+                  <label>Marca</label>
+                  <input id="rp_marca" type="text" />
+                </div>
+                <div class="form-field">
+                  <label>Modello</label>
+                  <input id="rp_modello" type="text" />
+                </div>
+                <div class="form-field">
+                  <label>IMEI</label>
+                  <input id="rp_imei" type="text" />
+                </div>
+                <div class="form-field">
+                  <label>Tipo guasto</label>
+                  <input id="rp_tipo_guasto" type="text" />
+                </div>
+                <div class="form-field">
+                  <label>Stato</label>
+                  <select id="rp_stato">
+                    <option value="Aperta">Aperta</option>
+                    <option value="In lavorazione">In lavorazione</option>
+                    <option value="Chiusa">Chiusa</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label>Costo previsto</label>
+                  <input id="rp_costo_previsto" type="number" step="0.01" />
+                </div>
+                <div class="form-field">
+                  <label>Costo effettivo</label>
+                  <input id="rp_costo_effettivo" type="number" step="0.01" />
+                </div>
+                <div class="form-field">
+                  <label>Data chiusura</label>
+                  <input id="rp_data_chiusura" type="date" />
+                </div>
+                <div class="form-field" style="grid-column: span 2;">
+                  <label>Note</label>
+                  <textarea id="rp_note"></textarea>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button class="btn-primary" type="submit">Salva riparazione</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- IMPORT CSV -->
+        <div id="sec-import" class="card section">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="card-title-dot"></span> Import CSV
+            </div>
+            <div class="card-subtitle">Crea clienti da Nome/Cognome + CF e carica i contratti</div>
+          </div>
+          <div class="section-body">
+            <div class="grid grid-2">
+              <div>
+                <div class="form-field">
+                  <label>File CSV</label>
+                  <input id="csvFile" type="file" accept=".csv" />
+                </div>
+                <div class="form-field" style="margin-top:4px;">
+                  <label>...oppure incolla qui il contenuto CSV</label>
+                  <textarea id="csvText" rows="6"></textarea>
+                </div>
+                <div class="form-actions" style="justify-content:flex-start;">
+                  <button id="btnPreviewCsv" type="button" class="btn-outline">Anteprima</button>
+                  <button id="btnImportCsv" type="button" class="btn-primary">Importa</button>
+                </div>
+                <div class="progress-bar-container">
+                  <div id="csvProgress" class="progress-bar"></div>
+                </div>
+                <div id="csvImportSummary" style="margin-top:4px;font-size:12px;color:var(--text-soft);">
+                  In attesa di import...
+                </div>
+              </div>
+              <div>
+                <div class="card-subtitle" style="margin-bottom:4px;">Anteprima (prime 10 righe)</div>
+                <div class="table-wrapper" style="max-height:220px;">
+                  <table>
+                    <thead>
+                    <tr id="csvPreviewHead"></tr>
+                    </thead>
+                    <tbody id="csvPreviewBody"></tbody>
+                  </table>
+                </div>
+                <div style="font-size:11px;color:var(--text-soft);margin-top:4px;">
+                  Intestazioni attese (anche con maiuscole diverse):<br/>
+                  <span class="badge-soft">
+                    Nome, Cognome, Telefono, Email, Codice fiscale, Data nascita, Note,
+                    Data contratto, Tipo cliente, Tipo attivazione, Tecnologia, Compagnia, Convergenza, MNP,
+                    ICCID vecchio, ICCID nuovo, Data attivazione, Data portabilità, Numero lavorato, Nome offerta,
+                    Costo offerta, Vincolo offerta (mesi), Telefono incluso, IMEI, Modello,
+                    Tipo pagamento, Mesi vincolo telefono, Data fine vincolo offerta, Data fine vincolo telefono
+                  </span>
                 </div>
               </div>
             </div>
           </div>
-
-          <!-- Colonna destra -->
-          <div class="col">
-            <div class="card">
-              <h3>Nuovo cliente + contratto</h3>
-              <form id="formNewClienteContratto">
-                <h4>Dati cliente</h4>
-                <div class="grid-2">
-                  <div class="field-group">
-                    <label for="nc_nome_cliente">Nome</label>
-                    <input type="text" id="nc_nome_cliente" required />
-                  </div>
-                  <div class="field-group">
-                    <label for="nc_cognome_cliente">Cognome</label>
-                    <input type="text" id="nc_cognome_cliente" required />
-                  </div>
-                  <div class="field-group">
-                    <label for="nc_telefono_cliente">Telefono</label>
-                    <input type="tel" id="nc_telefono_cliente" />
-                  </div>
-                  <div class="field-group">
-                    <label for="nc_email_cliente">Email</label>
-                    <input type="email" id="nc_email_cliente" />
-                  </div>
-                  <div class="field-group">
-                    <label for="nc_cf_cliente">Codice fiscale</label>
-                    <input type="text" id="nc_cf_cliente" required />
-                  </div>
-                  <div class="field-group">
-                    <label for="nc_data_nascita_cliente">Data nascita (se nota)</label>
-                    <input type="date" id="nc_data_nascita_cliente" />
-                  </div>
-                  <div class="field-group" style="grid-column:1/3;">
-                    <label for="nc_note_cliente">Note cliente</label>
-                    <textarea id="nc_note_cliente" rows="2"></textarea>
-                  </div>
-                </div>
-
-                <h4>Dati contratto</h4>
-                <div class="grid-2">
-                  <div class="field-group">
-                    <label for="nc_data_contratto">Data contratto</label>
-                    <input type="date" id="nc_data_contratto" />
-                  </div>
-                  <div class="field-group">
-                    <label for="nc_tipo_cliente">Tipo cliente</label>
-                    <select id="nc_tipo_cliente">
-                      <option value="">--</option>
-                      <option value="Privato">Privato</option>
-                      <option value="Business">Business</option>
-                    </select>
-                  </div>
-
-                  <div class="field-group">
-                    <label for="nc_tipo_attivazione">Tipo attivazione</label>
-                    <select id="nc_tipo_attivazione">
-                      <option value="">--</option>
-                      <option value="Mobile">Mobile</option>
-                      <option value="Fisso">Fisso</option>
-                      <option value="Luce">Luce</option>
-                      <option value="Gas">Gas</option>
-                      <option value="TV">TV</option>
-                      <option value="Altro">Altro</option>
-                    </select>
-                  </div>
-
-                  <div class="field-group">
-                    <label for="nc_tecnologia">Tecnologia</label>
-                    <select id="nc_tecnologia">
-                      <option value="">--</option>
-                      <option value="SIM">SIM</option>
-                      <option value="eSIM">eSIM</option>
-                      <option value="FTTH">FTTH</option>
-                      <option value="FTTC">FTTC</option>
-                      <option value="ADSL">ADSL</option>
-                      <option value="FWA">FWA</option>
-                      <option value="Altro">Altro</option>
-                    </select>
-                  </div>
-
-                  <div class="field-group">
-                    <label for="nc_compagnia">Compagnia</label>
-                    <select id="nc_compagnia">
-                      <option value="">--</option>
-                      <option value="TIM">TIM</option>
-                      <option value="Vodafone">Vodafone</option>
-                      <option value="WindTre">WindTre</option>
-                      <option value="Iliad">Iliad</option>
-                      <option value="Fastweb">Fastweb</option>
-                      <option value="PosteMobile">PosteMobile</option>
-                      <option value="ho.">ho.</option>
-                      <option value="Kena">Kena</option>
-                      <option value="Very">Very</option>
-                      <option value="Sky">Sky</option>
-                      <option value="Enel">Enel</option>
-                      <option value="Eni Plenitude">Eni Plenitude</option>
-                      <option value="Hera">Hera</option>
-                      <option value="Altro">Altro</option>
-                    </select>
-                  </div>
-
-                  <div class="field-group">
-                    <label for="nc_convergenza">Convergenza</label>
-                    <select id="nc_convergenza">
-                      <option value="">--</option>
-                      <option value="NO">NO</option>
-                      <option value="SI">SI</option>
-                    </select>
-                  </div>
-
-                  <div class="field-group">
-                    <label for="nc_mnp">MNP</label>
-                    <select id="nc_mnp">
-                      <option value="">--</option>
-                      <option value="NO">NO</option>
-                      <option value="SI">SI</option>
-                    </select>
-                  </div>
-
-                  <div class="field-group">
-                    <label for="nc_iccid_vecchio">ICCID vecchio</label>
-                    <input type="text" id="nc_iccid_vecchio" />
-                  </div>
-
-                  <div class="field-group">
-                    <label for="nc_iccid_nuovo">ICCID nuovo</label>
-                    <input type="text" id="nc_iccid_nuovo" />
-                  </div>
-
-                  <div class="field-group">
-                    <label for="nc_data_attivazione">Data attivazione</label>
-                    <input type="date" id="nc_data_attivazione" />
-                  </div>
-                  <div class="field-group">
-                    <label for="nc_data_portabilita">Data portabilità</label>
-                    <input type="date" id="nc_data_portabilita" />
-                  </div>
-
-                  <div class="field-group">
-                    <label for="nc_numero_lavorato">Numero lavorato</label>
-                    <input type="text" id="nc_numero_lavorato" />
-                  </div>
-                  <div class="field-group">
-                    <label for="nc_nome_offerta">Nome offerta</label>
-                    <input type="text" id="nc_nome_offerta" />
-                  </div>
-
-                  <div class="field-group">
-                    <label for="nc_costo_offerta">Costo offerta</label>
-                    <input type="number" step="0.01" id="nc_costo_offerta" />
-                  </div>
-                  <div class="field-group">
-                    <label for="nc_vincolo_offerta_mesi">Vincolo offerta (mesi)</label>
-                    <input type="number" id="nc_vincolo_offerta_mesi" />
-                  </div>
-
-                  <div class="field-group">
-                    <label for="nc_telefono_incluso">Telefono incluso</label>
-                    <select id="nc_telefono_incluso">
-                      <option value="">--</option>
-                      <option value="NO">NO</option>
-                      <option value="SI">SI</option>
-                    </select>
-                  </div>
-
-                  <div class="field-group">
-                    <label for="nc_imei">IMEI</label>
-                    <input type="text" id="nc_imei" />
-                  </div>
-
-                  <div class="field-group">
-                    <label for="nc_modello">Modello telefono</label>
-                    <input type="text" id="nc_modello" />
-                  </div>
-
-                  <div class="field-group">
-                    <label for="nc_tipo_pagamento">Tipo pagamento</label>
-                    <select id="nc_tipo_pagamento">
-                      <option value="">--</option>
-                      <option value="RID">RID</option>
-                      <option value="Carta">Carta</option>
-                      <option value="Bollettino">Bollettino</option>
-                      <option value="Contanti">Contanti</option>
-                      <option value="Altro">Altro</option>
-                    </select>
-                  </div>
-
-                  <div class="field-group">
-                    <label for="nc_mesi_vincolo_telefono">Mesi vincolo telefono</label>
-                    <input type="number" id="nc_mesi_vincolo_telefono" />
-                  </div>
-
-                  <div class="field-group">
-                    <label for="nc_data_fine_vincolo_offerta">Fine vincolo offerta</label>
-                    <input type="date" id="nc_data_fine_vincolo_offerta" readonly />
-                  </div>
-                  <div class="field-group">
-                    <label for="nc_data_fine_vincolo_telefono">Fine vincolo telefono</label>
-                    <input type="date" id="nc_data_fine_vincolo_telefono" readonly />
-                  </div>
-                </div>
-
-                <div class="field-row" style="margin-top:1rem;">
-                  <button type="submit">Salva cliente + contratto</button>
-                </div>
-              </form>
-            </div>
-          </div>
         </div>
 
-        <!-- Storico cliente selezionato -->
-        <div class="card">
-          <h3>Storico cliente selezionato</h3>
-          <div class="grid-3">
-            <div>
-              <h4>Contratti</h4>
-              <div class="table-wrapper small">
-                <table class="data-table">
-                  <thead>
+        <!-- REPORT & SCADENZE -->
+        <div id="sec-report" class="card section">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="card-title-dot"></span> Report & Scadenze
+            </div>
+            <div class="card-subtitle">Scadenze vincoli e filtro contratti per compagnia/tecnologia</div>
+          </div>
+          <div class="section-body">
+            <div class="grid grid-2">
+              <div class="card" style="padding:8px;">
+                <div class="card-header">
+                  <div class="card-title">
+                    <span class="card-title-dot"></span> Scadenze vincoli
+                  </div>
+                </div>
+                <div class="form-field" style="margin-top:4px;">
+                  <label>Mese scadenza (YYYY-MM)</label>
+                  <input id="report_mese_scadenza" type="month" />
+                </div>
+                <div class="form-actions" style="justify-content:flex-start;margin-top:4px;">
+                  <button id="btnCercaScadenze" type="button" class="btn-outline">Cerca</button>
+                </div>
+                <div class="table-wrapper" style="max-height:180px;margin-top:4px;">
+                  <table>
+                    <thead>
                     <tr>
-                      <th>Data</th>
+                      <th>Cliente</th>
+                      <th>CF</th>
+                      <th>Compagnia</th>
+                      <th>Offerta</th>
+                      <th>Fine vincolo</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tabScadenze"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="card" style="padding:8px;">
+                <div class="card-header">
+                  <div class="card-title">
+                    <span class="card-title-dot"></span> Filtro contratti
+                  </div>
+                </div>
+                <div class="grid grid-2" style="margin-top:4px;">
+                  <div class="form-field">
+                    <label>Compagnia</label>
+                    <input id="rep_compagnia" type="text" placeholder="Es. TIM" />
+                  </div>
+                  <div class="form-field">
+                    <label>Tecnologia</label>
+                    <select id="rep_tecnologia">
+                      <option value="">-</option>
+                      <option value="SIM">SIM</option>
+                      <option value="FTTC">FTTC</option>
+                      <option value="FTTH">FTTH</option>
+                      <option value="ADSL">ADSL</option>
+                      <option value="Rame">Rame</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-actions" style="justify-content:flex-start;margin-top:4px;">
+                  <button id="btnFiltraContratti" type="button" class="btn-outline">Filtra</button>
+                </div>
+                <div class="table-wrapper" style="max-height:180px;margin-top:4px;">
+                  <table>
+                    <thead>
+                    <tr>
+                      <th>Cliente</th>
+                      <th>CF</th>
                       <th>Compagnia</th>
                       <th>Tecnologia</th>
                       <th>Numero</th>
                     </tr>
-                  </thead>
-                  <tbody id="tabContrattiCliente"></tbody>
-                </table>
-              </div>
-            </div>
-            <div>
-              <h4>Device</h4>
-              <div class="table-wrapper small">
-                <table class="data-table">
-                  <thead>
-                    <tr>
-                      <th>Data</th>
-                      <th>Modello</th>
-                      <th>IMEI</th>
-                    </tr>
-                  </thead>
-                  <tbody id="tabDeviceCliente"></tbody>
-                </table>
-              </div>
-            </div>
-            <div>
-              <h4>Riparazioni</h4>
-              <div class="table-wrapper small">
-                <table class="data-table">
-                  <thead>
-                    <tr>
-                      <th>Apertura</th>
-                      <th>Modello</th>
-                      <th>Guasto</th>
-                    </tr>
-                  </thead>
-                  <tbody id="tabRiparazioniCliente"></tbody>
-                </table>
+                    </thead>
+                    <tbody id="tabContrattiFiltro"></tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
 
-      <!-- ===================== DEVICE ===================== -->
-      <section id="device" class="section">
-        <div class="section-header">
-          <h2>Vendita device</h2>
-          <p>Registra device venduti collegandoli al cliente.</p>
-        </div>
+      </div>
 
-        <div class="card">
-          <form id="formNewDevice">
-            <div class="grid-3">
-              <div class="field-group">
-                <label for="dv_cf">Codice fiscale cliente</label>
-                <input type="text" id="dv_cf" required />
-              </div>
-              <div class="field-group">
-                <label for="dv_data_vendita">Data vendita</label>
-                <input type="date" id="dv_data_vendita" required />
-              </div>
-              <div class="field-group">
-                <label for="dv_id_contratto">ID contratto (se collegato)</label>
-                <input type="text" id="dv_id_contratto" />
-              </div>
+      <!-- COLONNA DESTRA: NEWS + EXTRA (già usata sopra) -->
+      <div class="right-column">
+        <!-- Qui potresti mettere in futuro altre card extra, al momento la dashboard usa già news & compleanni -->
+      </div>
+    </section>
+  </main>
+</div>
 
-              <div class="field-group">
-                <label for="dv_marca">Marca</label>
-                <input type="text" id="dv_marca" />
-              </div>
-              <div class="field-group">
-                <label for="dv_modello">Modello</label>
-                <input type="text" id="dv_modello" />
-              </div>
-              <div class="field-group">
-                <label for="dv_imei">IMEI</label>
-                <input type="text" id="dv_imei" />
-              </div>
+<div id="toast" class="toast hidden"></div>
 
-              <div class="field-group">
-                <label for="dv_prezzo">Prezzo</label>
-                <input type="number" step="0.01" id="dv_prezzo" />
-              </div>
-              <div class="field-group">
-                <label for="dv_tipo_pagamento">Tipo pagamento</label>
-                <select id="dv_tipo_pagamento">
-                  <option value="">--</option>
-                  <option value="Cash">Cash</option>
-                  <option value="Carta">Carta</option>
-                  <option value="Finanziamento">Finanziamento</option>
-                </select>
-              </div>
-              <div class="field-group">
-                <label for="dv_garanzia_mesi">Garanzia (mesi)</label>
-                <input type="number" id="dv_garanzia_mesi" value="24" />
-              </div>
-
-              <div class="field-group">
-                <label for="dv_durata_fin_mesi">Durata finanziamento (mesi)</label>
-                <input type="number" id="dv_durata_fin_mesi" />
-              </div>
-              <div class="field-group">
-                <label for="dv_anticipo">Anticipo</label>
-                <input type="number" step="0.01" id="dv_anticipo" />
-              </div>
-              <div class="field-group">
-                <label for="dv_costo_rata">Costo rata</label>
-                <input type="number" step="0.01" id="dv_costo_rata" />
-              </div>
-
-              <div class="field-group">
-                <label for="dv_data_fine_fin">Fine finanziamento</label>
-                <input type="date" id="dv_data_fine_fin" readonly />
-              </div>
-              <div class="field-group">
-                <label for="dv_data_fine_garanzia">Fine garanzia</label>
-                <input type="date" id="dv_data_fine_garanzia" readonly />
-              </div>
-
-              <div class="field-group" style="grid-column:1/4;">
-                <label for="dv_note">Note</label>
-                <textarea id="dv_note" rows="2"></textarea>
-              </div>
-            </div>
-
-            <div class="field-row" style="margin-top:1rem;">
-              <button type="submit">Salva vendita device</button>
-            </div>
-          </form>
-        </div>
-      </section>
-
-      <!-- ===================== RIPARAZIONI ===================== -->
-      <section id="riparazioni" class="section">
-        <div class="section-header">
-          <h2>Riparazioni</h2>
-          <p>Registra e monitora le riparazioni dei device.</p>
-        </div>
-
-        <div class="card">
-          <form id="formNewRiparazione">
-            <div class="grid-3">
-              <div class="field-group">
-                <label for="rp_cf">Codice fiscale cliente</label>
-                <input type="text" id="rp_cf" required />
-              </div>
-              <div class="field-group">
-                <label for="rp_data_apertura">Data apertura</label>
-                <input type="date" id="rp_data_apertura" required />
-              </div>
-              <div class="field-group">
-                <label for="rp_data_chiusura">Data chiusura</label>
-                <input type="date" id="rp_data_chiusura" />
-              </div>
-
-              <div class="field-group">
-                <label for="rp_marca">Marca</label>
-                <input type="text" id="rp_marca" />
-              </div>
-              <div class="field-group">
-                <label for="rp_modello">Modello</label>
-                <input type="text" id="rp_modello" />
-              </div>
-              <div class="field-group">
-                <label for="rp_imei">IMEI</label>
-                <input type="text" id="rp_imei" />
-              </div>
-
-              <div class="field-group">
-                <label for="rp_tipo_guasto">Tipo guasto</label>
-                <input type="text" id="rp_tipo_guasto" />
-              </div>
-              <div class="field-group">
-                <label for="rp_stato">Stato</label>
-                <select id="rp_stato">
-                  <option value="">--</option>
-                  <option value="Aperta">Aperta</option>
-                  <option value="In lavorazione">In lavorazione</option>
-                  <option value="Chiusa">Chiusa</option>
-                </select>
-              </div>
-              <div class="field-group">
-                <label for="rp_costo_previsto">Costo previsto</label>
-                <input type="number" step="0.01" id="rp_costo_previsto" />
-              </div>
-
-              <div class="field-group">
-                <label for="rp_costo_effettivo">Costo effettivo</label>
-                <input type="number" step="0.01" id="rp_costo_effettivo" />
-              </div>
-
-              <div class="field-group" style="grid-column:1/4;">
-                <label for="rp_note">Note</label>
-                <textarea id="rp_note" rows="2"></textarea>
-              </div>
-            </div>
-
-            <div class="field-row" style="margin-top:1rem;">
-              <button type="submit">Salva riparazione</button>
-            </div>
-          </form>
-        </div>
-      </section>
-
-      <!-- ===================== IMPORT CSV ===================== -->
-      <section id="import" class="section">
-        <div class="section-header">
-          <h2>Import CSV</h2>
-          <p>
-            Ogni riga deve contenere sia i dati del cliente che del contratto. Il CRM usa il
-            <strong>Codice fiscale</strong> per creare o collegare il cliente.
-          </p>
-          <p class="muted">
-            Intestazioni consigliate:<br />
-            <code>
-              Nome, Cognome, Telefono, Email, Codice fiscale, Data nascita, Note, Data contratto,
-              Tipo cliente, Tipo attivazione, Tecnologia, Compagnia, Convergenza, MNP, ICCID
-              vecchio, ICCID nuovo, Data attivazione, Data portabilità, Numero lavorato, Nome
-              offerta, Costo offerta, Vincolo offerta (mesi), Telefono incluso, IMEI, Modello, Tipo
-              pagamento, Mesi vincolo telefono, Data fine vincolo offerta, Data fine vincolo
-              telefono
-            </code>
-          </p>
-        </div>
-
-        <div class="card">
-          <div class="grid-2">
-            <div class="col">
-              <h3>1) Carica il CSV</h3>
-              <div class="field-group">
-                <label for="csvFile">File CSV</label>
-                <input type="file" id="csvFile" accept=".csv" />
-              </div>
-              <p style="text-align:center;margin:0.5rem 0;">oppure</p>
-              <div class="field-group">
-                <label for="csvText">Incolla il contenuto CSV</label>
-                <textarea id="csvText" rows="8" placeholder="Incolla qui il testo CSV..."></textarea>
-              </div>
-              <button type="button" id="btnPreviewCsv">Anteprima</button>
-            </div>
-
-            <div class="col">
-              <h3>2) Anteprima &amp; import</h3>
-              <div class="table-wrapper small" style="max-height:220px;">
-                <table class="data-table">
-                  <thead>
-                    <tr id="csvPreviewHead"></tr>
-                  </thead>
-                  <tbody id="csvPreviewBody"></tbody>
-                </table>
-              </div>
-              <div class="progress-bar">
-                <div class="progress-bar-inner" id="csvProgress"></div>
-              </div>
-              <div class="field-row" style="margin-top:0.5rem;">
-                <button type="button" id="btnImportCsv">Importa</button>
-              </div>
-              <p id="csvImportSummary"></p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ===================== REPORT ===================== -->
-      <section id="report" class="section">
-        <div class="section-header">
-          <h2>Report</h2>
-          <p>Compleanni, contratti in scadenza e filtro per compagnia/tecnologia.</p>
-        </div>
-
-        <div class="grid-2">
-          <div class="card">
-            <h3>Compleanni oggi</h3>
-            <p class="muted">
-              Considera sia la data di nascita, sia il calcolo dal codice fiscale quando la data non è compilata.
-            </p>
-            <ul id="listaCompleanniOggi"></ul>
-          </div>
-
-          <div class="card">
-            <h3>Contratti in scadenza</h3>
-            <div class="field-group">
-              <label for="report_mese_scadenza">Mese/anno</label>
-              <input type="month" id="report_mese_scadenza" />
-            </div>
-            <button type="button" id="btnCercaScadenze">Cerca contratti in scadenza</button>
-            <div class="table-wrapper small" style="margin-top:0.5rem;">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Cliente</th>
-                    <th>CF</th>
-                    <th>Compagnia</th>
-                    <th>Offerta</th>
-                    <th>Fine vincolo</th>
-                  </tr>
-                </thead>
-                <tbody id="tabScadenze"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3>Filtra contratti per compagnia e tecnologia</h3>
-          <div class="field-row">
-            <div class="field-group">
-              <label for="rep_compagnia">Compagnia</label>
-              <select id="rep_compagnia">
-                <option value="">Tutte</option>
-                <option value="TIM">TIM</option>
-                <option value="Vodafone">Vodafone</option>
-                <option value="WindTre">WindTre</option>
-                <option value="Iliad">Iliad</option>
-                <option value="Fastweb">Fastweb</option>
-                <option value="PosteMobile">PosteMobile</option>
-                <option value="ho.">ho.</option>
-                <option value="Kena">Kena</option>
-                <option value="Very">Very</option>
-                <option value="Sky">Sky</option>
-                <option value="Enel">Enel</option>
-                <option value="Eni Plenitude">Eni Plenitude</option>
-                <option value="Hera">Hera</option>
-                <option value="Altro">Altro</option>
-              </select>
-            </div>
-            <div class="field-group">
-              <label for="rep_tecnologia">Tecnologia</label>
-              <select id="rep_tecnologia">
-                <option value="">Tutte</option>
-                <option value="SIM">SIM</option>
-                <option value="eSIM">eSIM</option>
-                <option value="FTTH">FTTH</option>
-                <option value="FTTC">FTTC</option>
-                <option value="ADSL">ADSL</option>
-                <option value="FWA">FWA</option>
-              </select>
-            </div>
-            <div class="field-group">
-              <label>&nbsp;</label>
-              <button type="button" id="btnFiltraContratti">Filtra</button>
-            </div>
-          </div>
-          <div class="table-wrapper small">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Cliente</th>
-                  <th>CF</th>
-                  <th>Compagnia</th>
-                  <th>Tecnologia</th>
-                  <th>Numero</th>
-                </tr>
-              </thead>
-              <tbody id="tabContrattiFiltro"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <!-- Toast notifiche -->
-  <div id="toast" class="toast hidden"></div>
-
-  <!-- SCRIPT PRINCIPALE -->
-  <script>
+<script>
   /*********************** CONFIG ************************/
   const API_BASE =
     'https://script.google.com/macros/s/AKfycbwwZN7PpcPVjemEF9e7iU607Z3yHZgDWj-UYbv5yfsRg4rudlcZdNAEDh4suKNj0SfX/exec';
@@ -1160,16 +1694,13 @@
     return semi > comma ? ';' : ',';
   }
 
-  // Legge un campo con varianti (maiuscole/minuscole, spazi, ecc.)
   function getField(row, variants) {
-    // prima prova esatta
     for (let i = 0; i < variants.length; i++) {
       const key = variants[i];
       if (row.hasOwnProperty(key) && row[key] !== undefined && row[key] !== null) {
         return row[key];
       }
     }
-    // poi prova a confrontare tutte le chiavi in minuscolo
     const lowerVariants = variants.map(function (v) {
       return String(v).toLowerCase();
     });
@@ -1210,7 +1741,7 @@
     return { header: header, rows: rows };
   }
 
-  /**************** CLIENTE DA CF (per import + form) ****************/
+  /**************** CLIENTE DA CF ****************/
   async function ensureClienteByCF(cf, clienteRowData) {
     const normCF = String(cf || '').toUpperCase();
     if (!normCF) throw new Error('Codice fiscale mancante');
@@ -1282,14 +1813,12 @@
 
   /**************** DOMContentLoaded ****************/
   document.addEventListener('DOMContentLoaded', function () {
-    // NAV
     document.querySelectorAll('.nav-btn').forEach(function (btn) {
       btn.addEventListener('click', function () {
         switchSection(btn.dataset.section);
       });
     });
 
-    // Campi vincolo/portabilità
     nc_data_contratto = document.getElementById('nc_data_contratto');
     nc_data_attivazione = document.getElementById('nc_data_attivazione');
     nc_vincolo_offerta_mesi = document.getElementById('nc_vincolo_offerta_mesi');
@@ -1321,7 +1850,6 @@
       nc_mnp.addEventListener('change', recalcPortabilita);
     }
 
-    // Ricerca cliente
     const searchInput = document.getElementById('searchClienteTerm');
     const btnSearch = document.getElementById('btnSearchCliente');
     btnSearch.addEventListener('click', function () {
@@ -1334,7 +1862,6 @@
       }
     });
 
-    // WhatsApp
     const btnWhatsApp = document.getElementById('btnWhatsApp');
     btnWhatsApp.addEventListener('click', function () {
       if (!selectedCliente) {
@@ -1357,7 +1884,6 @@
       window.open(url, '_blank');
     });
 
-    // Form nuovo cliente + contratto
     const formNC = document.getElementById('formNewClienteContratto');
     formNC.addEventListener('submit', async function (e) {
       e.preventDefault();
@@ -1428,7 +1954,6 @@
       }
     });
 
-    // Form device
     const formDV = document.getElementById('formNewDevice');
     formDV.addEventListener('submit', async function (e) {
       e.preventDefault();
@@ -1487,7 +2012,6 @@
       }
     });
 
-    // Form riparazione
     const formRP = document.getElementById('formNewRiparazione');
     formRP.addEventListener('submit', async function (e) {
       e.preventDefault();
@@ -1533,7 +2057,6 @@
       }
     });
 
-    // IMPORT CSV
     const btnPreviewCsv = document.getElementById('btnPreviewCsv');
     const csvFileInput = document.getElementById('csvFile');
     const csvTextArea = document.getElementById('csvText');
@@ -1600,7 +2123,6 @@
       for (let i = 0; i < rows.length; i++) {
         const r = rows[i];
         try {
-          // CF letto in modo robusto
           const cfRaw = getField(r, [
             'Codice fiscale',
             'CODICE FISCALE',
@@ -1686,20 +2208,17 @@
       await refreshAll();
     });
 
-    // Report: scadenze
     document.getElementById('btnCercaScadenze').addEventListener('click', function () {
       const meseStr = document.getElementById('report_mese_scadenza').value;
       renderScadenze(meseStr);
     });
 
-    // Report: filtro contratti
     document.getElementById('btnFiltraContratti').addEventListener('click', function () {
       const comp = document.getElementById('rep_compagnia').value;
       const tec = document.getElementById('rep_tecnologia').value;
       renderContrattiFiltro(comp, tec);
     });
 
-    // Caricamento iniziale
     refreshAll();
   });
 </script>
