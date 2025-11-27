@@ -4,12 +4,12 @@
   <meta charset="UTF-8" />
   <title>Volpex CRM</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Foglio di stile esterno -->
+  <!-- Foglio di stile -->
   <link rel="stylesheet" href="crm.css" />
 </head>
 <body>
   <div class="app-shell">
-    <!-- Sidebar -->
+    <!-- SIDEBAR -->
     <aside class="sidebar">
       <div class="sidebar-header">
         <img src="logo-volpex.svg" alt="Volpex CRM" class="logo-img" />
@@ -20,8 +20,8 @@
       </div>
       <nav class="sidebar-nav">
         <button class="nav-btn active" data-section="dashboard">Dashboard</button>
-        <button class="nav-btn" data-section="clienti">Clienti &amp; contratti</button>
-        <button class="nav-btn" data-section="device">Device</button>
+        <button class="nav-btn" data-section="clienti">Clienti / Contratti</button>
+        <button class="nav-btn" data-section="device">Vendita device</button>
         <button class="nav-btn" data-section="riparazioni">Riparazioni</button>
         <button class="nav-btn" data-section="import">Import CSV</button>
         <button class="nav-btn" data-section="report">Report</button>
@@ -32,13 +32,13 @@
       </footer>
     </aside>
 
-    <!-- Area principale -->
+    <!-- MAIN -->
     <main class="main-area">
-      <!-- Barra in alto -->
+      <!-- TOPBAR -->
       <header class="topbar">
         <div>
           <h1>Volpex CRM</h1>
-          <p class="topbar-subtitle">Gestione clienti, contratti, device e riparazioni</p>
+          <p class="topbar-subtitle">Gestione centralizzata di clienti, contratti, device e riparazioni</p>
         </div>
         <div class="topbar-summary">
           <div class="summary-pill">
@@ -60,19 +60,19 @@
         </div>
       </header>
 
-      <!-- SEZIONE DASHBOARD -->
+      <!-- ===================== DASHBOARD ===================== -->
       <section id="dashboard" class="section active">
         <div class="section-header">
           <h2>Dashboard</h2>
-          <p>Panoramica generale e news di settore</p>
+          <p>Panoramica dell’attività e news di settore</p>
         </div>
 
         <div class="grid-2">
           <div class="card">
-            <h3>Riepilogo veloce</h3>
+            <h3>Riepilogo rapido</h3>
             <ul class="kpi-list">
               <li>Clienti totali: <strong id="kpi_clienti_tot">0</strong></li>
-              <li>Contratti attivi: <strong id="kpi_contratti_tot">0</strong></li>
+              <li>Contratti registrati: <strong id="kpi_contratti_tot">0</strong></li>
               <li>Device venduti: <strong id="kpi_device_tot">0</strong></li>
               <li>Riparazioni aperte: <strong id="kpi_riparazioni_aperte">0</strong></li>
             </ul>
@@ -91,15 +91,15 @@
         </div>
       </section>
 
-      <!-- SEZIONE CLIENTI & CONTRATTI -->
+      <!-- ===================== CLIENTI & CONTRATTI ===================== -->
       <section id="clienti" class="section">
         <div class="section-header">
           <h2>Clienti &amp; contratti</h2>
-          <p>Cerca clienti, vedi i contratti collegati e inserisci nuovi contratti.</p>
+          <p>Cerca i clienti, visualizza lo storico completo e inserisci nuovi contratti.</p>
         </div>
 
         <div class="grid-2">
-          <!-- Colonna sinistra: ricerca + dettaglio cliente -->
+          <!-- Colonna sinistra -->
           <div class="col">
             <div class="card">
               <h3>Cerca cliente</h3>
@@ -107,7 +107,7 @@
                 <input
                   type="text"
                   id="searchClienteTerm"
-                  placeholder="Cerca per nome, cognome, telefono o codice fiscale..."
+                  placeholder="Nome, cognome, telefono o codice fiscale..."
                 />
                 <button type="button" id="btnSearchCliente">Cerca</button>
               </div>
@@ -128,7 +128,7 @@
 
             <div class="card">
               <h3>Dettaglio cliente</h3>
-              <p id="noClienteSelezionato">Seleziona un cliente dall'elenco qui sopra.</p>
+              <p id="noClienteSelezionato" class="muted">Seleziona un cliente dall'elenco sopra.</p>
               <div id="clienteCard" class="cliente-card hidden">
                 <p><strong>Nome:</strong> <span id="detNome"></span></p>
                 <p><strong>Cognome:</strong> <span id="detCognome"></span></p>
@@ -144,7 +144,7 @@
             </div>
           </div>
 
-          <!-- Colonna destra: nuovo cliente + contratto -->
+          <!-- Colonna destra -->
           <div class="col">
             <div class="card">
               <h3>Nuovo cliente + contratto</h3>
@@ -353,7 +353,7 @@
           </div>
         </div>
 
-        <!-- Liste contratti/device/riparazioni del cliente selezionato -->
+        <!-- Storico cliente selezionato -->
         <div class="card">
           <h3>Storico cliente selezionato</h3>
           <div class="grid-3">
@@ -406,11 +406,12 @@
           </div>
         </div>
       </section>
-      <!-- SEZIONE DEVICE -->
+
+      <!-- ===================== DEVICE ===================== -->
       <section id="device" class="section">
         <div class="section-header">
           <h2>Vendita device</h2>
-          <p>Registra la vendita di un dispositivo collegato al cliente.</p>
+          <p>Registra device venduti collegandoli al cliente.</p>
         </div>
 
         <div class="card">
@@ -495,11 +496,11 @@
         </div>
       </section>
 
-      <!-- SEZIONE RIPARAZIONI -->
+      <!-- ===================== RIPARAZIONI ===================== -->
       <section id="riparazioni" class="section">
         <div class="section-header">
           <h2>Riparazioni</h2>
-          <p>Gestisci le riparazioni dei device dei tuoi clienti.</p>
+          <p>Registra e monitora le riparazioni dei device.</p>
         </div>
 
         <div class="card">
@@ -567,17 +568,16 @@
         </div>
       </section>
 
-      <!-- SEZIONE IMPORT CSV -->
+      <!-- ===================== IMPORT CSV ===================== -->
       <section id="import" class="section">
         <div class="section-header">
-          <h2>Import CSV clienti + contratti</h2>
+          <h2>Import CSV</h2>
           <p>
-            Ogni riga del CSV deve contenere sia i dati cliente che il contratto. Il CRM controllerà
-            il <strong>Codice fiscale</strong>: se il cliente non esiste verrà creato, poi verrà
-            inserito il contratto.
+            Ogni riga deve contenere sia i dati del cliente che del contratto. Il CRM usa il
+            <strong>Codice fiscale</strong> per creare o collegare il cliente.
           </p>
-          <p>
-            Intestazioni consigliate (prima riga del CSV):<br />
+          <p class="muted">
+            Intestazioni consigliate:<br />
             <code>
               Nome, Cognome, Telefono, Email, Codice fiscale, Data nascita, Note, Data contratto,
               Tipo cliente, Tipo attivazione, Tecnologia, Compagnia, Convergenza, MNP, ICCID
@@ -600,7 +600,7 @@
               <p style="text-align:center;margin:0.5rem 0;">oppure</p>
               <div class="field-group">
                 <label for="csvText">Incolla il contenuto CSV</label>
-                <textarea id="csvText" rows="8" placeholder="Incolla qui i dati CSV..."></textarea>
+                <textarea id="csvText" rows="8" placeholder="Incolla qui il testo CSV..."></textarea>
               </div>
               <button type="button" id="btnPreviewCsv">Anteprima</button>
             </div>
@@ -627,17 +627,19 @@
         </div>
       </section>
 
-      <!-- SEZIONE REPORT -->
+      <!-- ===================== REPORT ===================== -->
       <section id="report" class="section">
         <div class="section-header">
           <h2>Report</h2>
-          <p>Compleanni, filtri per compagnia/tecnologia e contratti in scadenza.</p>
+          <p>Compleanni, contratti in scadenza e filtro per compagnia/tecnologia.</p>
         </div>
 
         <div class="grid-2">
           <div class="card">
             <h3>Compleanni oggi</h3>
-            <p>Vengono considerati sia la data di nascita, sia il calcolo dal codice fiscale.</p>
+            <p class="muted">
+              Considera sia la data di nascita, sia il calcolo dal codice fiscale quando la data non è compilata.
+            </p>
             <ul id="listaCompleanniOggi"></ul>
           </div>
 
@@ -729,9 +731,7 @@
 
   <!-- SCRIPT PRINCIPALE -->
   <script>
-    /****************************************************
-     * CONFIG
-     ****************************************************/
+    /*********************** CONFIG ************************/
     const API_BASE =
       'https://script.google.com/macros/s/AKfycbwwZN7PpcPVjemEF9e7iU607Z3yHZgDWj-UYbv5yfsRg4rudlcZdNAEDh4suKNj0SfX/exec';
 
@@ -741,9 +741,7 @@
     let riparazioniCache = [];
     let selectedCliente = null;
 
-    /****************************************************
-     * UTILITY
-     ****************************************************/
+    /*********************** UTILITY ************************/
     function showToast(msg, type = 'info') {
       const toast = document.getElementById('toast');
       toast.textContent = msg;
@@ -797,10 +795,10 @@
       const yyyy = d.getFullYear();
       const mm = String(d.getMonth() + 1).padStart(2, '0');
       const dd = String(d.getDate()).padStart(2, '0');
-      return `${yyyy}-${mm}-${dd}`;
+      return \`\${yyyy}-\${mm}-\${dd}\`;
     }
 
-    // Calcolo nascita da codice fiscale (usato per compleanni se manca data_nascita)
+    // Calcolo nascita da codice fiscale
     function birthDateFromCF(cf) {
       if (!cf || cf.length < 11) return null;
       cf = cf.toUpperCase();
@@ -809,42 +807,26 @@
       const dayCode = parseInt(cf.substring(9, 11), 10);
 
       const monthMap = {
-        A: 1,
-        B: 2,
-        C: 3,
-        D: 4,
-        E: 5,
-        H: 6,
-        L: 7,
-        M: 8,
-        P: 9,
-        R: 10,
-        S: 11,
-        T: 12
+        A: 1, B: 2, C: 3, D: 4, E: 5, H: 6,
+        L: 7, M: 8, P: 9, R: 10, S: 11, T: 12
       };
       const month = monthMap[monthChar] || 1;
 
       let day = dayCode;
       if (day > 40) day = day - 40;
 
-      // Stima anno: se > anno corrente % 100 -> 1900, altrimenti 2000
       const now = new Date();
       const currentYY = now.getFullYear() % 100;
       let fullYear = 1900 + year;
-      if (year <= currentYY) {
-        fullYear = 2000 + year;
-      }
+      if (year <= currentYY) fullYear = 2000 + year;
 
       const yyyy = fullYear;
       const mm = String(month).padStart(2, '0');
       const dd = String(day).padStart(2, '0');
-      return `${yyyy}-${mm}-${dd}`;
+      return \`\${yyyy}-\${mm}-\${dd}\`;
     }
 
-    /****************************************************
-     * AUTO-CALCOLO VINCOLI E PORTABILITÀ
-     ****************************************************/
-    // riferimenti verranno inizializzati dopo DOMContentLoaded
+    /**************** AUTO VINCOLI & PORTABILITÀ ****************/
     let nc_data_contratto,
       nc_data_attivazione,
       nc_vincolo_offerta_mesi,
@@ -855,7 +837,8 @@
       nc_data_portabilita;
 
     function recalcFineVincoli() {
-      const baseDate = (nc_data_attivazione && nc_data_attivazione.value) ||
+      const baseDate =
+        (nc_data_attivazione && nc_data_attivazione.value) ||
         (nc_data_contratto && nc_data_contratto.value);
       if (!baseDate) return;
 
@@ -878,17 +861,14 @@
       if (nc_mnp.value !== 'SI') return;
       if (nc_data_portabilita.value) return;
 
-      const baseDate = (nc_data_attivazione && nc_data_attivazione.value) ||
+      const baseDate =
+        (nc_data_attivazione && nc_data_attivazione.value) ||
         (nc_data_contratto && nc_data_contratto.value);
       if (!baseDate) return;
-
-      // Se vuoi spostare di +1 giorno: usa addMonthsToDateStrLocal + trucchetto,
-      // per ora lasciamo stessa data
       nc_data_portabilita.value = baseDate;
     }
-    /****************************************************
-     * NAVIGAZIONE SEZIONI
-     ****************************************************/
+
+    /**************** NAVIGAZIONE SEZIONI ****************/
     function switchSection(sectionId) {
       document.querySelectorAll('.section').forEach((sec) => {
         sec.classList.toggle('active', sec.id === sectionId);
@@ -898,9 +878,7 @@
       });
     }
 
-    /****************************************************
-     * RENDER DASHBOARD / REPORT
-     ****************************************************/
+    /**************** DASHBOARD & REPORT ****************/
     function renderDashboard() {
       document.getElementById('dash_count_clienti').textContent = clientiCache.length;
       document.getElementById('dash_count_contratti').textContent = contrattiCache.length;
@@ -911,8 +889,9 @@
       document.getElementById('kpi_contratti_tot').textContent = contrattiCache.length;
       document.getElementById('kpi_device_tot').textContent = deviceCache.length;
 
-      const aperte = riparazioniCache.filter((r) => (r.stato || '').toLowerCase() !== 'chiusa')
-        .length;
+      const aperte = riparazioniCache.filter(
+        (r) => (r.stato || '').toLowerCase() !== 'chiusa'
+      ).length;
       document.getElementById('kpi_riparazioni_aperte').textContent = aperte;
     }
 
@@ -926,15 +905,11 @@
       const lista = [];
       clientiCache.forEach((c) => {
         let nasc = c.data_nascita ? formatDateShort(c.data_nascita) : '';
-        if (!nasc) {
-          nasc = birthDateFromCF(c.codice_fiscale);
-        }
+        if (!nasc) nasc = birthDateFromCF(c.codice_fiscale);
         if (!nasc) return;
         const mm = parseInt(nasc.substring(5, 7), 10);
         const dd = parseInt(nasc.substring(8, 10), 10);
-        if (mm === m && dd === d) {
-          lista.push(c);
-        }
+        if (mm === m && dd === d) lista.push(c);
       });
 
       if (!lista.length) {
@@ -963,12 +938,10 @@
       tbody.innerHTML = '';
       if (!meseStr) return;
 
-      const [yyyy, mm] = meseStr.split('-');
       const clientiByCF = {};
       clientiCache.forEach((c) => {
-        if (c.codice_fiscale) {
+        if (c.codice_fiscale)
           clientiByCF[String(c.codice_fiscale).toUpperCase()] = c;
-        }
       });
 
       contrattiCache.forEach((ct) => {
@@ -981,13 +954,13 @@
         const tr = document.createElement('tr');
         const nome = cli ? (cli.nome || '') + ' ' + (cli.cognome || '') : '';
 
-        tr.innerHTML = `
-          <td>${nome}</td>
-          <td>${cf}</td>
-          <td>${ct.compagnia || ''}</td>
-          <td>${ct.nome_offerta || ''}</td>
-          <td>${dataFine}</td>
-        `;
+        tr.innerHTML = \`
+          <td>\${nome}</td>
+          <td>\${cf}</td>
+          <td>\${ct.compagnia || ''}</td>
+          <td>\${ct.nome_offerta || ''}</td>
+          <td>\${dataFine}</td>
+        \`;
         tbody.appendChild(tr);
       });
     }
@@ -998,9 +971,8 @@
 
       const clientiByCF = {};
       clientiCache.forEach((c) => {
-        if (c.codice_fiscale) {
+        if (c.codice_fiscale)
           clientiByCF[String(c.codice_fiscale).toUpperCase()] = c;
-        }
       });
 
       contrattiCache.forEach((ct) => {
@@ -1012,20 +984,18 @@
         const nome = cli ? (cli.nome || '') + ' ' + (cli.cognome || '') : '';
 
         const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${nome}</td>
-          <td>${cf}</td>
-          <td>${ct.compagnia || ''}</td>
-          <td>${ct.tecnologia || ''}</td>
-          <td>${ct.numero_lavorato || ''}</td>
-        `;
+        tr.innerHTML = \`
+          <td>\${nome}</td>
+          <td>\${cf}</td>
+          <td>\${ct.compagnia || ''}</td>
+          <td>\${ct.tecnologia || ''}</td>
+          <td>\${ct.numero_lavorato || ''}</td>
+        \`;
         tbody.appendChild(tr);
       });
     }
 
-    /****************************************************
-     * LISTE CLIENTI / CONTRATTI / DEVICE / RIP PER CLIENTE
-     ****************************************************/
+    /**************** LISTE CLIENTI & STORICO ****************/
     function renderListaClienti(filterTerm = '') {
       const tbody = document.getElementById('tabClientiBody');
       tbody.innerHTML = '';
@@ -1043,12 +1013,12 @@
         if (term && !testo.toLowerCase().includes(term)) return;
 
         const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${c.nome || ''}</td>
-          <td>${c.cognome || ''}</td>
-          <td>${c.telefono || ''}</td>
-          <td>${c.codice_fiscale || ''}</td>
-        `;
+        tr.innerHTML = \`
+          <td>\${c.nome || ''}</td>
+          <td>\${c.cognome || ''}</td>
+          <td>\${c.telefono || ''}</td>
+          <td>\${c.codice_fiscale || ''}</td>
+        \`;
         tr.addEventListener('click', () => {
           selectCliente(c);
         });
@@ -1089,12 +1059,12 @@
         .filter((ct) => (ct.codice_fiscale || '').toUpperCase() === cf)
         .forEach((ct) => {
           const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${formatDateShort(ct.data_contratto || ct.data_attivazione)}</td>
-            <td>${ct.compagnia || ''}</td>
-            <td>${ct.tecnologia || ''}</td>
-            <td>${ct.numero_lavorato || ''}</td>
-          `;
+          tr.innerHTML = \`
+            <td>\${formatDateShort(ct.data_contratto || ct.data_attivazione)}</td>
+            <td>\${ct.compagnia || ''}</td>
+            <td>\${ct.tecnologia || ''}</td>
+            <td>\${ct.numero_lavorato || ''}</td>
+          \`;
           tabCt.appendChild(tr);
         });
 
@@ -1102,11 +1072,11 @@
         .filter((dv) => (dv.codice_fiscale || '').toUpperCase() === cf)
         .forEach((dv) => {
           const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${formatDateShort(dv.data_vendita)}</td>
-            <td>${dv.modello || ''}</td>
-            <td>${dv.imei || ''}</td>
-          `;
+          tr.innerHTML = \`
+            <td>\${formatDateShort(dv.data_vendita)}</td>
+            <td>\${dv.modello || ''}</td>
+            <td>\${dv.imei || ''}</td>
+          \`;
           tabDv.appendChild(tr);
         });
 
@@ -1114,18 +1084,16 @@
         .filter((rp) => (rp.codice_fiscale || '').toUpperCase() === cf)
         .forEach((rp) => {
           const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${formatDateShort(rp.data_apertura)}</td>
-            <td>${rp.modello || ''}</td>
-            <td>${rp.tipo_guasto || ''}</td>
-          `;
+          tr.innerHTML = \`
+            <td>\${formatDateShort(rp.data_apertura)}</td>
+            <td>\${rp.modello || ''}</td>
+            <td>\${rp.tipo_guasto || ''}</td>
+          \`;
           tabRp.appendChild(tr);
         });
     }
 
-    /****************************************************
-     * IMPORT CSV
-     ****************************************************/
+    /**************** IMPORT CSV ****************/
     function detectDelimiter(headerLine) {
       const comma = (headerLine.match(/,/g) || []).length;
       const semi = (headerLine.match(/;/g) || []).length;
@@ -1134,7 +1102,7 @@
 
     function parseCsvToObjects(csvText) {
       const lines = csvText
-        .split(/\r?\n/)
+        .split(/\\r?\\n/)
         .map((l) => l.trim())
         .filter((l) => l.length > 0);
       if (!lines.length) return [];
@@ -1190,9 +1158,7 @@
       return nuovoId;
     }
 
-    /****************************************************
-     * CARICAMENTO DATI INIZIALI
-     ****************************************************/
+    /**************** CARICAMENTO DATI INIZIALI ****************/
     async function refreshAll() {
       try {
         const [cli, ct, dv, rp] = await Promise.all([
@@ -1211,13 +1177,11 @@
         renderCompleanniOggi();
       } catch (err) {
         console.error(err);
-        showToast('Errore nel caricamento dati iniziali', 'error');
+        showToast('Errore nel caricamento iniziale', 'error');
       }
     }
 
-    /****************************************************
-     * DOMContentLoaded
-     ****************************************************/
+    /**************** DOMContentLoaded ****************/
     document.addEventListener('DOMContentLoaded', () => {
       // NAV
       document.querySelectorAll('.nav-btn').forEach((btn) => {
@@ -1226,7 +1190,7 @@
         });
       });
 
-      // Riferimenti campi vincoli/portabilità
+      // Campi vincolo/portabilità
       nc_data_contratto = document.getElementById('nc_data_contratto');
       nc_data_attivazione = document.getElementById('nc_data_attivazione');
       nc_vincolo_offerta_mesi = document.getElementById('nc_vincolo_offerta_mesi');
@@ -1258,7 +1222,7 @@
         nc_mnp.addEventListener('change', recalcPortabilita);
       }
 
-      // CERCA CLIENTE
+      // Ricerca cliente
       const searchInput = document.getElementById('searchClienteTerm');
       const btnSearch = document.getElementById('btnSearchCliente');
       btnSearch.addEventListener('click', () => {
@@ -1271,7 +1235,7 @@
         }
       });
 
-      // WHATSAPP
+      // WhatsApp
       const btnWhatsApp = document.getElementById('btnWhatsApp');
       btnWhatsApp.addEventListener('click', () => {
         if (!selectedCliente) {
@@ -1294,7 +1258,7 @@
         window.open(url, '_blank');
       });
 
-      // FORM NUOVO CLIENTE + CONTRATTO
+      // Form nuovo cliente + contratto
       const formNC = document.getElementById('formNewClienteContratto');
       formNC.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -1315,7 +1279,6 @@
           recalcFineVincoli();
           recalcPortabilita();
 
-          // CLIENTE
           const id_cliente = await ensureClienteByCF(cf, {
             Nome: nome,
             Cognome: cognome,
@@ -1325,7 +1288,6 @@
             Note: noteCli
           });
 
-          // CONTRATTO
           const payloadContratto = {
             id_cliente,
             codice_fiscale: cf,
@@ -1367,7 +1329,7 @@
         }
       });
 
-      // FORM DEVICE
+      // Form device
       const formDV = document.getElementById('formNewDevice');
       formDV.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -1380,12 +1342,12 @@
           }
 
           const id_cliente = await ensureClienteByCF(cf, {
-            'Nome': '',
-            'Cognome': '',
-            'Telefono': '',
-            'Email': '',
+            Nome: '',
+            Cognome: '',
+            Telefono: '',
+            Email: '',
             'Data nascita': '',
-            'Note': ''
+            Note: ''
           });
 
           const dv_data_fin = document.getElementById('dv_data_fine_fin');
@@ -1393,12 +1355,8 @@
           const mesiFin = document.getElementById('dv_durata_fin_mesi').value;
           const mesiGar = document.getElementById('dv_garanzia_mesi').value;
 
-          if (mesiFin) {
-            dv_data_fin.value = addMonthsToDateStrLocal(data_v, mesiFin);
-          }
-          if (mesiGar) {
-            dv_data_gar.value = addMonthsToDateStrLocal(data_v, mesiGar);
-          }
+          if (mesiFin) dv_data_fin.value = addMonthsToDateStrLocal(data_v, mesiFin);
+          if (mesiGar) dv_data_gar.value = addMonthsToDateStrLocal(data_v, mesiGar);
 
           const payload = {
             id_cliente,
@@ -1430,7 +1388,7 @@
         }
       });
 
-      // FORM RIPARAZIONE
+      // Form riparazione
       const formRP = document.getElementById('formNewRiparazione');
       formRP.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -1443,12 +1401,12 @@
           }
 
           const id_cliente = await ensureClienteByCF(cf, {
-            'Nome': '',
-            'Cognome': '',
-            'Telefono': '',
-            'Email': '',
+            Nome: '',
+            Cognome: '',
+            Telefono: '',
+            Email: '',
             'Data nascita': '',
-            'Note': ''
+            Note: ''
           });
 
           const payload = {
@@ -1476,7 +1434,7 @@
         }
       });
 
-      // IMPORT CSV: anteprima
+      // IMPORT CSV
       const btnPreviewCsv = document.getElementById('btnPreviewCsv');
       const csvFileInput = document.getElementById('csvFile');
       const csvTextArea = document.getElementById('csvText');
@@ -1513,7 +1471,7 @@
           csvParsed.rows.slice(0, 10).forEach((row) => {
             const tr = document.createElement('tr');
             tr.innerHTML = csvParsed.header
-              .map((h) => `<td>${row[h] || ''}</td>`)
+              .map((h) => \`<td>\${row[h] || ''}</td>\`)
               .join('');
             bodyPreview.appendChild(tr);
           });
@@ -1525,7 +1483,6 @@
         }
       });
 
-      // IMPORT CSV: import reale
       btnImportCsv.addEventListener('click', async () => {
         if (!csvParsed || !csvParsed.rows || !csvParsed.rows.length) {
           showToast('Nessun CSV in anteprima', 'error');
@@ -1584,25 +1541,25 @@
           progressBar.style.width = perc + '%';
         }
 
-        importSummary.textContent = `Import finito. OK: ${ok}, Errori: ${errCnt}`;
+        importSummary.textContent = \`Import finito. OK: \${ok}, Errori: \${errCnt}\`;
         showToast('Import CSV completato', 'success');
         await refreshAll();
       });
 
-      // REPORT: scadenze
+      // Report: scadenze
       document.getElementById('btnCercaScadenze').addEventListener('click', () => {
         const meseStr = document.getElementById('report_mese_scadenza').value;
         renderScadenze(meseStr);
       });
 
-      // REPORT: filtro contratti
+      // Report: filtro contratti
       document.getElementById('btnFiltraContratti').addEventListener('click', () => {
         const comp = document.getElementById('rep_compagnia').value;
         const tec = document.getElementById('rep_tecnologia').value;
         renderContrattiFiltro(comp, tec);
       });
 
-      // Caricamento dati iniziale
+      // Caricamento iniziale
       refreshAll();
     });
   </script>
