@@ -1750,25 +1750,30 @@
     });
   }
 
-  function selectCliente(c) {
-    selectedCliente = c;
-    document.getElementById('noClienteSelezionato').style.display = 'none';
-    const card = document.getElementById('clienteCard');
-    card.classList.remove('hidden');
+ function selectCliente(c) {
+  selectedCliente = c;
+  document.getElementById('noClienteSelezionato').style.display = 'none';
+  const card = document.getElementById('clienteCard');
+  card.classList.remove('hidden');
 
-    document.getElementById('detNome').textContent = c.nome || '';
-    document.getElementById('detCognome').textContent = c.cognome || '';
-    document.getElementById('detTelefono').textContent = c.telefono || '';
-    document.getElementById('detEmail').textContent = c.email || '';
-    document.getElementById('detCF').textContent = c.codice_fiscale || '';
+  document.getElementById('detNome').textContent = c.nome || '';
+  document.getElementById('detCognome').textContent = c.cognome || '';
+  document.getElementById('detTelefono').textContent = c.telefono || '';
+  document.getElementById('detEmail').textContent = c.email || '';
+  document.getElementById('detCF').textContent = c.codice_fiscale || '';
 
-    let nasc = c.data_nascita ? formatDateShort(c.data_nascita) : '';
-    if (!nasc) nasc = birthDateFromCF(c.codice_fiscale) || '';
-    document.getElementById('detNascita').textContent = nasc;
-    document.getElementById('detNote').textContent = c.note || '';
+  let nasc = c.data_nascita ? formatDateShort(c.data_nascita) : '';
+  if (!nasc) nasc = birthDateFromCF(c.codice_fiscale) || '';
+  document.getElementById('detNascita').textContent = nasc;
+  document.getElementById('detNote').textContent = c.note || '';
 
-    renderStoricoCliente(c);
-  }
+  // nascondo eventuale form di modifica aperto
+  const editForm = document.getElementById('editClienteForm');
+  if (editForm) editForm.classList.add('hidden');
+
+  renderStoricoCliente(c);
+}
+
 
     function renderStoricoCliente(c) {
     const cfCliente = String(c.codice_fiscale || '').toUpperCase();
