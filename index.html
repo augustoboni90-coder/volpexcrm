@@ -2034,11 +2034,12 @@
         showToast('Vendita device salvata', 'success');
         formDV.reset();
         await refreshAll();
-      } catch (err) {
-        console.error(err);
-        showToast('Errore salvataggio device', 'error');
-      }
-    });
+        } catch (err) {
+    console.error(err);
+    const msg = err && err.message ? err.message : String(err);
+    showToast('Errore nel salvataggio: ' + msg, 'error');
+  }
+});
 
     const formRP = document.getElementById('formNewRiparazione');
     formRP.addEventListener('submit', async function (e) {
