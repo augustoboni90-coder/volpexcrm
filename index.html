@@ -1526,47 +1526,62 @@
     });
   }
 
-  function renderScadenze(meseStr) {
-    const tbody = document.getElementById('tabScadenze');
-    tbody.innerHTML = '';
-    if (!meseStr) return;
+ function renderScadenze(meseStr) {
+  const tbody = document.getElementById('tabScadenze');
+  tbody.innerHTML = '';
+  if (!meseStr) return;
 
-    const clientiByCF = {};
-    clientiCache.forEach(function (c) {
-      if (c.codice_fiscale) {
-        clientiByCF[String(c.codice_fiscale).toUpperCase()] = c;
+  // Mappa CF → cliente
+  const clientiByCF = {};
+  clientiCache.forEach(function (c) {
+    if (c.codice_fiscale) {
+      clientiByCF[String(c.codice_fiscale).toUpperCase()] = c;
+    }
+  });
+
+  contrattiCache.forEach(function (ct) {
+    const dataFine = formatDateShort(ct.data_fine_vincolo_offerta);
+    if (!dataFine) return;
+    if (dataFine.indexOf(meseStr) !== 0) return;
+
+    const cf = (ct.codice_fiscale || '').toUpperCase();
+    const cli = clientiByCF[cf];
+    const tr = document.createElement('tr');
+    const nome = cli ? (cli.nome || '') + ' ' + (cli.cognome || '') : '';
+
+    tr.innerHTML =
+      '<td>' +
+      nome +
+      '</td>' +
+      '<td>' +
+      cf +
+      '</td>' +
+      '<td>' +
+      (ct.compagnia || '') +
+      '</td>' +
+      '<td>' +
+      (ct.nome_offerta || '') +
+      '</td>' +
+      '<td>' +
+      dataFine +
+      '</td>';
+
+    // 👉 CLIC SU RIGA SCADENZA = VAI SU CLIENTI & STORICO
+    tr.addEventListener('click', function () {
+      if (cli) {
+        // passa alla sezione Clienti & Storico
+        switchSection('sec-clienti');
+        // seleziona il cliente e mostra lo storico a destra
+        selectCliente(cli);
+      } else {
+        showToast('Cliente non trovato in anagrafica', 'error');
       }
     });
 
-    contrattiCache.forEach(function (ct) {
-      const dataFine = formatDateShort(ct.data_fine_vincolo_offerta);
-      if (!dataFine) return;
-      if (dataFine.indexOf(meseStr) !== 0) return;
+    tbody.appendChild(tr);
+  });
+}
 
-      const cf = (ct.codice_fiscale || '').toUpperCase();
-      const cli = clientiByCF[cf];
-      const tr = document.createElement('tr');
-      const nome = cli ? (cli.nome || '') + ' ' + (cli.cognome || '') : '';
-
-      tr.innerHTML =
-        '<td>' +
-        nome +
-        '</td>' +
-        '<td>' +
-        cf +
-        '</td>' +
-        '<td>' +
-        (ct.compagnia || '') +
-        '</td>' +
-        '<td>' +
-        (ct.nome_offerta || '') +
-        '</td>' +
-        '<td>' +
-        dataFine +
-        '</td>';
-      tbody.appendChild(tr);
-    });
-  }
 
   function renderContrattiFiltro(compagnia, tecnologia) {
     const tbody = document.getElementById('tabContrattiFiltro');
