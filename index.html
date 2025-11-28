@@ -1294,18 +1294,26 @@
     return json.data || [];
   }
 
-    async function apiPost(action, payload) {
-    let res;
+   async function apiPost(action, payload) {
+    // Usiamo no-cors e Content-Type text/plain per evitare problemi di CORS/preflight
     try {
-      res = await fetch(API_BASE, {
+      await fetch(API_BASE, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8'
+        },
         body: JSON.stringify(Object.assign({ action: action }, payload))
       });
+
+      // Non possiamo leggere la risposta (opaque), ma per il CRM basta sapere
+      // che la richiesta è stata inviata. Gli ID/nuovi dati li ricarichiamo con refreshAll().
+      return { success: true };
     } catch (err) {
-      // Errore di rete / CORS
       throw new Error('Network error POST ' + action + ': ' + (err.message || err));
     }
+  }
+
 
     let text;
     try {
