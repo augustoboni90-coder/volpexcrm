@@ -1778,15 +1778,20 @@
   }
 
   /**************** CLIENTE DA CF ****************/
-  async function ensureClienteByCF(cf, clienteRowData) {
+    async function ensureClienteByCF(cf, clienteRowData) {
     const normCF = String(cf || '').toUpperCase();
     if (!normCF) throw new Error('Codice fiscale mancante');
 
+    // 1. Se il cliente esiste già in cache → usa quello
     let existing = clientiCache.find(function (c) {
       return String(c.codice_fiscale || '').toUpperCase() === normCF;
     });
-    if (existing) return existing.id_cliente;
+    if (existing) {
+      // può essere undefined o stringa, non è un problema: nel CRM usiamo il CF
+      return existing.id_cliente || '';
+    }
 
+    // 2. Se non esiste → creiamo i dati anagrafici da CSV/form
     const nome = getField(clienteRowData, ['Nome', 'NOME', 'nome']);
     const cognome = getField(clienteRowData, ['Cognome', 'COGNOME', 'cognome']);
     const telefono = getField(clienteRowData, ['Telefono', 'NUMERO', 'telefono', 'numero']);
@@ -1807,11 +1812,13 @@
       note: note || ''
     };
 
-    const resp = await apiPost('createCliente', payloadCliente);
-    const nuovoId = resp.id_cliente;
+    // 3. Chiediamo al backend di creare il cliente
+    await apiPost('createCliente', payloadCliente);
 
-    clientiCache.push({
-      id_cliente: nuovoId,
+    // 4. Non possiamo leggere l'ID dal server (no-cors),
+    //    ma nel CRM usiamo il CF per collegare i contratti.
+    const nuovoCliente = {
+      id_cliente: '', // opzionale, sul foglio può rimanere vuoto
       nome: payloadCliente.nome,
       cognome: payloadCliente.cognome,
       telefono: payloadCliente.telefono,
@@ -1819,9 +1826,13 @@
       codice_fiscale: normCF,
       data_nascita: payloadCliente.data_nascita,
       note: payloadCliente.note
-    });
+    };
 
-    return nuovoId;
+    clientiCache.push(nuovoCliente);
+
+    // Ritorniamo comunque qualcosa (anche stringa vuota),
+    // perché createContratto accetta id_cliente vuoto.
+    return nuovoCliente.id_cliente;
   }
 
   /**************** CARICAMENTO DATI INIZIALI ****************/
