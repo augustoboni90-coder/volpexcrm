@@ -1583,45 +1583,58 @@
 }
 
 
-  function renderContrattiFiltro(compagnia, tecnologia) {
-    const tbody = document.getElementById('tabContrattiFiltro');
-    tbody.innerHTML = '';
+ function renderContrattiFiltro(compagnia, tecnologia) {
+  const tbody = document.getElementById('tabContrattiFiltro');
+  tbody.innerHTML = '';
 
-    const clientiByCF = {};
-    clientiCache.forEach(function (c) {
-      if (c.codice_fiscale) {
-        clientiByCF[String(c.codice_fiscale).toUpperCase()] = c;
+  // Mappa CF → cliente
+  const clientiByCF = {};
+  clientiCache.forEach(function (c) {
+    if (c.codice_fiscale) {
+      clientiByCF[String(c.codice_fiscale).toUpperCase()] = c;
+    }
+  });
+
+  contrattiCache.forEach(function (ct) {
+    if (compagnia && (ct.compagnia || '').toUpperCase() !== compagnia.toUpperCase()) return;
+    if (tecnologia && (ct.tecnologia || '').toUpperCase() !== tecnologia.toUpperCase()) return;
+
+    const cf = (ct.codice_fiscale || '').toUpperCase();
+    const cli = clientiByCF[cf];
+    const nome = cli ? (cli.nome || '') + ' ' + (cli.cognome || '') : '';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td>' +
+      nome +
+      '</td>' +
+      '<td>' +
+      cf +
+      '</td>' +
+      '<td>' +
+      (ct.compagnia || '') +
+      '</td>' +
+      '<td>' +
+      (ct.tecnologia || '') +
+      '</td>' +
+      '<td>' +
+      (ct.numero_lavorato || '') +
+      '</td>';
+
+    // 👉 CLIC SU RIGA FILTRO = VAI SU CLIENTI & STORICO
+    tr.addEventListener('click', function () {
+      if (cli) {
+        switchSection('sec-clienti');
+        selectCliente(cli);
+      } else {
+        showToast('Cliente non trovato in anagrafica', 'error');
       }
     });
 
-    contrattiCache.forEach(function (ct) {
-      if (compagnia && (ct.compagnia || '').toUpperCase() !== compagnia.toUpperCase()) return;
-      if (tecnologia && (ct.tecnologia || '').toUpperCase() !== tecnologia.toUpperCase()) return;
+    tbody.appendChild(tr);
+  });
+}
 
-      const cf = (ct.codice_fiscale || '').toUpperCase();
-      const cli = clientiByCF[cf];
-      const nome = cli ? (cli.nome || '') + ' ' + (cli.cognome || '') : '';
-
-      const tr = document.createElement('tr');
-      tr.innerHTML =
-        '<td>' +
-        nome +
-        '</td>' +
-        '<td>' +
-        cf +
-        '</td>' +
-        '<td>' +
-        (ct.compagnia || '') +
-        '</td>' +
-        '<td>' +
-        (ct.tecnologia || '') +
-        '</td>' +
-        '<td>' +
-        (ct.numero_lavorato || '') +
-        '</td>';
-      tbody.appendChild(tr);
-    });
-  }
 
   /**************** LISTE CLIENTI & STORICO ****************/
   function renderListaClienti(filterTerm) {
