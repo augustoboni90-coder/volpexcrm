@@ -1694,8 +1694,8 @@
     renderStoricoCliente(c);
   }
 
-  function renderStoricoCliente(c) {
-    const cf = (c.codice_fiscale || '').toUpperCase();
+    function renderStoricoCliente(c) {
+    const cfCliente = String(c.codice_fiscale || '').toUpperCase();
     const tabCt = document.getElementById('tabContrattiCliente');
     const tabDv = document.getElementById('tabDeviceCliente');
     const tabRp = document.getElementById('tabRiparazioniCliente');
@@ -1703,66 +1703,96 @@
     tabDv.innerHTML = '';
     tabRp.innerHTML = '';
 
-    contrattiCache
-      .filter(function (ct) {
-        return (ct.codice_fiscale || '').toUpperCase() === cf;
-      })
-      .forEach(function (ct) {
-        const tr = document.createElement('tr');
-        tr.innerHTML =
-          '<td>' +
-          formatDateShort(ct.data_contratto || ct.data_attivazione) +
-          '</td>' +
-          '<td>' +
-          (ct.compagnia || '') +
-          '</td>' +
-          '<td>' +
-          (ct.tecnologia || '') +
-          '</td>' +
-          '<td>' +
-          (ct.numero_lavorato || '') +
-          '</td>';
-        tabCt.appendChild(tr);
-      });
+    // --- CONTRATTI ---
+    contrattiCache.forEach(function (ct) {
+      const cfCt = String(
+        getField(ct, ['codice_fiscale', 'Codice fiscale', 'CODICE_FISCALE', 'CF'])
+      ).toUpperCase();
+      if (!cfCt || cfCt !== cfCliente) return;
 
-    deviceCache
-      .filter(function (dv) {
-        return (dv.codice_fiscale || '').toUpperCase() === cf;
-      })
-      .forEach(function (dv) {
-        const tr = document.createElement('tr');
-        tr.innerHTML =
-          '<td>' +
-          formatDateShort(dv.data_vendita) +
-          '</td>' +
-          '<td>' +
-          (dv.modello || '') +
-          '</td>' +
-          '<td>' +
-          (dv.imei || '') +
-          '</td>';
-        tabDv.appendChild(tr);
-      });
+      // data contratto / attivazione
+      const dataCt =
+        getField(ct, ['data_contratto', 'Data contratto', 'DATA_CONTRATTO']) ||
+        getField(ct, ['data_attivazione', 'Data attivazione', 'DATA_ATTIVAZIONE']);
 
-    riparazioniCache
-      .filter(function (rp) {
-        return (rp.codice_fiscale || '').toUpperCase() === cf;
-      })
-      .forEach(function (rp) {
-        const tr = document.createElement('tr');
-        tr.innerHTML =
-          '<td>' +
-          formatDateShort(rp.data_apertura) +
-          '</td>' +
-          '<td>' +
-          (rp.modello || '') +
-          '</td>' +
-          '<td>' +
-          (rp.tipo_guasto || '') +
-          '</td>';
-        tabRp.appendChild(tr);
-      });
+      const compagnia =
+        getField(ct, ['compagnia', 'Compagnia', 'COMPAGNIA']) || '';
+      const tecnologia =
+        getField(ct, ['tecnologia', 'Tecnologia', 'TECNOLOGIA']) || '';
+      const numero =
+        getField(ct, ['numero_lavorato', 'Numero lavorato', 'NUMERO_LAVORATO']) || '';
+
+      const tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>' +
+        formatDateShort(dataCt) +
+        '</td>' +
+        '<td>' +
+        compagnia +
+        '</td>' +
+        '<td>' +
+        tecnologia +
+        '</td>' +
+        '<td>' +
+        numero +
+        '</td>';
+      tabCt.appendChild(tr);
+    });
+
+    // --- DEVICE ---
+    deviceCache.forEach(function (dv) {
+      const cfDv = String(
+        getField(dv, ['codice_fiscale', 'Codice fiscale', 'CF'])
+      ).toUpperCase();
+      if (!cfDv || cfDv !== cfCliente) return;
+
+      const dataV =
+        getField(dv, ['data_vendita', 'Data vendita', 'DATA_VENDITA']) || '';
+      const modello = getField(dv, ['modello', 'Modello', 'MODELLO']) || '';
+      const imei = getField(dv, ['imei', 'IMEI']) || '';
+
+      const tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>' +
+        formatDateShort(dataV) +
+        '</td>' +
+        '<td>' +
+        modello +
+        '</td>' +
+        '<td>' +
+        imei +
+        '</td>';
+      tabDv.appendChild(tr);
+    });
+
+    // --- RIPARAZIONI ---
+    riparazioniCache.forEach(function (rp) {
+      const cfRp = String(
+        getField(rp, ['codice_fiscale', 'Codice fiscale', 'CF'])
+      ).toUpperCase();
+      if (!cfRp || cfRp !== cfCliente) return;
+
+      const dataAp =
+        getField(rp, ['data_apertura', 'Data apertura', 'DATA_APERTURA']) || '';
+      const modello = getField(rp, ['modello', 'Modello', 'MODELLO']) || '';
+      const guasto =
+        getField(rp, ['tipo_guasto', 'Tipo guasto', 'TIPO_GUASTO']) || '';
+
+      const tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>' +
+        formatDateShort(dataAp) +
+        '</td>' +
+        '<td>' +
+        modello +
+        '</td>' +
+        '<td>' +
+        guasto +
+        '</td>';
+      tabRp.appendChild(tr);
+    });
   }
+
 
   /**************** IMPORT CSV: HELPER ****************/
   function detectDelimiter(headerLine) {
