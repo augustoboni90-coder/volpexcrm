@@ -1294,17 +1294,36 @@
     return json.data || [];
   }
 
-  async function apiPost(action, payload) {
-    const res = await fetch(API_BASE, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(Object.assign({ action: action }, payload))
-    });
-    if (!res.ok) throw new Error('Errore rete POST ' + action);
-    const json = await res.json();
-    if (!json.success) throw new Error(json.error || 'Errore logico POST ' + action);
-    return json;
+    async function apiPost(action, payload) {
+    try {
+      const res = await fetch(API_BASE, {
+        method: 'POST',
+        // Content-Type "semplice" per evitare preflight CORS
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8'
+        },
+        body: JSON.stringify(Object.assign({ action: action }, payload))
+      });
+
+      if (!res.ok) {
+        throw new Error(
+          'Errore rete POST ' + action + ' (status ' + res.status + ')'
+        );
+      }
+
+      const json = await res.json();
+      if (!json.success) {
+        throw new Error(json.error || 'Errore logico POST ' + action);
+      }
+      return json;
+    } catch (err) {
+      // Se il browser blocca ancora (rete/CORS), arriveremo qui
+      throw new Error(
+        'Network error POST ' + action + ': ' + (err.message || String(err))
+      );
+    }
   }
+
 
   function formatDateShort(d) {
     if (!d) return '';
