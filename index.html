@@ -614,91 +614,53 @@
     </div>
 
     <div class="sidebar-section-title">Sistema</div>
-    <div class="nav">
-      <span class="badge">
-        <span class="dot"></span> Online · Volpex
-      </span>
-    </div>
+   <div class="nav">
+  <button
+    class="nav-btn active"
+    data-target="sec-nuovo"
+    onclick="switchSection('sec-nuovo')"
+  >
+    <span class="icon">📄</span>
+    <span>Nuovo contratto</span>
+  </button>
 
-    <div class="sidebar-footer">
-      <div>News partner</div>
-      <div style="font-size:10px;color:#6b7280;">MondoMobileWeb integrato nel pannello</div>
-    </div>
-  </aside>
+  <button
+    class="nav-btn"
+    data-target="sec-device"
+    onclick="switchSection('sec-device')"
+  >
+    <span class="icon">📱</span>
+    <span>Vendita device</span>
+  </button>
 
-  <!-- MAIN -->
-  <main class="main">
-    <header class="top-bar">
-      <div>
-        <div class="top-title">
-          Pannello Volpex
-          <span class="top-sub">Gestione clienti, contratti, device e riparazioni</span>
-        </div>
-      </div>
-      <div class="top-actions">
-        <div class="pill">Google Sheets · ID clienti/contratti centralizzati</div>
-        <button id="btnWhatsApp" class="btn-outline">Apri WhatsApp cliente selezionato</button>
-      </div>
-    </header>
+  <button
+    class="nav-btn"
+    data-target="sec-riparazioni"
+    onclick="switchSection('sec-riparazioni')"
+  >
+    <span class="icon">🛠️</span>
+    <span>Riparazioni</span>
+  </button>
 
-    <section class="content">
-      <div class="left-column">
-        <!-- DASHBOARD -->
-        <div id="sec-dashboard" class="card section active">
-          <div class="card-header">
-            <div class="card-title">
-              <span class="card-title-dot"></span> Dashboard
-            </div>
-            <div class="card-subtitle">Riepilogo rapido attività</div>
-          </div>
-          <div class="section-body">
-            <div class="grid grid-4">
-              <div class="kpi-card">
-                <div class="kpi-label">Clienti</div>
-                <div class="kpi-value" id="dash_count_clienti">0</div>
-                <div class="kpi-tag" id="kpi_clienti_tot">0 totali</div>
-              </div>
-              <div class="kpi-card">
-                <div class="kpi-label">Contratti</div>
-                <div class="kpi-value" id="dash_count_contratti">0</div>
-                <div class="kpi-tag" id="kpi_contratti_tot">0 attivi/archiviati</div>
-              </div>
-              <div class="kpi-card">
-                <div class="kpi-label">Device venduti</div>
-                <div class="kpi-value" id="dash_count_device">0</div>
-                <div class="kpi-tag" id="kpi_device_tot">0 totali</div>
-              </div>
-              <div class="kpi-card">
-                <div class="kpi-label">Riparazioni</div>
-                <div class="kpi-value" id="dash_count_riparazioni">0</div>
-                <div class="kpi-tag">
-                  Aperte: <span id="kpi_riparazioni_aperte">0</span>
-                </div>
-              </div>
-            </div>
+  <button
+    class="nav-btn"
+    data-target="sec-import"
+    onclick="switchSection('sec-import')"
+  >
+    <span class="icon">⬆️</span>
+    <span>Import CSV</span>
+  </button>
 
-            <div class="grid grid-2" style="margin-top:8px;">
-              <div class="card" style="padding:8px;">
-                <div class="card-header">
-                  <div class="card-title">
-                    <span class="card-title-dot"></span> Compleanni oggi
-                  </div>
-                </div>
-                <ul id="listaCompleanniOggi" style="font-size:12px;list-style:none;display:flex;flex-direction:column;gap:3px;margin-top:4px;"></ul>
-              </div>
-              <div class="card" style="padding:8px;">
-                <div class="card-header">
-                  <div class="card-title">
-                    <span class="card-title-dot"></span> News MondoMobileWeb
-                  </div>
-                </div>
-                <div class="news-frame" style="margin-top:4px;">
-                  <iframe src="https://www.mondomobileweb.it/" title="MondoMobileWeb"></iframe>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+  <button
+    class="nav-btn"
+    data-target="sec-report"
+    onclick="switchSection('sec-report')"
+  >
+    <span class="icon">📊</span>
+    <span>Report &amp; Scadenze</span>
+  </button>
+</div>
+
 
         <!-- CLIENTI & STORICO -->
         <div id="sec-clienti" class="card section">
