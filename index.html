@@ -901,7 +901,7 @@
 
                   <div class="form-actions">
                     <button type="submit" class="btn-primary">
-                      Salva cliente + contratto
+                      <span id="nc_submit_label">Salva cliente + contratto</span>
                     </button>
                   </div>
                 </div>
@@ -1302,6 +1302,27 @@
                     <tbody id="tabScadenze"></tbody>
                   </table>
                 </div>
+
+                <!-- ESPORTA CSV PER PERIODO -->
+                <div class="badge-soft" style="margin-top:6px;">
+                  Esporta CSV contratti per periodo (Data contratto)
+                </div>
+                <div class="form-grid" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
+                  <div class="form-field">
+                    <label>Dal</label>
+                    <input id="rep_exp_da" type="date" />
+                  </div>
+                  <div class="form-field">
+                    <label>Al</label>
+                    <input id="rep_exp_a" type="date" />
+                  </div>
+                  <div class="form-field">
+                    <label>&nbsp;</label>
+                    <button type="button" class="btn-outline" onclick="exportContrattiPeriodo()">
+                      Esporta CSV
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
@@ -1403,6 +1424,13 @@
                 >
                   Apri WhatsApp
                 </button>
+                <button
+                  type="button"
+                  class="btn-outline"
+                  onclick="exportClientePDF()"
+                >
+                  Esporta PDF
+                </button>
               </div>
 
               <div
@@ -1460,7 +1488,7 @@
 
               <!-- STORICO CONTRATTI -->
               <div style="margin-top:8px;font-size:11px;color:var(--text-soft);">
-                Storico contratti
+                Storico contratti (clicca per modificare)
               </div>
               <div class="table-wrapper" style="max-height:100px;margin-top:2px;">
                 <table>
@@ -1533,7 +1561,7 @@
 
   <div id="toastContainer"></div>
   <script>
-    // URL della Web App Apps Script
+    // URL Web App (Apps Script)
     const API_BASE =
       'https://script.google.com/macros/s/AKfycbwwZN7PpcPVjemEF9e7iU607Z3yHZgDWj-UYbv5yfsRg4rudlcZdNAEDh4suKNj0SfX/exec';
 
@@ -1543,6 +1571,7 @@
     let riparazioniCache = [];
     let selectedCliente = null;
     let importRows = [];
+    let editingContratto = null; // se non null -> stai modificando un contratto
 
     async function apiGet(action) {
       const url = API_BASE + '?action=' + encodeURIComponent(action);
@@ -1562,7 +1591,6 @@
         const res = await fetch(API_BASE, {
           method: 'POST',
           headers: {
-            // IMPORTANTE: text/plain per evitare problemi CORS
             'Content-Type': 'text/plain;charset=utf-8'
           },
           body: JSON.stringify(Object.assign({ action: action }, payload))
@@ -1714,6 +1742,141 @@
       const msg = message || 'Ciao ' + (cli.nome || '') + ', ';
       const url = 'https://wa.me/39' + tel + '?text=' + encodeURIComponent(msg);
       window.open(url, '_blank');
+    }
+
+    function exportClientePDF() {
+      if (!selectedCliente) {
+        showToast('Nessun cliente selezionato', 'error');
+        return;
+      }
+
+      const cfCliente = String(selectedCliente.codice_fiscale || '').toUpperCase();
+
+      const contratti = contrattiCache.filter(function (ct) {
+        return String(ct.codice_fiscale || '').toUpperCase() === cfCliente;
+      });
+      const device = deviceCache.filter(function (dv) {
+        return String(dv.codice_fiscale || '').toUpperCase() === cfCliente;
+      });
+      const riparazioni = riparazioniCache.filter(function (rp) {
+        return String(rp.codice_fiscale || '').toUpperCase() === cfCliente;
+      });
+
+      let html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8" />
+          <title>Riepilogo cliente ${selectedCliente.nome || ''} ${selectedCliente.cognome || ''}</title>
+          <style>
+            body { font-family: system-ui, sans-serif; font-size: 12px; margin: 16px; }
+            h1 { font-size: 18px; margin-bottom: 4px; }
+            h2 { font-size: 14px; margin-top: 12px; margin-bottom: 4px; }
+            table { border-collapse: collapse; width: 100%; margin-top: 4px; }
+            th, td { border: 1px solid #ccc; padding: 4px; text-align: left; }
+            th { background: #f3f4f6; }
+          </style>
+        </head>
+        <body>
+          <h1>Riepilogo cliente</h1>
+          <p><strong>Nome:</strong> ${selectedCliente.nome || ''}</p>
+          <p><strong>Cognome:</strong> ${selectedCliente.cognome || ''}</p>
+          <p><strong>Telefono:</strong> ${selectedCliente.telefono || ''}</p>
+          <p><strong>Email:</strong> ${selectedCliente.email || ''}</p>
+          <p><strong>Codice fiscale:</strong> ${selectedCliente.codice_fiscale || ''}</p>
+          <p><strong>Data nascita:</strong> ${document.getElementById('detNascita').textContent || ''}</p>
+          <p><strong>Note:</strong> ${selectedCliente.note || ''}</p>
+
+          <h2>Contratti</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Data contratto</th>
+                <th>Compagnia</th>
+                <th>Tecnologia</th>
+                <th>Numero</th>
+                <th>Offerta</th>
+                <th>Fine vincolo</th>
+              </tr>
+            </thead>
+            <tbody>`;
+
+      contratti.forEach(function (ct) {
+        html += `
+          <tr>
+            <td>${formatDateDisplay(ct.data_contratto)}</td>
+            <td>${ct.compagnia || ''}</td>
+            <td>${ct.tecnologia || ''}</td>
+            <td>${ct.numero_lavorato || ''}</td>
+            <td>${ct.nome_offerta || ''}</td>
+            <td>${formatDateDisplay(ct.data_fine_vincolo_offerta)}</td>
+          </tr>`;
+      });
+
+      html += `
+            </tbody>
+          </table>
+
+          <h2>Device</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Data vendita</th>
+                <th>Modello</th>
+                <th>IMEI</th>
+                <th>Prezzo</th>
+              </tr>
+            </thead>
+            <tbody>`;
+
+      device.forEach(function (dv) {
+        html += `
+          <tr>
+            <td>${formatDateDisplay(dv.data_vendita)}</td>
+            <td>${dv.modello || ''}</td>
+            <td>${dv.imei || ''}</td>
+            <td>${dv.prezzo || ''}</td>
+          </tr>`;
+      });
+
+      html += `
+            </tbody>
+          </table>
+
+          <h2>Riparazioni</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Data apertura</th>
+                <th>Modello</th>
+                <th>Guasto</th>
+                <th>Stato</th>
+              </tr>
+            </thead>
+            <tbody>`;
+
+      riparazioni.forEach(function (rp) {
+        html += `
+          <tr>
+            <td>${formatDateDisplay(rp.data_apertura)}</td>
+            <td>${rp.modello || ''}</td>
+            <td>${rp.tipo_guasto || ''}</td>
+            <td>${rp.stato || ''}</td>
+          </tr>`;
+      });
+
+      html += `
+            </tbody>
+          </table>
+        </body>
+        </html>
+      `;
+
+      const win = window.open('', '_blank');
+      win.document.write(html);
+      win.document.close();
+      win.focus();
+      win.print();
     }
 
     function openEditCliente() {
@@ -1887,6 +2050,11 @@
           '<td>' +
           (ct.numero_lavorato || '') +
           '</td>';
+
+        tr.addEventListener('click', function () {
+          startEditContratto(ct);
+        });
+
         if (tabCt) tabCt.appendChild(tr);
       });
 
@@ -1927,6 +2095,79 @@
       });
     }
 
+    function startEditContratto(ct) {
+      editingContratto = ct;
+
+      switchSection('sec-nuovo');
+      showToast('Modalità modifica contratto attiva', 'info');
+
+      const cf = String(ct.codice_fiscale || '').toUpperCase();
+      const cli = clientiCache.find(function (c) {
+        return String(c.codice_fiscale || '').toUpperCase() === cf;
+      });
+
+      document.getElementById('nc_nome_cliente').value = cli ? cli.nome || '' : '';
+      document.getElementById('nc_cognome_cliente').value = cli
+        ? cli.cognome || ''
+        : '';
+      document.getElementById('nc_telefono_cliente').value = cli
+        ? cli.telefono || ''
+        : '';
+      document.getElementById('nc_email_cliente').value = cli
+        ? cli.email || ''
+        : '';
+      document.getElementById('nc_cf_cliente').value = cf;
+
+      let nascita = '';
+      if (cli && cli.data_nascita) {
+        nascita = normalizeDate(cli.data_nascita);
+      } else if (cli && cli.codice_fiscale) {
+        nascita = birthDateFromCF(cli.codice_fiscale) || '';
+      }
+      document.getElementById('nc_data_nascita_cliente').value = nascita || '';
+      document.getElementById('nc_note_cliente').value = cli ? cli.note || '' : '';
+
+      document.getElementById('nc_data_contratto').value = normalizeDate(
+        ct.data_contratto
+      );
+      document.getElementById('nc_tipo_cliente').value = ct.tipo_cliente || '';
+      document.getElementById('nc_tipo_attivazione').value =
+        ct.tipo_attivazione || '';
+      document.getElementById('nc_tecnologia').value = ct.tecnologia || '';
+      document.getElementById('nc_compagnia').value = ct.compagnia || '';
+      document.getElementById('nc_convergenza').value = ct.convergenza || '';
+      document.getElementById('nc_mnp').value = ct.mnp || '';
+      document.getElementById('nc_iccid_vecchio').value = ct.iccid_vecchio || '';
+      document.getElementById('nc_iccid_nuovo').value = ct.iccid_nuovo || '';
+      document.getElementById('nc_data_attivazione').value = normalizeDate(
+        ct.data_attivazione
+      );
+      document.getElementById('nc_data_portabilita').value = normalizeDate(
+        ct.data_portabilita
+      );
+      document.getElementById('nc_numero_lavorato').value =
+        ct.numero_lavorato || '';
+      document.getElementById('nc_nome_offerta').value = ct.nome_offerta || '';
+      document.getElementById('nc_costo_offerta').value = ct.costo_offerta || '';
+      document.getElementById('nc_vincolo_offerta_mesi').value =
+        ct.vincolo_offerta_mesi || '';
+      document.getElementById('nc_telefono_incluso').value =
+        ct.telefono_incluso || '';
+      document.getElementById('nc_imei').value = ct.imei || '';
+      document.getElementById('nc_modello').value = ct.modello || '';
+      document.getElementById('nc_tipo_pagamento').value = ct.tipo_pagamento || '';
+      document.getElementById('nc_mesi_vincolo_telefono').value =
+        ct.mesi_vincolo_telefono || '';
+      document.getElementById('nc_data_fine_vincolo_offerta').value = normalizeDate(
+        ct.data_fine_vincolo_offerta
+      );
+      document.getElementById('nc_data_fine_vincolo_telefono').value =
+        normalizeDate(ct.data_fine_vincolo_telefono);
+
+      const lbl = document.getElementById('nc_submit_label');
+      if (lbl) lbl.textContent = 'Salva modifiche contratto';
+    }
+
     function updateDashboardKpis() {
       const elCli = document.getElementById('kpiTotClienti');
       const elCt = document.getElementById('kpiTotContratti');
@@ -1940,7 +2181,6 @@
       if (elDv) elDv.textContent = deviceCache.length;
       if (elRp) elRp.textContent = riparazioniCache.length;
 
-      // compleanni oggi
       const today = normalizeDate(new Date());
       const todayMD = today ? today.slice(5) : '';
       let countBday = 0;
@@ -1956,7 +2196,6 @@
       });
       if (elCompl) elCompl.textContent = countBday;
 
-      // scadenze mese corrente
       const meseCorr = today ? today.slice(0, 7) : '';
       let countScad = 0;
       contrattiCache.forEach(function (ct) {
@@ -1966,6 +2205,7 @@
       });
       if (elScad) elScad.textContent = countScad;
     }
+
     function renderCompleanniOggi() {
       const tbody = document.getElementById('tabCompleanni');
       if (!tbody) return;
@@ -2080,16 +2320,6 @@
 
         tr.addEventListener('click', function () {
           if (cli) {
-            switchSection('sec-dashboard');
-            switchSection('sec-dashboard'); // per sicurezza, poi:
-            switchSection('sec-dashboard');
-            switchSection('sec-dashboard');
-            switchSection('sec-dashboard');
-            switchSection('sec-dashboard');
-            switchSection('sec-dashboard');
-            switchSection('sec-dashboard');
-            // in realtà ci interessa la sezione clienti (dashboard non è una sezione clienti, ma
-            // per semplicità ti porto nella dashboard e poi seleziono il cliente a destra)
             selectCliente(cli);
           } else {
             showToast('Cliente non trovato in anagrafica', 'error');
@@ -2169,13 +2399,150 @@
       renderScadenze(meseStr);
     }
 
-    async function ensureClienteByCF(cf, dati) {
+    function exportContrattiPeriodo() {
+      const da = document.getElementById('rep_exp_da').value;
+      const a = document.getElementById('rep_exp_a').value;
+      if (!da || !a) {
+        showToast('Seleziona data iniziale e finale', 'error');
+        return;
+      }
+
+      const daNorm = normalizeDate(da);
+      const aNorm = normalizeDate(a);
+      if (!daNorm || !aNorm) {
+        showToast('Date non valide', 'error');
+        return;
+      }
+
+      const clientiByCF = {};
+      clientiCache.forEach(function (c) {
+        if (c.codice_fiscale) {
+          clientiByCF[String(c.codice_fiscale).toUpperCase()] = c;
+        }
+      });
+
+      const header = [
+        'Nome',
+        'Cognome',
+        'Telefono',
+        'Email',
+        'Codice fiscale',
+        'Data nascita',
+        'Note',
+        'Data contratto',
+        'Tipo cliente',
+        'Tipo attivazione',
+        'Tecnologia',
+        'Compagnia',
+        'Convergenza',
+        'MNP',
+        'ICCID vecchio',
+        'ICCID nuovo',
+        'Data attivazione',
+        'Data portabilità',
+        'Numero lavorato',
+        'Nome offerta',
+        'Costo offerta',
+        'Vincolo offerta (mesi)',
+        'Telefono incluso',
+        'IMEI',
+        'Modello',
+        'Tipo pagamento',
+        'Mesi vincolo telefono',
+        'Data fine vincolo offerta',
+        'Data fine vincolo telefono'
+      ];
+
+      const lines = [];
+      lines.push(header.join(';'));
+
+      contrattiCache.forEach(function (ct) {
+        const dc = normalizeDate(ct.data_contratto);
+        if (!dc) return;
+        if (dc < daNorm || dc > aNorm) return;
+
+        const cf = String(ct.codice_fiscale || '').toUpperCase();
+        const cli = clientiByCF[cf];
+
+        let dn = '';
+        if (cli && cli.data_nascita) {
+          dn = normalizeDate(cli.data_nascita);
+        } else if (cli && cli.codice_fiscale) {
+          const cfDn = birthDateFromCF(cli.codice_fiscale);
+          dn = cfDn || '';
+        }
+
+        const row = [
+          cli ? cli.nome || '' : '',
+          cli ? cli.cognome || '' : '',
+          cli ? cli.telefono || '' : '',
+          cli ? cli.email || '' : '',
+          cf,
+          dn,
+          cli ? cli.note || '' : '',
+          dc,
+          ct.tipo_cliente || '',
+          ct.tipo_attivazione || '',
+          ct.tecnologia || '',
+          ct.compagnia || '',
+          ct.convergenza || '',
+          ct.mnp || '',
+          ct.iccid_vecchio || '',
+          ct.iccid_nuovo || '',
+          normalizeDate(ct.data_attivazione),
+          normalizeDate(ct.data_portabilita),
+          ct.numero_lavorato || '',
+          ct.nome_offerta || '',
+          ct.costo_offerta || '',
+          ct.vincolo_offerta_mesi || '',
+          ct.telefono_incluso || '',
+          ct.imei || '',
+          ct.modello || '',
+          ct.tipo_pagamento || '',
+          ct.mesi_vincolo_telefono || '',
+          normalizeDate(ct.data_fine_vincolo_offerta),
+          normalizeDate(ct.data_fine_vincolo_telefono)
+        ];
+
+        lines.push(
+          row
+            .map(function (v) {
+              const s = v == null ? '' : String(v);
+              return s.replace(/;/g, ',');
+            })
+            .join(';')
+        );
+      });
+
+      if (lines.length <= 1) {
+        showToast('Nessun contratto trovato nel periodo selezionato', 'info');
+        return;
+      }
+
+      const csvContent = lines.join('\n');
+      const blob = new Blob([csvContent], {
+        type: 'text/csv;charset=utf-8;'
+      });
+      const url = URL.createObjectURL(blob);
+      const aEl = document.createElement('a');
+      aEl.href = url;
+      aEl.download = 'contratti_' + daNorm + '_al_' + aNorm + '.csv';
+      document.body.appendChild(aEl);
+      aEl.click();
+      setTimeout(function () {
+        URL.revokeObjectURL(url);
+        aEl.remove();
+      }, 0);
+
+      showToast('CSV contratti esportato', 'success');
+    }
+    function ensureClienteByCF(cf, dati) {
       cf = (cf || '').toUpperCase();
       if (!cf) throw new Error('Codice fiscale mancante');
       const existing = clientiCache.find(function (c) {
         return String(c.codice_fiscale || '').toUpperCase() === cf;
       });
-      if (existing) return existing.id_cliente;
+      if (existing) return Promise.resolve(existing.id_cliente);
 
       const payload = {
         nome: dati.nome || '',
@@ -2186,17 +2553,18 @@
         data_nascita: dati.data_nascita || '',
         note: dati.note || ''
       };
-      const res = await apiPost('createCliente', payload);
-      const id = res.id_cliente;
-      clientiCache.push(
-        Object.assign(
-          {
-            id_cliente: id
-          },
-          payload
-        )
-      );
-      return id;
+      return apiPost('createCliente', payload).then(function (res) {
+        const id = res.id_cliente;
+        clientiCache.push(
+          Object.assign(
+            {
+              id_cliente: id
+            },
+            payload
+          )
+        );
+        return id;
+      });
     }
 
     function recalcContrattoFields() {
@@ -2548,18 +2916,32 @@
                 document.getElementById('nc_data_fine_vincolo_offerta').value ||
                 '',
               data_fine_vincolo_telefono:
-                document.getElementById('nc_data_fine_vincolo_telefono')
-                  .value || ''
+                document.getElementById('nc_data_fine_vincolo_telefono').value ||
+                ''
             };
 
-            await apiPost('createContratto', payloadContratto);
-            showToast('Cliente/contratto salvati correttamente', 'success');
+            if (editingContratto && editingContratto.id_contratto) {
+              payloadContratto.id_contratto = editingContratto.id_contratto;
+              await apiPost('updateContratto', payloadContratto);
+              showToast('Contratto aggiornato correttamente', 'success');
+            } else {
+              await apiPost('createContratto', payloadContratto);
+              showToast('Cliente/contratto salvati correttamente', 'success');
+            }
+
+            editingContratto = null;
+            const lbl = document.getElementById('nc_submit_label');
+            if (lbl) lbl.textContent = 'Salva cliente + contratto';
+
             formNC.reset();
             refreshAll();
           } catch (err) {
             console.error(err);
             const msg = err && err.message ? err.message : String(err);
-            showToast('Errore nel salvataggio cliente/contratto: ' + msg, 'error');
+            showToast(
+              'Errore nel salvataggio cliente/contratto: ' + msg,
+              'error'
+            );
           }
         });
 
