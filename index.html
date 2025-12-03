@@ -1,1505 +1,1166 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VOLPEX CRM</title>
-  <style>
-    :root {
-      --bg: #f3f4f8;
-      --bg-alt: #e5e7f0;
-      --card: #ffffff;
-      --accent: #f97316;
-      --accent-soft: rgba(249, 115, 22, 0.12);
-      --text: #111827;
-      --text-soft: #6b7280;
-      --border: #d1d5db;
-      --danger: #ef4444;
-      --success: #22c55e;
-      --sidebar-width: 240px;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top, #e5e7f5 0, #f9fafb 40%, #eef2ff 100%);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      font-size: 14px;
-    }
-
-    a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-
-    .layout {
-      display: flex;
-      width: 100%;
-    }
-
-    /* SIDEBAR */
-    .sidebar {
-      width: var(--sidebar-width);
-      background: linear-gradient(180deg, #e5e7f5, #f9fafb);
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      padding: 16px 12px;
-      gap: 16px;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      background: #ffffff;
-      box-shadow: 0 4px 10px rgba(148, 163, 184, 0.25);
-    }
-
-    .logo-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 999px;
-      background: conic-gradient(from 210deg, #fb923c, #fbbf24, #22c55e, #06b6d4, #6366f1, #fb923c);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      color: #ffffff;
-      font-size: 14px;
-      box-shadow: 0 0 0 2px #ffffff;
-    }
-
-    .logo-text-main {
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      font-size: 13px;
-      color: #111827;
-    }
-
-    .logo-text-sub {
-      font-size: 11px;
-      color: var(--text-soft);
-    }
-
-    .sidebar-section-title {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--text-soft);
-      margin: 10px 4px 4px;
-    }
-
-    .nav {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .nav-btn {
-      width: 100%;
-      border: none;
-      text-align: left;
-      padding: 8px 10px;
-      border-radius: 999px;
-      background: transparent;
-      color: var(--text-soft);
-      font-size: 13px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      transition: 0.15s;
-    }
-
-    .nav-btn span.icon {
-      width: 18px;
-      text-align: center;
-      opacity: 0.85;
-    }
-
-    .nav-btn.active,
-    .nav-btn:hover {
-      background: rgba(249, 115, 22, 0.08);
-      color: #111827;
-    }
-
-    .sidebar-footer {
-      margin-top: auto;
-      font-size: 11px;
-      color: var(--text-soft);
-      border-top: 1px solid var(--border);
-      padding-top: 10px;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 2px 6px;
-      border-radius: 999px;
-      background: rgba(148, 163, 184, 0.2);
-      font-size: 10px;
-      margin-top: 4px;
-      color: #111827;
-    }
-
-    .badge span.dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: #22c55e;
-    }
-
-    /* MAIN */
-    .main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      padding: 16px 18px;
-      gap: 12px;
-    }
-
-    .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .top-title {
-      font-size: 18px;
-      font-weight: 600;
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-      color: #111827;
-    }
-
-    .top-sub {
-      font-size: 12px;
-      color: var(--text-soft);
-    }
-
-    .top-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .pill {
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-size: 11px;
-      background: #ffffff;
-      border: 1px solid var(--border);
-      color: var(--text-soft);
-    }
-
-    .btn-primary {
-      border: none;
-      padding: 6px 12px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, #fb923c, #f97316);
-      color: #ffffff;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 3px 10px rgba(249, 115, 22, 0.4);
-    }
-
-    .btn-primary:hover {
-      filter: brightness(1.05);
-    }
-
-    .btn-outline {
-      border-radius: 999px;
-      padding: 5px 10px;
-      border: 1px solid var(--border);
-      background: #ffffff;
-      color: var(--text-soft);
-      font-size: 12px;
-      cursor: pointer;
-    }
-
-    .btn-outline:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: #fff7ed;
-    }
-
-    /* CONTENT */
-    .content {
-      flex: 1;
-      display: flex;
-      gap: 12px;
-      min-height: 0;
-    }
-
-    .left-column {
-      flex: 2;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      min-width: 0;
-    }
-
-    .right-column {
-      flex: 1.2;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      min-width: 260px;
-    }
-
-    .card {
-      background: var(--card);
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      padding: 10px 12px;
-      box-shadow: 0 10px 25px rgba(148, 163, 184, 0.18);
-    }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 6px;
-      gap: 8px;
-    }
-
-    .card-title {
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: #374151;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .card-title-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-        background: var(--accent);
-    }
-
-    .card-subtitle {
-      font-size: 11px;
-      color: var(--text-soft);
-    }
-
-    .grid {
-      display: grid;
-      gap: 8px;
-    }
-
-    .grid-4 {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-
-    .grid-3 {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .grid-2 {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .kpi-card {
-    .dashboard-hero {
-      display: grid;
-      grid-template-columns: 1.6fr 1fr;
-      gap: 10px;
-      align-items: center;
-      background: linear-gradient(120deg, #fff7ed, #e0f2fe);
-      border: 1px solid #fcd34d;
-    }
-
-    .hero-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: #0f172a;
-      margin-bottom: 4px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .hero-title .emoji {
-      font-size: 20px;
-    }
-
-    .hero-subtitle {
-      color: #475569;
-      font-size: 13px;
-      line-height: 1.4;
-      margin-bottom: 8px;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .hero-actions .btn-outline {
-      background: #ffffff;
-      border-color: #f97316;
-      color: #b45309;
-    }
-
-    .hero-actions .btn-outline:hover {
-      background: #fff7ed;
-    }
-
-    .pill-stack {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .pill-strong {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #0ea5e9;
-      color: #0b1726;
-      border: none;
-      padding: 6px 10px;
-      border-radius: 12px;
-      font-weight: 600;
-      box-shadow: 0 6px 16px rgba(14, 165, 233, 0.35);
-      font-size: 13px;
-    }
-
-    .pill-ghost {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(255, 255, 255, 0.4);
-      padding: 6px 10px;
-      border-radius: 12px;
-      border: 1px dashed #cbd5e1;
-      color: #0f172a;
-      font-weight: 600;
-      font-size: 12px;
-    }
-
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 8px;
-    }
-
-    .guide-card {
-      display: grid;
-      grid-template-columns: 1.8fr 1fr;
-      gap: 12px;
-      align-items: center;
-      padding: 12px;
-      border: 1px dashed #f59e0b;
-      background: linear-gradient(90deg, rgba(255, 247, 237, 0.9), #ffffff);
-    }
-
-    .guide-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      font-weight: 700;
-      color: #b45309;
-      margin-bottom: 4px;
-    }
-
-    .guide-steps {
-      display: grid;
-      gap: 6px;
-      color: #0f172a;
-      font-size: 12px;
-    }
-
-    .guide-step {
-      display: flex;
-      gap: 8px;
-      align-items: flex-start;
-      padding: 8px;
-      border-radius: 10px;
-      border: 1px solid #fde68a;
-      background: #fffaf0;
-    }
-
-    .guide-step .icon {
-      width: 22px;
-      height: 22px;
-      border-radius: 8px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: #f97316;
-      color: #ffffff;
-      font-weight: 700;
-      font-size: 12px;
-      flex-shrink: 0;
-      box-shadow: 0 6px 16px rgba(249, 115, 22, 0.25);
-    }
-
-    .guide-step strong {
-      display: block;
-      color: #b45309;
-    }
-
-    .kpi-card {
-      padding: 10px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: #ffffff;
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .kpi-card .kpi-icon {
-      width: 34px;
-      height: 34px;
-      border-radius: 10px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--accent-soft);
-      color: #c2410c;
-      font-size: 16px;
-    }
-
-    .kpi-label {
-      font-size: 11px;
-      color: var(--text-soft);
-      margin-bottom: 4px;
-      margin-bottom: 2px;
-    }
-
-    .kpi-value {
-      font-size: 18px;
-      font-weight: 600;
-      color: #111827;
-      font-size: 19px;
-      font-weight: 700;
-      color: #0f172a;
-      line-height: 1.2;
-    }
-
-    .kpi-tag {
-      font-size: 10px;
-      color: var(--accent);
-      color: #b45309;
-      margin-top: 1px;
-    }
-
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 10px;
-    }
-
-    .mini-title {
-      font-size: 12px;
-      font-weight: 700;
-      color: #0f172a;
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .chip-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 8px;
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
-      border-radius: 10px;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      font-size: 12px;
-      color: #0f172a;
-    }
-
-    .chip strong {
-      color: #b45309;
-    }
-
-    .timeline {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .timeline-item {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 8px;
-      padding: 8px;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-    }
-
-    .timeline-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      background: #f97316;
-      margin-top: 2px;
-      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
-    }
-
-    .timeline-title {
-      font-weight: 700;
-      font-size: 13px;
-      color: #0f172a;
-    }
-
-    .timeline-sub {
-      color: #475569;
-      font-size: 12px;
-    }
-
-    .timeline-meta {
-      font-size: 11px;
-      color: #b45309;
-      margin-top: 2px;
-    }
-
-    .quality-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .quality-item {
-      padding: 8px;
-      border-radius: 10px;
-      border: 1px dashed #f97316;
-      background: #fff7ed;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12px;
-      color: #7c2d12;
-    }
-
-    .quality-item span.label {
-      font-weight: 600;
-    }
-
-    .news-frame {
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      overflow: hidden;
-      height: 280px;
-      background: #ffffff;
-    }
-
-    .news-frame iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    /* TABLES & SCROLL */
-    .table-wrapper {
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: #ffffff;
-      overflow-y: auto;
-      overflow-x: hidden;
-      max-height: 260px;
-      display: flex;
-      flex-direction: column;
-    }
-@@ -548,50 +810,53 @@
-    }
-
-    @media (max-width: 960px) {
-      body {
-        font-size: 13px;
-      }
-      .sidebar {
-        display: none;
-      }
-      .top-bar {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .content {
-        flex-direction: column;
-      }
-      .form-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-      .grid-4 {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-      .grid-3 {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-      .guide-card {
-        grid-template-columns: 1fr;
-      }
-      #toastContainer {
-        left: 16px;
-        right: 16px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="layout">
-    <aside class="sidebar">
-      <div class="logo">
-        <div class="logo-icon">V</div>
-        <div>
-          <div class="logo-text-main">VOLPEX</div>
-          <div class="logo-text-sub">CRM Google Sheets</div>
-        </div>
-      </div>
-
-      <div class="sidebar-section-title">Navigazione</div>
-      <div class="nav">
-        <button
-          class="nav-btn active"
-          data-target="sec-dashboard"
-          onclick="switchSection('sec-dashboard')"
-        >
-@@ -655,95 +920,227 @@
-      </div>
-    </aside>
-
-    <main class="main">
-      <div class="top-bar">
-        <div>
-          <div class="top-title">
-            VOLPEX CRM
-            <span class="top-sub">
-              Gestione clienti, contratti, device &amp; riparazioni
-            </span>
-          </div>
-        </div>
-        <div class="top-actions">
-          <div class="pill">Foglio: <strong>VOLPEX</strong></div>
-          <button type="button" class="btn-outline" onclick="refreshAll()">
-            Aggiorna dati
-          </button>
-        </div>
-      </div>
-
-      <div class="content">
-        <div class="left-column">
-          <!-- DASHBOARD -->
-          <section id="sec-dashboard" class="section active">
-            <div class="card">
-              <div class="card-header">
-                <div class="card-title">
-                  <span class="card-title-dot"></span>
-                  Riepilogo veloce
-            <div class="card dashboard-hero">
-              <div>
-                <div class="hero-title">
-                  <span class="emoji">🧭</span> Dashboard operativa
-                </div>
-                <div class="card-subtitle">
-                  Panoramica clienti, contratti e attività oggi
-                <div class="hero-subtitle">
-                  Tutto quello che serve in un colpo d'occhio: metriche live,
-                  prossime azioni e link rapidi per inserimenti veloci.
-                </div>
-                <div class="pill-stack">
-                  <div class="pill-strong">Aggiorna flusso dati</div>
-                  <div class="pill-ghost">Foglio connesso: VOLPEX</div>
-                </div>
-              </div>
-              <div>
-                <div class="mini-title">Azioni veloci</div>
-                <div class="hero-actions">
-                  <button class="btn-outline" onclick="switchSection('sec-nuovo')">
-                    ✏️ Nuovo contratto
-                  </button>
-                  <button class="btn-outline" onclick="switchSection('sec-device')">
-                    📱 Vendita device
-                  </button>
-                  <button class="btn-outline" onclick="switchSection('sec-import')">
-                    ⬆️ Import CSV
-                  </button>
-                  <button class="btn-outline" onclick="refreshAll()">
-                    🔄 Aggiorna dati
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div class="card guide-card">
-              <div>
-                <div class="guide-title">📌 Cosa fare adesso</div>
-                <div class="guide-steps">
-                  <div class="guide-step">
-                    <div class="icon">1</div>
-                    <div>
-                      <strong>Importa o aggiorna i dati esistenti</strong>
-                      Usa "Import CSV" per caricare il foglio Google esistente o
-                      premi "Aggiorna dati" per sincronizzare i widget.
-                    </div>
-                  </div>
-                  <div class="guide-step">
-                    <div class="icon">2</div>
-                    <div>
-                      <strong>Inserisci subito una nuova scheda</strong>
-                      Apri "Nuovo contratto" o "Vendita device" per registrare
-                      il prossimo cliente senza abbandonare la dashboard.
-                    </div>
-                  </div>
-                  <div class="guide-step">
-                    <div class="icon">3</div>
-                    <div>
-                      <strong>Controlla attività e scadenze</strong>
-                      Consulta KPI, priorità del giorno e timeline per sapere quali
-                      contatti gestire per primi.
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="grid grid-3">
-                <div class="kpi-card">
-              <div class="guide-steps" style="margin-top:0;">
-                <div class="guide-step" style="background:#ecfeff;border-color:#bae6fd;">
-                  <div class="icon" style="background:#0ea5e9;box-shadow:0 6px 16px rgba(14,165,233,0.25);">💡</div>
-                  <div>
-                    <strong>Suggerimento rapido</strong>
-                    Seleziona un cliente nella lista a destra per aprire subito
-                    storico contratti, device e avviare WhatsApp con un click.
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="kpi-grid" style="margin-top:10px;">
-              <div class="kpi-card">
-                <div class="kpi-icon">🧑‍🤝‍🧑</div>
-                <div>
-                  <div class="kpi-label">Clienti totali</div>
-                  <div class="kpi-value" id="kpiTotClienti">-</div>
-                  <div class="kpi-tag">Anagrafica</div>
-                  <div class="kpi-tag">Anagrafica aggiornata</div>
-                </div>
-                <div class="kpi-card">
-              </div>
-              <div class="kpi-card">
-                <div class="kpi-icon">📑</div>
-                <div>
-                  <div class="kpi-label">Contratti totali</div>
-                  <div class="kpi-value" id="kpiTotContratti">-</div>
-                  <div class="kpi-tag">Mobile / Fisso</div>
-                </div>
-                <div class="kpi-card">
-              </div>
-              <div class="kpi-card">
-                <div class="kpi-icon">📱</div>
-                <div>
-                  <div class="kpi-label">Device venduti</div>
-                  <div class="kpi-value" id="kpiTotDevice">-</div>
-                  <div class="kpi-tag">Vendite terminali</div>
-                  <div class="kpi-tag">Terminali & bundle</div>
-                </div>
-              </div>
-              <div class="grid grid-3" style="margin-top:8px;">
-                <div class="kpi-card">
-                  <div class="kpi-label">Riparazioni totali</div>
-              <div class="kpi-card">
-                <div class="kpi-icon">🛠️</div>
-                <div>
-                  <div class="kpi-label">Riparazioni</div>
-                  <div class="kpi-value" id="kpiTotRiparazioni">-</div>
-                  <div class="kpi-tag">Assistenza tecnica</div>
-                </div>
-                <div class="kpi-card">
-              </div>
-              <div class="kpi-card">
-                <div class="kpi-icon">🎂</div>
-                <div>
-                  <div class="kpi-label">Compleanni oggi</div>
-                  <div class="kpi-value" id="kpiCompleanniOggi">-</div>
-                  <div class="kpi-tag">Da contattare</div>
-                  <div class="kpi-tag">Clienti da contattare</div>
-                </div>
-                <div class="kpi-card">
-              </div>
-              <div class="kpi-card">
-                <div class="kpi-icon">⏳</div>
-                <div>
-                  <div class="kpi-label">Scadenze mese</div>
-                  <div class="kpi-value" id="kpiScadenzeMese">-</div>
-                  <div class="kpi-tag">Fine vincoli offerte</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="dashboard-grid" style="margin-top:10px;">
-              <div class="card">
-                <div class="mini-title">Priorità del giorno</div>
-                <div class="chip-row">
-                  <div class="chip">🎂 Compleanni: <strong id="dashCountCompleanni">-</strong></div>
-                  <div class="chip">⏳ Scadenze mese: <strong id="dashCountScadenze">-</strong></div>
-                  <div class="chip">📞 Contatti mancanti: <strong id="dashMissingCount">-</strong></div>
-                </div>
-                <div class="hero-actions">
-                  <button class="btn-primary" onclick="switchSection('sec-report')">
-                    Vai ai report
-                  </button>
-                  <button class="btn-outline" onclick="switchSection('sec-riparazioni')">
-                    Apri riparazioni
-                  </button>
-                  <button class="btn-outline" onclick="switchSection('sec-nuovo')">
-                    Inserisci nuovo
-                  </button>
-                </div>
-              </div>
-
-              <div class="card">
-                <div class="mini-title">Agenda prossimi giorni</div>
-                <div id="dashTimeline" class="timeline"></div>
-              </div>
-            </div>
-
-            <div class="dashboard-grid" style="margin-top:10px;">
-              <div class="card">
-                <div class="mini-title">Ultimi contratti inseriti</div>
-                <div class="table-wrapper" style="max-height:200px;">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Data</th>
-                        <th>Cliente</th>
-                        <th>Compagnia</th>
-                        <th>Tecnologia</th>
-                        <th>Numero</th>
-                      </tr>
-                    </thead>
-                    <tbody id="dashContrattiRecenti"></tbody>
-                  </table>
-                </div>
-              </div>
-
-              <div class="card">
-                <div class="mini-title">Qualità dei dati</div>
-                <div class="quality-list" id="dashQualityList"></div>
-              </div>
-            </div>
-          </section>
-
-          <!-- NUOVO CLIENTE + CONTRATTO -->
-          <section id="sec-nuovo" class="section">
-            <div class="card">
-              <div class="card-header">
-                <div class="card-title">
-                  <span class="card-title-dot"></span>
-                  Nuovo cliente + contratto
-                </div>
-                <div class="card-subtitle">
-                  Se il cliente non esiste viene creato in automatico dal codice fiscale.
-                </div>
-              </div>
-
-              <form id="formNewClienteContratto">
-                <div class="section-body">
-                  <div class="badge-soft">Dati cliente</div>
-                  <div class="form-grid">
-                    <div class="form-field">
-                      <label>Nome</label>
-                      <input id="nc_nome_cliente" type="text" />
-                    </div>
-                    <div class="form-field">
-                      <label>Cognome</label>
-@@ -2153,79 +2550,316 @@
-        ct.vincolo_offerta_mesi || '';
-      document.getElementById('nc_telefono_incluso').value =
-        ct.telefono_incluso || '';
-      document.getElementById('nc_imei').value = ct.imei || '';
-      document.getElementById('nc_modello').value = ct.modello || '';
-      document.getElementById('nc_tipo_pagamento').value = ct.tipo_pagamento || '';
-      document.getElementById('nc_mesi_vincolo_telefono').value =
-        ct.mesi_vincolo_telefono || '';
-      document.getElementById('nc_data_fine_vincolo_offerta').value = normalizeDate(
-        ct.data_fine_vincolo_offerta
-      );
-      document.getElementById('nc_data_fine_vincolo_telefono').value =
-        normalizeDate(ct.data_fine_vincolo_telefono);
-
-      const lbl = document.getElementById('nc_submit_label');
-      if (lbl) lbl.textContent = 'Salva modifiche contratto';
-    }
-
-    function updateDashboardKpis() {
-      const elCli = document.getElementById('kpiTotClienti');
-      const elCt = document.getElementById('kpiTotContratti');
-      const elDv = document.getElementById('kpiTotDevice');
-      const elRp = document.getElementById('kpiTotRiparazioni');
-      const elCompl = document.getElementById('kpiCompleanniOggi');
-      const elScad = document.getElementById('kpiScadenzeMese');
-      const elDashCompl = document.getElementById('dashCountCompleanni');
-      const elDashScad = document.getElementById('dashCountScadenze');
-
-      if (elCli) elCli.textContent = clientiCache.length;
-      if (elCt) elCt.textContent = contrattiCache.length;
-      if (elDv) elDv.textContent = deviceCache.length;
-      if (elRp) elRp.textContent = riparazioniCache.length;
-
-      const today = normalizeDate(new Date());
-      const todayMD = today ? today.slice(5) : '';
-      let countBday = 0;
-      clientiCache.forEach(function (c) {
-        let dn = '';
-        if (c.data_nascita) {
-          dn = normalizeDate(c.data_nascita);
-        } else {
-          dn = birthDateFromCF(c.codice_fiscale);
-        }
-        if (!dn) return;
-        if (dn.slice(5) === todayMD) countBday++;
-      });
-      if (elCompl) elCompl.textContent = countBday;
-      if (elDashCompl) elDashCompl.textContent = countBday;
-
-      const meseCorr = today ? today.slice(0, 7) : '';
-      let countScad = 0;
-      contrattiCache.forEach(function (ct) {
-        const df = normalizeDate(ct.data_fine_vincolo_offerta);
-        if (!df) return;
-        if (df.slice(0, 7) === meseCorr) countScad++;
-      });
-      if (elScad) elScad.textContent = countScad;
-      if (elDashScad) elDashScad.textContent = countScad;
-    }
-
-    function daysUntilMonthDay(md) {
-      if (!md) return null;
-      const parts = md.split('-');
-      if (parts.length !== 2) return null;
-      const m = parseInt(parts[0], 10);
-      const d = parseInt(parts[1], 10);
-      if (!m || !d) return null;
-      const today = new Date();
-      const todayStart = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate()
-      );
-      let target = new Date(today.getFullYear(), m - 1, d);
-      if (target < todayStart) {
-        target = new Date(today.getFullYear() + 1, m - 1, d);
-      }
-      const diff = Math.round((target - todayStart) / (1000 * 60 * 60 * 24));
-      return diff;
-    }
-
-    function daysFromToday(dateStr) {
-      const norm = normalizeDate(dateStr);
-      const todayNorm = normalizeDate(new Date());
-      if (!norm || !todayNorm) return null;
-      const start = new Date(todayNorm + 'T00:00:00');
-      const target = new Date(norm + 'T00:00:00');
-      return Math.round((target - start) / (1000 * 60 * 60 * 24));
-    }
-
-    function formatCountdownLabel(days) {
-      if (days === null || days === undefined) return '';
-      if (days === 0) return 'Oggi';
-      if (days === 1) return 'Domani';
-      if (days < 0) return 'Scaduto';
-      return 'Tra ' + days + ' giorni';
-    }
-
-    function renderDashboardActivities() {
-      const timeline = document.getElementById('dashTimeline');
-      if (!timeline) return;
-      timeline.innerHTML = '';
-
-      const events = [];
-
-      // Compleanni prossimi 14 giorni
-      clientiCache.forEach(function (c) {
-        let dn = '';
-        if (c.data_nascita) {
-          dn = normalizeDate(c.data_nascita);
-        } else {
-          dn = birthDateFromCF(c.codice_fiscale);
-        }
-        if (!dn) return;
-        const md = dn.slice(5);
-        const days = daysUntilMonthDay(md);
-        if (days === null || days > 14) return;
-        const nomeCli = (c.nome || '') + ' ' + (c.cognome || '');
-        events.push({
-          days: days,
-          title: '🎂 ' + nomeCli.trim(),
-          sub: 'Compleanno cliente',
-          meta: formatCountdownLabel(days)
-        });
-      });
-
-      // Scadenze vincoli prossimi 30 giorni
-      contrattiCache.forEach(function (ct) {
-        const df = normalizeDate(ct.data_fine_vincolo_offerta);
-        if (!df) return;
-        const days = daysFromToday(df);
-        if (days === null || days < 0 || days > 30) return;
-        const comp = ct.compagnia || 'Compagnia';
-        const tec = ct.tecnologia || 'Tecnologia';
-        const off = ct.nome_offerta || 'Offerta in scadenza';
-        events.push({
-          days: days,
-          title: '⏳ ' + off,
-          sub: comp + ' • ' + tec,
-          meta: formatCountdownLabel(days)
-        });
-      });
-
-      events.sort(function (a, b) {
-        return a.days - b.days;
-      });
-
-      if (!events.length) {
-        const empty = document.createElement('div');
-        empty.className = 'timeline-sub';
-        empty.textContent = 'Nessuna scadenza imminente.';
-        timeline.appendChild(empty);
-        return;
-      }
-
-      events.slice(0, 6).forEach(function (ev) {
-        const row = document.createElement('div');
-        row.className = 'timeline-item';
-        row.innerHTML =
-          '<div class="timeline-dot"></div>' +
-          '<div>' +
-          '<div class="timeline-title">' +
-          ev.title +
-          '</div>' +
-          '<div class="timeline-sub">' +
-          ev.sub +
-          '</div>' +
-          '<div class="timeline-meta">' +
-          ev.meta +
-          '</div>' +
-          '</div>';
-        timeline.appendChild(row);
-      });
-    }
-
-    function renderContrattiRecenti() {
-      const tbody = document.getElementById('dashContrattiRecenti');
-      if (!tbody) return;
-      tbody.innerHTML = '';
-
-      const clientiByCF = {};
-      clientiCache.forEach(function (c) {
-        if (c.codice_fiscale) {
-          clientiByCF[String(c.codice_fiscale).toUpperCase()] = c;
-        }
-      });
-
-      function getDataContratto(ct) {
-        return (
-          normalizeDate(ct.data_contratto) ||
-          normalizeDate(ct.data_attivazione) ||
-          normalizeDate(ct.data_fine_vincolo_offerta)
-        );
-      }
-
-      const sorted = contrattiCache
-        .slice()
-        .sort(function (a, b) {
-          const da = getDataContratto(a);
-          const db = getDataContratto(b);
-          if (!da && !db) return 0;
-          if (!da) return 1;
-          if (!db) return -1;
-          return new Date(db) - new Date(da);
-        })
-        .slice(0, 6);
-
-      if (!sorted.length) {
-        const tr = document.createElement('tr');
-        tr.innerHTML =
-          '<td colspan="5" style="text-align:center;color:var(--text-soft);">Nessun contratto caricato.</td>';
-        tbody.appendChild(tr);
-        return;
-      }
-
-      sorted.forEach(function (ct) {
-        const cf = String(ct.codice_fiscale || '').toUpperCase();
-        const cli = clientiByCF[cf];
-        const nomeCli = cli
-          ? (cli.nome || '') + ' ' + (cli.cognome || '')
-          : cf || '';
-        const data = getDataContratto(ct);
-        const tr = document.createElement('tr');
-        tr.innerHTML =
-          '<td>' +
-          formatDateDisplay(data) +
-          '</td>' +
-          '<td>' +
-          nomeCli.trim() +
-          '</td>' +
-          '<td>' +
-          (ct.compagnia || '') +
-          '</td>' +
-          '<td>' +
-          (ct.tecnologia || '') +
-          '</td>' +
-          '<td>' +
-          (ct.numero_lavorato || '') +
-          '</td>';
-        tbody.appendChild(tr);
-      });
-    }
-
-    function renderDataQuality() {
-      const list = document.getElementById('dashQualityList');
-      const badge = document.getElementById('dashMissingCount');
-      if (badge) badge.textContent = '-';
-      if (!list) return;
-      list.innerHTML = '';
-
-      const missingContacts = clientiCache.filter(function (c) {
-        return !c.telefono && !c.email;
-      });
-
-      if (badge) badge.textContent = missingContacts.length;
-
-      if (!missingContacts.length) {
-        const ok = document.createElement('div');
-        ok.className = 'timeline-sub';
-        ok.textContent = 'Tutti i clienti hanno almeno un contatto.';
-        list.appendChild(ok);
-        return;
-      }
-
-      missingContacts.slice(0, 4).forEach(function (c) {
-        const row = document.createElement('div');
-        row.className = 'quality-item';
-        row.innerHTML =
-          '<span class="label">' +
-          ((c.nome || '') + ' ' + (c.cognome || '')).trim() +
-          '</span>' +
-          '<span>' +
-          (c.codice_fiscale || '').toUpperCase() +
-          '</span>';
-        list.appendChild(row);
-      });
-
-      if (missingContacts.length > 4) {
-        const extra = document.createElement('div');
-        extra.className = 'timeline-meta';
-        extra.textContent =
-          '... + ' + (missingContacts.length - 4) + ' altri senza contatti.';
-        list.appendChild(extra);
-      }
-    }
-
-    function refreshDashboardView() {
-      updateDashboardKpis();
-      renderDashboardActivities();
-      renderContrattiRecenti();
-      renderDataQuality();
-    }
-
-    function renderCompleanniOggi() {
-      const tbody = document.getElementById('tabCompleanni');
-      if (!tbody) return;
-      tbody.innerHTML = '';
-      const today = normalizeDate(new Date());
-      const todayMD = today ? today.slice(5) : '';
-
-      clientiCache.forEach(function (c) {
-        let dn = '';
-        if (c.data_nascita) {
-          dn = normalizeDate(c.data_nascita);
-        } else {
-          dn = birthDateFromCF(c.codice_fiscale);
-        }
-        if (!dn) return;
-        if (dn.slice(5) !== todayMD) return;
-        const tr = document.createElement('tr');
-        tr.innerHTML =
-          '<td>' +
-          (c.nome || '') +
-          ' ' +
-          (c.cognome || '') +
-          '</td>' +
-@@ -2599,57 +3233,156 @@
-      const mnp = document.getElementById('nc_mnp').value || '';
-      const dataAtt = document.getElementById('nc_data_attivazione').value || '';
-      if (mnp === 'SI' && dataAtt) {
-        document.getElementById('nc_data_portabilita').value = dataAtt;
-      }
-    }
-
-    function parseImportText() {
-      const raw = document.getElementById('csvRaw').value || '';
-      const lines = raw
-        .split(/\r?\n/)
-        .map(function (l) {
-          return l.trim();
-        })
-        .filter(function (l) {
-          return l.length > 0;
-        });
-      if (lines.length < 2) return [];
-
-      function splitLine(line) {
-        if (line.indexOf('\t') !== -1) return line.split('\t');
-        if (line.indexOf(';') !== -1) return line.split(';');
-        return line.split(',');
-      }
-
-      const header = splitLine(lines[0]);
-      function normalizeHeaderName(str) {
-        return (str || '')
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '')
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, '')
-          .trim();
-      }
-
-      const canonicalHeaders = [
-        'Nome',
-        'Cognome',
-        'Telefono',
-        'Email',
-        'Codice fiscale',
-        'Data nascita',
-        'Note',
-        'Data contratto',
-        'Tipo cliente',
-        'Tipo attivazione',
-        'Tecnologia',
-        'Compagnia',
-        'Convergenza',
-        'MNP',
-        'ICCID vecchio',
-        'ICCID nuovo',
-        'Data attivazione',
-        'Data portabilità',
-        'Numero lavorato',
-        'Nome offerta',
-        'Costo offerta',
-        'Vincolo offerta (mesi)',
-        'Telefono incluso',
-        'IMEI',
-        'Modello',
-        'Tipo pagamento',
-        'Mesi vincolo telefono',
-        'Data fine vincolo offerta',
-        'Data fine vincolo telefono'
-      ];
-
-      const headerAliases = {
-        Nome: ['nome cliente', 'intestatario'],
-        Cognome: ['cognome cliente'],
-        Telefono: ['cell', 'cellulare', 'telefono cliente', 'recapito'],
-        Email: ['mail', 'e-mail', 'pec'],
-        'Codice fiscale': [
-          'cf',
-          'codicefiscale',
-          'cod fiscal',
-          'cod. fiscale',
-          'codfiscale'
-        ],
-        'Data nascita': ['nascita', 'data di nascita'],
-        Note: ['note cliente', 'note contratto'],
-        'Data contratto': ['data stipula', 'data sottoscrizione'],
-        'Tipo cliente': ['tipologia cliente'],
-        'Tipo attivazione': ['tipologia attivazione'],
-        Tecnologia: ['tech', 'rete'],
-        Compagnia: ['operatore', 'brand'],
-        Convergenza: ['bundle', 'fisso+mobile'],
-        MNP: ['portabilita', 'mobile number portability'],
-        'ICCID vecchio': ['iccid precedente'],
-        'ICCID nuovo': ['iccid'],
-        'Data attivazione': ['attivazione', 'data attiv'],
-        'Data portabilità': ['data portabilita', 'portabilita data'],
-        'Numero lavorato': ['numero', 'num lavorato'],
-        'Nome offerta': ['offerta', 'nome pacchetto'],
-        'Costo offerta': ['costo', 'prezzo offerta'],
-        'Vincolo offerta (mesi)': ['vincolo', 'durata offerta'],
-        'Telefono incluso': ['tel incluso'],
-        IMEI: ['imei dispositivo'],
-        Modello: ['modello telefono'],
-        'Tipo pagamento': ['pagamento', 'metodo pagamento'],
-        'Mesi vincolo telefono': ['vincolo telefono'],
-        'Data fine vincolo offerta': ['fine vincolo offerta', 'scadenza offerta'],
-        'Data fine vincolo telefono': ['fine vincolo telefono', 'scadenza telefono']
-      };
-
-      const headerLookup = {};
-      canonicalHeaders.forEach(function (h) {
-        headerLookup[normalizeHeaderName(h)] = h;
-        const aliases = headerAliases[h] || [];
-        aliases.forEach(function (alias) {
-          headerLookup[normalizeHeaderName(alias)] = h;
-        });
-      });
-
-      const rawHeader = splitLine(lines[0]);
-      const header = rawHeader.map(function (h) {
-        const normalized = normalizeHeaderName(h);
-        return headerLookup[normalized] || h.trim();
-      });
-      const rows = [];
-      for (let i = 1; i < lines.length; i++) {
-        const cols = splitLine(lines[i]);
-        const obj = {};
-        header.forEach(function (h, idx) {
-          obj[h.trim()] = cols[idx] || '';
-          const val = cols[idx] || '';
-          obj[h] = typeof val === 'string' ? val.trim() : val;
-        });
-
-        canonicalHeaders.forEach(function (h) {
-          if (!Object.prototype.hasOwnProperty.call(obj, h)) {
-            obj[h] = '';
-          }
-        });
-        rows.push(obj);
-      }
-      return rows;
-    }
-
-    function previewImport() {
-      const rows = parseImportText();
-      importRows = rows;
-      const tbody = document.getElementById('csvPreviewBody');
-      const summary = document.getElementById('importSummary');
-      const bar = document.getElementById('importProgress');
-      if (tbody) tbody.innerHTML = '';
-      if (bar) bar.style.width = '0%';
-
-      if (!rows.length) {
-        if (summary)
-          summary.textContent = 'Nessuna riga da importare (controlla il testo).';
-        return;
-      }
-
-      rows.forEach(function (r, idx) {
-        const tr = document.createElement('tr');
-        tr.innerHTML =
-          '<td>' +
-@@ -2756,85 +3489,85 @@
-      }
-
-      if (summary) {
-        summary.textContent =
-          'Import finito. OK: ' +
-          ok +
-          ', Errori: ' +
-          err +
-          (err ? ' (controlla la console del browser per dettagli)' : '');
-      }
-      showToast(
-        'Import terminato. OK: ' + ok + ', Errori: ' + err,
-        err ? 'error' : 'success'
-      );
-      refreshAll();
-    }
-
-    async function loadClienti() {
-      try {
-        const json = await apiGet('listClienti');
-        clientiCache = json.data || [];
-        renderListaClienti(
-          document.getElementById('searchClienteTerm').value || ''
-        );
-        renderCompleanniOggi();
-        updateDashboardKpis();
-        refreshDashboardView();
-      } catch (err) {
-        console.error(err);
-        showToast('Errore nel caricamento clienti', 'error');
-      }
-    }
-
-    async function loadContratti() {
-      try {
-        const json = await apiGet('listContratti');
-        contrattiCache = json.data || [];
-        updateDashboardKpis();
-        refreshDashboardView();
-        updateReportFilters();
-      } catch (err) {
-        console.error(err);
-        showToast('Errore nel caricamento contratti', 'error');
-      }
-    }
-
-    async function loadDevice() {
-      try {
-        const json = await apiGet('listDevice');
-        deviceCache = json.data || [];
-        updateDashboardKpis();
-        refreshDashboardView();
-      } catch (err) {
-        console.error(err);
-        showToast('Errore nel caricamento device', 'error');
-      }
-    }
-
-    async function loadRiparazioni() {
-      try {
-        const json = await apiGet('listRiparazioni');
-        riparazioniCache = json.data || [];
-        updateDashboardKpis();
-        refreshDashboardView();
-      } catch (err) {
-        console.error(err);
-        showToast('Errore nel caricamento riparazioni', 'error');
-      }
-    }
-
-    async function refreshAll() {
-      await loadClienti();
-      await loadContratti();
-      await loadDevice();
-      await loadRiparazioni();
-    }
-
-    function setupForms() {
-      const searchInput = document.getElementById('searchClienteTerm');
-      if (searchInput) {
-        searchInput.addEventListener('input', function () {
-          renderListaClienti(searchInput.value || '');
-        });
-      }
-
-      const formNC = document.getElementById('formNewClienteContratto');
-      if (formNC) {
-        formNC.addEventListener('submit', async function (e) {
-          e.preventDefault();
+ (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
+diff --git a/index.html b/index.html
+index d3da458699bcb4976e620ed644be59437ecc535f..103edee136c7e496e503669893c11af7ba436b95 100644
+--- a/index.html
++++ b/index.html
+@@ -1,860 +1,907 @@
+ <!DOCTYPE html>
+ <html lang="it">
+ <head>
+   <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <title>VOLPEX CRM</title>
+   <style>
+     :root {
+-      --bg: #f3f4f8;
+-      --bg-alt: #e5e7f0;
+-      --card: #ffffff;
++      --bg: #0f172a;
++      --surface: #0b1221;
++      --card: #111a2e;
++      --card-soft: #15213a;
++      --border: #1f2a44;
++      --text: #e5edff;
++      --text-soft: #99a7c2;
+       --accent: #f97316;
+-      --accent-soft: rgba(249, 115, 22, 0.12);
+-      --text: #111827;
+-      --text-soft: #6b7280;
+-      --border: #d1d5db;
+-      --danger: #ef4444;
+-      --success: #22c55e;
++      --accent-2: #22c55e;
++      --accent-soft: rgba(249, 115, 22, 0.16);
++      --radius: 14px;
+       --sidebar-width: 240px;
++      --shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
+     }
+ 
+     * {
+       box-sizing: border-box;
+       margin: 0;
+       padding: 0;
+     }
+ 
+     body {
+-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+-      background: radial-gradient(circle at top, #e5e7f5 0, #f9fafb 40%, #eef2ff 100%);
++      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
++        sans-serif;
++      background: radial-gradient(circle at 20% 20%, rgba(249, 115, 22, 0.08), transparent
++            25%),
++        radial-gradient(circle at 80% 0%, rgba(34, 197, 94, 0.07), transparent 24%),
++        linear-gradient(180deg, #0b1221 0%, #0d1628 35%, #0a1020 100%);
+       color: var(--text);
+       min-height: 100vh;
+       display: flex;
+       font-size: 14px;
+     }
+ 
+     a {
+       color: var(--accent);
+       text-decoration: none;
+     }
+ 
+     .layout {
+       display: flex;
+       width: 100%;
++      max-width: 1600px;
++      margin: 0 auto;
++      padding: 18px 18px 28px;
++      gap: 14px;
+     }
+ 
+     /* SIDEBAR */
+     .sidebar {
+       width: var(--sidebar-width);
+-      background: linear-gradient(180deg, #e5e7f5, #f9fafb);
+-      border-right: 1px solid var(--border);
++      background: linear-gradient(180deg, #121c32, #0c1424);
++      border: 1px solid var(--border);
++      border-radius: var(--radius);
++      padding: 16px 12px;
+       display: flex;
+       flex-direction: column;
+-      padding: 16px 12px;
+-      gap: 16px;
++      gap: 18px;
++      box-shadow: var(--shadow);
+     }
+ 
+     .logo {
+       display: flex;
+       align-items: center;
+-      gap: 8px;
+-      padding: 8px 10px;
+-      border-radius: 999px;
+-      background: #ffffff;
+-      box-shadow: 0 4px 10px rgba(148, 163, 184, 0.25);
++      gap: 10px;
++      padding: 10px 12px;
++      border-radius: var(--radius);
++      background: linear-gradient(120deg, #182641, #111a2e);
++      border: 1px solid var(--border);
++      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+     }
+ 
+     .logo-icon {
+-      width: 32px;
+-      height: 32px;
+-      border-radius: 999px;
+-      background: conic-gradient(from 210deg, #fb923c, #fbbf24, #22c55e, #06b6d4, #6366f1, #fb923c);
+-      display: flex;
+-      align-items: center;
+-      justify-content: center;
++      width: 34px;
++      height: 34px;
++      border-radius: 10px;
++      background: conic-gradient(from 210deg, #fb923c, #22c55e, #06b6d4, #6366f1, #fb923c);
++      display: grid;
++      place-items: center;
++      color: #0b0f1c;
+       font-weight: 800;
+-      color: #ffffff;
+       font-size: 14px;
+-      box-shadow: 0 0 0 2px #ffffff;
++      box-shadow: 0 0 0 2px #0b1221, 0 10px 24px rgba(0, 0, 0, 0.4);
+     }
+ 
+     .logo-text-main {
+-      font-weight: 700;
+-      letter-spacing: 0.06em;
++      font-weight: 800;
++      letter-spacing: 0.08em;
+       text-transform: uppercase;
+       font-size: 13px;
+-      color: #111827;
++      color: #f8fafc;
+     }
+ 
+     .logo-text-sub {
+       font-size: 11px;
+       color: var(--text-soft);
+     }
+ 
+     .sidebar-section-title {
+       font-size: 11px;
+       text-transform: uppercase;
+       letter-spacing: 0.12em;
+       color: var(--text-soft);
+-      margin: 10px 4px 4px;
++      margin: 6px 6px 4px;
+     }
+ 
+     .nav {
+-      display: flex;
+-      flex-direction: column;
+-      gap: 4px;
++      display: grid;
++      gap: 6px;
+     }
+ 
+     .nav-btn {
+       width: 100%;
+-      border: none;
++      border: 1px solid transparent;
+       text-align: left;
+-      padding: 8px 10px;
+-      border-radius: 999px;
++      padding: 9px 12px;
++      border-radius: 12px;
+       background: transparent;
+       color: var(--text-soft);
+       font-size: 13px;
+       display: flex;
+       align-items: center;
+-      gap: 8px;
++      gap: 10px;
+       cursor: pointer;
+-      transition: 0.15s;
++      transition: 0.18s;
+     }
+ 
+     .nav-btn span.icon {
+       width: 18px;
+       text-align: center;
+-      opacity: 0.85;
++      opacity: 0.9;
++      font-size: 15px;
+     }
+ 
+     .nav-btn.active,
+     .nav-btn:hover {
+-      background: rgba(249, 115, 22, 0.08);
+-      color: #111827;
++      background: linear-gradient(120deg, rgba(249, 115, 22, 0.18), rgba(34, 197, 94, 0.12));
++      color: #ffffff;
++      border-color: rgba(249, 115, 22, 0.35);
++      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.35);
+     }
+ 
+     .sidebar-footer {
+       margin-top: auto;
+       font-size: 11px;
+       color: var(--text-soft);
+-      border-top: 1px solid var(--border);
++      border-top: 1px dashed var(--border);
+       padding-top: 10px;
++      line-height: 1.4;
+     }
+ 
+     .badge {
+       display: inline-flex;
+       align-items: center;
+-      gap: 4px;
+-      padding: 2px 6px;
+-      border-radius: 999px;
+-      background: rgba(148, 163, 184, 0.2);
++      gap: 6px;
++      padding: 4px 8px;
++      border-radius: 12px;
++      background: rgba(34, 197, 94, 0.12);
+       font-size: 10px;
+-      margin-top: 4px;
+-      color: #111827;
++      color: #bbf7d0;
++      border: 1px solid rgba(34, 197, 94, 0.35);
++      margin-top: 6px;
+     }
+ 
+     .badge span.dot {
+-      width: 6px;
+-      height: 6px;
++      width: 7px;
++      height: 7px;
+       border-radius: 999px;
+       background: #22c55e;
++      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
+     }
+ 
+     /* MAIN */
+     .main {
+       flex: 1;
+       display: flex;
+       flex-direction: column;
+-      padding: 16px 18px;
+-      gap: 12px;
++      gap: 14px;
+     }
+ 
+     .top-bar {
+       display: flex;
+       align-items: center;
+       justify-content: space-between;
+-      gap: 12px;
++      gap: 14px;
+     }
+ 
+     .top-title {
+-      font-size: 18px;
+-      font-weight: 600;
++      font-size: 22px;
++      font-weight: 800;
+       display: flex;
+       align-items: baseline;
+-      gap: 8px;
+-      color: #111827;
++      gap: 10px;
++      color: #f8fafc;
+     }
+ 
+     .top-sub {
+       font-size: 12px;
+       color: var(--text-soft);
+     }
+ 
+     .top-actions {
+       display: flex;
+       align-items: center;
+       gap: 10px;
+     }
+ 
+     .pill {
+-      padding: 4px 8px;
++      padding: 6px 10px;
+       border-radius: 999px;
+       font-size: 11px;
+-      background: #ffffff;
++      background: rgba(255, 255, 255, 0.06);
+       border: 1px solid var(--border);
+       color: var(--text-soft);
+     }
+ 
+     .btn-primary {
+       border: none;
+-      padding: 6px 12px;
+-      border-radius: 999px;
+-      background: linear-gradient(90deg, #fb923c, #f97316);
+-      color: #ffffff;
++      padding: 8px 14px;
++      border-radius: 12px;
++      background: linear-gradient(120deg, #f97316, #fb923c);
++      color: #0b0f1c;
+       font-size: 13px;
+-      font-weight: 600;
++      font-weight: 700;
+       cursor: pointer;
+-      box-shadow: 0 3px 10px rgba(249, 115, 22, 0.4);
++      box-shadow: 0 10px 24px rgba(249, 115, 22, 0.35);
++      transition: 0.18s ease;
+     }
+ 
+     .btn-primary:hover {
++      transform: translateY(-1px);
+       filter: brightness(1.05);
+     }
+ 
+     .btn-outline {
+-      border-radius: 999px;
+-      padding: 5px 10px;
++      border-radius: 12px;
++      padding: 7px 12px;
+       border: 1px solid var(--border);
+-      background: #ffffff;
+-      color: var(--text-soft);
++      background: rgba(255, 255, 255, 0.04);
++      color: var(--text);
+       font-size: 12px;
+       cursor: pointer;
++      transition: 0.18s;
+     }
+ 
+     .btn-outline:hover {
+       border-color: var(--accent);
+-      color: var(--accent);
+-      background: #fff7ed;
++      color: #fff7ed;
++      background: rgba(249, 115, 22, 0.14);
++      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+     }
+ 
+     /* CONTENT */
+     .content {
+       flex: 1;
+       display: flex;
+       gap: 12px;
+       min-height: 0;
+     }
+ 
+     .left-column {
+       flex: 2;
+       display: flex;
+       flex-direction: column;
+-      gap: 10px;
++      gap: 12px;
+       min-width: 0;
+     }
+ 
+     .right-column {
+-      flex: 1.2;
++      flex: 1.15;
+       display: flex;
+       flex-direction: column;
+-      gap: 10px;
+-      min-width: 260px;
++      gap: 12px;
++      min-width: 280px;
+     }
+ 
+     .card {
+-      background: var(--card);
+-      border-radius: 14px;
++      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0));
++      border-radius: var(--radius);
+       border: 1px solid var(--border);
+-      padding: 10px 12px;
+-      box-shadow: 0 10px 25px rgba(148, 163, 184, 0.18);
++      padding: 12px 14px;
++      box-shadow: var(--shadow);
+     }
+ 
+     .card-header {
+       display: flex;
+       align-items: center;
+       justify-content: space-between;
+-      margin-bottom: 6px;
+-      gap: 8px;
++      margin-bottom: 8px;
++      gap: 10px;
+     }
+ 
+     .card-title {
+       font-size: 13px;
+-      font-weight: 600;
+-      letter-spacing: 0.04em;
++      font-weight: 700;
++      letter-spacing: 0.06em;
+       text-transform: uppercase;
+-      color: #374151;
++      color: #cbd5f5;
+       display: flex;
+       align-items: center;
+-      gap: 6px;
++      gap: 8px;
+     }
+ 
+     .card-title-dot {
+       width: 6px;
+       height: 6px;
+       border-radius: 999px;
+       background: var(--accent);
++      box-shadow: 0 0 0 6px rgba(249, 115, 22, 0.12);
+     }
+ 
+     .card-subtitle {
+       font-size: 11px;
+       color: var(--text-soft);
+     }
+ 
+     .grid {
+       display: grid;
+       gap: 8px;
+     }
+ 
+     .grid-4 {
+       grid-template-columns: repeat(4, minmax(0, 1fr));
+     }
+ 
+     .grid-3 {
+       grid-template-columns: repeat(3, minmax(0, 1fr));
+     }
+ 
+     .grid-2 {
+       grid-template-columns: repeat(2, minmax(0, 1fr));
+     }
+ 
+     .dashboard-hero {
+       display: grid;
+-      grid-template-columns: 1.6fr 1fr;
+-      gap: 10px;
++      grid-template-columns: 1.5fr 1fr;
++      gap: 12px;
+       align-items: center;
+-      background: linear-gradient(120deg, #fff7ed, #e0f2fe);
+-      border: 1px solid #fcd34d;
++      background: linear-gradient(120deg, rgba(249, 115, 22, 0.18), rgba(6, 182, 212, 0.08));
++      border: 1px solid rgba(249, 115, 22, 0.3);
++      border-radius: var(--radius);
++      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+     }
+ 
+     .hero-title {
+-      font-size: 18px;
+-      font-weight: 700;
+-      color: #0f172a;
+-      margin-bottom: 4px;
++      font-size: 20px;
++      font-weight: 800;
++      color: #fff9ed;
++      margin-bottom: 6px;
+       display: flex;
+       align-items: center;
+-      gap: 8px;
++      gap: 10px;
+     }
+ 
+     .hero-title .emoji {
+-      font-size: 20px;
++      font-size: 22px;
+     }
+ 
+     .hero-subtitle {
+-      color: #475569;
++      color: #e2e8f0;
+       font-size: 13px;
+-      line-height: 1.4;
+-      margin-bottom: 8px;
++      line-height: 1.5;
++      margin-bottom: 10px;
+     }
+ 
+     .hero-actions {
+       display: flex;
+-      gap: 6px;
++      gap: 8px;
+       flex-wrap: wrap;
+     }
+ 
+     .hero-actions .btn-outline {
+-      background: #ffffff;
+-      border-color: #f97316;
+-      color: #b45309;
++      background: rgba(255, 255, 255, 0.08);
++      border-color: rgba(255, 255, 255, 0.12);
++      color: #fff7ed;
+     }
+ 
+     .hero-actions .btn-outline:hover {
+-      background: #fff7ed;
++      background: rgba(255, 255, 255, 0.14);
++      border-color: rgba(249, 115, 22, 0.4);
+     }
+ 
+     .pill-stack {
+       display: flex;
+-      gap: 6px;
++      gap: 8px;
+       flex-wrap: wrap;
+     }
+ 
+     .pill-strong {
+       display: inline-flex;
+       align-items: center;
+       gap: 6px;
+-      background: #0ea5e9;
+-      color: #0b1726;
+-      border: none;
+-      padding: 6px 10px;
++      background: rgba(34, 197, 94, 0.16);
++      color: #bbf7d0;
++      border: 1px solid rgba(34, 197, 94, 0.45);
++      padding: 6px 12px;
+       border-radius: 12px;
+-      font-weight: 600;
+-      box-shadow: 0 6px 16px rgba(14, 165, 233, 0.35);
++      font-weight: 700;
++      box-shadow: 0 14px 30px rgba(34, 197, 94, 0.18);
+       font-size: 13px;
+     }
+ 
+     .pill-ghost {
+       display: inline-flex;
+       align-items: center;
+       gap: 6px;
+-      background: rgba(255, 255, 255, 0.4);
+-      padding: 6px 10px;
++      background: rgba(255, 255, 255, 0.05);
++      padding: 6px 12px;
+       border-radius: 12px;
+-      border: 1px dashed #cbd5e1;
+-      color: #0f172a;
++      border: 1px dashed rgba(255, 255, 255, 0.2);
++      color: #e2e8f0;
+       font-weight: 600;
+       font-size: 12px;
+     }
+ 
+     .kpi-grid {
+       display: grid;
+-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+-      gap: 8px;
++      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
++      gap: 10px;
+     }
+ 
+     .guide-card {
+       display: grid;
+-      grid-template-columns: 1.8fr 1fr;
++      grid-template-columns: 1.6fr 1fr;
+       gap: 12px;
+       align-items: center;
+-      padding: 12px;
+-      border: 1px dashed #f59e0b;
+-      background: linear-gradient(90deg, rgba(255, 247, 237, 0.9), #ffffff);
++      padding: 14px;
++      border: 1px dashed rgba(255, 255, 255, 0.2);
++      background: linear-gradient(120deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
++      border-radius: var(--radius);
+     }
+ 
+     .guide-title {
+       display: flex;
+       align-items: center;
+-      gap: 8px;
++      gap: 10px;
+       font-size: 14px;
+-      font-weight: 700;
+-      color: #b45309;
+-      margin-bottom: 4px;
++      font-weight: 800;
++      color: #fde68a;
++      margin-bottom: 6px;
+     }
+ 
+     .guide-steps {
+       display: grid;
+-      gap: 6px;
+-      color: #0f172a;
++      gap: 8px;
++      color: #f8fafc;
+       font-size: 12px;
+     }
+ 
+     .guide-step {
+       display: flex;
+-      gap: 8px;
++      gap: 10px;
+       align-items: flex-start;
+-      padding: 8px;
+-      border-radius: 10px;
+-      border: 1px solid #fde68a;
+-      background: #fffaf0;
++      padding: 10px;
++      border-radius: 12px;
++      border: 1px solid rgba(249, 115, 22, 0.35);
++      background: rgba(249, 115, 22, 0.08);
+     }
+ 
+     .guide-step .icon {
+-      width: 22px;
+-      height: 22px;
++      width: 24px;
++      height: 24px;
+       border-radius: 8px;
+       display: inline-flex;
+       align-items: center;
+       justify-content: center;
+       background: #f97316;
+-      color: #ffffff;
+-      font-weight: 700;
++      color: #0b0f1c;
++      font-weight: 800;
+       font-size: 12px;
+       flex-shrink: 0;
+-      box-shadow: 0 6px 16px rgba(249, 115, 22, 0.25);
++      box-shadow: 0 12px 24px rgba(249, 115, 22, 0.32);
+     }
+ 
+     .guide-step strong {
+       display: block;
+-      color: #b45309;
++      color: #fde68a;
+     }
+ 
+     .kpi-card {
+-      padding: 10px;
++      padding: 12px;
+       border-radius: 12px;
+       border: 1px solid var(--border);
+-      background: #ffffff;
++      background: var(--card);
+       display: grid;
+       grid-template-columns: auto 1fr;
+-      gap: 8px;
++      gap: 10px;
+       align-items: center;
+     }
+ 
+     .kpi-card .kpi-icon {
+-      width: 34px;
+-      height: 34px;
+-      border-radius: 10px;
++      width: 38px;
++      height: 38px;
++      border-radius: 12px;
+       display: inline-flex;
+       align-items: center;
+       justify-content: center;
+       background: var(--accent-soft);
+-      color: #c2410c;
+-      font-size: 16px;
++      color: #fbbf24;
++      font-size: 18px;
+     }
+ 
+     .kpi-label {
+       font-size: 11px;
+       color: var(--text-soft);
+       margin-bottom: 2px;
++      letter-spacing: 0.02em;
+     }
+ 
+     .kpi-value {
+-      font-size: 19px;
+-      font-weight: 700;
+-      color: #0f172a;
++      font-size: 20px;
++      font-weight: 800;
++      color: #f8fafc;
+       line-height: 1.2;
+     }
+ 
+     .kpi-tag {
+       font-size: 10px;
+-      color: #b45309;
+-      margin-top: 1px;
++      color: #fcd34d;
++      margin-top: 2px;
+     }
+ 
+     .dashboard-grid {
+       display: grid;
+-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+-      gap: 10px;
++      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
++      gap: 12px;
+     }
+ 
+     .mini-title {
+       font-size: 12px;
+-      font-weight: 700;
+-      color: #0f172a;
+-      margin-bottom: 6px;
++      font-weight: 800;
++      color: #e2e8f0;
++      margin-bottom: 8px;
+       display: flex;
+       align-items: center;
+-      gap: 6px;
++      gap: 8px;
++      letter-spacing: 0.02em;
+     }
+ 
+     .chip-row {
+       display: flex;
+       flex-wrap: wrap;
+       gap: 6px;
+-      margin-bottom: 8px;
+     }
+ 
+     .chip {
+       display: inline-flex;
+       align-items: center;
+       gap: 6px;
+       padding: 6px 10px;
++      background: var(--card);
++      border: 1px solid var(--border);
+       border-radius: 10px;
+-      background: #f8fafc;
+-      border: 1px solid #e2e8f0;
+       font-size: 12px;
+-      color: #0f172a;
+-    }
+-
+-    .chip strong {
+-      color: #b45309;
++      color: #e2e8f0;
+     }
+ 
+     .timeline {
+-      display: flex;
+-      flex-direction: column;
++      display: grid;
+       gap: 8px;
+     }
+ 
+     .timeline-item {
+-      display: grid;
+-      grid-template-columns: auto 1fr;
+-      gap: 8px;
+-      padding: 8px;
+-      background: #f8fafc;
+-      border: 1px solid #e2e8f0;
+-      border-radius: 12px;
++      display: flex;
++      gap: 10px;
++      align-items: center;
++      padding: 8px 10px;
++      background: var(--card);
++      border: 1px solid var(--border);
++      border-radius: 10px;
+     }
+ 
+     .timeline-dot {
+       width: 10px;
+       height: 10px;
+       border-radius: 999px;
+-      background: #f97316;
+-      margin-top: 2px;
+-      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
++      background: var(--accent);
++      box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.12);
+     }
+ 
+     .timeline-title {
++      color: #f8fafc;
+       font-weight: 700;
+       font-size: 13px;
+-      color: #0f172a;
+     }
+ 
+     .timeline-sub {
+-      color: #475569;
++      color: var(--text-soft);
+       font-size: 12px;
+     }
+ 
+-    .timeline-meta {
+-      font-size: 11px;
+-      color: #b45309;
+-      margin-top: 2px;
+-    }
+-
+     .quality-list {
+-      display: flex;
+-      flex-direction: column;
+-      gap: 6px;
++      display: grid;
++      gap: 10px;
+     }
+ 
+     .quality-item {
+-      padding: 8px;
+-      border-radius: 10px;
+-      border: 1px dashed #f97316;
+-      background: #fff7ed;
+       display: flex;
+       justify-content: space-between;
++      gap: 10px;
+       align-items: center;
+-      font-size: 12px;
+-      color: #7c2d12;
++      padding: 10px;
++      background: var(--card);
++      border: 1px solid var(--border);
++      border-radius: 10px;
++    }
++
++    .quality-item strong {
++      color: #f8fafc;
++      font-size: 13px;
+     }
+ 
+     .quality-item span.label {
+-      font-weight: 600;
++      font-weight: 700;
++    }
++
++    .quality-item .badge-soft {
++      background: rgba(249, 115, 22, 0.15);
++      color: #fed7aa;
++      border: 1px solid rgba(249, 115, 22, 0.35);
+     }
+ 
+     .news-frame {
+-      border-radius: 10px;
++      border-radius: 12px;
+       border: 1px solid var(--border);
+       overflow: hidden;
+-      height: 280px;
+-      background: #ffffff;
++      height: 320px;
++      background: var(--card);
+     }
+ 
+     .news-frame iframe {
+       width: 100%;
+       height: 100%;
+       border: none;
+     }
+ 
+     /* TABLES & SCROLL */
+     .table-wrapper {
+-      border-radius: 10px;
++      border-radius: 12px;
+       border: 1px solid var(--border);
+-      background: #ffffff;
+-      overflow-y: auto;
+-      overflow-x: hidden;
+-      max-height: 260px;
++      background: var(--card);
++      overflow: hidden;
+       display: flex;
+       flex-direction: column;
+     }
+ 
+     table {
+       width: 100%;
+       border-collapse: collapse;
+       font-size: 12px;
++      color: #e2e8f0;
+     }
+ 
+     thead {
+-      background: #f3f4f6;
++      background: #0f172a;
+       position: sticky;
+       top: 0;
+       z-index: 1;
+     }
+ 
+     th,
+     td {
+-      padding: 4px 6px;
+-      border-bottom: 1px solid #e5e7eb;
++      padding: 8px 10px;
++      border-bottom: 1px solid var(--border);
+       white-space: nowrap;
+       text-overflow: ellipsis;
+       overflow: hidden;
+     }
+ 
+     th {
+       text-align: left;
+-      font-weight: 500;
+-      color: var(--text-soft);
++      font-weight: 700;
++      color: #cbd5f5;
++      letter-spacing: 0.02em;
+     }
+ 
+     tbody tr:hover {
+-      background: #f9fafb;
++      background: rgba(255, 255, 255, 0.04);
+       cursor: pointer;
+     }
+ 
+     .section {
+       display: none;
+     }
+ 
+     .section.active {
+       display: block;
+     }
+ 
+     .section-body {
+-      margin-top: 6px;
++      margin-top: 10px;
+       display: flex;
+       flex-direction: column;
+-      gap: 8px;
++      gap: 10px;
+     }
+ 
+     /* FORM */
+     .form-grid {
+       display: grid;
+-      gap: 6px;
++      gap: 8px;
+       grid-template-columns: repeat(4, minmax(0, 1fr));
+     }
+ 
+     .form-field {
+       display: flex;
+       flex-direction: column;
+-      gap: 2px;
++      gap: 4px;
+     }
+ 
+     .form-field label {
+       font-size: 11px;
+       color: var(--text-soft);
++      letter-spacing: 0.01em;
+     }
+ 
+     .form-field input,
+     .form-field select,
+     .form-field textarea {
+-      background: #ffffff;
+-      border: 1px solid #d1d5db;
+-      border-radius: 7px;
+-      padding: 4px 6px;
+-      color: var(--text);
++      background: rgba(255, 255, 255, 0.03);
++      border: 1px solid var(--border);
++      border-radius: 9px;
++      padding: 8px 10px;
++      color: #f8fafc;
+       font-size: 12px;
+     }
+ 
+     .form-field input:focus,
+     .form-field select:focus,
+     .form-field textarea:focus {
+       outline: none;
+       border-color: var(--accent);
+-      box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.3);
++      box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.25);
+     }
+ 
+     .form-field textarea {
+       resize: vertical;
+-      min-height: 50px;
++      min-height: 70px;
+     }
+ 
+     .form-actions {
+-      margin-top: 4px;
++      margin-top: 2px;
+       display: flex;
+       justify-content: flex-end;
+-      gap: 6px;
++      gap: 8px;
+     }
+ 
+     .badge-soft {
+       font-size: 11px;
+-      padding: 2px 6px;
++      padding: 4px 8px;
+       border-radius: 999px;
+-      background: var(--accent-soft);
+-      color: var(--accent);
++      background: rgba(249, 115, 22, 0.16);
++      color: #fed7aa;
++      border: 1px solid rgba(249, 115, 22, 0.35);
++      width: fit-content;
+     }
+ 
+     .cliente-summary {
+       display: flex;
+       flex-direction: column;
+       gap: 4px;
+       font-size: 12px;
++      color: #e2e8f0;
+     }
+ 
+     .cliente-summary-row {
+       display: flex;
+       justify-content: space-between;
+-      gap: 8px;
++      gap: 10px;
+     }
+ 
+     .cliente-summary-label {
+       color: var(--text-soft);
+-      min-width: 80px;
++      min-width: 110px;
+     }
+ 
+     .hidden {
+       display: none !important;
+     }
+ 
+     /* TOAST */
+     #toastContainer {
+       position: fixed;
+-      bottom: 16px;
+-      left: calc(var(--sidebar-width) + 16px);
++      bottom: 18px;
++      left: calc(var(--sidebar-width) + 26px);
+       z-index: 9999;
+     }
+ 
+     .toast {
+-      background: #ffffff;
+-      border-radius: 999px;
+-      padding: 6px 12px;
++      background: #0b1221;
++      border-radius: 14px;
++      padding: 8px 14px;
+       border: 1px solid var(--border);
+       font-size: 12px;
+-      color: var(--text);
+-      box-shadow: 0 8px 20px rgba(148, 163, 184, 0.4);
+-      margin-top: 6px;
++      color: #f8fafc;
++      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
++      margin-top: 8px;
+     }
+ 
+     .toast.info {
+       border-color: var(--accent);
+     }
+ 
+     .toast.error {
+-      border-color: var(--danger);
+-      color: #b91c1c;
++      border-color: #ef4444;
++      color: #fecdd3;
+     }
+ 
+     .toast.success {
+-      border-color: var(--success);
+-      color: #166534;
++      border-color: var(--accent-2);
++      color: #bbf7d0;
+     }
+ 
+     /* PROGRESS BAR */
+     .progress-bar-container {
+       width: 100%;
+-      height: 6px;
++      height: 8px;
+       border-radius: 999px;
+-      background: #e5e7eb;
+-      margin-top: 4px;
++      background: rgba(255, 255, 255, 0.04);
++      border: 1px solid var(--border);
+       overflow: hidden;
+     }
+ 
+     .progress-bar {
+       height: 100%;
+       width: 0%;
+       border-radius: 999px;
+-      background: linear-gradient(90deg, #22c55e, #f97316);
++      background: linear-gradient(120deg, #22c55e, #f97316);
+       transition: width 0.15s linear;
+     }
+ 
++    @media (max-width: 1200px) {
++      .layout {
++        padding: 12px;
++      }
++    }
++
+     @media (max-width: 960px) {
+       body {
+         font-size: 13px;
+       }
++      .layout {
++        flex-direction: column;
++      }
+       .sidebar {
+-        display: none;
++        width: 100%;
++        flex-direction: row;
++        flex-wrap: wrap;
++        align-items: center;
++        gap: 10px;
+       }
+-      .top-bar {
+-        flex-direction: column;
+-        align-items: flex-start;
++      .sidebar-section-title {
++        width: 100%;
++      }
++      .nav {
++        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
++        flex: 1;
++      }
++      .main {
++        width: 100%;
+       }
+       .content {
+         flex-direction: column;
+       }
+       .form-grid {
+         grid-template-columns: repeat(2, minmax(0, 1fr));
+       }
+       .grid-4 {
+         grid-template-columns: repeat(2, minmax(0, 1fr));
+       }
+       .grid-3 {
+         grid-template-columns: repeat(2, minmax(0, 1fr));
+       }
+-      .guide-card {
++      .guide-card,
++      .dashboard-hero {
+         grid-template-columns: 1fr;
+       }
+       #toastContainer {
+         left: 16px;
+         right: 16px;
+       }
+     }
+   </style>
+ </head>
+ <body>
+   <div class="layout">
+     <aside class="sidebar">
+       <div class="logo">
+         <div class="logo-icon">V</div>
+         <div>
+           <div class="logo-text-main">VOLPEX</div>
+           <div class="logo-text-sub">CRM Google Sheets</div>
+         </div>
+       </div>
+ 
+       <div class="sidebar-section-title">Navigazione</div>
+       <div class="nav">
+         <button
+           class="nav-btn active"
+           data-target="sec-dashboard"
+ 
+EOF
+)
