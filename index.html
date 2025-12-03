@@ -3320,6 +3320,122 @@ function loadKPI(){
 }
 
 </script>
+/* ====================================================
+   FUNZIONI DI UTILITÀ
+   ==================================================== */
+
+function smartDate(val){
+    if(!val) return "";
+    val = val.toString().trim();
+
+    // numeri stile EXCEL
+    if(!isNaN(val) && val.length < 6){
+        let origin = new Date(1899, 11, 30);
+        let d = new Date(origin.getTime() + val * 86400000);
+        return d.toISOString().split("T")[0];
+    }
+
+    // dd/mm/yyyy o dd-mm-yyyy
+    if(/^[0-9]{1,2}[\/\-][0-9]{1,2}[\/\-][0-9]{2,4}$/.test(val)){
+        let parts = val.includes("/") ? val.split("/") : val.split("-");
+        let d = parts[0].padStart(2,"0");
+        let m = parts[1].padStart(2,"0");
+        let y = parts[2];
+        if(y.length === 2) y = "20" + y;
+        return `${y}-${m}-${d}`;
+    }
+
+    // ISO già valido
+    if(/^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$/.test(val))
+        return val;
+
+    return "";
+}
+
+function toNumber(val){
+    if(!val) return 0;
+    return parseFloat(val.toString().replace(",", ".").replace("€","")) || 0;
+}
+function generateCliente(row){
+    return {
+        nome: row[csvMapping["Nome"]] || "",
+        cognome: row[csvMapping["Cognome"]] || "",
+        telefono: row[csvMapping["Telefono"]] || "",
+        email: row[csvMapping["Email"]] || "",
+        cf: row[csvMapping["Codice fiscale"]] || "",
+        dataNascita: "",
+        note: ""
+    };
+}
+function generateContratto(row){
+    if(!csvMapping["Data contratto"]) return null;
+
+    return {
+        dataContratto: smartDate(row[csvMapping["Data contratto"]]),
+        compagnia: row[csvMapping["Compagnia"]] || "",
+        tipoCliente: "",
+        tipoContratto: row[csvMapping["Tipo attivazione"]] || "",
+        mnp: row[csvMapping["MNP"]] || "",
+        nomeOfferta: row[csvMapping["Nome offerta"]] || "",
+        numero: row[csvMapping["Numero lavorato"]] || "",
+        costo: toNumber(row[csvMapping["Costo offerta"]]),
+        vincolo: toNumber(row[csvMapping["Vincolo"]]),
+        dataFineVincolo: smartDate(row[csvMapping["Data fine vincolo"]]),
+        dataPortabilita: smartDate(row[csvMapping["Data portabilità"]]),
+        valoreCliente: toNumber(row["Valore        cliente"]) || 0,
+        note: ""
+    };
+}
+function generateDevice(row){
+    if(!csvMapping["IMEI"]) return null;
+
+    return {
+        dataVendita: smartDate(row[csvMapping["Data contratto"]]),
+        nomeDevice: row[csvMapping["Modello"]] || "",
+        tipoDevice: row[csvMapping["Tecnologia"]] || "",
+        imei: row[csvMapping["IMEI"]] || "",
+        tipoPagamento: row[csvMapping["Tipo pagamento"]] || "",
+        durataPagamento: toNumber(row[csvMapping["Durata pagamento"]]),
+        fornitore: row[csvMapping["Fornitore"]] || "",
+        valoreCliente: 0,
+        note: ""
+    };
+}
+/* ====================================================
+   IMPORT SMART COMPLETO
+   ==================================================== */
+
+function doSmartImport(){
+    if(!importRows.length){
+        alert("Nessun dato da importare!");
+        return;
+    }
+
+    let records = importRows.map(r => {
+        return {
+            cliente: generateCliente(r),
+            contratto: generateContratto(r),
+            vendita: generateDevice(r)
+        };
+    });
+
+    fetch(API_BASE, {
+        method: "POST",
+        body: JSON.stringify({
+            action: "importSmart", 
+            records: records
+        })
+    })
+    .then(r => r.json())
+    .then(res => {
+        console.log(res);
+        alert("IMPORT SMART COMPLETATO ✔️\n\n" + JSON.stringify(res, null, 2));
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Errore durante l'import: " + err);
+    });
+}
 
 <section class="section" id="sec-dashboard" style="display:none;">
 <div class="card">
