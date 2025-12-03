@@ -2602,6 +2602,36 @@
         document.getElementById('nc_data_portabilita').value = dataAtt;
       }
     }
+// Ritorna il primo campo non vuoto tra una lista di nomi possibili
+function getField(r, names) {
+  for (var i = 0; i < names.length; i++) {
+    var v = r[names[i]];
+    if (v !== undefined && v !== null && String(v).trim() !== '') {
+      return v;
+    }
+  }
+  return '';
+}
+
+// Verifica se nella riga ci sono dati "da contratto"
+// (se non ce ne sono, importiamo solo il cliente)
+function hasContrattoData(r) {
+  var keys = [
+    'Data contratto',
+    'Compagnia',
+    'Tecnologia',
+    'Numero lavorato',
+    'Nome offerta',
+    'Costo offerta',
+    'Vincolo offerta (mesi)',
+    'Telefono incluso'
+  ];
+  for (var i = 0; i < keys.length; i++) {
+    var v = r[keys[i]];
+    if (v && String(v).trim() !== '') return true;
+  }
+  return false;
+}
 
     function parseImportText() {
       const raw = document.getElementById('csvRaw').value || '';
