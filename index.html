@@ -1560,10 +1560,10 @@
   </div> <!-- layout -->
 
   <div id="toastContainer"></div>
-  <script>
+ <script>
     // URL Web App (Apps Script)
     const API_BASE =
-      'https://script.google.com/macros/s/AKfycbwwZN7PpcPVjemEF9e7iU607Z3yHZgDWj-UYbv5yfsRg4rudlcZdNAEDh4suKNj0SfX/exec';
+      'https://script.google.com/macros/s/AKfycbw0u444_RNfEFuXV2hcH9FsWfa1KwGynFDcrD2K-V6u73H7KPmx79UEPuL3NAAuyEQ/exec';
 
     let clientiCache = [];
     let contrattiCache = [];
@@ -1576,36 +1576,45 @@
     async function apiGet(action) {
       const url = API_BASE + '?action=' + encodeURIComponent(action);
       const res = await fetch(url);
-      if (!res.ok) {
-        throw new Error('Errore rete GET ' + action + ' (status ' + res.status + ')');
+      if (!res.ok) throw new Error('HTTP GET ' + res.status);
+      const txt = await res.text();
+      let json;
+      try {
+        json = JSON.parse(txt);
+      } catch (err) {
+        console.error('Risposta non JSON per ' + action, txt);
+        throw new Error('Risposta non JSON: ' + err);
       }
-      const json = await res.json();
       if (!json.success) {
-        throw new Error(json.error || 'Errore logico GET ' + action);
+        throw new Error(json.error || 'Errore generico GET ' + action);
       }
       return json;
     }
 
     async function apiPost(action, payload) {
+      const url = API_BASE;
+      const body = Object.assign({}, payload || {}, { action: action });
       try {
-        const res = await fetch(API_BASE, {
+        const res = await fetch(url, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'text/plain;charset=utf-8'
-          },
-          body: JSON.stringify(Object.assign({ action: action }, payload))
+          headers: { 'Content-Type': 'application/json;charset=utf-8' },
+          body: JSON.stringify(body)
         });
-        if (!res.ok) {
-          throw new Error(
-            'Errore rete POST ' + action + ' (status ' + res.status + ')'
-          );
+        if (!res.ok) throw new Error('HTTP POST ' + res.status);
+        const txt = await res.text();
+        let json;
+        try {
+          json = JSON.parse(txt);
+        } catch (err2) {
+          console.error('Risposta non JSON POST ' + action, txt);
+          throw new Error('Risposta non JSON: ' + err2);
         }
-        const json = await res.json();
         if (!json.success) {
-          throw new Error(json.error || 'Errore logico POST ' + action);
+          throw new Error(json.error || 'Errore generico POST ' + action);
         }
         return json;
       } catch (err) {
+        console.error('Errore POST ' + action, err);
         throw new Error(
           'Network error POST ' + action + ': ' + (err.message || String(err))
         );
@@ -1620,174 +1629,128 @@
       div.textContent = message;
       container.appendChild(div);
       setTimeout(function () {
-        if (div.parentNode) div.parentNode.removeChild(div);
-      }, 4000);
-    }
-
-    function switchSection(sectionId) {
-      document.querySelectorAll('.section').forEach(function (sec) {
-        sec.classList.remove('active');
-      });
-      const target = document.getElementById(sectionId);
-      if (target) target.classList.add('active');
-
-      document.querySelectorAll('.nav-btn').forEach(function (btn) {
-        btn.classList.remove('active');
-        const dt = btn.getAttribute('data-target');
-        if (dt === sectionId) {
-          btn.classList.add('active');
+        if (div.parentNode) {
+          div.classList.add('hide');
+          setTimeout(function () {
+            if (div.parentNode) container.removeChild(div);
+          }, 300);
         }
+      }, 3500);
+    }
+
+    function switchSection(id) {
+      const sections = document.querySelectorAll('.section');
+      sections.forEach(function (s) {
+        if (s.id === id) s.classList.add('active');
+        else s.classList.remove('active');
+      });
+      const navItems = document.querySelectorAll('.nav-item');
+      navItems.forEach(function (n) {
+        if (n.getAttribute('data-target') === id) n.classList.add('active');
+        else n.classList.remove('active');
       });
     }
 
-    function normalizeDate(value) {
-      if (!value) return '';
-      let d = value;
-      if (!(d instanceof Date)) {
-        d = new Date(value);
-      }
-      if (isNaN(d.getTime())) return '';
-      const y = d.getFullYear();
-      const m = String(d.getMonth() + 1).padStart(2, '0');
-      const day = String(d.getDate()).padStart(2, '0');
-      return y + '-' + m + '-' + day;
-    }
+    function renderListaClienti(filterTerm) {
+      filterTerm = (filterTerm || '').trim().toLowerCase();
+      const tbody = document.getElementById('listaClientiBody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      let list = clientiCache.slice();
 
-    function formatDateDisplay(value) {
-      const norm = normalizeDate(value);
-      if (!norm) return '';
-      const parts = norm.split('-');
-      return parts[2] + '/' + parts[1] + '/' + parts[0];
-    }
-
-    function birthDateFromCF(cf) {
-      if (!cf) return '';
-      cf = String(cf).toUpperCase();
-      if (cf.length < 11) return '';
-      const yearPart = cf.slice(6, 8);
-      const monthCode = cf.charAt(8);
-      const dayPart = cf.slice(9, 11);
-
-      const months = {
-        A: 1,
-        B: 2,
-        C: 3,
-        D: 4,
-        E: 5,
-        H: 6,
-        L: 7,
-        M: 8,
-        P: 9,
-        R: 10,
-        S: 11,
-        T: 12
-      };
-      const m = months[monthCode] || null;
-      if (!m) return '';
-
-      let day = parseInt(dayPart, 10);
-      if (isNaN(day)) return '';
-      if (day > 40) day -= 40;
-
-      const nowYear = new Date().getFullYear();
-      let y = parseInt(yearPart, 10);
-      if (isNaN(y)) return '';
-      let fullYear = 1900 + y;
-      if (fullYear + 100 <= nowYear) {
-        fullYear += 100;
+      if (filterTerm) {
+        list = list.filter(function (c) {
+          const nome = (c.nome || '').toLowerCase();
+          const cognome = (c.cognome || '').toLowerCase();
+          const cf = (c.codice_fiscale || '').toLowerCase();
+          const tel = (c.telefono || '').toLowerCase();
+          return (
+            nome.includes(filterTerm) ||
+            cognome.includes(filterTerm) ||
+            cf.includes(filterTerm) ||
+            tel.includes(filterTerm)
+          );
+        });
       }
 
-      const mm = String(m).padStart(2, '0');
-      const dd = String(day).padStart(2, '0');
-      return fullYear + '-' + mm + '-' + dd;
-    }
-
-    function addMonthsToDate(startValue, months) {
-      if (!startValue || !months) return '';
-      let d = startValue instanceof Date ? new Date(startValue) : new Date(startValue);
-      if (isNaN(d.getTime())) return '';
-      const m = d.getMonth() + months;
-      d.setMonth(m);
-      return normalizeDate(d);
-    }
-
-    function openWhatsappForSelected() {
-      if (!selectedCliente) {
-        showToast('Nessun cliente selezionato', 'error');
-        return;
-      }
-      const cf = selectedCliente.codice_fiscale || '';
-      openWhatsappByCF(cf, 'Ciao ' + (selectedCliente.nome || '') + ', ');
-    }
-
-    function openWhatsappByCF(cf, message) {
-      if (!cf) {
-        showToast('Codice fiscale non disponibile', 'error');
-        return;
-      }
-      const cfUp = String(cf).toUpperCase();
-      const cli = clientiCache.find(function (c) {
-        return String(c.codice_fiscale || '').toUpperCase() === cfUp;
-      });
-      if (!cli) {
-        showToast('Cliente non trovato per WhatsApp', 'error');
-        return;
-      }
-      const telRaw = cli.telefono ? String(cli.telefono) : '';
-      const tel = telRaw.replace(/[^0-9]/g, '');
-      if (!tel) {
-        showToast('Telefono non disponibile', 'error');
-        return;
-      }
-      const msg = message || 'Ciao ' + (cli.nome || '') + ', ';
-      const url = 'https://wa.me/39' + tel + '?text=' + encodeURIComponent(msg);
-      window.open(url, '_blank');
-    }
-
-    function exportClientePDF() {
-      if (!selectedCliente) {
-        showToast('Nessun cliente selezionato', 'error');
-        return;
-      }
-
-      const cfCliente = String(selectedCliente.codice_fiscale || '').toUpperCase();
-
-      const contratti = contrattiCache.filter(function (ct) {
-        return String(ct.codice_fiscale || '').toUpperCase() === cfCliente;
-      });
-      const device = deviceCache.filter(function (dv) {
-        return String(dv.codice_fiscale || '').toUpperCase() === cfCliente;
-      });
-      const riparazioni = riparazioniCache.filter(function (rp) {
-        return String(rp.codice_fiscale || '').toUpperCase() === cfCliente;
+      list.sort(function (a, b) {
+        const aCognome = (a.cognome || '').toLowerCase();
+        const bCognome = (b.cognome || '').toLowerCase();
+        if (aCognome < bCognome) return -1;
+        if (aCognome > bCognome) return 1;
+        const aNome = (a.nome || '').toLowerCase();
+        const bNome = (b.nome || '').toLowerCase();
+        if (aNome < bNome) return -1;
+        if (aNome > bNome) return 1;
+        return 0;
       });
 
-      let html = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="UTF-8" />
-          <title>Riepilogo cliente ${selectedCliente.nome || ''} ${selectedCliente.cognome || ''}</title>
-          <style>
-            body { font-family: system-ui, sans-serif; font-size: 12px; margin: 16px; }
-            h1 { font-size: 18px; margin-bottom: 4px; }
-            h2 { font-size: 14px; margin-top: 12px; margin-bottom: 4px; }
-            table { border-collapse: collapse; width: 100%; margin-top: 4px; }
-            th, td { border: 1px solid #ccc; padding: 4px; text-align: left; }
-            th { background: #f3f4f6; }
-          </style>
-        </head>
-        <body>
-          <h1>Riepilogo cliente</h1>
-          <p><strong>Nome:</strong> ${selectedCliente.nome || ''}</p>
-          <p><strong>Cognome:</strong> ${selectedCliente.cognome || ''}</p>
-          <p><strong>Telefono:</strong> ${selectedCliente.telefono || ''}</p>
-          <p><strong>Email:</strong> ${selectedCliente.email || ''}</p>
-          <p><strong>Codice fiscale:</strong> ${selectedCliente.codice_fiscale || ''}</p>
-          <p><strong>Data nascita:</strong> ${document.getElementById('detNascita').textContent || ''}</p>
-          <p><strong>Note:</strong> ${selectedCliente.note || ''}</p>
+      list.forEach(function (c) {
+        const tr = document.createElement('tr');
+        tr.className = 'clickable-row';
+        tr.onclick = function () {
+          selectCliente(c.id_cliente);
+        };
+        tr.innerHTML =
+          '<td>' +
+          (c.nome || '') +
+          '</td><td>' +
+          (c.cognome || '') +
+          '</td><td>' +
+          (c.telefono || '') +
+          '</td><td>' +
+          (c.codice_fiscale || '') +
+          '</td>';
+        tbody.appendChild(tr);
+      });
+    }
 
-          <h2>Contratti</h2>
+    function renderDettaglioCliente(cliente) {
+      const box = document.getElementById('dettaglioClienteBox');
+      if (!box) return;
+      if (!cliente) {
+        box.innerHTML =
+          '<div class="card empty">Seleziona un cliente per vedere i dettagli.</div>';
+        return;
+      }
+
+      const contrattiCliente = contrattiCache.filter(function (ct) {
+        return ct.id_cliente === cliente.id_cliente;
+      });
+      const deviceCliente = deviceCache.filter(function (d) {
+        return d.id_cliente === cliente.id_cliente;
+      });
+      const ripCliente = riparazioniCache.filter(function (r) {
+        return r.id_cliente === cliente.id_cliente;
+      });
+
+      let html = '';
+      html += '<div class="card">';
+      html +=
+        '<h3>' +
+        (cliente.nome || '') +
+        ' ' +
+        (cliente.cognome || '') +
+        '</h3>';
+      html += '<p><strong>Telefono:</strong> ' + (cliente.telefono || '-') + '</p>';
+      html += '<p><strong>Email:</strong> ' + (cliente.email || '-') + '</p>';
+      html +=
+        '<p><strong>Codice fiscale:</strong> ' +
+        (cliente.codice_fiscale || '-') +
+        '</p>';
+      html +=
+        '<p><strong>Data nascita:</strong> ' +
+        (cliente.data_nascita || '-') +
+        '</p>';
+      html += '<p><strong>Note:</strong> ' + (cliente.note || '-') + '</p>';
+      html += '</div>';
+
+      html += '<div class="card">';
+      html += '<h4>Contratti</h4>';
+      if (!contrattiCliente.length) {
+        html += '<p class="muted">Nessun contratto presente.</p>';
+      } else {
+        html += `
           <table>
             <thead>
               <tr>
@@ -1801,741 +1764,124 @@
             </thead>
             <tbody>`;
 
-      contratti.forEach(function (ct) {
+        contrattiCliente.forEach(function (ct) {
+          html +=
+            '<tr class="clickable-row" onclick="editContrattoFromCard(' +
+            ct.id_contratto +
+            ')">' +
+            '<td>' +
+            (ct.data_contratto || '') +
+            '</td>' +
+            '<td>' +
+            (ct.compagnia || '') +
+            '</td>' +
+            '<td>' +
+            (ct.tecnologia || '') +
+            '</td>' +
+            '<td>' +
+            (ct.numero_lavorato || '') +
+            '</td>' +
+            '<td>' +
+            (ct.nome_offerta || '') +
+            '</td>' +
+            '<td>' +
+            (ct.data_fine_vincolo_offerta || '') +
+            '</td>' +
+            '</tr>';
+        });
+
+        html += '</tbody></table>';
+      }
+      html += '</div>';
+
+      html += '<div class="card">';
+      html += '<h4>Device venduti</h4>';
+      if (!deviceCliente.length) {
+        html += '<p class="muted">Nessun device venduto.</p>';
+      } else {
         html += `
-          <tr>
-            <td>${formatDateDisplay(ct.data_contratto)}</td>
-            <td>${ct.compagnia || ''}</td>
-            <td>${ct.tecnologia || ''}</td>
-            <td>${ct.numero_lavorato || ''}</td>
-            <td>${ct.nome_offerta || ''}</td>
-            <td>${formatDateDisplay(ct.data_fine_vincolo_offerta)}</td>
-          </tr>`;
-      });
-
-      html += `
-            </tbody>
-          </table>
-
-          <h2>Device</h2>
           <table>
             <thead>
               <tr>
                 <th>Data vendita</th>
-                <th>Modello</th>
+                <th>Device</th>
                 <th>IMEI</th>
-                <th>Prezzo</th>
+                <th>Pagamento</th>
               </tr>
             </thead>
             <tbody>`;
+        deviceCliente.forEach(function (d) {
+          html +=
+            '<tr>' +
+            '<td>' +
+            (d.data_vendita || '') +
+            '</td>' +
+            '<td>' +
+            (d.nome_device || '') +
+            '</td>' +
+            '<td>' +
+            (d.imei || '') +
+            '</td>' +
+            '<td>' +
+            (d.tipo_pagamento || '') +
+            '</td>' +
+            '</tr>';
+        });
+        html += '</tbody></table>';
+      }
+      html += '</div>';
 
-      device.forEach(function (dv) {
+      html += '<div class="card">';
+      html += '<h4>Riparazioni</h4>';
+      if (!ripCliente.length) {
+        html += '<p class="muted">Nessuna riparazione presente.</p>';
+      } else {
         html += `
-          <tr>
-            <td>${formatDateDisplay(dv.data_vendita)}</td>
-            <td>${dv.modello || ''}</td>
-            <td>${dv.imei || ''}</td>
-            <td>${dv.prezzo || ''}</td>
-          </tr>`;
-      });
-
-      html += `
-            </tbody>
-          </table>
-
-          <h2>Riparazioni</h2>
           <table>
             <thead>
               <tr>
                 <th>Data apertura</th>
                 <th>Modello</th>
+                <th>IMEI</th>
                 <th>Guasto</th>
                 <th>Stato</th>
               </tr>
             </thead>
             <tbody>`;
-
-      riparazioni.forEach(function (rp) {
-        html += `
-          <tr>
-            <td>${formatDateDisplay(rp.data_apertura)}</td>
-            <td>${rp.modello || ''}</td>
-            <td>${rp.tipo_guasto || ''}</td>
-            <td>${rp.stato || ''}</td>
-          </tr>`;
-      });
-
-      html += `
-            </tbody>
-          </table>
-        </body>
-        </html>
-      `;
-
-      const win = window.open('', '_blank');
-      win.document.write(html);
-      win.document.close();
-      win.focus();
-      win.print();
-    }
-
-    function openEditCliente() {
-      if (!selectedCliente) {
-        showToast('Nessun cliente selezionato', 'error');
-        return;
-      }
-      const form = document.getElementById('editClienteForm');
-      if (!form) return;
-      form.classList.remove('hidden');
-
-      document.getElementById('ec_nome').value = selectedCliente.nome || '';
-      document.getElementById('ec_cognome').value = selectedCliente.cognome || '';
-      document.getElementById('ec_telefono').value = selectedCliente.telefono || '';
-      document.getElementById('ec_email').value = selectedCliente.email || '';
-      document.getElementById('ec_cf').value = (selectedCliente.codice_fiscale || '').toUpperCase();
-
-      let nascita = '';
-      if (selectedCliente.data_nascita) {
-        nascita = normalizeDate(selectedCliente.data_nascita);
-      } else {
-        nascita = birthDateFromCF(selectedCliente.codice_fiscale) || '';
-      }
-      document.getElementById('ec_data_nascita').value = nascita || '';
-      document.getElementById('ec_note').value = selectedCliente.note || '';
-    }
-
-    function cancelEditCliente() {
-      const form = document.getElementById('editClienteForm');
-      if (form) form.classList.add('hidden');
-    }
-
-    async function saveEditCliente() {
-      try {
-        if (!selectedCliente) {
-          showToast('Nessun cliente selezionato', 'error');
-          return;
-        }
-        const payload = {
-          id_cliente: selectedCliente.id_cliente,
-          nome: document.getElementById('ec_nome').value.trim(),
-          cognome: document.getElementById('ec_cognome').value.trim(),
-          telefono: document.getElementById('ec_telefono').value.trim(),
-          email: document.getElementById('ec_email').value.trim(),
-          codice_fiscale: document
-            .getElementById('ec_cf')
-            .value.trim()
-            .toUpperCase(),
-          data_nascita: document.getElementById('ec_data_nascita').value,
-          note: document.getElementById('ec_note').value.trim()
-        };
-
-        await apiPost('updateCliente', payload);
-        showToast('Cliente aggiornato correttamente', 'success');
-
-        const idx = clientiCache.findIndex(function (c) {
-          return c.id_cliente === selectedCliente.id_cliente;
+        ripCliente.forEach(function (r) {
+          html +=
+            '<tr>' +
+            '<td>' +
+            (r.data_apertura || '') +
+            '</td>' +
+            '<td>' +
+            (r.modello || '') +
+            '</td>' +
+            '<td>' +
+            (r.imei || '') +
+            '</td>' +
+            '<td>' +
+            (r.guasto || '') +
+            '</td>' +
+            '<td>' +
+            (r.stato || '') +
+            '</td>' +
+            '</tr>';
         });
-        if (idx !== -1) {
-          clientiCache[idx] = Object.assign({}, clientiCache[idx], payload);
-          selectedCliente = clientiCache[idx];
-        }
-        selectCliente(selectedCliente);
-        renderListaClienti(
-          document.getElementById('searchClienteTerm').value || ''
-        );
-        cancelEditCliente();
-      } catch (err) {
-        console.error(err);
-        const msg = err && err.message ? err.message : String(err);
-        showToast('Errore aggiornamento cliente: ' + msg, 'error');
+        html += '</tbody></table>';
       }
+      html += '</div>';
+
+      box.innerHTML = html;
     }
 
-    function renderListaClienti(term) {
-      term = (term || '').toLowerCase();
-      const tbody = document.getElementById('tabClienti');
-      if (!tbody) return;
-      tbody.innerHTML = '';
-
-      clientiCache.forEach(function (c) {
-        const chiave =
-          (c.nome || '') +
-          ' ' +
-          (c.cognome || '') +
-          ' ' +
-          (c.codice_fiscale || '') +
-          ' ' +
-          (c.telefono || '');
-        if (term && chiave.toLowerCase().indexOf(term) === -1) return;
-
-        const tr = document.createElement('tr');
-        tr.innerHTML =
-          '<td>' +
-          (c.nome || '') +
-          '</td>' +
-          '<td>' +
-          (c.cognome || '') +
-          '</td>' +
-          '<td>' +
-          (c.telefono || '') +
-          '</td>' +
-          '<td>' +
-          (c.codice_fiscale || '') +
-          '</td>';
-        tr.addEventListener('click', function () {
-          selectCliente(c);
-        });
-        tbody.appendChild(tr);
+    function selectCliente(id) {
+      selectedCliente = clientiCache.find(function (c) {
+        return c.id_cliente === id;
       });
+      renderDettaglioCliente(selectedCliente);
     }
 
-    function selectCliente(c) {
-      selectedCliente = c;
-      const noSel = document.getElementById('noClienteSelezionato');
-      if (noSel) noSel.style.display = 'none';
-      const card = document.getElementById('clienteCard');
-      if (card) card.classList.remove('hidden');
-
-      document.getElementById('detNome').textContent = c.nome || '';
-      document.getElementById('detCognome').textContent = c.cognome || '';
-      document.getElementById('detTelefono').textContent = c.telefono || '';
-      document.getElementById('detEmail').textContent = c.email || '';
-      document.getElementById('detCF').textContent = c.codice_fiscale || '';
-
-      let nasc = '';
-      if (c.data_nascita) {
-        nasc = formatDateDisplay(c.data_nascita);
-      } else {
-        const fromCF = birthDateFromCF(c.codice_fiscale);
-        nasc = fromCF ? formatDateDisplay(fromCF) : '';
-      }
-      document.getElementById('detNascita').textContent = nasc;
-      document.getElementById('detNote').textContent = c.note || '';
-
-      const editForm = document.getElementById('editClienteForm');
-      if (editForm) editForm.classList.add('hidden');
-
-      renderStoricoCliente(c);
-    }
-
-    function renderStoricoCliente(c) {
-      const cfCliente = String(c.codice_fiscale || '').toUpperCase();
-      const tabCt = document.getElementById('tabContrattiCliente');
-      const tabDv = document.getElementById('tabDeviceCliente');
-      const tabRp = document.getElementById('tabRiparazioniCliente');
-      if (tabCt) tabCt.innerHTML = '';
-      if (tabDv) tabDv.innerHTML = '';
-      if (tabRp) tabRp.innerHTML = '';
-
-      // Contratti
-      contrattiCache.forEach(function (ct) {
-        const cfCt = String(ct.codice_fiscale || '').toUpperCase();
-        if (!cfCt || cfCt !== cfCliente) return;
-        const data =
-          ct.data_contratto ||
-          ct.data_attivazione ||
-          ct.data_fine_vincolo_offerta ||
-          '';
-        const tr = document.createElement('tr');
-        tr.innerHTML =
-          '<td>' +
-          formatDateDisplay(data) +
-          '</td>' +
-          '<td>' +
-          (ct.compagnia || '') +
-          '</td>' +
-          '<td>' +
-          (ct.tecnologia || '') +
-          '</td>' +
-          '<td>' +
-          (ct.numero_lavorato || '') +
-          '</td>';
-
-        tr.addEventListener('click', function () {
-          startEditContratto(ct);
-        });
-
-        if (tabCt) tabCt.appendChild(tr);
-      });
-
-      // Device
-      deviceCache.forEach(function (dv) {
-        const cfDv = String(dv.codice_fiscale || '').toUpperCase();
-        if (!cfDv || cfDv !== cfCliente) return;
-        const tr = document.createElement('tr');
-        tr.innerHTML =
-          '<td>' +
-          formatDateDisplay(dv.data_vendita) +
-          '</td>' +
-          '<td>' +
-          (dv.modello || '') +
-          '</td>' +
-          '<td>' +
-          (dv.imei || '') +
-          '</td>';
-        if (tabDv) tabDv.appendChild(tr);
-      });
-
-      // Riparazioni
-      riparazioniCache.forEach(function (rp) {
-        const cfRp = String(rp.codice_fiscale || '').toUpperCase();
-        if (!cfRp || cfRp !== cfCliente) return;
-        const tr = document.createElement('tr');
-        tr.innerHTML =
-          '<td>' +
-          formatDateDisplay(rp.data_apertura) +
-          '</td>' +
-          '<td>' +
-          (rp.modello || '') +
-          '</td>' +
-          '<td>' +
-          (rp.tipo_guasto || '') +
-          '</td>';
-        if (tabRp) tabRp.appendChild(tr);
-      });
-    }
-
-    function startEditContratto(ct) {
-      editingContratto = ct;
-
-      switchSection('sec-nuovo');
-      showToast('Modalità modifica contratto attiva', 'info');
-
-      const cf = String(ct.codice_fiscale || '').toUpperCase();
-      const cli = clientiCache.find(function (c) {
-        return String(c.codice_fiscale || '').toUpperCase() === cf;
-      });
-
-      document.getElementById('nc_nome_cliente').value = cli ? cli.nome || '' : '';
-      document.getElementById('nc_cognome_cliente').value = cli
-        ? cli.cognome || ''
-        : '';
-      document.getElementById('nc_telefono_cliente').value = cli
-        ? cli.telefono || ''
-        : '';
-      document.getElementById('nc_email_cliente').value = cli
-        ? cli.email || ''
-        : '';
-      document.getElementById('nc_cf_cliente').value = cf;
-
-      let nascita = '';
-      if (cli && cli.data_nascita) {
-        nascita = normalizeDate(cli.data_nascita);
-      } else if (cli && cli.codice_fiscale) {
-        nascita = birthDateFromCF(cli.codice_fiscale) || '';
-      }
-      document.getElementById('nc_data_nascita_cliente').value = nascita || '';
-      document.getElementById('nc_note_cliente').value = cli ? cli.note || '' : '';
-
-      document.getElementById('nc_data_contratto').value = normalizeDate(
-        ct.data_contratto
-      );
-      document.getElementById('nc_tipo_cliente').value = ct.tipo_cliente || '';
-      document.getElementById('nc_tipo_attivazione').value =
-        ct.tipo_attivazione || '';
-      document.getElementById('nc_tecnologia').value = ct.tecnologia || '';
-      document.getElementById('nc_compagnia').value = ct.compagnia || '';
-      document.getElementById('nc_convergenza').value = ct.convergenza || '';
-      document.getElementById('nc_mnp').value = ct.mnp || '';
-      document.getElementById('nc_iccid_vecchio').value = ct.iccid_vecchio || '';
-      document.getElementById('nc_iccid_nuovo').value = ct.iccid_nuovo || '';
-      document.getElementById('nc_data_attivazione').value = normalizeDate(
-        ct.data_attivazione
-      );
-      document.getElementById('nc_data_portabilita').value = normalizeDate(
-        ct.data_portabilita
-      );
-      document.getElementById('nc_numero_lavorato').value =
-        ct.numero_lavorato || '';
-      document.getElementById('nc_nome_offerta').value = ct.nome_offerta || '';
-      document.getElementById('nc_costo_offerta').value = ct.costo_offerta || '';
-      document.getElementById('nc_vincolo_offerta_mesi').value =
-        ct.vincolo_offerta_mesi || '';
-      document.getElementById('nc_telefono_incluso').value =
-        ct.telefono_incluso || '';
-      document.getElementById('nc_imei').value = ct.imei || '';
-      document.getElementById('nc_modello').value = ct.modello || '';
-      document.getElementById('nc_tipo_pagamento').value = ct.tipo_pagamento || '';
-      document.getElementById('nc_mesi_vincolo_telefono').value =
-        ct.mesi_vincolo_telefono || '';
-      document.getElementById('nc_data_fine_vincolo_offerta').value = normalizeDate(
-        ct.data_fine_vincolo_offerta
-      );
-      document.getElementById('nc_data_fine_vincolo_telefono').value =
-        normalizeDate(ct.data_fine_vincolo_telefono);
-
-      const lbl = document.getElementById('nc_submit_label');
-      if (lbl) lbl.textContent = 'Salva modifiche contratto';
-    }
-
-    function updateDashboardKpis() {
-      const elCli = document.getElementById('kpiTotClienti');
-      const elCt = document.getElementById('kpiTotContratti');
-      const elDv = document.getElementById('kpiTotDevice');
-      const elRp = document.getElementById('kpiTotRiparazioni');
-      const elCompl = document.getElementById('kpiCompleanniOggi');
-      const elScad = document.getElementById('kpiScadenzeMese');
-
-      if (elCli) elCli.textContent = clientiCache.length;
-      if (elCt) elCt.textContent = contrattiCache.length;
-      if (elDv) elDv.textContent = deviceCache.length;
-      if (elRp) elRp.textContent = riparazioniCache.length;
-
-      const today = normalizeDate(new Date());
-      const todayMD = today ? today.slice(5) : '';
-      let countBday = 0;
-      clientiCache.forEach(function (c) {
-        let dn = '';
-        if (c.data_nascita) {
-          dn = normalizeDate(c.data_nascita);
-        } else {
-          dn = birthDateFromCF(c.codice_fiscale);
-        }
-        if (!dn) return;
-        if (dn.slice(5) === todayMD) countBday++;
-      });
-      if (elCompl) elCompl.textContent = countBday;
-
-      const meseCorr = today ? today.slice(0, 7) : '';
-      let countScad = 0;
-      contrattiCache.forEach(function (ct) {
-        const df = normalizeDate(ct.data_fine_vincolo_offerta);
-        if (!df) return;
-        if (df.slice(0, 7) === meseCorr) countScad++;
-      });
-      if (elScad) elScad.textContent = countScad;
-    }
-
-    function renderCompleanniOggi() {
-      const tbody = document.getElementById('tabCompleanni');
-      if (!tbody) return;
-      tbody.innerHTML = '';
-      const today = normalizeDate(new Date());
-      const todayMD = today ? today.slice(5) : '';
-
-      clientiCache.forEach(function (c) {
-        let dn = '';
-        if (c.data_nascita) {
-          dn = normalizeDate(c.data_nascita);
-        } else {
-          dn = birthDateFromCF(c.codice_fiscale);
-        }
-        if (!dn) return;
-        if (dn.slice(5) !== todayMD) return;
-        const tr = document.createElement('tr');
-        tr.innerHTML =
-          '<td>' +
-          (c.nome || '') +
-          ' ' +
-          (c.cognome || '') +
-          '</td>' +
-          '<td>' +
-          (c.telefono || '') +
-          '</td>' +
-          '<td>' +
-          (c.codice_fiscale || '') +
-          '</td>' +
-          '<td>' +
-          formatDateDisplay(dn) +
-          '</td>';
-        tbody.appendChild(tr);
-      });
-    }
-
-    function updateReportFilters() {
-      const selComp = document.getElementById('rep_compagnia');
-      const selTec = document.getElementById('rep_tecnologia');
-      if (!selComp || !selTec) return;
-
-      const compSet = new Set();
-      const tecSet = new Set();
-
-      contrattiCache.forEach(function (ct) {
-        if (ct.compagnia) compSet.add(String(ct.compagnia));
-        if (ct.tecnologia) tecSet.add(String(ct.tecnologia));
-      });
-
-      selComp.innerHTML = '<option value="">Tutte</option>';
-      Array.from(compSet)
-        .sort()
-        .forEach(function (v) {
-          const opt = document.createElement('option');
-          opt.value = v;
-          opt.textContent = v;
-          selComp.appendChild(opt);
-        });
-
-      selTec.innerHTML = '<option value="">Tutte</option>';
-      Array.from(tecSet)
-        .sort()
-        .forEach(function (v) {
-          const opt = document.createElement('option');
-          opt.value = v;
-          opt.textContent = v;
-          selTec.appendChild(opt);
-        });
-    }
-
-    function renderContrattiFiltro(compagnia, tecnologia) {
-      const tbody = document.getElementById('tabContrattiFiltro');
-      if (!tbody) return;
-      tbody.innerHTML = '';
-
-      const clientiByCF = {};
-      clientiCache.forEach(function (c) {
-        if (c.codice_fiscale) {
-          clientiByCF[String(c.codice_fiscale).toUpperCase()] = c;
-        }
-      });
-
-      contrattiCache.forEach(function (ct) {
-        const comp =
-          (ct.compagnia || '').toString().trim().toUpperCase();
-        const tec =
-          (ct.tecnologia || '').toString().trim().toUpperCase();
-        if (compagnia && comp !== compagnia.toUpperCase()) return;
-        if (tecnologia && tec !== tecnologia.toUpperCase()) return;
-
-        const cf = String(ct.codice_fiscale || '').toUpperCase();
-        const cli = clientiByCF[cf];
-        const nomeCli = cli ? (cli.nome || '') + ' ' + (cli.cognome || '') : '';
-
-        const tr = document.createElement('tr');
-        tr.innerHTML =
-          '<td>' +
-          nomeCli +
-          '</td>' +
-          '<td>' +
-          cf +
-          '</td>' +
-          '<td>' +
-          (ct.compagnia || '') +
-          '</td>' +
-          '<td>' +
-          (ct.tecnologia || '') +
-          '</td>' +
-          '<td>' +
-          (ct.numero_lavorato || '') +
-          '</td>';
-
-        tr.addEventListener('click', function () {
-          if (cli) {
-            selectCliente(cli);
-          } else {
-            showToast('Cliente non trovato in anagrafica', 'error');
-          }
-        });
-
-        tbody.appendChild(tr);
-      });
-    }
-
-    function renderScadenze(meseStr) {
-      const tbody = document.getElementById('tabScadenze');
-      if (!tbody) return;
-      tbody.innerHTML = '';
-      if (!meseStr) return;
-
-      const clientiByCF = {};
-      clientiCache.forEach(function (c) {
-        if (c.codice_fiscale) {
-          clientiByCF[String(c.codice_fiscale).toUpperCase()] = c;
-        }
-      });
-
-      contrattiCache.forEach(function (ct) {
-        const df = normalizeDate(ct.data_fine_vincolo_offerta);
-        if (!df) return;
-        if (df.slice(0, 7) !== meseStr) return;
-
-        const cf = String(ct.codice_fiscale || '').toUpperCase();
-        const cli = clientiByCF[cf];
-        const nomeCli = cli ? (cli.nome || '') + ' ' + (cli.cognome || '') : '';
-
-        const tr = document.createElement('tr');
-        tr.innerHTML =
-          '<td>' +
-          nomeCli +
-          '</td>' +
-          '<td>' +
-          cf +
-          '</td>' +
-          '<td>' +
-          (ct.compagnia || '') +
-          '</td>' +
-          '<td>' +
-          (ct.nome_offerta || '') +
-          '</td>' +
-          '<td>' +
-          formatDateDisplay(df) +
-          '</td>';
-
-        tr.addEventListener('click', function () {
-          if (cli) {
-            selectCliente(cli);
-          } else {
-            showToast('Cliente non trovato in anagrafica', 'error');
-          }
-        });
-
-        tbody.appendChild(tr);
-      });
-    }
-
-    function applyContrattiFiltro() {
-      const compSel = document.getElementById('rep_compagnia').value || '';
-      const tecSel = document.getElementById('rep_tecnologia').value || '';
-      renderContrattiFiltro(compSel, tecSel);
-    }
-
-    function applyScadenzeFiltro() {
-      const m = document.getElementById('rep_mese').value;
-      const y = document.getElementById('rep_anno').value;
-      if (!m || !y) {
-        showToast('Seleziona mese e anno', 'error');
-        return;
-      }
-      const meseStr = y + '-' + m;
-      renderScadenze(meseStr);
-    }
-
-    function exportContrattiPeriodo() {
-      const da = document.getElementById('rep_exp_da').value;
-      const a = document.getElementById('rep_exp_a').value;
-      if (!da || !a) {
-        showToast('Seleziona data iniziale e finale', 'error');
-        return;
-      }
-
-      const daNorm = normalizeDate(da);
-      const aNorm = normalizeDate(a);
-      if (!daNorm || !aNorm) {
-        showToast('Date non valide', 'error');
-        return;
-      }
-
-      const clientiByCF = {};
-      clientiCache.forEach(function (c) {
-        if (c.codice_fiscale) {
-          clientiByCF[String(c.codice_fiscale).toUpperCase()] = c;
-        }
-      });
-
-      const header = [
-        'Nome',
-        'Cognome',
-        'Telefono',
-        'Email',
-        'Codice fiscale',
-        'Data nascita',
-        'Note',
-        'Data contratto',
-        'Tipo cliente',
-        'Tipo attivazione',
-        'Tecnologia',
-        'Compagnia',
-        'Convergenza',
-        'MNP',
-        'ICCID vecchio',
-        'ICCID nuovo',
-        'Data attivazione',
-        'Data portabilità',
-        'Numero lavorato',
-        'Nome offerta',
-        'Costo offerta',
-        'Vincolo offerta (mesi)',
-        'Telefono incluso',
-        'IMEI',
-        'Modello',
-        'Tipo pagamento',
-        'Mesi vincolo telefono',
-        'Data fine vincolo offerta',
-        'Data fine vincolo telefono'
-      ];
-
-      const lines = [];
-      lines.push(header.join(';'));
-
-      contrattiCache.forEach(function (ct) {
-        const dc = normalizeDate(ct.data_contratto);
-        if (!dc) return;
-        if (dc < daNorm || dc > aNorm) return;
-
-        const cf = String(ct.codice_fiscale || '').toUpperCase();
-        const cli = clientiByCF[cf];
-
-        let dn = '';
-        if (cli && cli.data_nascita) {
-          dn = normalizeDate(cli.data_nascita);
-        } else if (cli && cli.codice_fiscale) {
-          const cfDn = birthDateFromCF(cli.codice_fiscale);
-          dn = cfDn || '';
-        }
-
-        const row = [
-          cli ? cli.nome || '' : '',
-          cli ? cli.cognome || '' : '',
-          cli ? cli.telefono || '' : '',
-          cli ? cli.email || '' : '',
-          cf,
-          dn,
-          cli ? cli.note || '' : '',
-          dc,
-          ct.tipo_cliente || '',
-          ct.tipo_attivazione || '',
-          ct.tecnologia || '',
-          ct.compagnia || '',
-          ct.convergenza || '',
-          ct.mnp || '',
-          ct.iccid_vecchio || '',
-          ct.iccid_nuovo || '',
-          normalizeDate(ct.data_attivazione),
-          normalizeDate(ct.data_portabilita),
-          ct.numero_lavorato || '',
-          ct.nome_offerta || '',
-          ct.costo_offerta || '',
-          ct.vincolo_offerta_mesi || '',
-          ct.telefono_incluso || '',
-          ct.imei || '',
-          ct.modello || '',
-          ct.tipo_pagamento || '',
-          ct.mesi_vincolo_telefono || '',
-          normalizeDate(ct.data_fine_vincolo_offerta),
-          normalizeDate(ct.data_fine_vincolo_telefono)
-        ];
-
-        lines.push(
-          row
-            .map(function (v) {
-              const s = v == null ? '' : String(v);
-              return s.replace(/;/g, ',');
-            })
-            .join(';')
-        );
-      });
-
-      if (lines.length <= 1) {
-        showToast('Nessun contratto trovato nel periodo selezionato', 'info');
-        return;
-      }
-
-      const csvContent = lines.join('\n');
-      const blob = new Blob([csvContent], {
-        type: 'text/csv;charset=utf-8;'
-      });
-      const url = URL.createObjectURL(blob);
-      const aEl = document.createElement('a');
-      aEl.href = url;
-      aEl.download = 'contratti_' + daNorm + '_al_' + aNorm + '.csv';
-      document.body.appendChild(aEl);
-      aEl.click();
-      setTimeout(function () {
-        URL.revokeObjectURL(url);
-        aEl.remove();
-      }, 0);
-
-      showToast('CSV contratti esportato', 'success');
-    }
     function ensureClienteByCF(cf, dati) {
       cf = (cf || '').toUpperCase();
       if (!cf) throw new Error('Codice fiscale mancante');
@@ -2558,9 +1904,10 @@
         clientiCache.push(
           Object.assign(
             {
-              id_cliente: id
+              id_cliente: id,
+              codice_fiscale: cf
             },
-            payload
+            dati
           )
         );
         return id;
@@ -2573,257 +1920,239 @@
     }
 
     function recalcFineVincoli() {
-      const dataAtt = document.getElementById('nc_data_attivazione').value;
-      const mesiOff = parseInt(
-        document.getElementById('nc_vincolo_offerta_mesi').value || '0',
-        10
-      );
-      const mesiTel = parseInt(
-        document.getElementById('nc_mesi_vincolo_telefono').value || '0',
-        10
+      const costoOffertaEl = document.getElementById('nc_costo_offerta');
+      const vincoloOffertaEl = document.getElementById('nc_vincolo_offerta_mesi');
+      const dataContrattoEl = document.getElementById('nc_data_contratto');
+      const dataFineOffertaEl = document.getElementById(
+        'nc_data_fine_vincolo_offerta'
       );
 
-      if (dataAtt && mesiOff > 0) {
-        const fineOff = addMonthsToDate(dataAtt, mesiOff);
-        if (fineOff)
-          document.getElementById('nc_data_fine_vincolo_offerta').value = fineOff;
+      if (!costoOffertaEl || !vincoloOffertaEl || !dataContrattoEl) return;
+      const costo =
+        parseFloat((costoOffertaEl.value || '').replace(',', '.')) || 0;
+      const mesi = parseInt(vincoloOffertaEl.value || '0', 10) || 0;
+      const dataContratto = dataContrattoEl.value;
+      if (!dataContratto || !mesi) {
+        if (dataFineOffertaEl) dataFineOffertaEl.value = '';
+        return;
       }
-      if (dataAtt && mesiTel > 0) {
-        const fineTel = addMonthsToDate(dataAtt, mesiTel);
-        if (fineTel)
-          document.getElementById('nc_data_fine_vincolo_telefono').value = fineTel;
+      const dt = new Date(dataContratto);
+      if (isNaN(dt.getTime())) {
+        if (dataFineOffertaEl) dataFineOffertaEl.value = '';
+        return;
       }
+      dt.setMonth(dt.getMonth() + mesi);
+      const yyyy = dt.getFullYear();
+      let mm = dt.getMonth() + 1;
+      let dd = dt.getDate();
+      if (mm < 10) mm = '0' + mm;
+      if (dd < 10) dd = '0' + dd;
+      const str = yyyy + '-' + mm + '-' + dd;
+      if (dataFineOffertaEl) dataFineOffertaEl.value = str;
     }
 
     function recalcPortabilita() {
-      const mnp = document.getElementById('nc_mnp').value || '';
-      const dataAtt = document.getElementById('nc_data_attivazione').value || '';
-      if (mnp === 'SI' && dataAtt) {
-        document.getElementById('nc_data_portabilita').value = dataAtt;
+      const dataContrattoEl = document.getElementById('nc_data_contratto');
+      const dataPortabilitaEl = document.getElementById('nc_data_portabilita');
+      if (!dataContrattoEl || !dataPortabilitaEl) return;
+      const dt = new Date(dataContrattoEl.value || '');
+      if (isNaN(dt.getTime())) {
+        dataPortabilitaEl.value = '';
+        return;
       }
+      dt.setDate(dt.getDate() + 3);
+      const yyyy = dt.getFullYear();
+      let mm = dt.getMonth() + 1;
+      let dd = dt.getDate();
+      if (mm < 10) mm = '0' + mm;
+      if (dd < 10) dd = '0' + dd;
+      dataPortabilitaEl.value = yyyy + '-' + mm + '-' + dd;
     }
 
-    function parseImportText() {
-      const raw = document.getElementById('csvRaw').value || '';
-      const lines = raw
-        .split(/\r?\n/)
-        .map(function (l) {
-          return l.trim();
-        })
-        .filter(function (l) {
-          return l.length > 0;
-        });
-      if (lines.length < 2) return [];
-
-      function splitLine(line) {
-        if (line.indexOf('\t') !== -1) return line.split('\t');
-        if (line.indexOf(';') !== -1) return line.split(';');
-        return line.split(',');
-      }
-
-      const header = splitLine(lines[0]);
-      const rows = [];
-      for (let i = 1; i < lines.length; i++) {
-        const cols = splitLine(lines[i]);
-        const obj = {};
-        header.forEach(function (h, idx) {
-          obj[h.trim()] = cols[idx] || '';
-        });
-        rows.push(obj);
-      }
+    function computeScadenzeContratti() {
+      const rows = contrattiCache.map(function (ct) {
+        return {
+          id_contratto: ct.id_contratto,
+          nome_cliente: ct.nome_cliente,
+          compagnia: ct.compagnia,
+          numero_lavorato: ct.numero_lavorato,
+          data_fine_vincolo_offerta: ct.data_fine_vincolo_offerta,
+          data_attivazione: ct.data_attivazione,
+          tecnologia: ct.tecnologia,
+          nome_offerta: ct.nome_offerta
+        };
+      });
+      const now = new Date();
+      rows.forEach(function (r) {
+        let dt = null;
+        if (r.data_fine_vincolo_offerta) {
+          dt = new Date(r.data_fine_vincolo_offerta);
+        } else if (r.data_attivazione) {
+          dt = new Date(r.data_attivazione);
+        }
+        if (!dt || isNaN(dt.getTime())) {
+          r.days_to_expiry = null;
+          return;
+        }
+        const diff = dt.getTime() - now.getTime();
+        r.days_to_expiry = Math.round(diff / (1000 * 60 * 60 * 24));
+      });
+      rows.sort(function (a, b) {
+        if (a.days_to_expiry == null && b.days_to_expiry == null) return 0;
+        if (a.days_to_expiry == null) return 1;
+        if (b.days_to_expiry == null) return -1;
+        return a.days_to_expiry - b.days_to_expiry;
+      });
       return rows;
     }
 
-    function previewImport() {
-      const rows = parseImportText();
-      importRows = rows;
-      const tbody = document.getElementById('csvPreviewBody');
-      const summary = document.getElementById('importSummary');
-      const bar = document.getElementById('importProgress');
-      if (tbody) tbody.innerHTML = '';
-      if (bar) bar.style.width = '0%';
-
-      if (!rows.length) {
-        if (summary)
-          summary.textContent = 'Nessuna riga da importare (controlla il testo).';
-        return;
-      }
-
-      rows.forEach(function (r, idx) {
+    function renderScadenzeContratti() {
+      const tbody = document.getElementById('scadenzeContrattiBody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      const rows = computeScadenzeContratti();
+      rows.forEach(function (r) {
         const tr = document.createElement('tr');
         tr.innerHTML =
           '<td>' +
-          (idx + 1) +
+          (r.nome_cliente || '') +
           '</td>' +
           '<td>' +
-          (r['Nome'] || '') +
+          (r.compagnia || '') +
           '</td>' +
           '<td>' +
-          (r['Cognome'] || '') +
+          (r.numero_lavorato || '') +
           '</td>' +
           '<td>' +
-          (r['Telefono'] || '') +
+          (r.nome_offerta || '') +
           '</td>' +
           '<td>' +
-          (r['Codice fiscale'] || '') +
+          (r.data_fine_vincolo_offerta || r.data_attivazione || '-') +
           '</td>' +
           '<td>' +
-          (r['Data contratto'] || '') +
-          '</td>' +
-          '<td>' +
-          (r['Compagnia'] || '') +
-          '</td>' +
-          '<td>' +
-          (r['Tecnologia'] || '') +
-          '</td>' +
-          '<td>' +
-          (r['Numero lavorato'] || '') +
-          '</td>' +
-          '<td>' +
-          (r['Nome offerta'] || '') +
+          (r.days_to_expiry != null ? r.days_to_expiry : '-') +
           '</td>';
-        if (tbody) tbody.appendChild(tr);
+        tbody.appendChild(tr);
       });
-
-      if (summary)
-        summary.textContent =
-          'Anteprima: ' + rows.length + ' righe pronte per l\'import.';
     }
 
-    async function runImport() {
-      if (!importRows.length) {
-        showToast('Fai prima l\'anteprima dell\'import', 'error');
-        return;
-      }
-      const summary = document.getElementById('importSummary');
-      const bar = document.getElementById('importProgress');
-      let ok = 0;
-      let err = 0;
+    function renderDashboardCards() {
+      const elTotClienti = document.getElementById('cardTotClienti');
+      const elTotContratti = document.getElementById('cardTotContratti');
+      const elTotDevice = document.getElementById('cardTotDevice');
+      const elTotRip = document.getElementById('cardTotRiparazioni');
 
-      for (let i = 0; i < importRows.length; i++) {
-        const r = importRows[i];
-        try {
-          const cf = (r['Codice fiscale'] || '').trim().toUpperCase();
-          if (!cf) throw new Error('Codice fiscale vuoto alla riga ' + (i + 2));
+      if (elTotClienti) elTotClienti.textContent = clientiCache.length;
+      if (elTotContratti) elTotContratti.textContent = contrattiCache.length;
+      if (elTotDevice) elTotDevice.textContent = deviceCache.length;
+      if (elTotRip) elTotRip.textContent = riparazioniCache.length;
+    }
 
-          const idCli = await ensureClienteByCF(cf, {
-            nome: r['Nome'] || '',
-            cognome: r['Cognome'] || '',
-            telefono: r['Telefono'] || '',
-            email: r['Email'] || '',
-            data_nascita: r['Data nascita'] || '',
-            note: r['Note'] || 'Import CSV'
-          });
-
-          const payloadContratto = {
-            id_cliente: idCli,
-            codice_fiscale: cf,
-            data_contratto: r['Data contratto'] || '',
-            tipo_cliente: r['Tipo cliente'] || '',
-            tipo_attivazione: r['Tipo attivazione'] || '',
-            tecnologia: r['Tecnologia'] || '',
-            compagnia: r['Compagnia'] || '',
-            convergenza: r['Convergenza'] || '',
-            mnp: r['MNP'] || '',
-            iccid_vecchio: r['ICCID vecchio'] || '',
-            iccid_nuovo: r['ICCID nuovo'] || '',
-            data_attivazione: r['Data attivazione'] || '',
-            data_portabilita: r['Data portabilità'] || '',
-            numero_lavorato: r['Numero lavorato'] || '',
-            nome_offerta: r['Nome offerta'] || '',
-            costo_offerta: r['Costo offerta'] || '',
-            vincolo_offerta_mesi: r['Vincolo offerta (mesi)'] || '',
-            telefono_incluso: r['Telefono incluso'] || '',
-            imei: r['IMEI'] || '',
-            modello: r['Modello'] || '',
-            tipo_pagamento: r['Tipo pagamento'] || '',
-            mesi_vincolo_telefono: r['Mesi vincolo telefono'] || '',
-            data_fine_vincolo_offerta: r['Data fine vincolo offerta'] || '',
-            data_fine_vincolo_telefono: r['Data fine vincolo telefono'] || ''
-          };
-
-          await apiPost('createContratto', payloadContratto);
-          ok++;
-        } catch (e) {
-          console.error(e);
-          err++;
+    function renderReportCompagnie() {
+      const tbody = document.getElementById('reportCompagnieBody');
+      if (!tbody) return;
+      const map = {};
+      contrattiCache.forEach(function (ct) {
+        const comp = ct.compagnia || 'N/D';
+        if (!map[comp]) {
+          map[comp] = { count: 0 };
         }
-
-        if (bar) {
-          bar.style.width =
-            String(Math.round(((i + 1) / importRows.length) * 100)) + '%';
-        }
-      }
-
-      if (summary) {
-        summary.textContent =
-          'Import finito. OK: ' +
-          ok +
-          ', Errori: ' +
-          err +
-          (err ? ' (controlla la console del browser per dettagli)' : '');
-      }
-      showToast(
-        'Import terminato. OK: ' + ok + ', Errori: ' + err,
-        err ? 'error' : 'success'
-      );
-      refreshAll();
+        map[comp].count++;
+      });
+      const entries = Object.keys(map).map(function (k) {
+        return { compagnia: k, count: map[k].count };
+      });
+      entries.sort(function (a, b) {
+        return b.count - a.count;
+      });
+      tbody.innerHTML = '';
+      entries.forEach(function (e) {
+        const tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td>' + e.compagnia + '</td><td>' + e.count + '</td>';
+        tbody.appendChild(tr);
+      });
     }
 
-    async function loadClienti() {
-      try {
-        const json = await apiGet('listClienti');
-        clientiCache = json.data || [];
-        renderListaClienti(
-          document.getElementById('searchClienteTerm').value || ''
-        );
-        renderCompleanniOggi();
-        updateDashboardKpis();
-      } catch (err) {
-        console.error(err);
-        showToast('Errore nel caricamento clienti', 'error');
-      }
-    }
-
-    async function loadContratti() {
-      try {
-        const json = await apiGet('listContratti');
-        contrattiCache = json.data || [];
-        updateDashboardKpis();
-        updateReportFilters();
-      } catch (err) {
-        console.error(err);
-        showToast('Errore nel caricamento contratti', 'error');
-      }
-    }
-
-    async function loadDevice() {
-      try {
-        const json = await apiGet('listDevice');
-        deviceCache = json.data || [];
-        updateDashboardKpis();
-      } catch (err) {
-        console.error(err);
-        showToast('Errore nel caricamento device', 'error');
-      }
-    }
-
-    async function loadRiparazioni() {
-      try {
-        const json = await apiGet('listRiparazioni');
-        riparazioniCache = json.data || [];
-        updateDashboardKpis();
-      } catch (err) {
-        console.error(err);
-        showToast('Errore nel caricamento riparazioni', 'error');
-      }
+    function renderReportTecnologie() {
+      const tbody = document.getElementById('reportTecnologieBody');
+      if (!tbody) return;
+      const map = {};
+      contrattiCache.forEach(function (ct) {
+        const tech = ct.tecnologia || 'N/D';
+        if (!map[tech]) map[tech] = { count: 0 };
+        map[tech].count++;
+      });
+      const entries = Object.keys(map).map(function (k) {
+        return { tecnologia: k, count: map[k].count };
+      });
+      entries.sort(function (a, b) {
+        return b.count - a.count;
+      });
+      tbody.innerHTML = '';
+      entries.forEach(function (e) {
+        const tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td>' + e.tecnologia + '</td><td>' + e.count + '</td>';
+        tbody.appendChild(tr);
+      });
     }
 
     async function refreshAll() {
-      await loadClienti();
-      await loadContratti();
-      await loadDevice();
-      await loadRiparazioni();
+      try {
+        const [cli, con, dev, rip] = await Promise.all([
+          apiGet('listClienti'),
+          apiGet('listContratti'),
+          apiGet('listDevice'),
+          apiGet('listRiparazioni')
+        ]);
+
+        clientiCache = (cli.rows || []).map(function (c, idx) {
+          return Object.assign(
+            {
+              id_cliente: idx + 1
+            },
+            c
+          );
+        });
+
+        contrattiCache = (con.rows || []).map(function (ct, idx) {
+          return Object.assign(
+            {
+              id_contratto: idx + 1
+            },
+            ct
+          );
+        });
+
+        deviceCache = (dev.rows || []).map(function (d, idx) {
+          return Object.assign(
+            {
+              id_device: idx + 1
+            },
+            d
+          );
+        });
+
+        riparazioniCache = (rip.rows || []).map(function (r, idx) {
+          return Object.assign(
+            {
+              id_riparazione: idx + 1
+            },
+            r
+          );
+        });
+
+        renderListaClienti('');
+        renderDashboardCards();
+        renderReportCompagnie();
+        renderReportTecnologie();
+        renderDettaglioCliente(null);
+        renderScadenzeContratti();
+      } catch (err) {
+        console.error('Errore refreshAll', err);
+        showToast('Errore nel caricamento dati: ' + err.message, 'error');
+      }
     }
 
     function setupForms() {
@@ -2944,178 +2273,522 @@
             );
           }
         });
-
-        ['nc_data_attivazione', 'nc_vincolo_offerta_mesi', 'nc_mesi_vincolo_telefono', 'nc_mnp'].forEach(
-          function (id) {
-            const el = document.getElementById(id);
-            if (el) {
-              el.addEventListener('change', recalcContrattoFields);
-            }
-          }
-        );
       }
 
-      const formDv = document.getElementById('formDevice');
-      if (formDv) {
-        formDv.addEventListener('submit', async function (e) {
+      const formDevice = document.getElementById('formVenditaDevice');
+      if (formDevice) {
+        formDevice.addEventListener('submit', async function (e) {
           e.preventDefault();
           try {
-            const cf = document
-              .getElementById('dv_cf_cliente')
-              .value.trim()
-              .toUpperCase();
-            const nome = document.getElementById('dv_nome_cliente').value.trim();
-            const cognome =
-              document.getElementById('dv_cognome_cliente').value.trim();
-            const telefono =
-              document.getElementById('dv_telefono_cliente').value.trim();
-            const email =
-              document.getElementById('dv_email_cliente').value.trim();
-
-            if (!cf) {
-              showToast('Codice fiscale obbligatorio', 'error');
+            if (!selectedCliente || !selectedCliente.id_cliente) {
+              showToast(
+                'Seleziona prima un cliente sulla destra per associare il device',
+                'error'
+              );
               return;
             }
-
-            const dataVendita =
-              document.getElementById('dv_data_vendita').value || '';
-            const durataFin =
-              parseInt(
-                document.getElementById('dv_durata_finanziamento').value || '0',
-                10
-              ) || 0;
-            const garanziaMesi =
-              parseInt(
-                document.getElementById('dv_garanzia_mesi').value || '0',
-                10
-              ) || 0;
-
-            if (dataVendita && durataFin > 0) {
-              const fineFin = addMonthsToDate(dataVendita, durataFin);
-              if (fineFin)
-                document.getElementById('dv_data_fine_finanziamento').value =
-                  fineFin;
-            }
-            if (dataVendita && garanziaMesi > 0) {
-              const fineGar = addMonthsToDate(dataVendita, garanziaMesi);
-              if (fineGar)
-                document.getElementById('dv_data_fine_garanzia').value =
-                  fineGar;
-            }
-
-            const idCli = await ensureClienteByCF(cf, {
-              nome: nome,
-              cognome: cognome,
-              telefono: telefono,
-              email: email,
-              data_nascita: '',
-              note: 'Cliente da modulo device'
-            });
-
             const payload = {
-              id_cliente: idCli,
-              codice_fiscale: cf,
-              data_vendita: dataVendita,
-              marca: document.getElementById('dv_marca').value.trim() || '',
-              modello:
-                document.getElementById('dv_modello').value.trim() || '',
-              imei: document.getElementById('dv_imei').value.trim() || '',
-              prezzo: document.getElementById('dv_prezzo').value || '',
+              id_cliente: selectedCliente.id_cliente,
+              data_vendita:
+                document.getElementById('vd_data_vendita').value || '',
+              nome_device:
+                document.getElementById('vd_nome_device').value.trim() || '',
+              tipo_device:
+                document.getElementById('vd_tipo_device').value || '',
+              imei: document.getElementById('vd_imei').value.trim() || '',
               tipo_pagamento:
-                document.getElementById('dv_tipo_pagamento').value || '',
-              durata_finanziamento:
-                document.getElementById('dv_durata_finanziamento').value || '',
-              anticipo: document.getElementById('dv_anticipo').value || '',
-              costo_rata: document.getElementById('dv_costo_rata').value || '',
-              data_fine_finanziamento:
-                document.getElementById('dv_data_fine_finanziamento').value ||
-                '',
-              garanzia_mesi:
-                document.getElementById('dv_garanzia_mesi').value || '',
-              data_fine_garanzia:
-                document.getElementById('dv_data_fine_garanzia').value || '',
-              id_contratto: '',
-              note: document.getElementById('dv_note').value.trim() || ''
+                document.getElementById('vd_tipo_pagamento').value || '',
+              durata_pagamento_mesi:
+                document.getElementById('vd_durata_pagamento').value || '',
+              fornitore:
+                document.getElementById('vd_fornitore').value.trim() || '',
+              valore_cliente: 0,
+              note: document.getElementById('vd_note').value.trim() || ''
             };
-
             await apiPost('createVenditaDevice', payload);
-            showToast('Vendita device salvata', 'success');
-            formDv.reset();
+            showToast('Vendita device salvata correttamente', 'success');
+            formDevice.reset();
             refreshAll();
           } catch (err) {
             console.error(err);
             const msg = err && err.message ? err.message : String(err);
-            showToast('Errore salvataggio device: ' + msg, 'error');
+            showToast(
+              'Errore nel salvataggio vendita device: ' + msg,
+              'error'
+            );
           }
         });
       }
 
-      const formRp = document.getElementById('formRiparazione');
-      if (formRp) {
-        formRp.addEventListener('submit', async function (e) {
+      const formRip = document.getElementById('formRiparazione');
+      if (formRip) {
+        formRip.addEventListener('submit', async function (e) {
           e.preventDefault();
           try {
-            const cf = document
-              .getElementById('rp_cf_cliente')
-              .value.trim()
-              .toUpperCase();
-            const nome = document.getElementById('rp_nome_cliente').value.trim();
-            const cognome =
-              document.getElementById('rp_cognome_cliente').value.trim();
-            const telefono =
-              document.getElementById('rp_telefono_cliente').value.trim();
-            const email =
-              document.getElementById('rp_email_cliente').value.trim();
-
-            if (!cf) {
-              showToast('Codice fiscale obbligatorio', 'error');
+            if (!selectedCliente || !selectedCliente.id_cliente) {
+              showToast(
+                'Seleziona prima un cliente sulla destra per associare la riparazione',
+                'error'
+              );
               return;
             }
-
-            const idCli = await ensureClienteByCF(cf, {
-              nome: nome,
-              cognome: cognome,
-              telefono: telefono,
-              email: email,
-              data_nascita: '',
-              note: 'Cliente da modulo riparazioni'
-            });
-
             const payload = {
-              id_cliente: idCli,
-              codice_fiscale: cf,
+              id_cliente: selectedCliente.id_cliente,
               data_apertura:
                 document.getElementById('rp_data_apertura').value || '',
-              marca: document.getElementById('rp_marca').value.trim() || '',
               modello:
                 document.getElementById('rp_modello').value.trim() || '',
               imei: document.getElementById('rp_imei').value.trim() || '',
-              tipo_guasto:
-                document.getElementById('rp_tipo_guasto').value.trim() || '',
+              guasto:
+                document.getElementById('rp_guasto').value.trim() || '',
               stato: document.getElementById('rp_stato').value || '',
-              costo_previsto:
-                document.getElementById('rp_costo_previsto').value || '',
-              costo_effettivo:
-                document.getElementById('rp_costo_effettivo').value || '',
-              data_chiusura:
-                document.getElementById('rp_data_chiusura').value || '',
               note: document.getElementById('rp_note').value.trim() || ''
             };
-
             await apiPost('createRiparazione', payload);
-            showToast('Riparazione salvata', 'success');
-            formRp.reset();
+            showToast('Riparazione salvata correttamente', 'success');
+            formRip.reset();
             refreshAll();
           } catch (err) {
             console.error(err);
             const msg = err && err.message ? err.message : String(err);
-            showToast('Errore salvataggio riparazione: ' + msg, 'error');
+            showToast(
+              'Errore nel salvataggio riparazione: ' + msg,
+              'error'
+            );
           }
         });
       }
     }
 
+    // Ritorna il primo campo non vuoto tra una lista di nomi possibili
+    function getField(r, names) {
+      for (var i = 0; i < names.length; i++) {
+        var v = r[names[i]];
+        if (v !== undefined && v !== null && String(v).trim() !== '') {
+          return v;
+        }
+      }
+      return '';
+    }
+
+    // Verifica se nella riga ci sono dati "da contratto"
+    // (se non ce ne sono, importiamo solo il cliente)
+    function hasContrattoData(r) {
+      var keys = [
+        'Data contratto',
+        'Compagnia',
+        'Tecnologia',
+        'Numero lavorato',
+        'Nome offerta',
+        'Costo offerta',
+        'Vincolo offerta (mesi)',
+        'Telefono incluso'
+      ];
+      for (var i = 0; i < keys.length; i++) {
+        var v = r[keys[i]];
+        if (v && String(v).trim() !== '') return true;
+      }
+      return false;
+    }
+
+    function parseImportText() {
+      const raw = document.getElementById('csvRaw').value || '';
+      const lines = raw
+        .split(/\r?\n/)
+        .map(function (l) {
+          return l.trim();
+        })
+        .filter(function (l) {
+          return l.length > 0;
+        });
+      if (lines.length < 2) return [];
+
+      function splitLine(line) {
+        if (line.indexOf('\t') !== -1) return line.split('\t');
+        if (line.indexOf(';') !== -1) return line.split(';');
+        return line.split(',');
+      }
+
+      const header = splitLine(lines[0]);
+      const rows = [];
+      for (let i = 1; i < lines.length; i++) {
+        const cols = splitLine(lines[i]);
+        const obj = {};
+        header.forEach(function (h, idx) {
+          obj[h.trim()] = cols[idx] || '';
+        });
+        rows.push(obj);
+      }
+      return rows;
+    }
+
+    function previewImport() {
+      const rows = parseImportText();
+      importRows = rows;
+      const tbody = document.getElementById('csvPreviewBody');
+      const summary = document.getElementById('importSummary');
+      const bar = document.getElementById('importProgress');
+      if (tbody) tbody.innerHTML = '';
+      if (bar) bar.style.width = '0%';
+
+      if (!rows.length) {
+        if (summary)
+          summary.textContent = 'Nessuna riga da importare (controlla il testo).';
+        return;
+      }
+
+      rows.forEach(function (r, idx) {
+        // Mappiamo i campi dalle varie intestazioni possibili
+        const nome = getField(r, ['Nome', 'NOME_RAG_SOC']);
+        const cognome = getField(r, ['Cognome', 'COGNOME']);
+        const telefono = getField(r, ['Telefono', 'cont_cel']);
+        const cf = getField(r, ['Codice fiscale', 'COD_FISC_P_IVA']);
+        const dataContratto = r['Data contratto'] || '';
+        const compagnia = r['Compagnia'] || '';
+        const tecnologia = r['Tecnologia'] || '';
+        const numero = r['Numero lavorato'] || '';
+        const offerta = r['Nome offerta'] || '';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td>' +
+          (idx + 1) +
+          '</td>' +
+          '<td>' +
+          (nome || '') +
+          '</td>' +
+          '<td>' +
+          (cognome || '') +
+          '</td>' +
+          '<td>' +
+          (telefono || '') +
+          '</td>' +
+          '<td>' +
+          (cf || '') +
+          '</td>' +
+          '<td>' +
+          (dataContratto || '') +
+          '</td>' +
+          '<td>' +
+          (compagnia || '') +
+          '</td>' +
+          '<td>' +
+          (tecnologia || '') +
+          '</td>' +
+          '<td>' +
+          (numero || '') +
+          '</td>' +
+          '<td>' +
+          (offerta || '') +
+          '</td>';
+        if (tbody) tbody.appendChild(tr);
+      });
+
+      if (summary)
+        summary.textContent =
+          'Anteprima: ' + rows.length + ' righe pronte per l\'import.';
+    }
+
+    async function runImport() {
+      if (!importRows.length) {
+        showToast('Fai prima l\'anteprima dell\'import', 'error');
+        return;
+      }
+      const summary = document.getElementById('importSummary');
+      const bar = document.getElementById('importProgress');
+      let ok = 0;
+      let err = 0;
+
+      for (let i = 0; i < importRows.length; i++) {
+        const r = importRows[i];
+        try {
+          const cf = (getField(r, ['Codice fiscale', 'COD_FISC_P_IVA']) || '')
+            .trim()
+            .toUpperCase();
+          if (!cf) throw new Error('Codice fiscale vuoto alla riga ' + (i + 2));
+
+          const idCli = await ensureClienteByCF(cf, {
+            nome: getField(r, ['Nome', 'NOME_RAG_SOC']),
+            cognome: getField(r, ['Cognome', 'COGNOME']),
+            telefono: getField(r, ['Telefono', 'cont_cel']),
+            email: getField(r, ['Email', 'cont_email']),
+            data_nascita: r['Data nascita'] || '',
+            note: r['Note'] || 'Import CSV'
+          });
+
+          // Se NON ci sono dati di contratto, importiamo solo il cliente
+          if (!hasContrattoData(r)) {
+            ok++;
+            if (bar) {
+              bar.style.width =
+                String(Math.round(((i + 1) / importRows.length) * 100)) + '%';
+            }
+            continue;
+          }
+
+          const payloadContratto = {
+            id_cliente: idCli,
+            codice_fiscale: cf,
+            data_contratto: r['Data contratto'] || '',
+            tipo_cliente: r['Tipo cliente'] || '',
+            tipo_attivazione: r['Tipo attivazione'] || '',
+            tecnologia: r['Tecnologia'] || '',
+            compagnia: r['Compagnia'] || '',
+            convergenza: r['Convergenza'] || '',
+            mnp: r['MNP'] || '',
+            iccid_vecchio: r['ICCID vecchio'] || '',
+            iccid_nuovo: r['ICCID nuovo'] || '',
+            data_attivazione: r['Data attivazione'] || '',
+            data_portabilita: r['Data portabilità'] || '',
+            numero_lavorato: r['Numero lavorato'] || '',
+            nome_offerta: r['Nome offerta'] || '',
+            costo_offerta: r['Costo offerta'] || '',
+            vincolo_offerta_mesi: r['Vincolo offerta (mesi)'] || '',
+            telefono_incluso: r['Telefono incluso'] || '',
+            imei: r['IMEI'] || '',
+            modello: r['Modello'] || '',
+            tipo_pagamento: r['Tipo pagamento'] || '',
+            mesi_vincolo_telefono: r['Mesi vincolo telefono'] || '',
+            data_fine_vincolo_offerta: r['Data fine vincolo offerta'] || '',
+            data_fine_vincolo_telefono: r['Data fine vincolo telefono'] || ''
+          };
+
+          await apiPost('createContratto', payloadContratto);
+          ok++;
+        } catch (e) {
+          console.error(e);
+          err++;
+        }
+
+        if (bar) {
+          bar.style.width =
+            String(Math.round(((i + 1) / importRows.length) * 100)) + '%';
+        }
+      }
+
+      if (summary) {
+        summary.textContent =
+          'Import finito. OK: ' +
+          ok +
+          ', Errori: ' +
+          err +
+          (err ? ' (controlla la console del browser per dettagli)' : '');
+      }
+      showToast(
+        'Import terminato. OK: ' + ok + ', Errori: ' + err,
+        err ? 'error' : 'success'
+      );
+      refreshAll();
+    }
+
+    function editContrattoFromCard(idContratto) {
+      const ct = contrattiCache.find(function (c) {
+        return c.id_contratto === idContratto;
+      });
+      if (!ct) {
+        showToast('Contratto non trovato', 'error');
+        return;
+      }
+      editingContratto = ct;
+
+      switchSection('sec-nuovo-contratto');
+      const lbl = document.getElementById('nc_submit_label');
+      if (lbl) lbl.textContent = 'Aggiorna contratto';
+
+      document.getElementById('nc_nome_cliente').value =
+        (ct.nome_cliente || '').split(' ')[0] || '';
+      document.getElementById('nc_cognome_cliente').value =
+        (ct.nome_cliente || '').split(' ')[1] || '';
+      document.getElementById('nc_telefono_cliente').value = '';
+      document.getElementById('nc_email_cliente').value = '';
+      document.getElementById('nc_cf_cliente').value = ct.codice_fiscale || '';
+      document.getElementById('nc_data_nascita_cliente').value = '';
+
+      document.getElementById('nc_data_contratto').value =
+        ct.data_contratto || '';
+      document.getElementById('nc_tipo_cliente').value = ct.tipo_cliente || '';
+      document.getElementById('nc_tipo_attivazione').value =
+        ct.tipo_attivazione || '';
+      document.getElementById('nc_tecnologia').value = ct.tecnologia || '';
+      document.getElementById('nc_compagnia').value = ct.compagnia || '';
+      document.getElementById('nc_convergenza').value = ct.convergenza || '';
+      document.getElementById('nc_mnp').value = ct.mnp || '';
+      document.getElementById('nc_iccid_vecchio').value =
+        ct.iccid_vecchio || '';
+      document.getElementById('nc_iccid_nuovo').value = ct.iccid_nuovo || '';
+      document.getElementById('nc_data_attivazione').value =
+        ct.data_attivazione || '';
+      document.getElementById('nc_data_portabilita').value =
+        ct.data_portabilita || '';
+      document.getElementById('nc_numero_lavorato').value =
+        ct.numero_lavorato || '';
+      document.getElementById('nc_nome_offerta').value =
+        ct.nome_offerta || '';
+      document.getElementById('nc_costo_offerta').value =
+        ct.costo_offerta || '';
+      document.getElementById('nc_vincolo_offerta_mesi').value =
+        ct.vincolo_offerta_mesi || '';
+      document.getElementById('nc_telefono_incluso').value =
+        ct.telefono_incluso || '';
+      document.getElementById('nc_imei').value = ct.imei || '';
+      document.getElementById('nc_modello').value = ct.modello || '';
+      document.getElementById('nc_tipo_pagamento').value =
+        ct.tipo_pagamento || '';
+      document.getElementById('nc_mesi_vincolo_telefono').value =
+        ct.mesi_vincolo_telefono || '';
+      document.getElementById('nc_data_fine_vincolo_offerta').value =
+        ct.data_fine_vincolo_offerta || '';
+      document.getElementById('nc_data_fine_vincolo_telefono').value =
+        ct.data_fine_vincolo_telefono || '';
+    }
+
+    function formatDateForInput(dateString) {
+      if (!dateString) return '';
+      const parts = dateString.split('/');
+      if (parts.length !== 3) return dateString;
+      const day = parts[0].padStart(2, '0');
+      const month = parts[1].padStart(2, '0');
+      const year = parts[2].length === 2 ? '20' + parts[2] : parts[2];
+      return `${year}-${month}-${day}`;
+    }
+
+    function normalizeDateString(dateString) {
+      if (!dateString) return '';
+      let parts;
+      if (dateString.includes('/')) {
+        parts = dateString.split('/');
+        if (parts.length === 3) {
+          const day = parts[0].padStart(2, '0');
+          const month = parts[1].padStart(2, '0');
+          let year = parts[2];
+          if (year.length === 2) {
+            year = '20' + year;
+          }
+          const isoDate = `${year}-${month}-${day}`;
+          return isoDate;
+        }
+      } else if (dateString.includes('-')) {
+        parts = dateString.split('-');
+        if (parts.length === 3) {
+          const year = parts[0].padStart(4, '0');
+          const month = parts[1].padStart(2, '0');
+          const day = parts[2].padStart(2, '0');
+          return `${year}-${month}-${day}`;
+        }
+      }
+
+      const parsedDate = new Date(dateString);
+      if (!isNaN(parsedDate)) {
+        const year = parsedDate.getFullYear();
+        const month = String(parsedDate.getMonth() + 1).padStart(2, '0');
+        const day = String(parsedDate.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      }
+
+      return dateString;
+    }
+
+    function parseBirthDateFromCF(cf) {
+      if (!cf || cf.length < 11) return '';
+      const yearPart = cf.substring(6, 8);
+      const monthPart = cf.substring(8, 9);
+      const dayPart = cf.substring(9, 11);
+
+      const mesi = {
+        A: 1,
+        B: 2,
+        C: 3,
+        D: 4,
+        E: 5,
+        H: 6,
+        L: 7,
+        M: 8,
+        P: 9,
+        R: 10,
+        S: 11,
+        T: 12
+      };
+
+      const month = mesi[monthPart];
+      if (!month) return '';
+
+      let day = parseInt(dayPart, 10);
+      if (isNaN(day)) return '';
+
+      const isFemale = day > 40;
+      if (isFemale) day -= 40;
+
+      const nowYear = new Date().getFullYear();
+      let year = parseInt(yearPart, 10);
+      if (isNaN(year)) return '';
+
+      const currentYearTwoDigits = nowYear % 100;
+      let fullYear;
+      if (year <= currentYearTwoDigits) {
+        fullYear = 2000 + year;
+      } else {
+        fullYear = 1900 + year;
+      }
+      if (fullYear + 100 <= nowYear) {
+        fullYear += 100;
+      }
+
+      const dateObj = new Date(fullYear, month - 1, day);
+      if (isNaN(dateObj.getTime())) return '';
+
+      const yyyy = dateObj.getFullYear();
+      let mm = dateObj.getMonth() + 1;
+      let dd = dateObj.getDate();
+      if (mm < 10) mm = '0' + mm;
+      if (dd < 10) dd = '0' + dd;
+      return yyyy + '-' + mm + '-' + dd;
+    }
+
+    function autopopulateBirthDate() {
+      const cfInput = document.getElementById('nc_cf_cliente');
+      const birthDateInput = document.getElementById('nc_data_nascita_cliente');
+
+      if (!cfInput || !birthDateInput) return;
+
+      cfInput.addEventListener('blur', function () {
+        const cf = cfInput.value.trim().toUpperCase();
+        const birthDate = parseBirthDateFromCF(cf);
+
+        if (birthDate) {
+          birthDateInput.value = birthDate;
+        }
+      });
+    }
+
+    function validateAndNormalizeDateInputs() {
+      const dateInputs = document.querySelectorAll('input[type="date"]');
+
+      dateInputs.forEach((input) => {
+        input.addEventListener('blur', function () {
+          let value = input.value.trim();
+
+          if (!value) return;
+
+          const normalized = normalizeDateString(value);
+
+          if (normalized) {
+            input.value = normalized;
+          }
+        });
+      });
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
+      autopopulateBirthDate();
+      validateAndNormalizeDateInputs();
+    });
+
+    // Fine funzioni extra date / CF
+    // (qui non c'è altro codice nuovo, solo chiusure e setup generale)
+
+    document.addEventListener('DOMContentLoaded', function () {
+      // Questo listener è già presente nel file originale,
+      // rimane per fare il setup del CRM
       switchSection('sec-dashboard');
       setupForms();
       refreshAll();
