@@ -2665,66 +2665,53 @@ function hasContrattoData(r) {
     }
 
     function previewImport() {
-      const rows = parseImportText();
-      importRows = rows;
-      const tbody = document.getElementById('csvPreviewBody');
-      const summary = document.getElementById('importSummary');
-      const bar = document.getElementById('importProgress');
-      if (tbody) tbody.innerHTML = '';
-      if (bar) bar.style.width = '0%';
+  const rows = parseImportText();
+  importRows = rows;
+  const tbody = document.getElementById('csvPreviewBody');
+  const summary = document.getElementById('importSummary');
+  const bar = document.getElementById('importProgress');
+  if (tbody) tbody.innerHTML = '';
+  if (bar) bar.style.width = '0%';
 
-      if (!rows.length) {
-        if (summary)
-          summary.textContent = 'Nessuna riga da importare (controlla il testo).';
-        return;
-      }
-
-      rows.forEach(function (r, idx) {
-        const tr = document.createElement('tr');
-        tr.innerHTML =
-          '<td>' +
-          (idx + 1) +
-          '</td>' +
-          '<td>' +
-          (r['Nome'] || '') +
-          '</td>' +
-          '<td>' +
-          (r['Cognome'] || '') +
-          '</td>' +
-          '<td>' +
-          (r['Telefono'] || '') +
-          '</td>' +
-          '<td>' +
-          (r['Codice fiscale'] || '') +
-          '</td>' +
-          '<td>' +
-          (r['Data contratto'] || '') +
-          '</td>' +
-          '<td>' +
-          (r['Compagnia'] || '') +
-          '</td>' +
-          '<td>' +
-          (r['Tecnologia'] || '') +
-          '</td>' +
-          '<td>' +
-          (r['Numero lavorato'] || '') +
-          '</td>' +
-          '<td>' +
-          (r['Nome offerta'] || '') +
-          '</td>';
-        if (tbody) tbody.appendChild(tr);
-      });
-
-      if (summary)
-        summary.textContent =
-          'Anteprima: ' + rows.length + ' righe pronte per l\'import.';
-    }
-
-    async function runImport() {
-  if (!importRows.length) {
-    showToast("Fai prima l'anteprima dell'import", "error");
+  if (!rows.length) {
+    if (summary)
+      summary.textContent = 'Nessuna riga da importare (controlla il testo).';
     return;
   }
+
+  rows.forEach(function (r, idx) {
+    // Mappiamo i campi dalle varie intestazioni possibili
+    const nome = getField(r, ['Nome', 'NOME_RAG_SOC']);
+    const cognome = getField(r, ['Cognome', 'COGNOME']);
+    const telefono = getField(r, ['Telefono', 'cont_cel']);
+    const cf = getField(r, ['Codice fiscale', 'COD_FISC_P_IVA']);
+    const dataContratto = r['Data contratto'] || '';
+    const compagnia = r['Compagnia'] || '';
+    const tecnologia = r['Tecnologia'] || '';
+    const numero = r['Numero lavorato'] || '';
+    const offerta = r['Nome offerta'] || '';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td>' + (idx + 1) + '</td>' +
+      '<td>' + (nome || '') + '</td>' +
+      '<td>' + (cognome || '') + '</td>' +
+      '<td>' + (telefono || '') + '</td>' +
+      '<td>' + (cf || '') + '</td>' +
+      '<td>' + (dataContratto || '') + '</td>' +
+      '<td>' + (compagnia || '') + '</td>' +
+      '<td>' + (tecnologia || '') + '</td>' +
+      '<td>' + (numero || '') + '</td>' +
+      '<td>' + (offerta || '') + '</td>';
+
+    if (tbody) tbody.appendChild(tr);
+  });
+
+  if (summary)
+    summary.textContent =
+      'Anteprima: ' + rows.length + ' righe pronte per l\'import.';
+}
+
 
   const summary = document.getElementById('importSummary');
   const bar = document.getElementById('importProgress');
