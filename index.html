@@ -1074,6 +1074,37 @@
 </section>
 <!-- IMPORT CSV -->
 <section class="section" id="sec-import">
+    <!-- ====== MAPPING CSV COMPLETO ====== -->
+<div id="csv-mapping" class="card" style="margin-top:20px; display:none;">
+  
+  <div class="card-header">
+    <div class="card-title">
+      Mappatura colonne CSV
+    </div>
+    <div class="card-subtitle">
+      Associa ogni campo del CRM alla colonna corretta del tuo CSV.
+    </div>
+  </div>
+
+  <div class="card-body">
+
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Campo CRM</th>
+          <th>Colonna CSV</th>
+        </tr>
+      </thead>
+      <tbody id="mapping-container"></tbody>
+    </table>
+
+    <button class="btn-primary" style="margin-top:10px;" onclick="confirmCsvMapping()">
+      Salva Mappatura
+    </button>
+
+  </div>
+</div>
+
 <div class="card">
 <div class="card-header">
 <div class="card-title">
