@@ -1,189 +1,318 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>VOLPEX CRM</title>
 
-<!-- FONT + RESET -->
+<!-- FONT -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- ICONS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
 <style>
-    :root {
-      --bg: #f3f4f8;
-      --bg-alt: #e5e7f0;
-      --card: #ffffff;
-      --accent: #f97316;
-      --accent-soft: rgba(249,115,22,0.12);
-      --text: #111827;
-      --text-soft: #6b7280;
-      --border: #d1d5db;
-      --success:#22c55e;
-      --danger:#ef4444;
-      --sidebar-width:240px;
-    }
+:root {
+  --bg: #f3f4f8;
+  --bg-alt: #e5e7f0;
+  --card: #ffffff;
+  --accent: #f97316;
+  --accent-soft: rgba(249,115,22,0.12);
+  --text: #111827;
+  --text-soft: #6b7280;
+  --border: #d1d5db;
+  --danger: #ef4444;
+  --success: #22c55e;
+  --sidebar-width: 240px;
+}
 
-    * { box-sizing:border-box; margin:0; padding:0; }
-    body {
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      background:radial-gradient(circle at top,#e5e7f5 0,#f9fafb 40%,#eef2ff 100%);
-      color:var(--text);
-      min-height:100vh;
-      display:flex;
-      font-size:14px;
-    }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-    a { color:var(--accent); text-decoration:none; }
-    .layout { display:flex; width:100%; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: radial-gradient(circle at top, #e5e7f5 0, #f9fafb 40%, #eef2ff 100%);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  font-size: 14px;
+}
 
-    /* SIDEBAR */
-    .sidebar {
-      width:var(--sidebar-width);
-      background:linear-gradient(180deg,#e5e7f5,#f9fafb);
-      border-right:1px solid var(--border);
-      display:flex;
-      flex-direction:column;
-      padding:16px 12px;
-      gap:16px;
-    }
+.layout {
+  display: flex;
+  width: 100%;
+}
 
-    .logo {
-      display:flex; align-items:center; gap:8px;
-      padding:8px 10px;
-      border-radius:999px;
-      background:#ffffff;
-      box-shadow:0 4px 10px rgba(148,163,184,0.25);
-    }
+/* -------------------------- */
+/*         SIDEBAR            */
+/* -------------------------- */
 
-    .logo-icon {
-      width:32px; height:32px; border-radius:999px;
-      background:conic-gradient(from 210deg,#fb923c,#fbbf24,#22c55e,#06b6d4,#6366f1,#fb923c);
-      display:flex; align-items:center; justify-content:center;
-      font-weight:800; color:white; font-size:14px;
-      box-shadow:0 0 0 2px #fff;
-    }
-    .logo-text-main { font-weight:700; letter-spacing:0.06em; text-transform:uppercase; font-size:13px; }
-    .logo-text-sub { font-size:11px; color:var(--text-soft); }
+.sidebar {
+  width: var(--sidebar-width);
+  background: linear-gradient(180deg, #eef2ff, #fafaff);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 20px 14px;
+  gap: 20px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+}
 
-    .sidebar-section-title {
-      font-size:11px; text-transform:uppercase; letter-spacing:0.12em;
-      color:var(--text-soft); margin:10px 4px 4px;
-    }
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(148,163,184,0.25);
+}
 
-    .nav { display:flex; flex-direction:column; gap:4px; }
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: conic-gradient(
+    from 210deg,
+    #fb923c,
+    #fbbf24,
+    #22c55e,
+    #06b6d4,
+    #6366f1,
+    #fb923c
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: white;
+  font-size: 14px;
+  box-shadow: 0 0 0 2px #ffffff;
+}
 
-    .nav-btn {
-      width:100%; border:none; text-align:left;
-      padding:8px 10px; border-radius:999px;
-      background:transparent; color:var(--text-soft);
-      display:flex; align-items:center; gap:8px;
-      cursor:pointer; transition:0.15s; font-size:13px;
-    }
-    .nav-btn.active, .nav-btn:hover {
-      background:rgba(249,115,22,0.08);
-      color:#111827;
-    }
+.logo-text-main {
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  font-size: 13px;
+  color: #111827;
+}
 
-    .sidebar-footer {
-      margin-top:auto; font-size:11px; color:var(--text-soft);
-      border-top:1px solid var(--border); padding-top:10px;
-    }
+.logo-text-sub {
+  font-size: 11px;
+  color: var(--text-soft);
+}
 
-    .badge {
-      display:inline-flex; align-items:center; gap:4px;
-      padding:2px 6px; border-radius:999px;
-      background:rgba(148,163,184,0.2);
-      font-size:10px; margin-top:4px;
-    }
-    .badge span.dot {
-      width:6px; height:6px; border-radius:999px;
-      background:#22c55e;
-    }
+.sidebar-section-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-soft);
+}
 
-    /* MAIN LAYOUT */
-    .main {
-      flex:1; display:flex; flex-direction:column;
-      padding:16px 18px; gap:12px;
-    }
-    .top-bar {
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-    }
-    .top-title {
-      font-size:18px; font-weight:600;
-      display:flex; align-items:baseline; gap:8px;
-    }
-    .top-sub { font-size:12px; color:var(--text-soft); }
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
 
-    .btn-primary {
-      border:none; padding:6px 12px;
-      border-radius:999px;
-      background:linear-gradient(90deg,#fb923c,#f97316);
-      color:#fff; font-size:13px; font-weight:600;
-      cursor:pointer;
-      box-shadow:0 3px 10px rgba(249,115,22,0.4);
-    }
+.nav-btn {
+  border: none;
+  background: transparent;
+  padding: 10px 12px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--text-soft);
+  transition: .2s;
+}
 
-    .btn-outline {
-      border-radius:999px; padding:5px 10px;
-      border:1px solid var(--border);
-      background:#fff; color:var(--text-soft);
-      font-size:12px; cursor:pointer;
-    }
+.nav-btn:hover,
+.nav-btn.active {
+  background: rgba(249,115,22,0.10);
+  color: var(--text);
+}
 
-    .btn-outline:hover {
-      border-color:var(--accent);
-      color:var(--accent);
-      background:#fff7ed;
-    }
+.nav-btn .icon {
+  width: 18px;
+  text-align: center;
+  opacity: .9;
+}
 
-    .btn-success {
-      padding:6px 12px;
-      border-radius:999px;
-      background:#22c55e;
-      border:none;
-      color:#fff;
-      font-size:13px;
-      cursor:pointer;
-      font-weight:600;
-    }
+/* -------------------------- */
+/*        MAIN WRAPPER        */
+/* -------------------------- */
 
-    .section { display:none; }
-    .section.active { display:block; }
+.main {
+  margin-left: var(--sidebar-width);
+  padding: 20px;
+  width: calc(100% - var(--sidebar-width));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
-    .card {
-      background:white;
-      border-radius:14px;
-      border:1px solid var(--border);
-      padding:10px 12px;
-      box-shadow:0 10px 25px rgba(148,163,184,0.18);
-      margin-bottom:12px;
-    }
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-    .card-header {
-      display:flex; justify-content:space-between; align-items:center;
-      margin-bottom:6px;
-    }
-    .card-title { text-transform:uppercase; font-size:13px; font-weight:600; letter-spacing:0.04em; }
-    .card-subtitle { font-size:11px; color:var(--text-soft); }
+.top-title {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  font-size: 22px;
+  font-weight: 600;
+}
 
-    .table-wrapper {
-      border-radius:10px; border:1px solid var(--border);
-      background:white; overflow-y:auto; max-height:240px;
-    }
+.top-sub {
+  font-size: 12px;
+  color: var(--text-soft);
+}
 
-    table { width:100%; border-collapse:collapse; font-size:12px; }
-    th, td { padding:4px 6px; border-bottom:1px solid #e5e7eb; }
-    th { background:#f3f4f6; font-weight:500; color:var(--text-soft); }
-    tr:hover { background:#f9fafb; cursor:pointer; }
+.top-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-primary {
+  border: none;
+  padding: 8px 14px;
+  background: linear-gradient(90deg,#fb923c,#f97316);
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 3px 12px rgba(249,115,22,0.35);
+}
+
+.btn-outline {
+  border: 1px solid var(--border);
+  padding: 7px 12px;
+  border-radius: 10px;
+  background: white;
+  cursor: pointer;
+  color: var(--text-soft);
+}
+
+.btn-outline:hover {
+  background: #fff7ed;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.section {
+  display: none;
+}
+
+.section.active {
+  display: block;
+}
+
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 22px rgba(148,163,184,0.18);
+}
+
+.card-header {
+  margin-bottom: 10px;
+}
+
+.card-title {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 14px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.card-title-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.card-subtitle {
+  font-size: 12px;
+  color: var(--text-soft);
+}
+
+.table-wrapper {
+  max-height: 260px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #f3f4f6;
+  position: sticky;
+  top: 0;
+}
+
+th, td {
+  padding: 6px 8px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 12px;
+}
+
+tbody tr:hover {
+  background: #f9fafb;
+}
+
+/* TOAST */
+
+#toastContainer {
+  position: fixed;
+  bottom: 20px;
+  left: calc(var(--sidebar-width) + 20px);
+  z-index: 9999;
+}
+
+.toast {
+  background: white;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  margin-bottom: 6px;
+  font-size: 12px;
+  box-shadow: 0 8px 18px rgba(148,163,184,0.4);
+}
+
+.toast.success { border-color: var(--success); color: #166534; }
+.toast.error { border-color: var(--danger); color: #b91c1c; }
+.toast.info { border-color: var(--accent); }
 </style>
-
-<!-- PAPA PARSE (PER IMPORT CSV) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
 </head>
 <body>
 <div class="layout">
-<!-- SIDEBAR -->
-<aside class="sidebar">
+<!-- ============================
+     BLOC 2 — SIDEBAR + NAV
+     ============================ -->
 
+<aside class="sidebar">
     <div class="logo">
         <div class="logo-icon">V</div>
         <div>
@@ -193,86 +322,74 @@
     </div>
 
     <div class="sidebar-section-title">Navigazione</div>
-
     <div class="nav">
         <button class="nav-btn active" data-target="sec-dashboard" onclick="switchSection('sec-dashboard')">
-            <span class="icon">🏠</span>
-            <span>Dashboard</span>
+            <span class="icon"><i class="fa fa-home"></i></span> Dashboard
         </button>
 
         <button class="nav-btn" data-target="sec-nuovo" onclick="switchSection('sec-nuovo')">
-            <span class="icon">📄</span>
-            <span>Nuovo contratto</span>
+            <span class="icon"><i class="fa fa-file-circle-plus"></i></span> Nuovo contratto
         </button>
 
         <button class="nav-btn" data-target="sec-device" onclick="switchSection('sec-device')">
-            <span class="icon">📱</span>
-            <span>Vendita device</span>
+            <span class="icon"><i class="fa fa-mobile-screen"></i></span> Vendita device
         </button>
 
         <button class="nav-btn" data-target="sec-riparazioni" onclick="switchSection('sec-riparazioni')">
-            <span class="icon">🛠️</span>
-            <span>Riparazioni</span>
+            <span class="icon"><i class="fa fa-screwdriver-wrench"></i></span> Riparazioni
         </button>
 
         <button class="nav-btn" data-target="sec-import" onclick="switchSection('sec-import')">
-            <span class="icon">⬆️</span>
-            <span>Import CSV</span>
+            <span class="icon"><i class="fa fa-upload"></i></span> Import CSV
         </button>
 
         <button class="nav-btn" data-target="sec-report" onclick="switchSection('sec-report')">
-            <span class="icon">📊</span>
-            <span>Report</span>
+            <span class="icon"><i class="fa fa-chart-pie"></i></span> Report & Scadenze
+        </button>
+
+        <button class="nav-btn" data-target="sec-kpi" onclick="switchSection('sec-kpi')">
+            <span class="icon"><i class="fa fa-chart-line"></i></span> KPI Avanzati
+        </button>
+
+        <button class="nav-btn" data-target="sec-ticket" onclick="switchSection('sec-ticket')">
+            <span class="icon"><i class="fa fa-ticket"></i></span> Ticket assistenza
         </button>
     </div>
 
-    <div class="sidebar-section-title">Info</div>
-
+    <div class="sidebar-section-title">Sistema</div>
     <div class="sidebar-footer">
-        <div>VOLPEX CRM collegato a Google Sheets</div>
-        <div class="badge">
-            <span class="dot"></span>
-            <span>Online</span>
-        </div>
+        <div>VOLPEX CRM collegato</div>
+        <div class="badge"><span class="dot"></span> Online</div>
     </div>
-
 </aside>
 
-<!-- MAIN -->
 <main class="main">
-
     <div class="top-bar">
-        <div>
-            <div class="top-title">
-                VOLPEX CRM
-                <span class="top-sub">Gestione clienti, contratti, device e riparazioni</span>
-            </div>
+        <div class="top-title">
+            VOLPEX CRM
+            <span class="top-sub">Gestione clienti, contratti, device & riparazioni</span>
         </div>
 
         <div class="top-actions">
             <div class="pill">Foglio: <strong>VOLPEX</strong></div>
-            <button type="button" class="btn-outline" onclick="refreshAll()">Aggiorna dati</button>
+            <button class="btn-outline" onclick="refreshAll()">Aggiorna dati</button>
         </div>
     </div>
 
     <div class="content">
         <div class="left-column">
-<!-- DASHBOARD -->
-<section class="section active" id="sec-dashboard">
+<!-- ============================
+     BLOC 3 — DASHBOARD + KPI
+     ============================ -->
 
+<section id="sec-dashboard" class="section active">
     <div class="card">
         <div class="card-header">
-            <div class="card-title">
-                <span class="card-title-dot"></span>
-                Riepilogo veloce
-            </div>
-            <div class="card-subtitle">
-                Panoramica clienti, contratti e attività oggi
-            </div>
+            <div class="card-title"><span class="card-title-dot"></span> Riepilogo veloce</div>
+            <div class="card-subtitle">Panoramica clienti, contratti e attività oggi</div>
         </div>
 
         <div class="grid grid-3">
-
             <div class="kpi-card">
                 <div class="kpi-label">Clienti totali</div>
                 <div class="kpi-value" id="kpiTotClienti">-</div>
@@ -290,15 +407,13 @@
                 <div class="kpi-value" id="kpiTotDevice">-</div>
                 <div class="kpi-tag">Vendite terminali</div>
             </div>
-
         </div>
 
-        <div class="grid grid-3" style="margin-top:8px;">
-
+        <div class="grid grid-3" style="margin-top: 10px;">
             <div class="kpi-card">
                 <div class="kpi-label">Riparazioni totali</div>
                 <div class="kpi-value" id="kpiTotRiparazioni">-</div>
-                <div class="kpi-tag">Assistenza tecnica</div>
+                <div class="kpi-tag">Assistenza</div>
             </div>
 
             <div class="kpi-card">
@@ -310,265 +425,31 @@
             <div class="kpi-card">
                 <div class="kpi-label">Scadenze mese</div>
                 <div class="kpi-value" id="kpiScadenzeMese">-</div>
-                <div class="kpi-tag">Fine vincoli offerte</div>
-            </div>
-
-        </div>
-    </div>
-
-</section>
-
-
-<!-- NUOVO CLIENTE + CONTRATTO -->
-<section class="section" id="sec-nuovo">
-
-    <div class="card">
-
-        <div class="card-header">
-            <div class="card-title">
-                <span class="card-title-dot"></span>
-                Nuovo cliente + contratto
-            </div>
-            <div class="card-subtitle">
-                Se il cliente non esiste viene creato in automatico dal codice fiscale.
+                <div class="kpi-tag">Vincoli</div>
             </div>
         </div>
-
-        <form id="formNewClienteContratto">
-            <div class="section-body">
-
-                <!-- DATI CLIENTE -->
-                <div class="badge-soft">Dati cliente</div>
-
-                <div class="form-grid">
-
-                    <div class="form-field">
-                        <label>Nome</label>
-                        <input id="nc_nome_cliente" type="text" />
-                    </div>
-
-                    <div class="form-field">
-                        <label>Cognome</label>
-                        <input id="nc_cognome_cliente" type="text" />
-                    </div>
-
-                    <div class="form-field">
-                        <label>Telefono</label>
-                        <input id="nc_telefono_cliente" type="text" />
-                    </div>
-
-                    <div class="form-field">
-                        <label>Email</label>
-                        <input id="nc_email_cliente" type="email" />
-                    </div>
-
-                    <div class="form-field">
-                        <label>Codice fiscale *</label>
-                        <input id="nc_cf_cliente" type="text" required />
-                    </div>
-
-                    <div class="form-field">
-                        <label>Data nascita</label>
-                        <input id="nc_data_nascita_cliente" type="date" />
-                    </div>
-
-                    <div class="form-field" style="grid-column: span 2;">
-                        <label>Note cliente</label>
-                        <input id="nc_note_cliente" type="text" />
-                    </div>
-
-                </div>
-
-                <!-- DATI CONTRATTO -->
-                <div class="badge-soft" style="margin-top:6px;">Dati contratto</div>
-
-                <div class="form-grid">
-
-                    <div class="form-field">
-                        <label>Data contratto</label>
-                        <input id="nc_data_contratto" type="date" />
-                    </div>
-
-                    <div class="form-field">
-                        <label>Tipo cliente</label>
-                        <select id="nc_tipo_cliente">
-                            <option value="">Seleziona</option>
-                            <option value="Privato">Privato</option>
-                            <option value="Azienda">Azienda</option>
-                        </select>
-                    </div>
-
-                    <div class="form-field">
-                        <label>Tipo attivazione</label>
-                        <select id="nc_tipo_attivazione">
-                            <option value="">Seleziona</option>
-                            <option value="Mobile">Mobile</option>
-                            <option value="Fisso">Fisso</option>
-                            <option value="Luce">Luce</option>
-                            <option value="Gas">Gas</option>
-                            <option value="TV">TV</option>
-                        </select>
-                    </div>
-
-                    <div class="form-field">
-                        <label>Tecnologia</label>
-                        <select id="nc_tecnologia">
-                            <option value="">Seleziona</option>
-                            <option value="SIM">SIM</option>
-                            <option value="FTTC">FTTC</option>
-                            <option value="FTTH">FTTH</option>
-                            <option value="ADSL">ADSL</option>
-                            <option value="FWA">FWA</option>
-                        </select>
-                    </div>
-
-                    <div class="form-field">
-                        <label>Compagnia</label>
-                        <input id="nc_compagnia" type="text" placeholder="Vodafone, TIM..." />
-                    </div>
-
-                    <div class="form-field">
-                        <label>Convergenza</label>
-                        <select id="nc_convergenza">
-                            <option value="">Seleziona</option>
-                            <option value="NO">No</option>
-                            <option value="SI">Sì</option>
-                        </select>
-                    </div>
-
-                    <div class="form-field">
-                        <label>MNP</label>
-                        <select id="nc_mnp">
-                            <option value="">Seleziona</option>
-                            <option value="NO">No</option>
-                            <option value="SI">Sì</option>
-                        </select>
-                    </div>
-
-                    <div class="form-field">
-                        <label>ICCID vecchio</label>
-                        <input id="nc_iccid_vecchio" type="text" />
-                    </div>
-
-                    <div class="form-field">
-                        <label>ICCID nuovo</label>
-                        <input id="nc_iccid_nuovo" type="text" />
-                    </div>
-
-                    <div class="form-field">
-                        <label>Data attivazione</label>
-                        <input id="nc_data_attivazione" type="date" />
-                    </div>
-
-                    <div class="form-field">
-                        <label>Data portabilità</label>
-                        <input id="nc_data_portabilita" type="date" />
-                    </div>
-
-                    <div class="form-field">
-                        <label>Numero lavorato</label>
-                        <input id="nc_numero_lavorato" type="text" />
-                    </div>
-
-                    <div class="form-field">
-                        <label>Nome offerta</label>
-                        <input id="nc_nome_offerta" type="text" />
-                    </div>
-
-                    <div class="form-field">
-                        <label>Costo offerta €</label>
-                        <input id="nc_costo_offerta" type="number" step="0.01" />
-                    </div>
-
-                    <div class="form-field">
-                        <label>Vincolo offerta (mesi)</label>
-                        <input id="nc_vincolo_offerta_mesi" type="number" />
-                    </div>
-
-                    <div class="form-field">
-                        <label>Telefono incluso</label>
-                        <select id="nc_telefono_incluso">
-                            <option value="">Seleziona</option>
-                            <option value="NO">No</option>
-                            <option value="SI">Sì</option>
-                        </select>
-                    </div>
-
-                    <div class="form-field">
-                        <label>IMEI telefono</label>
-                        <input id="nc_imei" type="text" />
-                    </div>
-
-                    <div class="form-field">
-                        <label>Modello telefono</label>
-                        <input id="nc_modello" type="text" />
-                    </div>
-
-                    <div class="form-field">
-                        <label>Tipo pagamento</label>
-                        <select id="nc_tipo_pagamento">
-                            <option value="">Seleziona</option>
-                            <option value="Contanti">Contanti</option>
-                            <option value="Carta">Carta</option>
-                            <option value="Addebito in conto">Addebito in conto</option>
-                            <option value="Finanziamento">Finanziamento</option>
-                        </select>
-                    </div>
-
-                    <div class="form-field">
-                        <label>Mesi vincolo telefono</label>
-                        <input id="nc_mesi_vincolo_telefono" type="number" />
-                    </div>
-
-                    <div class="form-field">
-                        <label>Fine vincolo offerta</label>
-                        <input id="nc_data_fine_vincolo_offerta" type="date" />
-                    </div>
-
-                    <div class="form-field">
-                        <label>Fine vincolo telefono</label>
-                        <input id="nc_data_fine_vincolo_telefono" type="date" />
-                    </div>
-
-                </div>
-
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">
-                        <span id="nc_submit_label">Salva cliente + contratto</span>
-                    </button>
-                </div>
-
-            </div>
-        </form>
-
     </div>
-
 </section>
-<!-- VENDITA DEVICE -->
-<section class="section" id="sec-device">
+<!-- ============================
+     BLOC 5 — VENDITA DEVICE
+     ============================ -->
 
+<section id="sec-device" class="section">
     <div class="card">
         <div class="card-header">
-            <div class="card-title">
-                <span class="card-title-dot"></span>
-                Vendita device
-            </div>
-            <div class="card-subtitle">
-                Il cliente viene creato in automatico se non esiste.
-            </div>
+            <div class="card-title"><span class="card-title-dot"></span> Vendita device</div>
+            <div class="card-subtitle">Il cliente viene creato in automatico se non esiste.</div>
         </div>
 
         <form id="formDevice">
             <div class="section-body">
 
-                <!-- DATI CLIENTE -->
                 <div class="badge-soft">Dati cliente</div>
 
                 <div class="form-grid">
-
                     <div class="form-field">
                         <label>Codice fiscale *</label>
-                        <input id="dv_cf_cliente" type="text" required />
+                        <input id="dv_cf_cliente" required type="text" />
                     </div>
 
                     <div class="form-field">
@@ -590,14 +471,11 @@
                         <label>Email</label>
                         <input id="dv_email_cliente" type="email" />
                     </div>
-
                 </div>
 
-                <!-- DATI DEVICE -->
-                <div class="badge-soft" style="margin-top:6px;">Dati device</div>
+                <div class="badge-soft" style="margin-top: 10px;">Dati device</div>
 
                 <div class="form-grid">
-
                     <div class="form-field">
                         <label>Data vendita</label>
                         <input id="dv_data_vendita" type="date" />
@@ -627,9 +505,9 @@
                         <label>Tipo pagamento</label>
                         <select id="dv_tipo_pagamento">
                             <option value="">Seleziona</option>
-                            <option value="Contanti">Contanti</option>
-                            <option value="Carta">Carta</option>
-                            <option value="Finanziamento">Finanziamento</option>
+                            <option>Contanti</option>
+                            <option>Carta</option>
+                            <option>Finanziamento</option>
                         </select>
                     </div>
 
@@ -667,50 +545,35 @@
                         <label>Note</label>
                         <input id="dv_note" type="text" />
                     </div>
-
                 </div>
 
                 <div class="form-actions">
-                    <button class="btn-primary" type="submit">
-                        Salva vendita device
-                    </button>
+                    <button class="btn-primary" type="submit">Salva vendita device</button>
                 </div>
-
             </div>
         </form>
-
     </div>
-
 </section>
+<!-- ============================
+     BLOC 6 — RIPARAZIONI
+     ============================ -->
 
-
-
-<!-- RIPARAZIONI -->
-<section class="section" id="sec-riparazioni">
-
+<section id="sec-riparazioni" class="section">
     <div class="card">
-
         <div class="card-header">
-            <div class="card-title">
-                <span class="card-title-dot"></span>
-                Nuova riparazione
-            </div>
-            <div class="card-subtitle">
-                Gestione assistenze con stato e costi.
-            </div>
+            <div class="card-title"><span class="card-title-dot"></span> Nuova riparazione</div>
+            <div class="card-subtitle">Gestione assistenze con stato e costi.</div>
         </div>
 
         <form id="formRiparazione">
             <div class="section-body">
 
-                <!-- DATI CLIENTE -->
                 <div class="badge-soft">Dati cliente</div>
 
                 <div class="form-grid">
-
                     <div class="form-field">
                         <label>Codice fiscale *</label>
-                        <input id="rp_cf_cliente" type="text" required />
+                        <input id="rp_cf_cliente" required type="text" />
                     </div>
 
                     <div class="form-field">
@@ -732,14 +595,11 @@
                         <label>Email</label>
                         <input id="rp_email_cliente" type="email" />
                     </div>
-
                 </div>
 
-                <!-- DATI RIPARAZIONE -->
-                <div class="badge-soft" style="margin-top:6px;">Dati riparazione</div>
+                <div class="badge-soft" style="margin-top: 10px;">Dati riparazione</div>
 
                 <div class="form-grid">
-
                     <div class="form-field">
                         <label>Data apertura</label>
                         <input id="rp_data_apertura" type="date" />
@@ -794,99 +654,76 @@
                         <label>Note</label>
                         <input id="rp_note" type="text" />
                     </div>
-
                 </div>
 
                 <div class="form-actions">
-                    <button class="btn-primary" type="submit">
-                        Salva riparazione
-                    </button>
+                    <button class="btn-primary" type="submit">Salva riparazione</button>
                 </div>
-
             </div>
         </form>
-
     </div>
-
 </section>
-<!-- IMPORT CSV -->
-<section class="section" id="sec-import">
+<!-- ============================
+     BLOC 7 — IMPORT CSV + SMART
+     ============================ -->
 
-    <!-- ====== BLOCCO MAPPATURA CSV ====== -->
-    <div id="csv-mapping" class="card" style="margin-top:20px; display:none;">
-        
+<section id="sec-import" class="section">
+
+    <!-- 🔥 IMPORT SMART BUTTON -->
+    <button class="btn-success" style="margin-bottom:10px;" onclick="doSmartImport()">
+        IMPORTA SMART
+    </button>
+
+    <!-- MAPPING -->
+    <div id="csv-mapping" class="card" style="display:none;margin-bottom:20px;">
         <div class="card-header">
-            <div class="card-title">
-                <span class="card-title-dot"></span>
-                Mappatura colonne CSV
-            </div>
-            <div class="card-subtitle">
-                Associa ogni campo del CRM alla colonna del tuo file CSV.
-            </div>
+            <div class="card-title"><span class="card-title-dot"></span> Mappatura colonne CSV</div>
+            <div class="card-subtitle">Associa ogni campo CRM alla colonna corretta del CSV.</div>
         </div>
 
-        <div class="card-body">
+        <table class="table table-striped">
+            <thead><tr><th>Campo CRM</th><th>Colonna CSV</th></tr></thead>
+            <tbody id="mapping-container"></tbody>
+        </table>
 
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Campo CRM</th>
-                        <th>Colonna CSV</th>
-                    </tr>
-                </thead>
-                <tbody id="mapping-container"></tbody>
-            </table>
-
-            <button class="btn-primary" style="margin-top:10px;" onclick="confirmCsvMapping()">
-                Salva Mappatura
-            </button>
-
-        </div>
+        <button class="btn-primary" style="margin-top:10px;" onclick="confirmCsvMapping()">
+            Salva Mappatura
+        </button>
     </div>
 
-    <!-- ======= BLOCCO IMPORT PRINCIPALE ======= -->
+    <!-- IMPORT BASE -->
     <div class="card">
-
         <div class="card-header">
-            <div class="card-title">
-                <span class="card-title-dot"></span>
-                Import CSV clienti + contratti
-            </div>
-
-            <div class="card-subtitle">
-                Puoi INCOLLARE o CARICARE un file CSV.  
-                Il sistema riconosce automaticamente quasi ogni formato.
-            </div>
-
-            <!-- FILE UPLOAD -->
-            <div style="margin-top:10px;">
-                <label for="importFile"><strong>Carica file CSV</strong></label>
-                <input type="file" id="importFile" accept=".csv" onchange="importCsvFile(event)">
-            </div>
+            <div class="card-title"><span class="card-title-dot"></span> Import CSV clienti + contratti</div>
+            <div class="card-subtitle">Puoi caricare un file CSV o incollare manualmente i dati.</div>
         </div>
 
         <div class="section-body">
 
-            <!-- TEXTAREA INCOLLA CSV -->
             <div class="form-field">
-                <label>Incolla qui i dati CSV (con intestazione)</label>
-                <textarea id="csvRaw" rows="6" placeholder="Incolla qui..."></textarea>
+                <label>Carica file CSV</label>
+                <input id="importFile" type="file" accept=".csv" onchange="importCsvFile(event)" />
+            </div>
+
+            <div class="form-field">
+                <label>Incolla CSV</label>
+                <textarea id="csvRaw" rows="7" placeholder="Incolla qui i dati CSV"></textarea>
             </div>
 
             <div class="form-actions">
-                <button class="btn-outline" type="button" onclick="previewImport()">Anteprima</button>
-                <button class="btn-primary" type="button" onclick="runImport()">Importa CSV</button>
+                <button class="btn-outline" onclick="previewImport()">Anteprima</button>
+                <button class="btn-primary" onclick="runImport()">Importa</button>
             </div>
 
-            <div style="font-size:12px; color:var(--text-soft);" id="importSummary">Nessuna importazione eseguita.</div>
+            <div id="importSummary" style="font-size:12px;color:var(--text-soft);margin-top:6px;">
+                Nessuna importazione eseguita.
+            </div>
 
-            <!-- PROGRESS BAR -->
             <div class="progress-bar-container">
-                <div id="importProgress" class="progress-bar"></div>
+                <div class="progress-bar" id="importProgress"></div>
             </div>
 
-            <!-- ANTEPRIMA CSV -->
-            <div class="table-wrapper" style="max-height:200px; margin-top:10px;">
+            <div class="table-wrapper" style="max-height:200px;margin-top:10px;">
                 <table>
                     <thead>
                         <tr>
@@ -905,161 +742,100 @@
                     <tbody id="csvPreviewBody"></tbody>
                 </table>
             </div>
-
-            <hr style="margin:15px 0;">
-
-            <!-- BUTTON IMPORT SMART 100% -->
-            <button class="btn-success" style="margin-top:10px;" onclick="doSmartImport()">
-                IMPORT SMART COMPLETO ✔️
-            </button>
-
         </div>
     </div>
-
 </section>
-<!-- REPORT & SCADENZE -->
-<section class="section" id="sec-report">
+<!-- ============================
+     BLOC 8 — REPORT & SCADENZE
+     ============================ -->
 
+<section id="sec-report" class="section">
     <div class="card">
 
         <div class="card-header">
-            <div class="card-title">
-                <span class="card-title-dot"></span>
-                Report & Scadenze
-            </div>
-            <div class="card-subtitle">
-                Compleanni, filtri contratti, scadenze vincoli, export CSV.
-            </div>
+            <div class="card-title"><span class="card-title-dot"></span> Report & Scadenze</div>
+            <div class="card-subtitle">Filtri contratti, compleanni e fine vincoli.</div>
         </div>
 
         <div class="section-body">
 
-            <!-- COMPLEANNI OGGI -->
+            <!-- COMPLEANNI -->
             <div class="badge-soft">Compleanni di oggi</div>
-
             <div class="table-wrapper" style="max-height:120px;">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Telefono</th>
-                            <th>CF</th>
-                            <th>Data nascita</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>Nome</th><th>Telefono</th><th>CF</th><th>Nascita</th></tr></thead>
                     <tbody id="tabCompleanni"></tbody>
                 </table>
             </div>
 
-            <!-- CONTRATTI PER COMPAGNIA / TECNOLOGIA -->
-            <div class="badge-soft" style="margin-top:12px;">Contratti per compagnia / tecnologia</div>
+            <!-- CONTRATTI -->
+            <div class="badge-soft" style="margin-top:10px;">Contratti filtrati</div>
 
-            <div class="form-grid" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
-
+            <div class="form-grid" style="grid-template-columns: repeat(3,1fr);">
                 <div class="form-field">
                     <label>Compagnia</label>
-                    <select id="rep_compagnia">
-                        <option value="">Tutte</option>
-                    </select>
+                    <select id="rep_compagnia"><option value="">Tutte</option></select>
                 </div>
 
                 <div class="form-field">
                     <label>Tecnologia</label>
-                    <select id="rep_tecnologia">
-                        <option value="">Tutte</option>
-                    </select>
+                    <select id="rep_tecnologia"><option value="">Tutte</option></select>
                 </div>
 
                 <div class="form-field">
                     <label>&nbsp;</label>
-                    <button class="btn-outline" type="button" onclick="applyContrattiFiltro()">
-                        Applica filtro
-                    </button>
+                    <button class="btn-outline" onclick="applyContrattiFiltro()">Applica</button>
                 </div>
             </div>
 
             <div class="table-wrapper" style="max-height:140px;">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Cliente</th>
-                            <th>CF</th>
-                            <th>Compagnia</th>
-                            <th>Tecnologia</th>
-                            <th>Numero</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>Cliente</th><th>CF</th><th>Compagnia</th><th>Tecnologia</th><th>Numero</th></tr></thead>
                     <tbody id="tabContrattiFiltro"></tbody>
                 </table>
             </div>
 
-            <!-- SCADENZE VINCOLI -->
-            <div class="badge-soft" style="margin-top:12px;">Scadenze vincoli offerta (mese/anno)</div>
+            <!-- SCADENZE -->
+            <div class="badge-soft" style="margin-top:10px;">Scadenze vincoli</div>
 
-            <div class="form-grid" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
-
+            <div class="form-grid" style="grid-template-columns: repeat(3,1fr);">
                 <div class="form-field">
                     <label>Mese</label>
                     <select id="rep_mese">
-                        <option value="">Seleziona</option>
-                        <option value="01">01</option>
-                        <option value="02">02</option>
-                        <option value="03">03</option>
-                        <option value="04">04</option>
-                        <option value="05">05</option>
-                        <option value="06">06</option>
-                        <option value="07">07</option>
-                        <option value="08">08</option>
-                        <option value="09">09</option>
-                        <option value="10">10</option>
-                        <option value="11">11</option>
-                        <option value="12">12</option>
+                        <option value="">-</option>
+                        <option>01</option><option>02</option><option>03</option>
+                        <option>04</option><option>05</option><option>06</option>
+                        <option>07</option><option>08</option><option>09</option>
+                        <option>10</option><option>11</option><option>12</option>
                     </select>
                 </div>
 
                 <div class="form-field">
                     <label>Anno</label>
                     <select id="rep_anno">
-                        <option value="">Seleziona</option>
-                        <option value="2024">2024</option>
-                        <option value="2025">2025</option>
-                        <option value="2026">2026</option>
-                        <option value="2027">2027</option>
-                        <option value="2028">2028</option>
+                        <option value="">-</option>
+                        <option>2023</option><option>2024</option><option>2025</option>
+                        <option>2026</option><option>2027</option>
                     </select>
                 </div>
 
                 <div class="form-field">
                     <label>&nbsp;</label>
-                    <button class="btn-outline" type="button" onclick="applyScadenzeFiltro()">
-                        Mostra scadenze
-                    </button>
+                    <button class="btn-outline" onclick="applyScadenzeFiltro()">Mostra</button>
                 </div>
-
             </div>
 
             <div class="table-wrapper" style="max-height:150px;">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Cliente</th>
-                            <th>CF</th>
-                            <th>Compagnia</th>
-                            <th>Offerta</th>
-                            <th>Fine vincolo</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>Cliente</th><th>CF</th><th>Compagnia</th><th>Offerta</th><th>Fine vincolo</th></tr></thead>
                     <tbody id="tabScadenze"></tbody>
                 </table>
             </div>
 
-            <!-- ESPORTA PER PERIODO -->
-            <div class="badge-soft" style="margin-top:12px;">
-                Esporta CSV contratti per periodo (Data contratto)
-            </div>
+            <!-- EXPORT CSV -->
+            <div class="badge-soft" style="margin-top:10px;">Esporta contratti per periodo</div>
 
-            <div class="form-grid" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
-
+            <div class="form-grid" style="grid-template-columns: repeat(3,1fr);">
                 <div class="form-field">
                     <label>Dal</label>
                     <input id="rep_exp_da" type="date" />
@@ -1072,357 +848,504 @@
 
                 <div class="form-field">
                     <label>&nbsp;</label>
-                    <button class="btn-outline" type="button" onclick="exportContrattiPeriodo()">
-                        Esporta CSV
-                    </button>
+                    <button class="btn-outline" onclick="exportContrattiPeriodo()">Esporta CSV</button>
                 </div>
-
             </div>
 
         </div>
     </div>
-
 </section>
-<!-- COLONNA DESTRA: CLIENTI & STORICO -->
+<!-- ============================
+     BLOC 9 — CLIENTI & STORICO
+     ============================ -->
+
 <div class="right-column">
 
-    <section class="card">
+<section class="card">
+    <div class="card-header">
+        <div class="card-title"><span class="card-title-dot"></span> Clienti & storico</div>
+        <div class="card-subtitle">Seleziona un cliente per vedere contratti, device e riparazioni.</div>
+    </div>
 
-        <div class="card-header">
-            <div class="card-title">
-                <span class="card-title-dot"></span>
-                Clienti & storico
+    <div class="form-field">
+        <label>Ricerca cliente</label>
+        <input id="searchClienteTerm" type="text" placeholder="Nome, cognome, CF, telefono" />
+    </div>
+
+    <div class="table-wrapper" style="max-height:180px;margin-bottom:6px;">
+        <table>
+            <thead><tr><th>Nome</th><th>Cognome</th><th>Telefono</th><th>CF</th></tr></thead>
+            <tbody id="tabClienti"></tbody>
+        </table>
+    </div>
+
+    <div id="noClienteSelezionato" style="font-size:12px;color:var(--text-soft);">Seleziona un cliente per vedere i dettagli.</div>
+
+    <div id="clienteCard" class="card hidden" style="margin-top:10px;padding:10px;">
+
+        <div class="card-header" style="margin-bottom:6px;">
+            <div class="card-title"><span class="card-title-dot"></span> Anagrafica cliente</div>
+        </div>
+
+        <div class="cliente-summary">
+            <div class="cliente-summary-row"><div class="cliente-summary-label">Nome</div><div id="detNome"></div></div>
+            <div class="cliente-summary-row"><div class="cliente-summary-label">Cognome</div><div id="detCognome"></div></div>
+            <div class="cliente-summary-row"><div class="cliente-summary-label">Telefono</div><div id="detTelefono"></div></div>
+            <div class="cliente-summary-row"><div class="cliente-summary-label">Email</div><div id="detEmail"></div></div>
+            <div class="cliente-summary-row"><div class="cliente-summary-label">Codice fiscale</div><div id="detCF"></div></div>
+            <div class="cliente-summary-row"><div class="cliente-summary-label">Data nascita</div><div id="detNascita"></div></div>
+            <div class="cliente-summary-row"><div class="cliente-summary-label">Note</div><div id="detNote"></div></div>
+        </div>
+
+        <div class="form-actions" style="margin-top:6px;gap:6px;">
+            <button class="btn-outline" onclick="openEditCliente()">Modifica cliente</button>
+            <button class="btn-outline" onclick="openWhatsappForSelected()">WhatsApp</button>
+            <button class="btn-outline" onclick="exportClientePDF()">PDF</button>
+        </div>
+
+        <!-- MODIFICA -->
+        <div id="editClienteForm" class="section-body hidden" style="margin-top:6px;">
+            <div class="form-grid">
+                <div class="form-field"><label>Nome</label><input id="ec_nome"></div>
+                <div class="form-field"><label>Cognome</label><input id="ec_cognome"></div>
+                <div class="form-field"><label>Telefono</label><input id="ec_telefono"></div>
+                <div class="form-field"><label>Email</label><input id="ec_email"></div>
+                <div class="form-field"><label>Codice fiscale</label><input id="ec_cf"></div>
+                <div class="form-field"><label>Data nascita</label><input id="ec_data_nascita" type="date"></div>
+                <div class="form-field" style="grid-column: span 2;"><label>Note</label><input id="ec_note"></div>
             </div>
-            <div class="card-subtitle">
-                Seleziona un cliente per vedere contratti, device e riparazioni.
+
+            <div class="form-actions">
+                <button class="btn-outline" onclick="cancelEditCliente()">Annulla</button>
+                <button class="btn-primary" onclick="saveEditCliente()">Salva modifiche</button>
             </div>
         </div>
 
-        <!-- 🔍 RICERCA CLIENTE -->
-        <div class="form-field" style="margin-bottom:6px;">
-            <label>Ricerca cliente</label>
-            <input id="searchClienteTerm" placeholder="Nome, cognome, CF o telefono" type="text" />
-        </div>
-
-        <!-- 📋 LISTA CLIENTI -->
-        <div class="table-wrapper" style="max-height:180px;margin-bottom:6px;">
+        <!-- STORICO CONTRATTI -->
+        <div class="badge-soft" style="margin-top:12px;">Storico contratti</div>
+        <div class="table-wrapper" style="max-height:120px;">
             <table>
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Cognome</th>
-                        <th>Telefono</th>
-                        <th>CF</th>
-                    </tr>
-                </thead>
-                <tbody id="tabClienti"></tbody>
+                <thead><tr><th>Data</th><th>Compagnia</th><th>Tecnologia</th><th>Numero</th></tr></thead>
+                <tbody id="tabContrattiCliente"></tbody>
             </table>
         </div>
 
-        <div id="noClienteSelezionato" style="font-size:12px;color:var(--text-soft);">
-            Seleziona un cliente per vedere i dettagli.
+        <!-- STORICO DEVICE -->
+        <div class="badge-soft" style="margin-top:12px;">Storico device</div>
+        <div class="table-wrapper" style="max-height:120px;">
+            <table>
+                <thead><tr><th>Data</th><th>Modello</th><th>IMEI</th></tr></thead>
+                <tbody id="tabDeviceCliente"></tbody>
+            </table>
         </div>
 
-        <!-- 📌 CARD DETTAGLIO CLIENTE -->
-        <div class="card hidden" id="clienteCard" style="margin-top:6px;padding:8px;">
-
-            <div class="card-header" style="margin-bottom:4px;">
-                <div class="card-title">
-                    <span class="card-title-dot"></span> Anagrafica cliente
-                </div>
-            </div>
-
-            <!-- 🔎 INFO CLIENTE -->
-            <div class="cliente-summary">
-
-                <div class="cliente-summary-row">
-                    <div class="cliente-summary-label">Nome</div>
-                    <div id="detNome"></div>
-                </div>
-
-                <div class="cliente-summary-row">
-                    <div class="cliente-summary-label">Cognome</div>
-                    <div id="detCognome"></div>
-                </div>
-
-                <div class="cliente-summary-row">
-                    <div class="cliente-summary-label">Telefono</div>
-                    <div id="detTelefono"></div>
-                </div>
-
-                <div class="cliente-summary-row">
-                    <div class="cliente-summary-label">Email</div>
-                    <div id="detEmail"></div>
-                </div>
-
-                <div class="cliente-summary-row">
-                    <div class="cliente-summary-label">Cod. fiscale</div>
-                    <div id="detCF"></div>
-                </div>
-
-                <div class="cliente-summary-row">
-                    <div class="cliente-summary-label">Data nascita</div>
-                    <div id="detNascita"></div>
-                </div>
-
-                <div class="cliente-summary-row">
-                    <div class="cliente-summary-label">Note</div>
-                    <div id="detNote"></div>
-                </div>
-            </div>
-
-            <!-- 🔧 AZIONI CLIENTE -->
-            <div class="form-actions" style="justify-content:flex-start;margin-top:6px;">
-
-                <button class="btn-outline" type="button" onclick="openEditCliente()">
-                    Modifica cliente
-                </button>
-
-                <button class="btn-outline" type="button" onclick="openWhatsappForSelected()">
-                    WhatsApp
-                </button>
-
-                <button class="btn-outline" type="button" onclick="exportClientePDF()">
-                    Esporta PDF
-                </button>
-
-            </div>
-
-            <!-- ✏️ FORM PER MODIFICA CLIENTE -->
-            <div class="section-body hidden" id="editClienteForm" style="margin-top:4px;">
-
-                <div class="form-grid">
-
-                    <div class="form-field">
-                        <label>Nome</label>
-                        <input id="ec_nome" type="text" />
-                    </div>
-
-                    <div class="form-field">
-                        <label>Cognome</label>
-                        <input id="ec_cognome" type="text" />
-                    </div>
-
-                    <div class="form-field">
-                        <label>Telefono</label>
-                        <input id="ec_telefono" type="text" />
-                    </div>
-
-                    <div class="form-field">
-                        <label>Email</label>
-                        <input id="ec_email" type="email" />
-                    </div>
-
-                    <div class="form-field">
-                        <label>Codice fiscale</label>
-                        <input id="ec_cf" type="text" />
-                    </div>
-
-                    <div class="form-field">
-                        <label>Data nascita</label>
-                        <input id="ec_data_nascita" type="date" />
-                    </div>
-
-                    <div class="form-field" style="grid-column: span 2;">
-                        <label>Note</label>
-                        <input id="ec_note" type="text" />
-                    </div>
-
-                </div>
-
-                <div class="form-actions" style="margin-top:4px;">
-
-                    <button class="btn-outline" type="button" onclick="cancelEditCliente()">
-                        Annulla
-                    </button>
-
-                    <button class="btn-primary" type="button" onclick="saveEditCliente()">
-                        Salva modifiche
-                    </button>
-
-                </div>
-            </div>
-
-            <!-- 📚 STORICO CONTRATTI -->
-            <div style="margin-top:8px;font-size:11px;color:var(--text-soft);">
-                Storico contratti
-            </div>
-
-            <div class="table-wrapper" style="max-height:110px;margin-top:2px;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Compagnia</th>
-                            <th>Tecnologia</th>
-                            <th>Numero</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabContrattiCliente"></tbody>
-                </table>
-            </div>
-
-            <!-- 📱 STORICO DEVICE -->
-            <div style="margin-top:8px;font-size:11px;color:var(--text-soft);">
-                Storico device
-            </div>
-
-            <div class="table-wrapper" style="max-height:110px;margin-top:2px;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Modello</th>
-                            <th>IMEI</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabDeviceCliente"></tbody>
-                </table>
-            </div>
-
-            <!-- 🛠 STORICO RIPARAZIONI -->
-            <div style="margin-top:8px;font-size:11px;color:var(--text-soft);">
-                Storico riparazioni
-            </div>
-
-            <div class="table-wrapper" style="max-height:110px;margin-top:2px;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Modello</th>
-                            <th>Guasto</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabRiparazioniCliente"></tbody>
-                </table>
-            </div>
-
+        <!-- STORICO RIPARAZIONI -->
+        <div class="badge-soft" style="margin-top:12px;">Storico riparazioni</div>
+        <div class="table-wrapper" style="max-height:120px;">
+            <table>
+                <thead><tr><th>Data</th><th>Modello</th><th>Guasto</th></tr></thead>
+                <tbody id="tabRiparazioniCliente"></tbody>
+            </table>
         </div>
 
-    </section>
+    </div>
+</section>
 
-</div> <!-- fine right-column -->
+<!-- NEWS TELCO -->
+<section class="card">
+    <div class="card-header">
+        <div class="card-title"><span class="card-title-dot"></span> News TELCO</div>
+        <div class="card-subtitle">MondoMobileWeb</div>
+    </div>
+
+    <div class="news-frame">
+        <iframe src="https://www.mondomobileweb.it/"></iframe>
+    </div>
+</section>
+
+</div>
 <script>
-<!-- ===============================
-     PARTE 10 - IMPORT CSV AVANZATO + IMPORT SMART
-     =============================== -->
+/* =======================================
+   CONFIGURAZIONE API
+   ======================================= */
 
-<script>
+const API_BASE =
+  "https://script.google.com/macros/s/AKfycbw0u444_RNfEFuXV2hcH9FsWfa1KwGynFDcrD2K-V6u73H7KPmx79UEPuL3NAAuyEQ/exec";
 
-/* ====================================================
-   SUPPORTO LETTURA CSV (incolla nel textarea)
-   ==================================================== */
+let DB = {
+    clienti: [],
+    contratti: [],
+    device: [],
+    riparazioni: []
+};
+
+let importRows = [];        // CSV base
+let smartMapping = {};      // Mappatura CSV Smart
+let selectedCliente = null; // Cliente selezionato (dettagli)
+
+/* =======================================
+   UTILITY
+   ======================================= */
+
+function toast(msg, type="info") {
+    const c = document.getElementById("toastContainer");
+    if (!c) return;
+
+    let d = document.createElement("div");
+    d.className = "toast " + type;
+    d.textContent = msg;
+
+    c.appendChild(d);
+    setTimeout(() => d.remove(), 3000);
+}
+
+function switchSection(id) {
+    document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+
+    document.querySelectorAll(".nav-btn").forEach(b => {
+        b.classList.remove("active");
+        if (b.dataset.target === id) b.classList.add("active");
+    });
+}
+
+function normalizeD(val) {
+    if (!val) return "";
+    if (!isNaN(val) && val.length < 6) {
+        let origin = new Date(1899, 11, 30);
+        let d = new Date(origin.getTime() + val * 86400000);
+        return d.toISOString().split("T")[0];
+    }
+    val = val.toString().trim();
+    if (/^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}$/.test(val)) {
+        let p = val.includes("/") ? val.split("/") : val.split("-");
+        let d = p[0].padStart(2,"0");
+        let m = p[1].padStart(2,"0");
+        let y = p[2].length === 2 ? "20"+p[2] : p[2];
+        return `${y}-${m}-${d}`;
+    }
+    if (/^\d{4}-\d{2}-\d{2}$/.test(val)) return val;
+    return "";
+}
+
+function toNum(x) {
+    return parseFloat((x||"").toString().replace(",",".").replace("€","")) || 0;
+}
+
+/* =======================================
+   CARICAMENTO DATI DA BACKEND
+   ======================================= */
+
+async function loadClienti() {
+    let r = await fetch(API_BASE+"?action=listClienti");
+    let j = await r.json();
+    DB.clienti = j.rows || [];
+}
+
+async function loadContratti() {
+    let r = await fetch(API_BASE+"?action=listContratti");
+    let j = await r.json();
+    DB.contratti = j.rows || [];
+}
+
+async function loadDevice() {
+    let r = await fetch(API_BASE+"?action=listDevice");
+    let j = await r.json();
+    DB.device = j.rows || [];
+}
+
+async function loadRiparazioni() {
+    let r = await fetch(API_BASE+"?action=listRiparazioni");
+    let j = await r.json();
+    DB.riparazioni = j.rows || [];
+}
+
+async function refreshAll() {
+    toast("Aggiornamento dati in corso...", "info");
+
+    await loadClienti();
+    await loadContratti();
+    await loadDevice();
+    await loadRiparazioni();
+
+    renderDashboard();
+    renderClienti();
+    renderReport();
+    renderKpi();
+
+    toast("Dati aggiornati ✔", "success");
+}
+
+/* =======================================
+   RENDER DASHBOARD
+   ======================================= */
+
+function renderDashboard() {
+    qs("#kpiTotClienti").textContent = DB.clienti.length;
+    qs("#kpiTotContratti").textContent = DB.contratti.length;
+    qs("#kpiTotDevice").textContent    = DB.device.length;
+    qs("#kpiTotRiparazioni").textContent = DB.riparazioni.length;
+
+    const oggi = new Date().toISOString().slice(5,10);
+    const compleanni = DB.clienti.filter(c => (c.dataNascita||"").slice(5,10) === oggi).length;
+    qs("#kpiCompleanniOggi").textContent = compleanni;
+
+    const mese = new Date().toISOString().slice(5,7);
+    const scad = DB.contratti.filter(c => (c.dataFineVincolo||"").slice(5,7) === mese).length;
+    qs("#kpiScadenzeMese").textContent = scad;
+}
+
+function qs(sel) { return document.querySelector(sel); }
+
+/* =======================================
+   LISTA CLIENTI + RICERCA
+   ======================================= */
+
+function renderClienti(filtro="") {
+    const t = qs("#tabClienti");
+    if (!t) return;
+
+    t.innerHTML = "";
+
+    const f = filtro.toLowerCase();
+
+    DB.clienti
+        .filter(c =>
+            c.nome.toLowerCase().includes(f) ||
+            c.cognome.toLowerCase().includes(f) ||
+            (c.telefono||"").includes(f) ||
+            (c.cf||"").toLowerCase().includes(f)
+        )
+        .forEach(c => {
+            let tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${c.nome}</td>
+                <td>${c.cognome}</td>
+                <td>${c.telefono||""}</td>
+                <td>${c.cf||""}</td>
+            `;
+            tr.onclick = () => selectCliente(c.cf);
+            t.appendChild(tr);
+        });
+}
+
+qs("#searchClienteTerm")?.addEventListener("input", e => {
+    renderClienti(e.target.value);
+});
+
+/* =======================================
+   SELEZIONE CLIENTE + STORICO
+   ======================================= */
+
+function selectCliente(cf) {
+    selectedCliente = DB.clienti.find(c => c.cf === cf);
+    if (!selectedCliente) return;
+
+    qs("#clienteCard").classList.remove("hidden");
+    qs("#noClienteSelezionato").style.display = "none";
+
+    qs("#detNome").textContent = selectedCliente.nome || "";
+    qs("#detCognome").textContent = selectedCliente.cognome || "";
+    qs("#detTelefono").textContent = selectedCliente.telefono || "";
+    qs("#detEmail").textContent = selectedCliente.email || "";
+    qs("#detCF").textContent = selectedCliente.cf || "";
+    qs("#detNascita").textContent = selectedCliente.dataNascita || "";
+    qs("#detNote").textContent = selectedCliente.note || "";
+
+    renderStoricoCliente();
+}
+
+function renderStoricoCliente() {
+    const cf = selectedCliente.cf;
+
+    const tabC = qs("#tabContrattiCliente");
+    tabC.innerHTML = "";
+    DB.contratti.filter(c => c.cfCliente === cf).forEach(c => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${c.dataContratto||""}</td>
+            <td>${c.compagnia||""}</td>
+            <td>${c.tecnologia||""}</td>
+            <td>${c.numero||""}</td>
+        `;
+        tabC.appendChild(tr);
+    });
+
+    const tabD = qs("#tabDeviceCliente");
+    tabD.innerHTML = "";
+    DB.device.filter(d => d.cfCliente === cf).forEach(d => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${d.dataVendita||""}</td>
+            <td>${d.nomeDevice||""}</td>
+            <td>${d.imei||""}</td>
+        `;
+        tabD.appendChild(tr);
+    });
+
+    const tabR = qs("#tabRiparazioniCliente");
+    tabR.innerHTML = "";
+    DB.riparazioni.filter(r => r.cfCliente === cf).forEach(r => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${r.dataApertura||""}</td>
+            <td>${r.modello||""}</td>
+            <td>${r.guasto||""}</td>
+        `;
+        tabR.appendChild(tr);
+    });
+}
+
+/* =======================================
+   MODIFICA CLIENTE
+   ======================================= */
+
+function openEditCliente() {
+    qs("#editClienteForm").classList.remove("hidden");
+    qs("#ec_nome").value = selectedCliente.nome;
+    qs("#ec_cognome").value = selectedCliente.cognome;
+    qs("#ec_telefono").value = selectedCliente.telefono;
+    qs("#ec_email").value = selectedCliente.email;
+    qs("#ec_cf").value = selectedCliente.cf;
+    qs("#ec_data_nascita").value = selectedCliente.dataNascita;
+    qs("#ec_note").value = selectedCliente.note;
+}
+
+function cancelEditCliente() {
+    qs("#editClienteForm").classList.add("hidden");
+}
+
+function saveEditCliente() {
+    fetch(API_BASE, {
+        method: "POST",
+        body: JSON.stringify({
+            action: "createClienteContratto",
+            // solo cliente → contratto vuoto
+            nome: qs("#ec_nome").value,
+            cognome: qs("#ec_cognome").value,
+            telefono: qs("#ec_telefono").value,
+            email: qs("#ec_email").value,
+            cf: qs("#ec_cf").value,
+            dataNascita: qs("#ec_data_nascita").value,
+            noteCliente: qs("#ec_note").value,
+            tipoCliente: "",
+            valoreCliente: 0,
+            dataContratto: "",
+        })
+    })
+    .then(r=>r.json())
+    .then(j=>{
+        toast("Cliente aggiornato ✔","success");
+        refreshAll();
+    });
+}
+
+/* =======================================
+   WHATSAPP
+   ======================================= */
+
+function openWhatsappForSelected() {
+    if (!selectedCliente) return;
+    let t = selectedCliente.telefono.replace("+","").replace(" ","");
+    let url = "https://wa.me/39" + t;
+    window.open(url,"_blank");
+}
+
+/* =======================================
+   PDF CLIENTE
+   ======================================= */
+
+function exportClientePDF() {
+    if (!selectedCliente) return;
+    const w = window.open("","_blank");
+
+    w.document.write(`
+        <h2>Cliente: ${selectedCliente.nome} ${selectedCliente.cognome}</h2>
+        <p><strong>CF:</strong> ${selectedCliente.cf}</p>
+        <p><strong>Email:</strong> ${selectedCliente.email}</p>
+        <p><strong>Telefono:</strong> ${selectedCliente.telefono}</p>
+        <p><strong>Data nascita:</strong> ${selectedCliente.dataNascita}</p>
+        <p><strong>Note:</strong> ${selectedCliente.note}</p>
+    `);
+
+    w.print();
+}
+
+/* =======================================
+   IMPORT CSV — FILE UPLOAD
+   ======================================= */
+
+function importCsvFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    let reader = new FileReader();
+    reader.onload = function(e) {
+        document.getElementById("csvRaw").value = e.target.result;
+        previewImport();
+        toast("File CSV caricato ✔","success");
+    };
+    reader.readAsText(file);
+}
+
+/* =======================================
+   IMPORT BASE
+   ======================================= */
 
 function parseImportText() {
-    const raw = document.getElementById("csvRaw").value || "";
-    const lines = raw
-        .split(/\r?\n/)
-        .map(l => l.trim())
-        .filter(l => l.length > 0);
+    const raw = qs("#csvRaw").value.trim();
+    if (!raw) return [];
 
+    const lines = raw.split(/\r?\n/).filter(x=>x.trim().length>0);
     if (lines.length < 2) return [];
 
-    function splitLine(line) {
-        if (line.indexOf("\t") !== -1) return line.split("\t");
-        if (line.indexOf(";") !== -1) return line.split(";");
-        return line.split(",");
-    }
-
-    const header = splitLine(lines[0]);
+    const header = lines[0].split(/;|,|\t/);
     const rows = [];
 
-    for (let i = 1; i < lines.length; i++) {
-        const cols = splitLine(lines[i]);
-        const obj = {};
-        header.forEach((h, idx) => {
-            obj[h.trim()] = cols[idx] || "";
+    for (let i=1; i<lines.length; i++) {
+        const cols = lines[i].split(/;|,|\t/);
+        let obj = {};
+        header.forEach((h,idx)=>{
+            obj[h.trim()] = cols[idx]||"";
         });
         rows.push(obj);
     }
     return rows;
 }
 
-
-/* ====================================================
-   ANTEPRIMA CSV BASE
-   ==================================================== */
-
 function previewImport() {
-    const rows = parseImportText();
-    importRows = rows;
+    importRows = parseImportText();
+    const t = qs("#csvPreviewBody");
+    t.innerHTML = "";
 
-    const tbody = document.getElementById("csvPreviewBody");
-    const summary = document.getElementById("importSummary");
-    const bar = document.getElementById("importProgress");
-
-    if (tbody) tbody.innerHTML = "";
-    if (bar) bar.style.width = "0%";
-
-    if (!rows.length) {
-        if (summary) summary.textContent = "CSV vuoto o non valido.";
-        return;
-    }
-
-    rows.forEach((r, idx) => {
-        const tr = document.createElement("tr");
+    importRows.forEach((r,i)=>{
+        let tr = document.createElement("tr");
         tr.innerHTML = `
-            <td>${idx + 1}</td>
-            <td>${r["Nome"] || ""}</td>
-            <td>${r["Cognome"] || ""}</td>
-            <td>${r["Telefono"] || ""}</td>
-            <td>${r["Codice fiscale"] || ""}</td>
-            <td>${r["Data contratto"] || ""}</td>
-            <td>${r["Compagnia"] || ""}</td>
-            <td>${r["Tecnologia"] || ""}</td>
-            <td>${r["Numero lavorato"] || ""}</td>
-            <td>${r["Nome offerta"] || ""}</td>`;
-        tbody.appendChild(tr);
+            <td>${i+1}</td>
+            <td>${r["Nome"]||""}</td>
+            <td>${r["Cognome"]||""}</td>
+            <td>${r["Telefono"]||""}</td>
+            <td>${r["Codice fiscale"]||""}</td>
+            <td>${r["Data contratto"]||""}</td>
+            <td>${r["Compagnia"]||""}</td>
+            <td>${r["Tecnologia"]||""}</td>
+            <td>${r["Numero"]||""}</td>
+            <td>${r["Nome offerta"]||""}</td>
+        `;
+        t.appendChild(tr);
     });
 
-    if (summary) {
-        summary.textContent = `Anteprima: ${rows.length} righe pronte.`;
-    }
+    qs("#importSummary").textContent =
+      `Anteprima: ${importRows.length} righe pronte.`;
 }
 
-
-/* ====================================================
-   UTILITY DI MAPPATURA CSV SMART
-   ==================================================== */
-
-function smartDate(val) {
-    if (!val) return "";
-    val = val.toString().trim();
-
-    if (!isNaN(val) && val.length < 6) {
-        let origin = new Date(1899, 11, 30);
-        let d = new Date(origin.getTime() + val * 86400000);
-        return d.toISOString().split("T")[0];
-    }
-
-    if (/^[0-9]{1,2}[\/\-][0-9]{1,2}[\/\-][0-9]{2,4}$/.test(val)) {
-        let parts = val.includes("/") ? val.split("/") : val.split("-");
-        let d = parts[0].padStart(2, "0");
-        let m = parts[1].padStart(2, "0");
-        let y = parts[2];
-        if (y.length === 2) y = "20" + y;
-        return `${y}-${m}-${d}`;
-    }
-
-    if (/^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$/.test(val)) return val;
-
-    return "";
+function runImport() {
+    alert("IMPORT BASE non consigliato. Usa IMPORT SMART.");
 }
 
-function toNumber(val) {
-    if (!val) return 0;
-    return parseFloat(val.toString().replace(",", ".").replace("€", "")) || 0;
-}
-
-
-/* ====================================================
-   GENERATORI RECORD SMART
-   ==================================================== */
+/* =======================================
+   IMPORT SMART
+   ======================================= */
 
 function generateCliente(row) {
     return {
@@ -1430,28 +1353,28 @@ function generateCliente(row) {
         cognome: row["Cognome"] || "",
         telefono: row["Telefono"] || "",
         email: row["Email"] || "",
-        cf: (row["Codice fiscale"] || row["CF"] || "").toUpperCase(),
-        dataNascita: "",
-        note: ""
+        cf: (row["Codice fiscale"]||row["CF"]||"").toUpperCase(),
+        dataNascita: normalizeD(row["Data nascita"]),
+        note: row["Note"]||""
     };
 }
 
 function generateContratto(row) {
     return {
-        dataContratto: smartDate(row["Data contratto"]),
-        compagnia: row["Compagnia"] || "",
-        tipoCliente: row["Tipo cliente"] || "",
-        tipoContratto: row["Tipo attivazione"] || "",
-        mnp: row["MNP"] || "",
-        tariffa: row["Nome offerta"] || "",
-        numero: row["Numero lavorato"] || "",
-        costo: toNumber(row["Costo offerta"]),
-        vincolo: toNumber(row["Vincolo"]),
-        dataFineVincolo: smartDate(row["Data fine vincolo"]),
-        dataPortabilita: smartDate(row["Data portabilità"]),
-        tecnologia: row["Tecnologia"] || "",
-        iccid: row["ICCID nuovo"] || "",
-        dataAttivazione: smartDate(row["Data attivazione"]),
+        dataContratto: normalizeD(row["Data contratto"]),
+        compagnia: row["Compagnia"]||"",
+        tipoCliente: row["Tipo cliente"]||"",
+        tipoContratto: row["Tipo attivazione"]||"",
+        mnp: row["MNP"]||"",
+        tariffa: row["Nome offerta"]||"",
+        numero: row["Numero lavorato"]||"",
+        costo: toNum(row["Costo offerta"]),
+        vincolo: toNum(row["Vincolo offerta (mesi)"]),
+        dataFineVincolo: normalizeD(row["Data fine vincolo"]),
+        dataPortabilita: normalizeD(row["Data portabilità"]),
+        tecnologia: row["Tecnologia"]||"",
+        iccid: row["ICCID nuovo"]||"",
+        dataAttivazione: normalizeD(row["Data attivazione"]),
         note: ""
     };
 }
@@ -1459,26 +1382,20 @@ function generateContratto(row) {
 function generateDevice(row) {
     if (!row["IMEI"]) return null;
     return {
-        dataVendita: smartDate(row["Data contratto"]),
-        nomeDevice: row["Modello"] || "",
-        tipoDevice: row["Tecnologia"] || "",
-        imei: row["IMEI"] || "",
-        tipoPagamento: row["Tipo pagamento"] || "",
-        durataPagamento: toNumber(row["Durata pagamento"]),
+        dataVendita: normalizeD(row["Data contratto"]),
+        nomeDevice: row["Modello"]||"",
+        tipoDevice: row["Tecnologia"]||"",
+        imei: row["IMEI"]||"",
+        tipoPagamento: row["Tipo pagamento"]||"",
+        durataPagamento: toNum(row["Mesi vincolo telefono"]),
         valoreCliente: 0,
         note: ""
     };
 }
 
-
-/* ====================================================
-   IMPORT SMART COMPLETO
-   ==================================================== */
-
 function doSmartImport() {
-
     if (!importRows.length) {
-        alert("Nessun dato da importare!");
+        toast("Nessun dato nel CSV","error");
         return;
     }
 
@@ -1491,35 +1408,159 @@ function doSmartImport() {
     fetch(API_BASE, {
         method: "POST",
         body: JSON.stringify({
-            action: "importSmart",
-            records: records
+            action:"bulkImport",
+            records:records
         })
     })
-        .then(r => r.json())
-        .then(res => {
-            if (res.success) {
-                alert("IMPORT SMART COMPLETATO ✔️\nRighe importate: " + res.count);
-                refreshAll();
-            } else {
-                alert("Errore IMPORT SMART: " + res.error);
-            }
-        })
-        .catch(err => {
-            alert("Errore durante l'import: " + err);
+    .then(r=>r.json())
+    .then(j=>{
+        if (j.success) {
+            alert(
+                "IMPORT COMPLETO ✔\n" +
+                "Clienti creati: "+j.createdClienti+"\n"+
+                "Clienti aggiornati: "+j.updatedClienti+"\n"+
+                "Contratti creati: "+j.createdContratti+"\n"+
+                "Device creati: "+j.createdDevice
+            );
+            refreshAll();
+        } else {
+            alert("Errore import: "+j.error);
+        }
+    });
+}
+
+/* =======================================
+   REPORT, FILTRI & KPI AVANZATI
+   ======================================= */
+
+function renderReport() {
+    renderCompleanni();
+    renderFiltroContratti();
+    renderScadenze();
+}
+
+function renderCompleanni() {
+    const tab = qs("#tabCompleanni");
+    tab.innerHTML = "";
+    const oggi = new Date().toISOString().slice(5,10);
+
+    DB.clienti.filter(c => (c.dataNascita||"").slice(5,10)===oggi)
+        .forEach(c=>{
+            let tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${c.nome}</td>
+                <td>${c.telefono}</td>
+                <td>${c.cf}</td>
+                <td>${c.dataNascita}</td>
+            `;
+            tab.appendChild(tr);
         });
 }
 
+function renderFiltroContratti() {
+    const compSel = qs("#rep_compagnia");
+    const tecSel = qs("#rep_tecnologia");
 
-/* ====================================================
-   AVVIO AUTOMATICO PAGINA
-   ==================================================== */
+    let comp = [...new Set(DB.contratti.map(c=>c.compagnia))].sort();
+    let tec  = [...new Set(DB.contratti.map(c=>c.tecnologia))].sort();
 
-document.addEventListener("DOMContentLoaded", function () {
-    switchSection("sec-dashboard");
-    setupForms();
+    compSel.innerHTML = "<option value=''>Tutte</option>" +
+        comp.map(c=>`<option>${c}</option>`).join("");
+
+    tecSel.innerHTML = "<option value=''>Tutte</option>" +
+        tec.map(c=>`<option>${c}</option>`).join("");
+}
+
+function applyContrattiFiltro() {
+    const comp = qs("#rep_compagnia").value;
+    const tec  = qs("#rep_tecnologia").value;
+
+    const tab = qs("#tabContrattiFiltro");
+    tab.innerHTML = "";
+
+    DB.contratti
+        .filter(c => (!comp||c.compagnia===comp) && (!tec||c.tecnologia===tec))
+        .forEach(c=>{
+            let tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${c.nomeCliente||""}</td>
+                <td>${c.cfCliente||""}</td>
+                <td>${c.compagnia}</td>
+                <td>${c.tecnologia}</td>
+                <td>${c.numero}</td>
+            `;
+            tab.appendChild(tr);
+        });
+}
+
+function renderScadenze() {}
+
+function applyScadenzeFiltro() {
+    const mese = qs("#rep_mese").value;
+    const anno = qs("#rep_anno").value;
+    
+    const tab = qs("#tabScadenze");
+    tab.innerHTML = "";
+
+    DB.contratti
+        .filter(c => {
+            if (!c.dataFineVincolo) return false;
+            if (mese && c.dataFineVincolo.slice(5,7) !== mese) return false;
+            if (anno && c.dataFineVincolo.slice(0,4) !== anno) return false;
+            return true;
+        })
+        .forEach(c=>{
+            let tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${c.nomeCliente}</td>
+                <td>${c.cfCliente}</td>
+                <td>${c.compagnia}</td>
+                <td>${c.tariffa}</td>
+                <td>${c.dataFineVincolo}</td>
+            `;
+            tab.appendChild(tr);
+        });
+}
+
+/* =======================================
+   EXPORT CSV PER PERIODO
+   ======================================= */
+
+function exportContrattiPeriodo() {
+    const da = qs("#rep_exp_da").value;
+    const a  = qs("#rep_exp_a").value;
+    if (!da || !a) return alert("Seleziona un periodo valido");
+
+    const list = DB.contratti.filter(c =>
+        c.dataContratto &&
+        c.dataContratto >= da &&
+        c.dataContratto <= a
+    );
+
+    let csv = "Nome;CF;Compagnia;Offerta;Numero;Data contratto\n";
+    list.forEach(c=>{
+        csv += `${c.nomeCliente};${c.cfCliente};${c.compagnia};${c.tariffa};${c.numero};${c.dataContratto}\n`;
+    });
+
+    let blob = new Blob([csv], {type:"text/csv"});
+    let url = URL.createObjectURL(blob);
+    let aTag = document.createElement("a");
+    aTag.href = url;
+    aTag.download = "contratti.csv";
+    aTag.click();
+}
+
+/* =======================================
+   STARTUP
+   ======================================= */
+
+document.addEventListener("DOMContentLoaded", () => {
     refreshAll();
 });
 </script>
 
+<div id="toastContainer"></div>
+
 </body>
 </html>
+
