@@ -2691,84 +2691,58 @@
     }
 
     async function runImport() {
-      if (!importRows.length) {
-        showToast('Fai prima l\'anteprima dell\'import', 'error');
-        return;
-      }
-      const summary = document.getElementById('importSummary');
-      const bar = document.getElementById('importProgress');
-      let ok = 0;
-      let err = 0;
+  if (!importRows.length) {
+    showToast("Fai prima l'anteprima dell'import", "error");
+    return;
+  }
 
-      for (let i = 0; i < importRows.length; i++) {
-        const r = importRows[i];
-        try {
-          const cf = (r['Codice fiscale'] || '').trim().toUpperCase();
-          if (!cf) throw new Error('Codice fiscale vuoto alla riga ' + (i + 2));
+  const summary = document.getElementById('importSummary');
+  const bar = document.getElementById('importProgress');
 
-          const idCli = await ensureClienteByCF(cf, {
-            nome: r['Nome'] || '',
-            cognome: r['Cognome'] || '',
-            telefono: r['Telefono'] || '',
-            email: r['Email'] || '',
-            data_nascita: r['Data nascita'] || '',
-            note: r['Note'] || 'Import CSV'
-          });
+  if (summary) summary.textContent = 'Import in corso...';
+  if (bar) bar.style.width = '10%';
 
-          const payloadContratto = {
-            id_cliente: idCli,
-            codice_fiscale: cf,
-            data_contratto: r['Data contratto'] || '',
-            tipo_cliente: r['Tipo cliente'] || '',
-            tipo_attivazione: r['Tipo attivazione'] || '',
-            tecnologia: r['Tecnologia'] || '',
-            compagnia: r['Compagnia'] || '',
-            convergenza: r['Convergenza'] || '',
-            mnp: r['MNP'] || '',
-            iccid_vecchio: r['ICCID vecchio'] || '',
-            iccid_nuovo: r['ICCID nuovo'] || '',
-            data_attivazione: r['Data attivazione'] || '',
-            data_portabilita: r['Data portabilità'] || '',
-            numero_lavorato: r['Numero lavorato'] || '',
-            nome_offerta: r['Nome offerta'] || '',
-            costo_offerta: r['Costo offerta'] || '',
-            vincolo_offerta_mesi: r['Vincolo offerta (mesi)'] || '',
-            telefono_incluso: r['Telefono incluso'] || '',
-            imei: r['IMEI'] || '',
-            modello: r['Modello'] || '',
-            tipo_pagamento: r['Tipo pagamento'] || '',
-            mesi_vincolo_telefono: r['Mesi vincolo telefono'] || '',
-            data_fine_vincolo_offerta: r['Data fine vincolo offerta'] || '',
-            data_fine_vincolo_telefono: r['Data fine vincolo telefono'] || ''
-          };
+  try {
+    // 🔸 una sola chiamata al backend con TUTTE le righe
+    const res = await apiPost('bulkImport', {
+      records: importRows
+    });
 
-          await apiPost('createContratto', payloadContratto);
-          ok++;
-        } catch (e) {
-          console.error(e);
-          err++;
-        }
+    if (bar) bar.style.width = '100%';
 
-        if (bar) {
-          bar.style.width =
-            String(Math.round(((i + 1) / importRows.length) * 100)) + '%';
-        }
-      }
+    const createdC  = res.createdClienti  || 0;
+    const updatedC  = res.updatedClienti  || 0;
+    const createdK  = res.createdContratti || 0;
+    const errors    = res.errors || [];
 
-      if (summary) {
-        summary.textContent =
-          'Import finito. OK: ' +
-          ok +
-          ', Errori: ' +
-          err +
-          (err ? ' (controlla la console del browser per dettagli)' : '');
-      }
-      showToast(
-        'Import terminato. OK: ' + ok + ', Errori: ' + err,
-        err ? 'error' : 'success'
-      );
-      refreshAll();
+    if (summary) {
+      summary.textContent =
+        'Import finito. Clienti creati: ' + createdC +
+        ', aggiornati: ' + updatedC +
+        ', contratti creati: ' + createdK +
+        (errors.length ? ' | Errori: ' + errors.length : '');
     }
+
+    if (errors.length) {
+      console.error('Errori import bulk:', errors);
+      showToast(
+        'Import terminato con alcuni errori. Vedi console.',
+        'error'
+      );
+    } else {
+      showToast('Import terminato con successo.', 'success');
+    }
+
+    refreshAll();
+  } catch (e) {
+    console.error(e);
+    if (summary) {
+      summary.textContent = 'Errore durante import: ' + e.message;
+    }
+    showToast('Errore durante import: ' + e.message, 'error');
+  }
+}
+
 
     async function loadClienti() {
       try {
