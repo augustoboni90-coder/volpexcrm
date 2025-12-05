@@ -2621,13 +2621,112 @@
         return line.split(',');
       }
 
-      const header = splitLine(lines[0]);
+      function normalizeHeaderName(str) {
+        return (str || '')
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '')
+          .trim();
+      }
+
+      const canonicalHeaders = [
+        'Nome',
+        'Cognome',
+        'Telefono',
+        'Email',
+        'Codice fiscale',
+        'Data nascita',
+        'Note',
+        'Data contratto',
+        'Tipo cliente',
+        'Tipo attivazione',
+        'Tecnologia',
+        'Compagnia',
+        'Convergenza',
+        'MNP',
+        'ICCID vecchio',
+        'ICCID nuovo',
+        'Data attivazione',
+        'Data portabilità',
+        'Numero lavorato',
+        'Nome offerta',
+        'Costo offerta',
+        'Vincolo offerta (mesi)',
+        'Telefono incluso',
+        'IMEI',
+        'Modello',
+        'Tipo pagamento',
+        'Mesi vincolo telefono',
+        'Data fine vincolo offerta',
+        'Data fine vincolo telefono'
+      ];
+
+      const headerAliases = {
+        Nome: ['nome cliente', 'intestatario'],
+        Cognome: ['cognome cliente'],
+        Telefono: ['cell', 'cellulare', 'telefono cliente', 'recapito'],
+        Email: ['mail', 'e-mail', 'pec'],
+        'Codice fiscale': [
+          'cf',
+          'codicefiscale',
+          'cod fiscal',
+          'cod. fiscale',
+          'codfiscale'
+        ],
+        'Data nascita': ['nascita', 'data di nascita'],
+        Note: ['note cliente', 'note contratto'],
+        'Data contratto': ['data stipula', 'data sottoscrizione'],
+        'Tipo cliente': ['tipologia cliente'],
+        'Tipo attivazione': ['tipologia attivazione'],
+        Tecnologia: ['tech', 'rete'],
+        Compagnia: ['operatore', 'brand'],
+        Convergenza: ['bundle', 'fisso+mobile'],
+        MNP: ['portabilita', 'mobile number portability'],
+        'ICCID vecchio': ['iccid precedente'],
+        'ICCID nuovo': ['iccid'],
+        'Data attivazione': ['attivazione', 'data attiv'],
+        'Data portabilità': ['data portabilita', 'portabilita data'],
+        'Numero lavorato': ['numero', 'num lavorato'],
+        'Nome offerta': ['offerta', 'nome pacchetto'],
+        'Costo offerta': ['costo', 'prezzo offerta'],
+        'Vincolo offerta (mesi)': ['vincolo', 'durata offerta'],
+        'Telefono incluso': ['tel incluso'],
+        IMEI: ['imei dispositivo'],
+        Modello: ['modello telefono'],
+        'Tipo pagamento': ['pagamento', 'metodo pagamento'],
+        'Mesi vincolo telefono': ['vincolo telefono'],
+        'Data fine vincolo offerta': ['fine vincolo offerta', 'scadenza offerta'],
+        'Data fine vincolo telefono': ['fine vincolo telefono', 'scadenza telefono']
+      };
+
+      const headerLookup = {};
+      canonicalHeaders.forEach(function (h) {
+        headerLookup[normalizeHeaderName(h)] = h;
+        const aliases = headerAliases[h] || [];
+        aliases.forEach(function (alias) {
+          headerLookup[normalizeHeaderName(alias)] = h;
+        });
+      });
+
+      const rawHeader = splitLine(lines[0]);
+      const header = rawHeader.map(function (h) {
+        const normalized = normalizeHeaderName(h);
+        return headerLookup[normalized] || h.trim();
+      });
       const rows = [];
       for (let i = 1; i < lines.length; i++) {
         const cols = splitLine(lines[i]);
         const obj = {};
         header.forEach(function (h, idx) {
-          obj[h.trim()] = cols[idx] || '';
+          const val = cols[idx] || '';
+          obj[h] = typeof val === 'string' ? val.trim() : val;
+        });
+
+        canonicalHeaders.forEach(function (h) {
+          if (!Object.prototype.hasOwnProperty.call(obj, h)) {
+            obj[h] = '';
+          }
         });
         rows.push(obj);
       }
