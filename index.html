@@ -366,6 +366,19 @@ table td{ border-bottom:1px solid #e2e8f0 !important; }
 .pagehead h2{ margin:0; font-size:18px; letter-spacing:.2px; }
 .pagehead p{ margin:6px 0 0 0; font-size:12.5px; color:var(--muted2); }
 .pagehead__actions{ display:flex; gap:8px; flex-wrap:wrap; }
+
+
+/* Wizard Contratti */
+.pageflow{ padding-top:10px; }
+.stepsBar{ display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 14px; }
+.stepPill{ padding:8px 10px; border:1px solid rgba(148,163,184,.65); border-radius:999px; font-weight:600; font-size:12px; color:#0f172a; background:#fff; }
+.stepPill.active{ background:#0f172a; color:#fff; border-color:#0f172a; }
+.stepPanel{ border:1px solid rgba(148,163,184,.55); border-radius:14px; padding:14px; background:#fff; }
+.checksGrid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:10px; }
+.check{ display:flex; gap:10px; align-items:center; padding:10px; border:1px solid rgba(148,163,184,.55); border-radius:12px; background:#f8fafc; }
+.miniCard{ border:1px solid rgba(148,163,184,.55); border-radius:14px; padding:12px; background:#f8fafc; }
+.actionsRow{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+.callout{ border:1px solid rgba(148,163,184,.55); border-left:4px solid #0f172a; border-radius:14px; padding:12px; background:#f8fafc; }
 </style>
 </head>
 
@@ -699,363 +712,364 @@ table td{ border-bottom:1px solid #e2e8f0 !important; }
 
     <!-- CONTRATTI CRUD COMPLETO -->
     <section id="view-contratti" class="view">
-      <div class="card">
-        <div class="toolbar">
-          <div class="left">
-            <h3 style="margin:0">Contratti (FK = CF) – CRUD completo</h3>
-            <span class="muted">Tutti i campi del tuo Google Sheet</span>
+  <div class="card">
+    <div class="toolbar">
+      <div class="left">
+        <h2 style="margin:0">Contratti</h2>
+        <span class="muted">Flusso guidato: Cliente → Contratto → MNP/SIM → Telefono/Rate</span>
+      </div>
+      <div class="right">
+        <button class="btn btn-ghost" id="btnConReset">Nuovo inserimento</button>
+        <button class="btn" id="btnSaveCon" onclick="saveCon()">Salva contratto</button>
+        <button class="btn btn-ghost" id="btnPrintCon" onclick="printReceiptLast('con')">Stampa ricevuta</button>
+      </div>
+    </div>
+
+    <div class="pageflow">
+      <div class="stepsBar">
+        <div class="stepPill active" data-step="0">1. Cliente</div>
+        <div class="stepPill" data-step="1">2. Anagrafica</div>
+        <div class="stepPill" data-step="2">3. Contratto</div>
+        <div class="stepPill" data-step="3">4. MNP & SIM</div>
+        <div class="stepPill" data-step="4">5. Telefono & Rate</div>
+      </div>
+
+      <!-- STEP 0: Search -->
+      <div class="stepPanel" id="conStep0">
+        <div class="grid1">
+          <div>
+            <label>Codice fiscale cliente <span class="req">*</span></label>
+            <input id="c_cf" placeholder="Es. RSSMRA80X01H501Z" />
+            <div id="c_cf_status" class="help muted"></div>
           </div>
-          <div class="right">
-            <input id="searchCon" placeholder="Cerca (CF / compagnia / offerta / IMEI / ICCID / numero / MNP)" style="min-width:340px"/>
-            <button class="btn secondary small" id="btnExportConCsv">Export CSV</button>
+
+          <div class="actionsRow">
+            <button class="btn" id="btnConSearch">Cerca cliente</button>
+            <button class="btn btn-ghost" id="btnConGoContract" style="display:none">Continua con contratto</button>
           </div>
-        </div>
 
-        <div class="hr"></div>
-        <div class="hint">
-          Suggerimento: i campi <b>SI/NO</b> e le dropdown sono già “guidate”. Tutto viene salvato in MAIUSCOLO (dove sensato).
-        </div>
-
-        <div class="hr"></div>
-        
-        <div class="grid grid-2">
-          <div class="card" style="border-style:dashed">
-            <h3 style="margin:0 0 8px 0">1) Cliente</h3>
-            <div class="muted">Prima cerca per <b>Codice Fiscale</b>. Se non esiste, compila l’anagrafica veloce sotto.</div>
-
-            <div class="row" style="margin-top:10px;align-items:flex-end">
-              <div style="flex:2;min-width:220px">
-                <div class="muted" style="margin-bottom:6px">Codice fiscale *</div>
-                <input id="c_cf" placeholder="Codice fiscale (FK)"/>
-              </div>
-              <button class="btn secondary" id="btnConFindClient" type="button">Cerca cliente</button>
-            </div>
-            <div id="c_cf_status" class="smallNote" style="margin-top:8px">Inserisci CF e premi “Cerca cliente”.</div>
-
-            
-            <div class="hr"></div>
-
-            <h3 style="margin:12px 0 6px 0">2) Contratto & Offerta</h3>
-            <div class="muted">Compila i dati dell’attivazione. I campi essenziali sono evidenziati con *.</div>
-
-            <div class="grid grid-4" style="margin-top:10px">
-              <div>
-                <div class="muted" style="margin-bottom:6px">ID contratto</div>
-                <input id="c_id" placeholder="Auto se vuoto"/>
-              </div>
-              <div>
-                <div class="muted" style="margin-bottom:6px">ID cliente</div>
-                <input id="c_id_cliente" placeholder="Es. C001"/>
-              </div>
-              <div>
-                <div class="muted" style="margin-bottom:6px">Data contratto *</div>
-                <input id="c_data_contratto" type="date"/>
-              </div>
-              <div>
-                <div class="muted" style="margin-bottom:6px">Tipo cliente</div>
-                <select id="c_tipo_cliente">
-                  <option value="">Seleziona</option>
-                  <option>PRIVATO</option>
-                  <option>BUSINESS</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="grid grid-4" style="margin-top:10px">
-              <div>
-                <div class="muted" style="margin-bottom:6px">Compagnia *</div>
-                <select id="c_compagnia">
-
-                  <option value="">Seleziona</option>
-              <option>TIM</option>
-              <option>VODAFONE</option>
-              <option>WINDTRE</option>
-              <option>ILIAD</option>
-              <option>FASTWEB</option>
-              <option>POSTEMOBILE</option>
-              <option>HO.</option>
-              <option>KENA</option>
-              <option>VERY MOBILE</option>
-              <option>COOPVOCE</option>
-              <option>LYCAMOBILE</option>
-              <option>SPUSU</option>
-              <option>1MOBILE</option>
-              <option>OPTIMA MOBILE</option>
-              <option>TISCALI MOBILE</option>
-              <option>RABONA</option>
-              <option>DAILY TELECOM</option>
-              <option>FEDER MOBILE</option>
-              <option>NO.VA</option>
-              <option>SKY</option>
-              <option>EOLO</option>
-              <option>LINKEM</option>
-              <option>OPEN FIBER</option>
-              <option>FIBERCOP</option>
-              <option>ALTRO</option>
-                
-                </select>
-              </div>
-
-              <div>
-                <div class="muted" style="margin-bottom:6px">Tecnologia *</div>
-                <select id="c_tecnologia">
-                  <option value="">Seleziona</option>
-                  <option>SIM</option>
-                  <option>FTTC</option>
-                  <option>FTTH</option>
-                  <option>FWA</option>
-                </select>
-              </div>
-
-              <div>
-                <div class="muted" style="margin-bottom:6px">Tipo attivazione</div>
-                <select id="c_tipo_attivazione">
-                  <option value="">Seleziona</option>
-                  <option>NUOVA</option>
-                  <option>MNP</option>
-                  <option>MIGRAZIONE</option>
-                  <option>SUBENTRO</option>
-                  <option>UPGRADE</option>
-                </select>
-              </div>
-
-              <div>
-                <div class="muted" style="margin-bottom:6px">Convergenza</div>
-                <select id="c_convergenza">
-                  <option value="">Seleziona</option>
-                  <option>SI</option>
-                  <option>NO</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="grid grid-4" style="margin-top:10px">
-              <div>
-                <div class="muted" style="margin-bottom:6px">Nome offerta</div>
-                <input id="c_nome_offerta" placeholder="Es. OFFERTA X"/>
-              </div>
-              <div>
-                <div class="muted" style="margin-bottom:6px">Costo offerta (€/mese)</div>
-                <input id="c_costo_offerta" type="number" step="0.01" placeholder="Es. 9.99"/>
-              </div>
-              <div>
-                <div class="muted" style="margin-bottom:6px">Vincolo (mesi)</div>
-                <input id="c_vincolo_offerta_mesi" type="number" step="1" placeholder="Es. 24"/>
-              </div>
-              <div>
-                <div class="muted" style="margin-bottom:6px">Tipo pagamento</div>
-                <select id="c_tipo_pagamento">
-                  <option value="">Seleziona</option>
-                  <option>CREDITO RESIDUO</option>
-                  <option>SDD</option>
-                  <option>CARTA DI CREDITO</option>
-                </select>
-              </div>
-            </div>
-
-            <h3 style="margin:14px 0 6px 0">3) Numero, MNP & SIM</h3>
-            <div class="muted">Usa MNP e provenienza solo se necessario. ICCID nuovo è consigliato.</div>
-
-            <div class="grid grid-4" style="margin-top:10px">
-              <div>
-                <div class="muted" style="margin-bottom:6px">Numero lavorato</div>
-                <input id="c_numero_lavorato" placeholder="Es. 3331234567"/>
-              </div>
-              <div>
-                <div class="muted" style="margin-bottom:6px">MNP</div>
-                <select id="c_mnp">
-                  <option value="">Seleziona</option>
-                  <option>SI</option>
-                  <option>NO</option>
-                </select>
-              </div>
-              <div>
-                <div class="muted" style="margin-bottom:6px">Compagnia di provenienza</div>
-                <select id="c_compagnia_provenienza">
-
-                  <option value="">Seleziona</option>
-              <option>TIM</option>
-              <option>VODAFONE</option>
-              <option>WINDTRE</option>
-              <option>ILIAD</option>
-              <option>FASTWEB</option>
-              <option>POSTEMOBILE</option>
-              <option>HO.</option>
-              <option>KENA</option>
-              <option>VERY MOBILE</option>
-              <option>COOPVOCE</option>
-              <option>LYCAMOBILE</option>
-              <option>SPUSU</option>
-              <option>1MOBILE</option>
-              <option>OPTIMA MOBILE</option>
-              <option>TISCALI MOBILE</option>
-              <option>RABONA</option>
-              <option>DAILY TELECOM</option>
-              <option>FEDER MOBILE</option>
-              <option>NO.VA</option>
-              <option>SKY</option>
-              <option>EOLO</option>
-              <option>LINKEM</option>
-              <option>OPEN FIBER</option>
-              <option>FIBERCOP</option>
-              <option>ALTRO</option>
-                
-                </select>
-              </div>
-              <div>
-                <div class="muted" style="margin-bottom:6px">ICCID vecchio</div>
-                <input id="c_iccid_vecchio" placeholder="Es. 8939..."/>
-              </div>
-            </div>
-
-            <div class="grid grid-4" style="margin-top:10px">
-              <div>
-                <div class="muted" style="margin-bottom:6px">ICCID nuovo</div>
-                <input id="c_iccid_nuovo" placeholder="Es. 8939..."/>
-              </div>
-              <div>
-                <div class="muted" style="margin-bottom:6px">Data attivazione</div>
-                <input id="c_data_attivazione" type="date"/>
-              </div>
-              <div>
-                <div class="muted" style="margin-bottom:6px">Data portabilità</div>
-                <input id="c_data_portabilita" type="date"/>
-              </div>
-              <div>
-                <div class="muted" style="margin-bottom:6px">Venditore</div>
-                <input id="c_venditore" placeholder="Es. AUGUSTO"/>
-              </div>
-            </div>
-
-            <h3 style="margin:14px 0 6px 0">4) Telefono incluso & rate</h3>
-            <div class="muted">Compila questa sezione solo se è incluso un telefono o un pagamento rateale.</div>
-
-            <div class="grid grid-4" style="margin-top:10px">
-              <div>
-                <div class="muted" style="margin-bottom:6px">Telefono incluso</div>
-                <select id="c_telefono_incluso">
-                  <option value="">Seleziona</option>
-                  <option>SI</option>
-                  <option>NO</option>
-                </select>
-              </div>
-              <div>
-                <div class="muted" style="margin-bottom:6px">IMEI</div>
-                <input id="c_imei" placeholder="15 cifre"/>
-              </div>
-              <div>
-                <div class="muted" style="margin-bottom:6px">Marca</div>
-                <input id="c_marca" placeholder="Es. APPLE"/>
-              </div>
-              <div>
-                <div class="muted" style="margin-bottom:6px">Modello</div>
-                <input id="c_modello" placeholder="Es. IPHONE 13"/>
-              </div>
-            </div>
-
-            <div class="grid grid-4" style="margin-top:10px">
-              <div>
-                <div class="muted" style="margin-bottom:6px">Mesi vincolo telefono</div>
-                <input id="c_mesi_vincolo_telefono" type="number" step="1" placeholder="Es. 24"/>
-              </div>
-              <div>
-                <div class="muted" style="margin-bottom:6px">Pagamento rate telefono</div>
-                <select id="c_modalita_pagamento_rate">
-                  <option value="">Seleziona</option>
-                  <option>CONTO CORRENTE</option>
-                  <option>CARTA DI CREDITO</option>
-                  <option>COMPASS</option>
-                  <option>FINDOMESTIC</option>
-                </select>
-              </div>
-              <div>
-                <div class="muted" style="margin-bottom:6px">Anticipo (€)</div>
-                <input id="c_anticipo" type="number" step="0.01" placeholder="Es. 0"/>
-              </div>
-              <div>
-                <div class="muted" style="margin-bottom:6px">Data fine vincolo offerta</div>
-                <input id="c_data_fine_vincolo_offerta" type="date"/>
-              </div>
-            </div>
-
-            <div class="grid grid-4" style="margin-top:10px">
-              <div>
-                <div class="muted" style="margin-bottom:6px">Data fine vincolo telefono</div>
-                <input id="c_data_fine_vincolo_telefono" type="date"/>
-              </div>
-              <div>
-                <div class="muted" style="margin-bottom:6px">created_at</div>
-                <input id="c_created_at" placeholder="Auto o import CSV"/>
-              </div>
-              <div>
-                <div class="muted" style="margin-bottom:6px">updated_at</div>
-                <input id="c_updated_at" placeholder="Auto o import CSV"/>
-              </div>
-              <div></div>
-            </div>
-
-            <div id="c_modem_box" class="card" style="border-style:dashed; display:none; margin-top:12px">
-              <h3 style="margin:0 0 6px 0">5) Modem (solo FTTC/FTTH/FWA)</h3>
-              <div class="muted">Se tecnologia è FTTC/FTTH/FWA, indica chi spedisce il modem.</div>
-              <div class="grid grid-2" style="margin-top:10px">
-                <div>
-                  <div class="muted" style="margin-bottom:6px">Modem spedito da *</div>
-                  <select id="c_modem_spedito_da">
-                    <option value="">Seleziona</option>
-                    <option>WINDTRE</option>
-                    <option>KOLME</option>
-                  </select>
-                </div>
-                <div></div>
-              </div>
-            </div>
-
-<div id="conQuickAnag"
- class="card" style="border-style:dashed; display:none; margin-top:12px">
-          <h3>Cliente non trovato: inserisci Anagrafica (veloce)</h3>
-          <div class="muted">Verrà creato il cliente e poi potrai salvare subito il contratto.</div>
-          <div class="grid grid-4" style="margin-top:10px">
-            <input id="qa_cf" placeholder="Codice fiscale *" disabled/>
-            <input id="qa_nome" placeholder="Nome *"/>
-            <input id="qa_cognome" placeholder="Cognome *"/>
-            <select id="qa_tipo">
-              <option value="">Tipo cliente</option>
-              <option>PRIVATO</option>
-              <option>BUSINESS</option>
-            </select>
-            <input id="qa_telefono" placeholder="Telefono"/>
-            <input id="qa_email" placeholder="Email"/>
-            <input id="qa_citta" placeholder="Città"/>
-            <input id="qa_indirizzo" placeholder="Indirizzo"/>
-            <input id="qa_data_nascita" type="date" placeholder="Data nascita"/>
-          </div>
-          <div class="row" style="margin-top:10px">
-            <button class="btn primary small" id="btnQASave">Crea cliente</button>
-            <button class="btn secondary small" id="btnQACancel">Annulla</button>
-          </div>
-        </div>
-
-
-        <div class="row" style="margin-top:12px">
-          <button class="btn primary" id="btnSaveCon">Salva</button>
-          <button class="btn secondary" id="btnClearCon">Pulisci</button>
-          <button class="btn secondary" id="btnPrintConReceipt" type="button" disabled>Stampa ricevuta</button>
-          <span class="muted">FK: il CF deve esistere in Anagrafica</span>
+          <div id="conClientCard" class="miniCard" style="display:none"></div>
         </div>
       </div>
 
-      <div class="card" style="overflow:auto">
-        <h3>Contratti</h3>
-        <table id="tblCon">
-          <thead>
-            <tr>
-              <th>ID</th><th>ID cliente</th><th>Data</th><th>CF</th><th>Cliente</th><th>Compagnia</th><th>Offerta</th><th>Tecnologia</th><th>MNP</th><th>Numero</th><th>IMEI</th><th>ICCID nuovo</th><th>Azioni</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+      <!-- STEP 1: Anagrafica (only if missing) -->
+      <div class="stepPanel" id="conStep1" style="display:none">
+        <div class="cardInner">
+          <h3 style="margin-top:0">Anagrafica cliente</h3>
+          <div class="grid2">
+            <div>
+              <label>Codice fiscale <span class="req">*</span></label>
+              <input id="qa_cf" placeholder="CF" />
+            </div>
+            <div>
+              <label>Tipo cliente</label>
+              <select id="qa_tipo">
+                <option value="PRIVATO">PRIVATO</option>
+                <option value="BUSINESS">BUSINESS</option>
+                <option value="P.IVA">P.IVA</option>
+                <option value="AZIENDA">AZIENDA</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Nome <span class="req">*</span></label>
+              <input id="qa_nome" />
+            </div>
+            <div>
+              <label>Cognome <span class="req">*</span></label>
+              <input id="qa_cognome" />
+            </div>
+
+            <div>
+              <label>Data di nascita</label>
+              <input id="qa_data_nascita" type="date" />
+            </div>
+            <div>
+              <label>Numero di contatto</label>
+              <input id="qa_telefono" placeholder="Es. 3331234567" />
+            </div>
+
+            <div>
+              <label>Email</label>
+              <input id="qa_email" type="email" placeholder="Es. nome@email.it" />
+            </div>
+            <div>
+              <label>Città / Luogo di residenza</label>
+              <input id="qa_citta" />
+            </div>
+
+            <div>
+              <label>Indirizzo di residenza</label>
+              <input id="qa_indirizzo" />
+            </div>
+            <div>
+              <label>CAP</label>
+              <input id="qa_cap" inputmode="numeric" />
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <h4 style="margin:0 0 8px 0">Profilo cliente (check veloci)</h4>
+          <div class="checksGrid">
+            <label class="check"><input type="checkbox" id="qa_tag_famiglia"> Ha una famiglia</label>
+            <label class="check"><input type="checkbox" id="qa_tag_android"> Usa Android</label>
+            <label class="check"><input type="checkbox" id="qa_tag_iphone"> Usa iPhone</label>
+            <label class="check"><input type="checkbox" id="qa_tag_phone_old"> Telefono vecchio (2+ anni)</label>
+            <label class="check"><input type="checkbox" id="qa_tag_risparmio"> Sensibile al risparmio</label>
+            <label class="check"><input type="checkbox" id="qa_tag_rate"> Interessato a rate/device</label>
+          </div>
+
+          <div class="actionsRow" style="margin-top:12px">
+            <button class="btn" id="btnConSaveAnag">Salva anagrafica</button>
+            <span id="qa_status" class="help muted"></span>
+          </div>
+        </div>
       </div>
-    </section>
+
+      <!-- STEP 2: Contract -->
+      <div class="stepPanel" id="conStep2" style="display:none">
+        <div class="cardInner">
+          <h3 style="margin-top:0">Contratto & Offerta</h3>
+          <p class="muted" style="margin-top:4px">I campi essenziali sono evidenziati con <b>*</b>.</p>
+
+          <div class="grid2">
+            <div>
+              <label>ID contratto</label>
+              <input id="c_id" placeholder="Auto se vuoto" />
+            </div>
+            <div>
+              <label>ID cliente</label>
+              <input id="c_id_cliente" placeholder="Auto se vuoto" />
+            </div>
+
+            <div>
+              <label>Data contratto <span class="req">*</span></label>
+              <input id="c_data_contratto" type="date" />
+            </div>
+
+            <div>
+              <label>Tipo cliente</label>
+              <select id="c_tipo_cliente">
+                <option value="PRIVATO">PRIVATO</option>
+                <option value="BUSINESS">BUSINESS</option>
+                <option value="P.IVA">P.IVA</option>
+                <option value="AZIENDA">AZIENDA</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Compagnia <span class="req">*</span></label>
+              <select id="c_compagnia"></select>
+            </div>
+
+            <div>
+              <label>Tecnologia <span class="req">*</span></label>
+              <select id="c_tecnologia"></select>
+            </div>
+
+            <div>
+              <label>Tipo attivazione</label>
+              <select id="c_tipo_attivazione"></select>
+            </div>
+
+            <div>
+              <label>Convergenza</label>
+              <select id="c_convergenza">
+                <option value="NO">NO</option><option value="SI">SI</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Nome offerta</label>
+              <input id="c_nome_offerta" />
+            </div>
+
+            <div>
+              <label>Costo offerta (€/mese)</label>
+              <input id="c_costo_offerta" inputmode="decimal" placeholder="Es. 9.99" />
+            </div>
+
+            <div>
+              <label>Vincolo (mesi)</label>
+              <input id="c_vincolo_offerta" inputmode="numeric" placeholder="Es. 24" />
+            </div>
+
+            <div>
+              <label>Tipo pagamento</label>
+              <select id="c_tipo_pagamento">
+                <option value="">—</option>
+                <option value="CREDITO RESIDUO">CREDITO RESIDUO</option>
+                <option value="SDD">SDD</option>
+                <option value="CARTA DI CREDITO">CARTA DI CREDITO</option>
+              </select>
+            </div>
+
+            <div>
+              <label>MNP</label>
+              <select id="c_mnp">
+                <option value="NO">NO</option><option value="SI">SI</option>
+              </select>
+              <div class="help muted">Se imposti <b>SI</b>, si apre il modulo “MNP & SIM”.</div>
+            </div>
+
+            <div>
+              <label>Telefono incluso</label>
+              <select id="c_telefono_incluso">
+                <option value="NO">NO</option><option value="SI">SI</option>
+              </select>
+              <div class="help muted">Se imposti <b>SI</b>, si apre il modulo “Telefono & Rate”.</div>
+            </div>
+          </div>
+
+          <div id="conModemBox" class="callout" style="display:none; margin-top:12px">
+            <b>Modem (solo FTTH/FTTC/FWA)</b>
+            <div class="grid2" style="margin-top:10px">
+              <div>
+                <label>Modem inviato da <span class="req">*</span></label>
+                <select id="c_modem_spedito_da">
+                  <option value="">Seleziona…</option>
+                  <option value="WINDTRE">WINDTRE</option>
+                  <option value="KOLME">KOLME</option>
+                  <option value="MAGAZZINO">MAGAZZINO (nostro)</option>
+                </select>
+              </div>
+              <div class="muted" style="align-self:end">
+                Se scegli <b>MAGAZZINO</b>, il modem viene consegnato dal punto vendita.
+              </div>
+            </div>
+          </div>
+
+          <div class="actionsRow" style="margin-top:14px">
+            <button class="btn btn-ghost" id="btnConBack0">Indietro</button>
+            <button class="btn" id="btnConNext2">Continua</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3: MNP -->
+      <div class="stepPanel" id="conStep3" style="display:none">
+        <div class="cardInner">
+          <h3 style="margin-top:0">Numero, MNP & SIM</h3>
+
+          <div class="grid2">
+            <div>
+              <label>Numero da portare / lavorato <span class="req">*</span></label>
+              <input id="c_numero_lavorato" placeholder="Es. 3331234567" />
+            </div>
+
+            <div>
+              <label>Compagnia di provenienza</label>
+              <select id="c_compagnia_provenienza"></select>
+            </div>
+
+            <div>
+              <label>ICCID vecchio</label>
+              <input id="c_iccid_vecchio" placeholder="19 cifre" />
+            </div>
+
+            <div>
+              <label>ICCID nuovo</label>
+              <input id="c_iccid_nuovo" placeholder="19 cifre" />
+            </div>
+
+            <div>
+              <label>Data attivazione</label>
+              <input id="c_data_attivazione" type="date" />
+            </div>
+
+            <div>
+              <label>Data portabilità</label>
+              <input id="c_data_portabilita" type="date" />
+              <div class="help muted">Auto: +3 giorni lavorativi dalla data attivazione (modificabile).</div>
+            </div>
+          </div>
+
+          <div class="actionsRow" style="margin-top:14px">
+            <button class="btn btn-ghost" id="btnConBack2">Indietro</button>
+            <button class="btn" id="btnConNext3">Continua</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4: Phone -->
+      <div class="stepPanel" id="conStep4" style="display:none">
+        <div class="cardInner">
+          <h3 style="margin-top:0">Telefono incluso & rate</h3>
+          <div class="muted" style="margin-bottom:10px">Compila questa sezione solo se è incluso un telefono o un pagamento rateale.</div>
+
+          <div class="grid2">
+            <div>
+              <label>IMEI</label>
+              <input id="c_imei" placeholder="15 cifre" />
+            </div>
+            <div>
+              <label>Marca</label>
+              <input id="c_marca" placeholder="Es. APPLE" />
+            </div>
+
+            <div>
+              <label>Modello</label>
+              <input id="c_modello" placeholder="Es. IPHONE 13" />
+            </div>
+            <div>
+              <label>Mesi vincolo telefono</label>
+              <input id="c_mesi_vincolo_telefono" inputmode="numeric" placeholder="Es. 24" />
+            </div>
+
+            <div>
+              <label>Pagamento rate telefono</label>
+              <select id="c_modalita_rate_telefono">
+                <option value="">—</option>
+                <option value="CONTO CORRENTE">CONTO CORRENTE</option>
+                <option value="CARTA DI CREDITO">CARTA DI CREDITO</option>
+                <option value="COMPASS">COMPASS</option>
+                <option value="FINDOMESTIC">FINDOMESTIC</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Anticipo (€)</label>
+              <input id="c_anticipo" inputmode="decimal" placeholder="Es. 0" />
+            </div>
+
+            <div>
+              <label>Data fine vincolo telefono</label>
+              <input id="c_data_fine_vincolo_telefono" type="date" />
+              <div class="help muted">Auto: somma i mesi vincolo telefono alla data attivazione (modificabile).</div>
+            </div>
+
+            <div>
+              <label>Note</label>
+              <input id="c_note" />
+            </div>
+          </div>
+
+          <div class="actionsRow" style="margin-top:14px">
+            <button class="btn btn-ghost" id="btnConBack3">Indietro</button>
+            <button class="btn" onclick="saveCon()">Salva contratto</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="muted" style="margin-top:10px">
+        <span class="chip">Suggerimento</span> Puoi salvare anche senza compilare MNP/Telefono: i moduli compaiono solo se selezioni <b>SI</b>.
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="overflow:auto">
+    <h3>Contratti</h3>
+    <table id="tblCon">
+      <thead>
+        <tr>
+          <th>ID</th><th>ID cliente</th><th>Data</th><th>CF</th><th>Cliente</th><th>Compagnia</th><th>Tecnologia</th><th>Tipo</th><th>Offerta</th><th>Costo</th><th>Numero</th><th>IMEI</th><th>ICCID nuovo</th><th>Azioni</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
 
     <!-- DEVICE CRUD -->
     <section id="view-device" class="view">
@@ -1983,6 +1997,8 @@ function createClientFromQuick(prefix, statusId, quickBoxId){
     email: (qs("#"+prefix+"_email").value||"").trim(),
     citta: upper(qs("#"+prefix+"_citta").value),
     indirizzo: upper(qs("#"+prefix+"_indirizzo").value),
+    cap: (qs("#"+prefix+"_cap") ? (qs("#"+prefix+"_cap").value||"").trim() : ""),
+    note: (qs("#"+prefix+"_note") ? (qs("#"+prefix+"_note").value||"").trim() : ""),
     data_nascita: toDateISO(qs("#"+prefix+"_data_nascita").value)
   };
   const idx = anagrafica.findIndex(x=>upper(x.cf)===cf);
@@ -5630,10 +5646,11 @@ function printReceipt(kind, rec){
    ========================= */
 const API_URL = "https://script.google.com/macros/s/AKfycbzOQbt8M6-6PSLgKBR-vFwVnLUYMzYqiS1BXLL65bUNmiQnKZQnxS9pTeDgNECT0hYT/exec";
 const USE_BACKEND = true;
+window.__backendSynced = false;
 
 async function apiGet(params){
   const url = API_URL + "?" + new URLSearchParams(params).toString();
-  const res = await fetch(url, { method:"GET" });
+  const res = await fetch(url + (url.includes("?")?"&":"?") + "_=" + Date.now(), { method:"GET" });
   return await res.json();
 }
 async function apiPost(payload){
@@ -5668,9 +5685,12 @@ async function syncAllFromBackend() {
     try{ if(typeof renderRipTable === "function") renderRipTable(); }catch(_){}
     try{ if(typeof renderReport === "function") renderReport(); }catch(_){}
 
+    window.__backendSynced = true;
     if(typeof toast === "function") toast("Sync completato ✅");
   } catch(err) {
     console.error(err);
+    window.__backendSynced = false;
+    if(typeof toast==="function") toast("Backend non raggiungibile (CORS/HTTPS).");
     alert("Errore sync backend. Se stai usando file://, prova a pubblicare su HTTPS (GitHub Pages).\nDettaglio: " + err);
   }
 }
@@ -5775,44 +5795,44 @@ async function tryHookBackendSaves(){
     btnC.addEventListener("click", ()=>{
       setTimeout(async ()=>{
         try{
-          const cf = (pickVal("con_cf")||pickVal("contr_cf")||pickVal("cf_contratto")||pickVal("cf")).toUpperCase();
+          const cf = (pickVal("c_cf")||pickVal("con_cf")||pickVal("contr_cf")||pickVal("cf_contratto")||pickVal("cf")).toUpperCase();
           if(!cf) return;
 
           const existing = window.byCF(cf);
           if(!existing){
-            const nome = pickVal("qc_nome")||pickVal("con_nome")||pickVal("nome");
-            const cognome = pickVal("qc_cognome")||pickVal("con_cognome")||pickVal("cognome");
+            const nome = pickVal("qa_nome")||pickVal("qc_nome")||pickVal("con_nome")||pickVal("nome");
+            const cognome = pickVal("qa_cognome")||pickVal("qc_cognome")||pickVal("con_cognome")||pickVal("cognome");
             if(nome && cognome){
-              await backendUpsertCustomer({"Codice fiscale":cf,"Nome":nome,"Cognome":cognome,"Telefono":pickVal("qc_tel")||pickVal("telefono")});
+              await backendUpsertCustomer({"Codice fiscale":cf,"Nome":nome,"Cognome":cognome,"Telefono":pickVal("qa_telefono")||pickVal("qc_tel")||pickVal("telefono")});
             }
           }
 
           await backendCreateContract({
             "Codice fiscale": cf,
-            "Data contratto": pickVal("con_data")||pickVal("data_contratto"),
-            "Tipo cliente": pickVal("con_tipo_cliente")||pickVal("tipo_cliente"),
-            "Tipo attivazione": pickVal("con_tipo_att")||pickVal("tipo_attivazione"),
-            "Tecnologia": pickVal("con_tecnologia")||pickVal("tecnologia"),
-            "Convergenza": pickVal("con_convergenza")||pickVal("convergenza"),
-            "MNP": pickVal("con_mnp")||pickVal("mnp"),
-            "Numero lavorato": pickVal("con_numero")||pickVal("numero_lavorato"),
-            "Compagnia": pickVal("con_compagnia")||pickVal("compagnia"),
-            "Compagnia di provenienza": pickVal("con_provenienza")||pickVal("compagnia_provenienza"),
-            "ICCID_vecchio": pickVal("con_iccid_old")||pickVal("iccid_vecchio"),
-            "ICCID_nuovo": pickVal("con_iccid_new")||pickVal("iccid_nuovo"),
-            "Nome offerta": pickVal("con_offerta")||pickVal("nome_offerta"),
-            "Costo offerta": pickVal("con_costo")||pickVal("costo_offerta"),
-            "Vincolo offerta (mesi)": pickVal("con_vincolo")||pickVal("vincolo_offerta_mesi"),
-            "Tipo pagamento": pickVal("con_tipo_pag")||pickVal("tipo_pagamento"),
-            "Telefono incluso": pickVal("con_tel_incluso")||pickVal("telefono_incluso"),
-            "IMEI": pickVal("con_imei")||pickVal("imei"),
-            "Marca": pickVal("con_marca")||pickVal("marca"),
-            "Modello": pickVal("con_modello")||pickVal("modello"),
-            "Mesi vincolo telefono": pickVal("con_vincolo_tel")||pickVal("mesi_vincolo_telefono"),
-            "Modalità pagamento rate telefono": pickVal("con_rate_pag")||pickVal("pagamento_rate"),
-            "Anticipo": pickVal("con_anticipo")||pickVal("anticipo"),
-            "Modem spedito da": pickVal("con_modem")||pickVal("modem_spedito_da"),
-            "Note": pickVal("con_note")||pickVal("note")
+            "Data contratto": pickVal("c_data_contratto")||pickVal("con_data")||pickVal("data_contratto"),
+            "Tipo cliente": pickVal("c_tipo_cliente")||pickVal("con_tipo_cliente")||pickVal("tipo_cliente"),
+            "Tipo attivazione": pickVal("c_tipo_attivazione")||pickVal("con_tipo_att")||pickVal("tipo_attivazione"),
+            "Tecnologia": pickVal("c_tecnologia")||pickVal("con_tecnologia")||pickVal("tecnologia"),
+            "Convergenza": pickVal("c_convergenza")||pickVal("con_convergenza")||pickVal("convergenza"),
+            "MNP": pickVal("c_mnp")||pickVal("con_mnp")||pickVal("mnp"),
+            "Numero lavorato": pickVal("c_numero_lavorato")||pickVal("con_numero")||pickVal("numero_lavorato"),
+            "Compagnia": pickVal("c_compagnia")||pickVal("con_compagnia")||pickVal("compagnia"),
+            "Compagnia di provenienza": pickVal("c_compagnia_provenienza")||pickVal("con_provenienza")||pickVal("compagnia_provenienza"),
+            "ICCID_vecchio": pickVal("c_iccid_vecchio")||pickVal("con_iccid_old")||pickVal("iccid_vecchio"),
+            "ICCID_nuovo": pickVal("c_iccid_nuovo")||pickVal("con_iccid_new")||pickVal("iccid_nuovo"),
+            "Nome offerta": pickVal("c_nome_offerta")||pickVal("con_offerta")||pickVal("nome_offerta"),
+            "Costo offerta": pickVal("c_costo_offerta")||pickVal("con_costo")||pickVal("costo_offerta"),
+            "Vincolo offerta (mesi)": pickVal("c_vincolo_offerta_mesi")||pickVal("con_vincolo")||pickVal("vincolo_offerta_mesi"),
+            "Tipo pagamento": pickVal("c_tipo_pagamento")||pickVal("con_tipo_pag")||pickVal("tipo_pagamento"),
+            "Telefono incluso": pickVal("c_telefono_incluso")||pickVal("con_tel_incluso")||pickVal("telefono_incluso"),
+            "IMEI": pickVal("c_imei")||pickVal("con_imei")||pickVal("imei"),
+            "Marca": pickVal("c_marca")||pickVal("con_marca")||pickVal("marca"),
+            "Modello": pickVal("c_modello")||pickVal("con_modello")||pickVal("modello"),
+            "Mesi vincolo telefono": pickVal("c_mesi_vincolo_telefono")||pickVal("con_vincolo_tel")||pickVal("mesi_vincolo_telefono"),
+            "Modalità pagamento rate telefono": pickVal("c_modalita_pagamento_rate")||pickVal("con_rate_pag")||pickVal("pagamento_rate"),
+            "Anticipo": pickVal("c_anticipo")||pickVal("con_anticipo")||pickVal("anticipo"),
+            "Modem spedito da": pickVal("c_modem_spedito_da")||pickVal("con_modem")||pickVal("modem_spedito_da"),
+            "Note": pickVal("c_note")||pickVal("con_note")||pickVal("note")
           });
 
           await syncAllFromBackend();
@@ -5828,19 +5848,19 @@ async function tryHookBackendSaves(){
     btnD.addEventListener("click", ()=>{
       setTimeout(async ()=>{
         try{
-          const cf = (pickVal("dev_cf")||pickVal("cf_device")||pickVal("cf")).toUpperCase();
+          const cf = (pickVal("d_cf")||pickVal("dev_cf")||pickVal("cf_device")||pickVal("cf")).toUpperCase();
           if(!cf) return;
           await backendCreateDevice({
             "Codice fiscale": cf,
-            "Data": pickVal("dev_data")||pickVal("data"),
-            "Tipo": pickVal("dev_tipo")||pickVal("tipo"),
-            "Marca": pickVal("dev_marca")||pickVal("marca"),
-            "Modello": pickVal("dev_modello")||pickVal("modello"),
-            "IMEI": pickVal("dev_imei")||pickVal("imei"),
-            "Prezzo": pickVal("dev_prezzo")||pickVal("prezzo"),
-            "Metodo pagamento": pickVal("dev_pagamento")||pickVal("metodo_pagamento"),
-            "Venditore": pickVal("dev_venditore")||pickVal("venditore"),
-            "Note": pickVal("dev_note")||pickVal("note")
+            "Data": pickVal("d_data")||pickVal("dev_data")||pickVal("data"),
+            "Tipo": pickVal("d_tipo")||pickVal("dev_tipo")||pickVal("tipo"),
+            "Marca": pickVal("d_marca")||pickVal("dev_marca")||pickVal("marca"),
+            "Modello": pickVal("d_modello")||pickVal("dev_modello")||pickVal("modello"),
+            "IMEI": pickVal("d_imei")||pickVal("dev_imei")||pickVal("imei"),
+            "Prezzo": pickVal("d_prezzo")||pickVal("dev_prezzo")||pickVal("prezzo"),
+            "Metodo pagamento": pickVal("d_pagamento")||pickVal("dev_pagamento")||pickVal("metodo_pagamento"),
+            "Venditore": pickVal("d_venditore")||pickVal("dev_venditore")||pickVal("venditore"),
+            "Note": pickVal("d_note")||pickVal("dev_note")||pickVal("note")
           }, true);
           await syncAllFromBackend();
         }catch(err){ console.error(err); if(typeof toast==="function") toast("Backend: " + err.message); }
@@ -5855,19 +5875,19 @@ async function tryHookBackendSaves(){
     btnR.addEventListener("click", ()=>{
       setTimeout(async ()=>{
         try{
-          const cf = (pickVal("rip_cf")||pickVal("cf_riparazione")||pickVal("cf")).toUpperCase();
+          const cf = (pickVal("r_cf")||pickVal("rip_cf")||pickVal("cf_riparazione")||pickVal("cf")).toUpperCase();
           if(!cf) return;
           await backendCreateRepair({
             "Codice fiscale": cf,
-            "Data accettazione": pickVal("rip_data")||pickVal("data_accettazione"),
-            "Marca": pickVal("rip_marca")||pickVal("marca"),
-            "Modello": pickVal("rip_modello")||pickVal("modello"),
-            "IMEI": pickVal("rip_imei")||pickVal("imei"),
-            "Guasto": pickVal("rip_guasto")||pickVal("guasto"),
-            "Preventivo": pickVal("rip_prev")||pickVal("preventivo"),
-            "Stato": pickVal("rip_stato")||pickVal("stato"),
-            "Data consegna prevista": pickVal("rip_consegna")||pickVal("data_consegna"),
-            "Note": pickVal("rip_note")||pickVal("note")
+            "Data accettazione": pickVal("r_ingresso")||pickVal("r_data")||pickVal("rip_data")||pickVal("data_accettazione"),
+            "Marca": pickVal("r_marca")||pickVal("rip_marca")||pickVal("marca"),
+            "Modello": pickVal("r_modello")||pickVal("rip_modello")||pickVal("modello"),
+            "IMEI": pickVal("r_imei")||pickVal("rip_imei")||pickVal("imei"),
+            "Guasto": pickVal("r_problema")||pickVal("rip_guasto")||pickVal("guasto"),
+            "Preventivo": pickVal("r_costo")||pickVal("rip_prev")||pickVal("preventivo"),
+            "Stato": pickVal("r_stato")||pickVal("rip_stato")||pickVal("stato"),
+            "Data consegna prevista": pickVal("r_consegna")||pickVal("rip_consegna")||pickVal("data_consegna"),
+            "Note": pickVal("r_note")||pickVal("rip_note")||pickVal("note")
           }, true);
           await syncAllFromBackend();
         }catch(err){ console.error(err); if(typeof toast==="function") toast("Backend: " + err.message); }
@@ -5879,6 +5899,243 @@ async function tryHookBackendSaves(){
 document.addEventListener("DOMContentLoaded", async ()=>{
   await syncAllFromBackend();
   setTimeout(()=>{ tryHookBackendSaves(); }, 250);
+});
+
+
+/* =========================
+   CONTRATTI - Wizard flow + auto-calcoli (v32)
+   ========================= */
+function addBusinessDays(dateISO, days){
+  if(!dateISO) return "";
+  const d = new Date(dateISO+"T00:00:00");
+  let added = 0;
+  while(added < days){
+    d.setDate(d.getDate()+1);
+    const wd = d.getDay();
+    if(wd !== 0 && wd !== 6) added++;
+  }
+  return d.toISOString().slice(0,10);
+}
+function addMonthsISO(dateISO, months){
+  if(!dateISO) return "";
+  const m = parseInt(months||"0",10);
+  if(!m) return "";
+  const d = new Date(dateISO+"T00:00:00");
+  const day = d.getDate();
+  d.setMonth(d.getMonth()+m);
+  if(d.getDate() !== day) d.setDate(0);
+  return d.toISOString().slice(0,10);
+}
+
+function conSetStep(n){
+  const panels = ["conStep0","conStep1","conStep2","conStep3","conStep4"];
+  panels.forEach((id,i)=> show(qs("#"+id), i===n));
+  qsa(".stepPill").forEach(p=>{
+    const s = parseInt(p.dataset.step,10);
+    p.classList.toggle("active", s===n);
+  });
+}
+
+function conRenderClientCard(a){
+  if(!a){ show(qs("#conClientCard"), false); return; }
+  const nome = (a.nome||a["Nome"]||"").toString();
+  const cognome = (a.cognome||a["Cognome"]||"").toString();
+  const tel = (a.telefono||a["Telefono"]||"").toString();
+  const mail = (a.email||a["Email"]||"").toString();
+  const cf = (a.cf||a["Codice fiscale"]||"").toString();
+  qs("#conClientCard").innerHTML = `
+    <div><b>${(nome+" "+cognome).trim() || "Cliente"}</b></div>
+    <div class="muted">${cf}</div>
+    <div class="muted">${tel ? "📞 "+tel : ""} ${mail ? " ✉️ "+mail : ""}</div>
+  `;
+  show(qs("#conClientCard"), true);
+}
+
+function conUpdateConditionals(){
+  const tec = upper(qs("#c_tecnologia")?.value || "");
+  show(qs("#conModemBox"), ["FTTC","FTTH","FWA"].includes(tec));
+}
+
+function conResetFlow(){
+  // reset core fields but keep dropdown lists
+  ["c_id","c_id_cliente","c_data_contratto","c_tipo_cliente","c_compagnia","c_tecnologia","c_tipo_attivazione","c_convergenza",
+   "c_nome_offerta","c_costo_offerta","c_vincolo_offerta","c_tipo_pagamento","c_mnp","c_telefono_incluso",
+   "c_numero_lavorato","c_compagnia_provenienza","c_iccid_vecchio","c_iccid_nuovo","c_data_attivazione","c_data_portabilita",
+   "c_imei","c_marca","c_modello","c_mesi_vincolo_telefono","c_modalita_rate_telefono","c_anticipo","c_data_fine_vincolo_telefono","c_note",
+   "c_modem_spedito_da"
+  ].forEach(id=>{ const el=qs("#"+id); if(el) el.value=""; });
+
+  ["qa_cf","qa_nome","qa_cognome","qa_data_nascita","qa_telefono","qa_email","qa_citta","qa_indirizzo","qa_cap"].forEach(id=>{
+    const el=qs("#"+id); if(el) el.value="";
+  });
+  ["qa_tag_famiglia","qa_tag_android","qa_tag_iphone","qa_tag_phone_old","qa_tag_risparmio","qa_tag_rate"].forEach(id=>{
+    const el=qs("#"+id); if(el) el.checked=false;
+  });
+
+  setStatus(qs("#c_cf_status"), true, "");
+  show(qs("#conClientCard"), false);
+  show(qs("#btnConGoContract"), false);
+  show(qs("#conModemBox"), false);
+
+  if(qs("#c_mnp")) qs("#c_mnp").value = "NO";
+  if(qs("#c_telefono_incluso")) qs("#c_telefono_incluso").value = "NO";
+  if(qs("#c_convergenza")) qs("#c_convergenza").value = "NO";
+
+  conSetStep(0);
+}
+
+async function conSearchClient(){
+  const cf = upper(qs("#c_cf").value || "");
+  if(!cf){ toast("Inserisci il Codice Fiscale"); return; }
+
+  // se backend attivo e non ancora sincronizzato, prova sync prima di cercare
+  if(typeof syncAllFromBackend === "function" && USE_BACKEND && !window.__backendSynced){
+    try{ await syncAllFromBackend(); }catch(_){}
+  }
+
+  const a = anagByCF(cf);
+  if(a){
+    setStatus(qs("#c_cf_status"), true, "Cliente trovato ✅");
+    conRenderClientCard(a);
+    show(qs("#btnConGoContract"), true);
+    return;
+  }
+
+  if(typeof backendGetCustomerByCF === "function"){
+    backendGetCustomerByCF(cf).then(customer=>{
+      if(customer){
+        const rec = {
+          cf: upper(customer["Codice fiscale"] || customer.cf || cf),
+          nome: upper(customer["Nome"] || customer.nome || ""),
+          cognome: upper(customer["Cognome"] || customer.cognome || ""),
+          telefono: (customer["Telefono"] || customer.telefono || "").toString(),
+          email: (customer["Email"] || customer.email || "").toString(),
+          citta: upper(customer["Città"] || customer.citta || ""),
+          indirizzo: upper(customer["Indirizzo"] || customer.indirizzo || ""),
+          cap: (customer["CAP"] || customer.cap || "").toString(),
+          data_nascita: (customer["Data nascita"] || customer.data_nascita || "")
+        };
+        if(!anagrafica.find(x=>upper(x.cf)===rec.cf)) anagrafica.push(rec);
+        saveStore();
+        setStatus(qs("#c_cf_status"), true, "Cliente trovato ✅ (da Google Sheet)");
+        conRenderClientCard(rec);
+        show(qs("#btnConGoContract"), true);
+      } else {
+        setStatus(qs("#c_cf_status"), false, "Cliente NON trovato: inserisci l’anagrafica.");
+        qs("#qa_cf").value = cf;
+        conSetStep(1);
+      }
+    }).catch(()=>{
+      setStatus(qs("#c_cf_status"), false, "Cliente NON trovato: inserisci l’anagrafica.");
+      qs("#qa_cf").value = cf;
+      conSetStep(1);
+    });
+  } else {
+    setStatus(qs("#c_cf_status"), false, "Cliente NON trovato: inserisci l’anagrafica.");
+    qs("#qa_cf").value = cf;
+    conSetStep(1);
+  }
+}
+
+function conSaveAnagAndContinue(){
+  const ok = createClientFromQuick("qa", "qa_status", "conStep1");
+  if(!ok) return;
+
+  const tags = [];
+  [["qa_tag_famiglia","FAMIGLIA"],["qa_tag_android","ANDROID"],["qa_tag_iphone","IPHONE"],["qa_tag_phone_old","TELEFONO_VECCHIO"],["qa_tag_risparmio","RISPARMIO"],["qa_tag_rate","RATE_DEVICE"]]
+    .forEach(([id,lab])=>{ if(qs("#"+id)?.checked) tags.push(lab); });
+
+  const cf = upper(qs("#qa_cf").value);
+  const idx = anagrafica.findIndex(x=>upper(x.cf)===cf);
+  if(idx>=0){
+    anagrafica[idx].cap = (qs("#qa_cap").value||"").trim();
+    anagrafica[idx].tags = tags;
+    anagrafica[idx].note = tags.length ? ("TAGS: "+tags.join(",")) : (anagrafica[idx].note||"");
+    saveStore();
+  }
+
+  if(typeof backendUpsertCustomer === "function"){
+    backendUpsertCustomer({
+      "Codice fiscale": cf,
+      "Nome": qs("#qa_nome").value,
+      "Cognome": qs("#qa_cognome").value,
+      "Telefono": qs("#qa_telefono").value,
+      "Email": qs("#qa_email").value,
+      "Data nascita": qs("#qa_data_nascita").value,
+      "Città": qs("#qa_citta").value,
+      "Indirizzo": qs("#qa_indirizzo").value,
+      "CAP": qs("#qa_cap").value,
+      "Note": tags.length ? ("TAGS: "+tags.join(",")) : ""
+    }).catch(err=>console.error(err));
+  }
+
+  setStatus(qs("#c_cf_status"), true, "Cliente creato ✅");
+  conRenderClientCard(anagByCF(cf));
+  show(qs("#btnConGoContract"), true);
+  conSetStep(2);
+}
+
+function conInitWizard(){
+  // Fill dropdowns from globals
+  try{
+    const fill = (sel, arr, placeholder="Seleziona…")=>{
+      if(!sel) return;
+      const keep = sel.value;
+      sel.innerHTML = `<option value="">${placeholder}</option>` + arr.map(x=>`<option value="${x}">${x}</option>`).join("");
+      if(keep) sel.value = keep;
+    };
+    if(typeof OPERATORS !== "undefined"){
+      fill(qs("#c_compagnia"), OPERATORS);
+      fill(qs("#c_compagnia_provenienza"), OPERATORS);
+    }
+    if(typeof TECNOLOGIE !== "undefined") fill(qs("#c_tecnologia"), TECNOLOGIE);
+    if(typeof TIPO_ATTIVAZIONE !== "undefined") fill(qs("#c_tipo_attivazione"), TIPO_ATTIVAZIONE);
+  }catch(_){}
+
+  qs("#btnConSearch")?.addEventListener("click", conSearchClient);
+  qs("#btnConGoContract")?.addEventListener("click", ()=>conSetStep(2));
+  qs("#btnConReset")?.addEventListener("click", conResetFlow);
+  qs("#btnConSaveAnag")?.addEventListener("click", conSaveAnagAndContinue);
+
+  qs("#btnConBack0")?.addEventListener("click", ()=>conSetStep(0));
+  qs("#btnConBack2")?.addEventListener("click", ()=>conSetStep(2));
+  qs("#btnConBack3")?.addEventListener("click", ()=>conSetStep(3));
+
+  qs("#btnConNext2")?.addEventListener("click", ()=>{
+    const mnp = upper(qs("#c_mnp").value||"NO");
+    const tel = upper(qs("#c_telefono_incluso").value||"NO");
+    if(mnp==="SI") conSetStep(3);
+    else if(tel==="SI") conSetStep(4);
+    else toast("Puoi salvare il contratto ora ✅");
+  });
+  qs("#btnConNext3")?.addEventListener("click", ()=>{
+    const tel = upper(qs("#c_telefono_incluso").value||"NO");
+    if(tel==="SI") conSetStep(4);
+    else toast("Puoi salvare il contratto ora ✅");
+  });
+
+  qs("#c_tecnologia")?.addEventListener("change", conUpdateConditionals);
+
+  qs("#c_data_attivazione")?.addEventListener("change", ()=>{
+    const act = qs("#c_data_attivazione").value;
+    if(act){
+      if(!qs("#c_data_portabilita").value) qs("#c_data_portabilita").value = addBusinessDays(act, 3);
+      const m = qs("#c_mesi_vincolo_telefono").value;
+      if(m) qs("#c_data_fine_vincolo_telefono").value = addMonthsISO(act, m);
+    }
+  });
+  qs("#c_mesi_vincolo_telefono")?.addEventListener("input", ()=>{
+    const act = qs("#c_data_attivazione").value;
+    const m = qs("#c_mesi_vincolo_telefono").value;
+    if(act && m) qs("#c_data_fine_vincolo_telefono").value = addMonthsISO(act, m);
+  });
+
+  conResetFlow();
+}
+
+document.addEventListener("DOMContentLoaded", ()=>{
+  // inizializza wizard solo se esiste la view contratti nel DOM
+  setTimeout(()=>{ if(qs("#view-contratti")) { try{ conInitWizard(); }catch(e){ console.error(e);} } }, 50);
 });
 </script>
 </body>
