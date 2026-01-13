@@ -1610,12 +1610,12 @@ function printReceipt(type, id){
 <script>
   // === CONFIG ===
   const GS_URL = "https://script.google.com/macros/s/AKfycbzqjV_XrlTnfJ96ZvMdygNj53fco3u_lwk0OgQUc5YxqmScLntEr-uzoUmjl4T_rlBW/exec";
-  const GS_TOKEN = "VOLPEX_SECRET_TOKEN"; // <- metti QUI lo stesso token dello script Google
+  const GS_TOKEN = "VOLPEX2026"; // <- metti QUI lo stesso token dello script Google
 
   async function gsCall(action, payload = {}) {
     const res = await fetch(GS_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify({ token: GS_TOKEN, action, ...payload })
     });
     const data = await res.json();
@@ -3988,7 +3988,7 @@ function bindValueSettings(){
       marginRipPct: Math.max(0, Math.min(100, parseFloat(qs("#marginRipPct")?.value || "40")))
     };
     saveValueSettings(v);
-toast("Impostazioni valore salvate ✅");
+    toast("Impostazioni valore salvate ✅");
     // rigenera suggerimenti con nuovo scoring
     buildSmartSuggestions();
   });
@@ -4536,12 +4536,12 @@ function exportPDFReport(){
 <script>
   // === CONFIG ===
   const GS_URL = "https://script.google.com/macros/s/AKfycbzqjV_XrlTnfJ96ZvMdygNj53fco3u_lwk0OgQUc5YxqmScLntEr-uzoUmjl4T_rlBW/exec";
-  const GS_TOKEN = "VOLPEX_SECRET_TOKEN"; // <- metti QUI lo stesso token dello script Google
+  const GS_TOKEN = "VOLPEX2026"; // <- metti QUI lo stesso token dello script Google
 
   async function gsCall(action, payload = {}) {
     const res = await fetch(GS_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify({ token: GS_TOKEN, action, ...payload })
     });
     const data = await res.json();
@@ -4980,12 +4980,12 @@ function exportPDFFull(){
 <script>
   // === CONFIG ===
   const GS_URL = "https://script.google.com/macros/s/AKfycbzqjV_XrlTnfJ96ZvMdygNj53fco3u_lwk0OgQUc5YxqmScLntEr-uzoUmjl4T_rlBW/exec";
-  const GS_TOKEN = "VOLPEX_SECRET_TOKEN"; // <- metti QUI lo stesso token dello script Google
+  const GS_TOKEN = "VOLPEX2026"; // <- metti QUI lo stesso token dello script Google
 
   async function gsCall(action, payload = {}) {
     const res = await fetch(GS_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify({ token: GS_TOKEN, action, ...payload })
     });
     const data = await res.json();
@@ -5275,12 +5275,12 @@ document.getElementById("btnResetDemo").addEventListener("click", ()=>{
 <script>
   // === CONFIG ===
   const GS_URL = "https://script.google.com/macros/s/AKfycbzqjV_XrlTnfJ96ZvMdygNj53fco3u_lwk0OgQUc5YxqmScLntEr-uzoUmjl4T_rlBW/exec";
-  const GS_TOKEN = "VOLPEX_SECRET_TOKEN"; // <- metti QUI lo stesso token dello script Google
+  const GS_TOKEN = "VOLPEX2026"; // <- metti QUI lo stesso token dello script Google
 
   async function gsCall(action, payload = {}) {
     const res = await fetch(GS_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify({ token: GS_TOKEN, action, ...payload })
     });
     const data = await res.json();
@@ -5350,3 +5350,4 @@ document.getElementById("btnResetDemo").addEventListener("click", ()=>{
 <!-- ========================================================================== -->
 
 </body>
+</html>
