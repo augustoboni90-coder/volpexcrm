@@ -7,11 +7,11 @@
   <style>
 
     :root{
-      --bg:#f5f7fb;
+      --bg:#f8fafc;
       --panel:#ffffff;
       --text:#0f172a;
       --muted:#64748b;
-      --border:#e6e9f0;
+      --border:#e2e8f0;
 
       --primary:#2563eb;
       --primary-2:#1d4ed8;
@@ -21,12 +21,13 @@
       --warn:#f59e0b;
       --bad:#dc2626;
 
-      --shadow: 0 10px 25px rgba(15, 23, 42, .06);
-      --shadow-sm: 0 6px 16px rgba(15, 23, 42, .05);
+      --shadow: 0 14px 40px rgba(15, 23, 42, .14);
+  --shadow-strong: 0 26px 90px rgba(0,0,0,.22);
+      --shadow-sm: 0 10px 26px rgba(15, 23, 42, .12);
 
-      --radius:16px;
-      --radius-sm:12px;
-      --ring: 0 0 0 4px rgba(37, 99, 235, .12);
+      --radius:12px;
+      --radius-sm:10px;
+      --ring: 0 0 0 3px rgba(37, 99, 235, .14);
     }
 
     *{box-sizing:border-box}
@@ -46,7 +47,7 @@
     .app{display:flex;min-height:100vh}
     .sidebar{
       width:290px;
-      background:linear-gradient(180deg,#0b1220 0%, #0b1220 55%, #0d172a 100%);
+      background:#0f172a;
       color:#e5e7eb;
       padding:16px;
       position:sticky;top:0;height:100vh;overflow:auto;
@@ -106,7 +107,6 @@
       transition: .15s ease;
     }
     .nav button:hover{
-      transform: translateY(-1px);
       background:rgba(255,255,255,.06);
       border-color: rgba(191,219,254,.25);
     }
@@ -161,7 +161,9 @@
 
     /* Views */
     .view{display:none;padding:18px 0}
-    .view.active{display:block}
+.view.is-hidden{display:none !important}
+.view.active{display:block !important}
+    .view.active{display:block!important}
 
     /* Cards */
     .grid{display:grid;gap:14px}
@@ -174,7 +176,7 @@
       border:1px solid var(--border);
       border-radius:var(--radius);
       padding:14px;
-      box-shadow: var(--shadow-sm);
+      box-shadow:0 12px 32px rgba(17,24,39,.12), 0 2px 8px rgba(17,24,39,.08);
     }
     .card h3{margin:0 0 8px 0;font-size:14px}
     .muted{color:var(--muted);font-size:12px}
@@ -214,16 +216,16 @@
       box-shadow:none;
     }
     .btn.primary{background:var(--primary);color:#fff}
-    .btn.primary:hover{background:var(--primary-2);transform:translateY(-1px)}
+    .btn.primary:hover{background:var(--primary-2)}
     .btn.secondary{
       background:#fff;
       color:var(--text);
       border:1px solid var(--border);
       box-shadow: var(--shadow-sm);
     }
-    .btn.secondary:hover{transform:translateY(-1px)}
+    .btn.secondary:hover{}
     .btn.danger{background:#fee2e2;color:#991b1b;border:1px solid #fecaca}
-    .btn.danger:hover{transform:translateY(-1px)}
+    .btn.danger:hover{}
     .btn.small{padding:8px 12px;font-size:12px}
 
     /* Toolbar */
@@ -287,16 +289,21 @@
 
     /* Toast */
     .toast{
-      position:fixed;right:16px;bottom:16px;z-index:50;
+      position:fixed;
+      top:16px;left:50%;transform:translateX(-50%);
+      right:auto;bottom:auto;
+      z-index:9999;
       background:#0f172a;color:#fff;padding:10px 12px;border-radius:12px;
-      box-shadow:0 10px 24px rgba(0,0,0,.15);max-width:520px;display:none
+      box-shadow:0 10px 24px rgba(0,0,0,.15);
+      max-width:min(520px, calc(100vw - 32px));
+      display:none
     }
     .toast.show{display:block}
 
     /* Print */
     @media print{
       .sidebar,.topbar,.btn,.toolbar input[type="file"]{display:none!important}
-      .view{display:block!important}
+      .view{display:none!important}
       body{background:#fff}
       .card{box-shadow:none;border:1px solid #ddd}
       th{position:static}
@@ -374,6 +381,41 @@ tbody tr:hover{background:rgba(37,99,235,.06)}
   margin-top:10px;
 }
 
+
+    .card.strong{
+      box-shadow:0 18px 52px rgba(17,24,39,.18), 0 4px 12px rgba(17,24,39,.12);
+      border-color:rgba(148,163,184,.7);
+    }
+    .card.cond{
+      border-style:dashed;
+      background:linear-gradient(180deg, rgba(59,130,246,.06), rgba(59,130,246,0));
+    }
+    .form-grid .field input,
+    .form-grid .field select,
+    .form-grid .field textarea{
+      box-shadow:0 1px 0 rgba(17,24,39,.04);
+    }
+</style>
+<style id="force-single-view">
+/* === FORCE SINGLE VIEW (failsafe) === */
+body .view{display:none !important;}
+body .view.active{display:block !important;}
+
+/* === STRONGER SHADOWS (premium) === */
+body .card{
+  box-shadow: 0 14px 40px rgba(15,23,42,.14), 0 3px 10px rgba(15,23,42,.10) !important;
+}
+body .card.cond,
+body .card.strong,
+body .cond{
+  box-shadow: 0 16px 46px rgba(15,23,42,.16), 0 4px 12px rgba(15,23,42,.12) !important;
+}
+body .input, body input, body select, body textarea{
+  box-shadow: 0 6px 18px rgba(15,23,42,.10) !important;
+}
+body input:focus, body select:focus, body textarea:focus{
+  box-shadow: 0 10px 26px rgba(15,23,42,.18) !important;
+}
 </style>
 </head>
 
@@ -739,90 +781,126 @@ tbody tr:hover{background:rgba(37,99,235,.06)}
 
         <div class="hr"></div>
         <div class="grid grid-4">
-          <input id="c_id" placeholder="ID contratto (auto se vuoto)"/>
-          <input id="c_id_cliente" placeholder="ID cliente (es. C001)"/>
-          <div>
-            <div class="muted">Codice fiscale *</div>
-            <div class="row" style="flex-wrap:nowrap">
-              <input id="c_cf" placeholder="Codice fiscale *"/>
-              <button class="btn secondary small" id="btnConFindClient" type="button">Cerca cliente</button>
-            </div>
-            <div id="c_cf_status" class="smallNote" style="margin-top:6px">Inserisci CF e premi “Cerca cliente”.</div>
-          </div>
-          <input id="c_data_contratto" type="date"/>
+  <input id="c_id" placeholder="ID contratto (auto se vuoto)"/>
+  <input id="c_id_cliente" placeholder="ID cliente (es. C001)" />
+  <div>
+    <label class="muted" style="display:block;margin-bottom:6px">Codice fiscale *</label>
+    <div style="display:flex; gap:8px">
+      <input id="c_cf" placeholder="Codice fiscale" style="flex:1" />
+      <button class="btn secondary" id="btnConFindClient">Cerca cliente</button>
+    </div>
+    <div class="muted" id="conFkState" style="margin-top:6px"></div>
+  </div>
+  <input id="c_data_contratto" type="date" title="Data contratto"/>
 
-          <select id="c_tipo_cliente">
-            <option value="">Tipo cliente</option>
-            <option>PRIVATO</option>
-            <option>BUSINESS</option>
-          </select>
+  <select id="c_tipo_cliente">
+    <option value="">Tipo cliente</option>
+    <option>PRIVATO</option>
+    <option>BUSINESS</option>
+  </select>
 
-          <select id="c_tipo_attivazione">
-            <option value="">Tipo attivazione</option>
-            <option>NUOVA</option>
-            <option>MNP</option>
-            <option>SUBENTRO</option>
-            <option>MIGRAZIONE</option>
-            <option>UPGRADE</option>
-          </select>
+  <select id="c_compagnia">
+    <option value="">Compagnia</option>
+    <option>TIM</option>
+    <option>Vodafone</option>
+    <option>WindTre</option>
+    <option>Iliad</option>
+    <option>Fastweb</option>
+    <option>PosteMobile</option>
+    <option>ho.</option>
+    <option>Kena</option>
+    <option>Very Mobile</option>
+    <option>CoopVoce</option>
+    <option>LycaMobile</option>
+    <option>Spusu</option>
+    <option>Tiscali</option>
+    <option>Uno Mobile</option>
+    <option>Optima Mobile</option>
+  </select>
 
-          <select id="c_tecnologia">
-            <option value="">Tecnologia</option>
-            <option>SIM</option>
-            <option>FTTH</option>
-            <option>FWA</option>
-            <option>ADSL</option>
-          </select>
+  <select id="c_tecnologia">
+    <option value="">Tecnologia</option>
+    <option>SIM</option>
+    <option>FIBRA</option>
+    <option>FWA</option>
+    <option>ADSL</option>
+  </select>
 
-          <select id="c_convergenza">
-            <option value="">Convergenza</option>
-            <option>SI</option>
-            <option>NO</option>
-          </select>
+  <select id="c_tipo_attivazione">
+    <option value="">Tipo attivazione</option>
+    <option>NUOVA</option>
+    <option>MNP</option>
+    <option>MIGRAZIONE</option>
+    <option>SUBENTRO</option>
+    <option>VARIAZIONE</option>
+  </select>
 
-          <select id="c_mnp">
-            <option value="">MNP</option>
-            <option>SI</option>
-            <option>NO</option>
-          </select>
+  <input id="c_numero_lavorato" placeholder="Numero lavorato"/>
 
-          <input id="c_data_attivazione" type="date"/>
-          <input id="c_data_portabilita" type="date"/>
-          <input id="c_numero_lavorato" placeholder="Numero lavorato"/>
+  <input id="c_nome_offerta" placeholder="Nome offerta"/>
+  <input id="c_costo_offerta" type="number" step="0.01" placeholder="Costo offerta"/>
 
-          <input id="c_nome_offerta" placeholder="Nome offerta"/>
-          <input id="c_costo_offerta" type="number" step="0.01" placeholder="Costo offerta (€/mese)"/>
-          <input id="c_vincolo_offerta_mesi" type="number" step="1" placeholder="Vincolo offerta (mesi)"/>
+  <select id="c_tipo_pagamento" title="Tipo addebito">
+    <option value="">Tipo addebito</option>
+    <option>CREDITO RESIDUO</option>
+    <option>SDD</option>
+    <option>CARTA DI CREDITO</option>
+  </select>
 
-          <select id="c_telefono_incluso">
-            <option value="">Telefono incluso</option>
-            <option>SI</option>
-            <option>NO</option>
-          </select>
+  <input id="c_vincolo_offerta_mesi" type="number" step="1" placeholder="Vincolo SIM (mesi)"/>
+  <input id="c_data_attivazione" type="date" title="Data attivazione" required/>
+  <input id="c_data_fine_vincolo_offerta" type="date" title="Data fine vincolo SIM" readonly/>
 
-          <input id="c_imei" placeholder="IMEI"/>
-          <input id="c_modello" placeholder="Modello"/>
-          <select id="c_tipo_pagamento">
-            <option value="">Tipo pagamento</option>
-            <option>CARTA</option>
-            <option>BANCOMAT</option>
-            <option>CONTANTI</option>
-            <option>FATTURA</option>
-            <option>FINANZIAMENTO</option>
-          </select>
+  <select id="c_convergenza">
+    <option value="">Convergenza</option>
+    <option>SI</option>
+    <option>NO</option>
+  </select>
 
-          <input id="c_mesi_vincolo_telefono" type="number" step="1" placeholder="Mesi vincolo telefono"/>
-          <input id="c_data_fine_vincolo_offerta" type="date"/>
-          <input id="c_data_fine_vincolo_telefono" type="date"/>
+  <select id="c_telefono_incluso">
+    <option value="">Telefono incluso</option>
+    <option>SI</option>
+    <option>NO</option>
+  </select>
 
-          <input id="c_compagnia" placeholder="Compagnia (es. VODAFONE)"/>
-          <input id="c_iccid_vecchio" placeholder="ICCID_vecchio"/>
-          <input id="c_iccid_nuovo" placeholder="ICCID_nuovo"/>
+  <!-- compat: manteniamo il campo MNP (sheet) aggiornato automaticamente -->
+  <input id="c_mnp" type="hidden" />
+</div>
 
-          <input id="c_created_at" placeholder="created_at (opzionale)"/>
-          <input id="c_updated_at" placeholder="updated_at (opzionale)"/>
-        </div>
-        <div id="conQuickAnag" class="card" style="border-style:dashed; display:none; margin-top:12px">
+<div id="conMnpPanel" class="card cond strong" style="display:none; margin-top:12px;">
+  <h3 style="margin:0 0 6px 0">Attivazione (MNP)</h3>
+  <div class="muted">Compila i dati di portabilità. La data viene calcolata automaticamente (3 giorni lavorativi).</div>
+  <div class="grid grid-4" style="margin-top:10px">
+    <input id="c_compagnia_provenienza" placeholder="Compagnia di provenienza *"/>
+    <input id="c_iccid_vecchio" placeholder="ICCID vecchio"/>
+    <input id="c_iccid_nuovo" placeholder="ICCID nuovo"/>
+    <input id="c_data_portabilita" type="date" title="Data portabilità"/>
+  </div>
+</div>
+
+<div id="conPhonePanel" class="card cond strong" style="display:none; margin-top:12px;">
+  <h3 style="margin:0 0 6px 0">Telefono incluso</h3>
+  <div class="muted">Compila i dati del telefono. La fine vincolo viene calcolata automaticamente.</div>
+  <div class="grid grid-4" style="margin-top:10px">
+    <input id="c_imei" placeholder="IMEI"/>
+    <input id="c_tel_marca" placeholder="Marca"/>
+    <input id="c_modello" placeholder="Modello"/>
+    <select id="c_tel_modalita_pagamento">
+      <option value="">Tipo pagamento</option>
+      <option>SDD</option>
+      <option>CARTA DI CREDITO</option>
+      <option>COMPASS</option>
+      <option>FINDOMESTIC</option>
+    </select>
+
+    <input id="c_mesi_vincolo_telefono" type="number" step="1" placeholder="Rate telefono (mesi)"/>
+    <input id="c_tel_costo_rate" type="number" step="0.01" placeholder="Costo rate"/>
+    <input id="c_data_fine_vincolo_telefono" type="date" title="Fine vincolo telefono" readonly/>
+    <div></div>
+  </div>
+</div>
+
+<div id="conQuickAnag" class="card" style="border-style:dashed; display:none; margin-top:12px">
           <h3>Cliente non trovato: inserisci Anagrafica (veloce)</h3>
           <div class="muted">Verrà creato il cliente e poi potrai salvare subito il contratto.</div>
           <div class="grid grid-4" style="margin-top:10px">
@@ -852,32 +930,7 @@ tbody tr:hover{background:rgba(37,99,235,.06)}
           <button class="btn secondary" id="btnClearCon">Pulisci</button>
           <span class="muted">FK: il CF deve esistere in Anagrafica</span>
         </div>
-
-        <div id="devQuickAnag" class="card" style="border-style:dashed; display:none; margin-top:12px">
-          <h3>Cliente non trovato: inserisci Anagrafica (veloce)</h3>
-          <div class="muted">Verrà creato il cliente e poi potrai salvare subito la vendita device.</div>
-          <div class="grid grid-4" style="margin-top:10px">
-            <input id="qd_cf" placeholder="Codice fiscale *" disabled/>
-            <input id="qd_nome" placeholder="Nome *"/>
-            <input id="qd_cognome" placeholder="Cognome *"/>
-            <select id="qd_tipo">
-              <option value="">Tipo cliente</option>
-              <option>PRIVATO</option>
-              <option>BUSINESS</option>
-            </select>
-
-            <input id="qd_telefono" placeholder="Telefono"/>
-            <input id="qd_email" placeholder="Email"/>
-            <input id="qd_citta" placeholder="Città"/>
-            <input id="qd_indirizzo" placeholder="Indirizzo"/>
-
-            <input id="qd_data_nascita" type="date" placeholder="Data nascita"/>
-          </div>
-          <div class="row" style="margin-top:12px">
-            <button class="btn primary" id="btnQDSave" type="button">Crea cliente</button>
-            <button class="btn secondary" id="btnQDCancel" type="button">Annulla</button>
-          </div>
-        </div>
+</div>
       </div>
 
       <div class="card" style="overflow:auto">
@@ -923,6 +976,7 @@ tbody tr:hover{background:rgba(37,99,235,.06)}
 
         <div class="grid grid-4">
           <input id="d_id" placeholder="ID device (auto se vuoto)"/>
+
           <div>
             <div class="muted">Codice fiscale *</div>
             <div class="row" style="flex-wrap:nowrap">
@@ -931,49 +985,79 @@ tbody tr:hover{background:rgba(37,99,235,.06)}
             </div>
             <div id="d_cf_status" class="smallNote" style="margin-top:6px">Inserisci CF e premi “Cerca cliente”.</div>
           </div>
-          <input id="d_data" type="date"/>
+
+          <div>
+            <div class="muted">Data vendita *</div>
+            <input id="d_data" type="date"/>
+          </div>
+
+          <input id="d_marca" placeholder="Marca *"/>
           <input id="d_modello" placeholder="Modello *"/>
-          <input id="d_imei" placeholder="IMEI"/>
-          <input id="d_prezzo" type="number" step="0.01" placeholder="Prezzo (€)"/>
-          <input id="d_venditore" placeholder="Venditore"/>
+          <input id="d_imei" placeholder="IMEI *"/>
+          <input id="d_prezzo" type="number" step="0.01" placeholder="Prezzo (€) *"/>
+          <input id="d_garanzia_mesi" type="number" step="1" placeholder="Mesi garanzia *"/>
+          <div>
+            <div class="muted">Fine garanzia (auto)</div>
+            <input id="d_fine_garanzia" type="date" readonly/>
+          </div>
+
           <select id="d_pagamento">
-            <option value="">Tipo pagamento</option>
-            <option>CARTA</option>
-            <option>BANCOMAT</option>
-            <option>CONTANTI</option>
-            <option>FATTURA</option>
+            <option value="">Tipo pagamento *</option>
+            <option>CASH</option>
+            <option>ELETTRONICO</option>
+            <option>FINANZIAMENTO</option>
           </select>
+
+          <input id="d_venditore" placeholder="Venditore"/>
+        </div>
+
+        <div id="devFinanceCard" class="card cond strong" style="display:none; margin-top:12px;">
+          <h3>Finanziamento</h3>
+          <div class="muted">Compila solo se Tipo pagamento = FINANZIAMENTO. La fine pagamento viene calcolata automaticamente.</div>
+          <div class="grid grid-4" style="margin-top:10px">
+            <select id="d_finanziaria">
+              <option value="">Finanziaria *</option>
+              <option>COMPASS</option>
+              <option>FINDOMESTIC</option>
+            </select>
+            <input id="d_costo_rata" type="number" step="0.01" placeholder="Costo rata (€) *"/>
+            <input id="d_durata_rata_mesi" type="number" step="1" placeholder="Durata rata (mesi) *"/>
+            <div>
+              <div class="muted">Fine pagamento (auto)</div>
+              <input id="d_fine_pagamento" type="date" readonly/>
+            </div>
+          </div>
         </div>
 
         <div class="row" style="margin-top:12px">
           <button class="btn primary" id="btnSaveDev">Salva</button>
           <button class="btn secondary" id="btnClearDev">Pulisci</button>
           <span class="muted">FK: il CF deve esistere in Anagrafica</span>
-        </div>
+        </div>          
 
-        <div id="ripQuickAnag" class="card" style="border-style:dashed; display:none; margin-top:12px">
+        <div id="devQuickAnag" class="card" style="border-style:dashed; display:none; margin-top:12px">
           <h3>Cliente non trovato: inserisci Anagrafica (veloce)</h3>
-          <div class="muted">Verrà creato il cliente e poi potrai salvare subito la riparazione.</div>
+          <div class="muted">Verrà creato il cliente e poi potrai salvare subito la vendita device.</div>
           <div class="grid grid-4" style="margin-top:10px">
-            <input id="qr_cf" placeholder="Codice fiscale *" disabled/>
-            <input id="qr_nome" placeholder="Nome *"/>
-            <input id="qr_cognome" placeholder="Cognome *"/>
-            <select id="qr_tipo">
+            <input id="qd_cf" placeholder="Codice fiscale *" disabled/>
+            <input id="qd_nome" placeholder="Nome *"/>
+            <input id="qd_cognome" placeholder="Cognome *"/>
+            <select id="qd_tipo">
               <option value="">Tipo cliente</option>
               <option>PRIVATO</option>
               <option>BUSINESS</option>
             </select>
 
-            <input id="qr_telefono" placeholder="Telefono"/>
-            <input id="qr_email" placeholder="Email"/>
-            <input id="qr_citta" placeholder="Città"/>
-            <input id="qr_indirizzo" placeholder="Indirizzo"/>
+            <input id="qd_telefono" placeholder="Telefono"/>
+            <input id="qd_email" placeholder="Email"/>
+            <input id="qd_citta" placeholder="Città"/>
+            <input id="qd_indirizzo" placeholder="Indirizzo"/>
 
-            <input id="qr_data_nascita" type="date" placeholder="Data nascita"/>
+            <input id="qd_data_nascita" type="date" placeholder="Data nascita"/>
           </div>
-          <div class="row" style="margin-top:12px">
-            <button class="btn primary" id="btnQRSave" type="button">Crea cliente</button>
-            <button class="btn secondary" id="btnQRCancel" type="button">Annulla</button>
+<div class="row" style="margin-top:12px">
+            <button class="btn primary" id="btnQDSave" type="button">Crea cliente</button>
+            <button class="btn secondary" id="btnQDCancel" type="button">Annulla</button>
           </div>
         </div>
       </div>
@@ -1029,33 +1113,65 @@ tbody tr:hover{background:rgba(37,99,235,.06)}
             </div>
             <div id="r_cf_status" class="smallNote" style="margin-top:6px">Inserisci CF e premi “Cerca cliente”.</div>
           </div>
-          <input id="r_ingresso" type="date"/>
+          <div>
+            <div class="muted">Data *</div>
+            <input id="r_ingresso" type="date"/>
+          </div>
+
+          <input id="r_marca" placeholder="Marca *"/>
           <input id="r_modello" placeholder="Modello *"/>
           <input id="r_imei" placeholder="IMEI"/>
-          <input id="r_problema" placeholder="Problema"/>
+          <input id="r_problema" placeholder="Problematica"/>
           <select id="r_stato">
-            <option value="">Stato</option>
+            <option value="">Stato *</option>
             <option>APERTA</option>
             <option>IN LAVORAZIONE</option>
             <option>PRONTA</option>
             <option>CONSEGNATA</option>
           </select>
-          <input id="r_costo" type="number" step="0.01" placeholder="Costo (€)"/>
+          <input id="r_costo" placeholder="Costo (€)"/>
+          <textarea id="r_note" placeholder="Note" style="grid-column:1/-1; min-height:72px; resize:vertical"></textarea>
         </div>
 
-        <div class="row" style="margin-top:12px">
+<div class="row" style="margin-top:12px">
           <button class="btn primary" id="btnSaveRip">Salva</button>
           <button class="btn secondary" id="btnClearRip">Pulisci</button>
           <span class="muted">FK: il CF deve esistere in Anagrafica</span>
         </div>
-      </div>
+      
+
+        <div id="ripQuickAnag" class="card" style="border-style:dashed; display:none; margin-top:12px">
+          <h3>Cliente non trovato: inserisci Anagrafica (veloce)</h3>
+          <div class="muted">Verrà creato il cliente e poi potrai salvare subito la riparazione.</div>
+          <div class="grid grid-4" style="margin-top:10px">
+            <input id="qr_cf" placeholder="Codice fiscale *" disabled/>
+            <input id="qr_nome" placeholder="Nome *"/>
+            <input id="qr_cognome" placeholder="Cognome *"/>
+            <select id="qr_tipo">
+              <option value="">Tipo cliente</option>
+              <option>PRIVATO</option>
+              <option>BUSINESS</option>
+            </select>
+
+            <input id="qr_telefono" placeholder="Telefono"/>
+            <input id="qr_email" placeholder="Email"/>
+            <input id="qr_citta" placeholder="Città"/>
+            <input id="qr_indirizzo" placeholder="Indirizzo"/>
+
+            <input id="qr_data_nascita" type="date" placeholder="Data nascita"/>
+          </div>
+          <div class="row" style="margin-top:12px">
+            <button class="btn primary" id="btnQRSave" type="button">Crea cliente</button>
+            <button class="btn secondary" id="btnQRCancel" type="button">Annulla</button>
+          </div>
+        </div>
 
       <div class="card" style="overflow:auto">
         <h3>Riparazioni</h3>
         <table id="tblRip">
           <thead>
             <tr>
-              <th>ID</th><th>Ingresso</th><th>CF</th><th>Cliente</th><th>Modello</th><th>Problema</th><th>Stato</th><th>Costo</th><th>Azioni</th>
+              <th>ID</th><th>Data</th><th>CF</th><th>Cliente</th><th>Marca</th><th>Modello</th><th>IMEI</th><th>Problematica</th><th>Stato</th><th>Costo</th><th>Note</th><th>Azioni</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -1462,13 +1578,174 @@ tbody tr:hover{background:rgba(37,99,235,.06)}
           Nota: “Export PDF” apre una pagina stampabile con grafici e tabelle, poi fai “Salva come PDF”.
         </div>
       </div>
-    </section>
+    
+      <!-- ===== IMPORT DA TESTO CON ANTEPRIMA MODIFICABILE ===== -->
+      <div class="card" id="pasteImportBox">
+        <h3>Import da testo (anteprima modificabile)</h3>
+        <div class="muted">Incolla dati da Excel/Google Sheets/CSV (con intestazioni), controlla/modifica e poi importa. Puoi anche scegliere “Anagrafica + Contratto (auto)” per crearli insieme.</div>
+
+        <div class="row" style="margin-top:10px;gap:10px;flex-wrap:wrap">
+          <select id="pasteType" style="min-width:260px">
+            <option value="anag">Anagrafica</option>
+            <option value="con">Contratti</option>
+            <option value="dev">Device</option>
+            <option value="rip">Riparazioni</option>
+            <option value="anag_con">Anagrafica + Contratto (auto)</option>
+          </select>
+          <button class="btn primary" onclick="pastePreview()">Anteprima</button>
+          <button class="btn secondary" onclick="pasteAddRow()">+ Riga</button>
+          <button class="btn primary" onclick="pasteRun()">Importa</button>
+          <button class="btn secondary" onclick="pasteClear()">Pulisci</button>
+        </div>
+
+        <textarea id="pasteRaw" style="width:100%;min-height:140px;margin-top:10px"
+          placeholder="Incolla qui... (colonne separate da TAB, ; o ,)"></textarea>
+
+        <div style="overflow:auto;max-height:360px;margin-top:10px">
+          <table id="pastePreviewTbl">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="smallNote" style="margin-top:10px">
+          Tip: puoi eliminare righe con ❌ oppure correggere qualsiasi campo prima di importare.
+        </div>
+      </div>
+
+      <script>
+      // ---- Import da testo: anteprima modificabile ----
+      let pasteImport = { headers:[], rows:[] };
+
+      function pastePreview(){
+        const raw = (qs("#pasteRaw").value || "").trim();
+        if(!raw){ toast("Incolla prima i dati"); return; }
+        const parsed = parseCSV(raw);
+        pasteImport.headers = parsed.headers || [];
+        pasteImport.rows = (parsed.rows || []).map(r => ({ ...r }));
+        renderPasteTable();
+      }
+
+      function renderPasteTable(){
+        const tbl = qs("#pastePreviewTbl");
+        const thead = tbl.querySelector("thead");
+        const tbody = tbl.querySelector("tbody");
+        thead.innerHTML = "";
+        tbody.innerHTML = "";
+
+        if(!pasteImport.headers.length){
+          thead.innerHTML = "<tr><th>Nessuna anteprima</th></tr>";
+          return;
+        }
+
+        // header
+        const hr = document.createElement("tr");
+        pasteImport.headers.forEach(h => {
+          const th = document.createElement("th");
+          th.textContent = h;
+          hr.appendChild(th);
+        });
+        const thx = document.createElement("th");
+        thx.textContent = "✖";
+        hr.appendChild(thx);
+        thead.appendChild(hr);
+
+        // rows
+        pasteImport.rows.forEach((row, ri) => {
+          const tr = document.createElement("tr");
+
+          pasteImport.headers.forEach(h => {
+            const td = document.createElement("td");
+            const inp = document.createElement("input");
+            inp.value = (row[h] ?? "");
+            inp.style.minWidth = "140px";
+            inp.oninput = () => { pasteImport.rows[ri][h] = inp.value; };
+            td.appendChild(inp);
+            tr.appendChild(td);
+          });
+
+          const tdx = document.createElement("td");
+          const bx = document.createElement("button");
+          bx.className = "btn secondary small";
+          bx.textContent = "❌";
+          bx.onclick = () => { pasteImport.rows.splice(ri, 1); renderPasteTable(); };
+          tdx.appendChild(bx);
+          tr.appendChild(tdx);
+
+          tbody.appendChild(tr);
+        });
+      }
+
+      function pasteAddRow(){
+        if(!pasteImport.headers.length){
+          toast("Fai prima Anteprima (serve la riga intestazioni)"); return;
+        }
+        const r = {};
+        pasteImport.headers.forEach(h => r[h] = "");
+        pasteImport.rows.push(r);
+        renderPasteTable();
+      }
+
+      function pasteRun(){
+        if(!pasteImport.rows.length){ toast("Nessuna riga da importare"); return; }
+        const t = qs("#pasteType").value;
+
+        try{
+          let res = null;
+
+          if(t==="anag") res = importAnagFromRows(pasteImport.rows);
+          else if(t==="con") res = importConFromRows(pasteImport.rows);
+          else if(t==="dev") res = importDevFromRows(pasteImport.rows);
+          else if(t==="rip") res = importRipFromRows(pasteImport.rows);
+          else if(t==="anag_con"){
+            // 1) crea/aggiorna anagrafica (se manca) 2) crea contratto collegato via CF
+            const r1 = importAnagFromRows(pasteImport.rows);
+            const r2 = importConFromRows(pasteImport.rows);
+            res = {
+              ok: (r1?.ok||0) + (r2?.ok||0),
+              skip: (r1?.skip||0) + (r2?.skip||0),
+              fk: (r1?.fk||0) + (r2?.fk||0),
+              _a: r1, _c: r2
+            };
+          } else {
+            toast("Tipo import non valido"); return;
+          }
+
+          saveStore();
+          refreshAll();
+
+          const ok = (res && (res.ok ?? res.OK)) ?? "";
+          const skip = (res && (res.skip ?? res.SKIP)) ?? "";
+          const fk = (res && (res.fk ?? res.FK)) ?? "";
+          toast("Import completato"
+              + (ok!=="" ? ` • OK=${ok}` : "")
+              + (skip!=="" ? ` • Skip=${skip}` : "")
+              + (fk!=="" ? ` • FK=${fk}` : ""));
+        }catch(e){
+          console.error(e);
+          toast("Errore import (vedi console)");
+        }
+      }
+
+      function pasteClear(){
+        qs("#pasteRaw").value = "";
+        pasteImport = { headers:[], rows:[] };
+        renderPasteTable();
+      }
+
+      document.addEventListener("DOMContentLoaded", ()=>{
+        try{ renderPasteTable(); }catch(_){}
+      });
+      </script>
+      <!-- ===== FINE IMPORT DA TESTO ===== -->
+
+</section>
 
   </div>
   </main>
 </div>
 
-<div id="toast" class="toast"></div>
+<div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
 <script>
 /* =========================
@@ -1527,7 +1804,7 @@ function waDefaultMsg(type, rec){
 function printReceipt(type, id){
   let rec=null;
   if(type==="con") rec = contratti.find(x=>x.id===id);
-  if(type==="dev") rec = devices.find(x=>x.id===id);
+  if(type==="dev") rec = device.find(x=>x.id===id);
   if(type==="rip") rec = riparazioni.find(x=>x.id===id);
   if(!rec){ toast("Record non trovato"); return; }
   const cf = rec.cf;
@@ -1606,82 +1883,7 @@ function printReceipt(type, id){
   </div>
   
 
-<!-- ================= GOOGLE SHEETS SYNC (Apps Script Web App) ================= -->
-<script>
-  // === CONFIG ===
-  const GS_URL = "https://script.google.com/macros/s/AKfycbzqjV_XrlTnfJ96ZvMdygNj53fco3u_lwk0OgQUc5YxqmScLntEr-uzoUmjl4T_rlBW/exec";
-  const GS_TOKEN = "VOLPEX2026"; // <- metti QUI lo stesso token dello script Google
 
-  async function gsCall(action, payload = {}) {
-    const res = await fetch(GS_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ token: GS_TOKEN, action, ...payload })
-    });
-    const data = await res.json();
-    if (!data.ok) throw new Error(data.error || "Google Sync error");
-    return data;
-  }
-
-  // === UI Buttons (fixed bottom-right) ===
-  document.addEventListener("DOMContentLoaded", () => {
-    const bar = document.createElement("div");
-    bar.style.cssText = "position:fixed;bottom:12px;right:12px;z-index:99999;display:flex;gap:8px;align-items:center";
-    bar.innerHTML = `
-      <button id="btnGsDown" class="btn secondary small" title="Scarica dati dal Foglio Google nel CRM">⬇️ Google → CRM</button>
-      <button id="btnGsUp" class="btn primary small" title="Invia dati dal CRM al Foglio Google">⬆️ CRM → Google</button>
-      <button id="btnGsPing" class="btn small" title="Test collegamento">🔌 Test</button>
-    `;
-    document.body.appendChild(bar);
-
-    document.getElementById("btnGsUp").addEventListener("click", syncUp);
-    document.getElementById("btnGsDown").addEventListener("click", syncDown);
-    document.getElementById("btnGsPing").addEventListener("click", async ()=>{
-      try{
-        const r = await gsCall("ping");
-        toast("Collegamento OK ✅ " + (r.ts||""), 1600);
-      }catch(e){
-        alert("Test fallito: " + e.message + "\n\nControlla: token, deploy Web App (Chiunque con link), e che stai usando l'URL /exec.");
-      }
-    });
-  });
-
-  // === SYNC UP: CRM -> Google ===
-  async function syncUp() {
-    try {
-      // Le variabili principali del CRM sono array: anagrafica, contratti, device, riparazioni
-      await gsCall("upsertMany", { table: "clients", rows: (window.anagrafica || []) });
-      await gsCall("upsertMany", { table: "contracts", rows: (window.contratti || []) });
-      await gsCall("upsertMany", { table: "devices", rows: (window.device || []) });
-      await gsCall("upsertMany", { table: "repairs", rows: (window.riparazioni || []) });
-
-      toast("Sincronizzato su Google ✅", 1600);
-    } catch (e) {
-      alert("Errore sync UP: " + e.message + "\n\nSuggerimento: apri '🔌 Test' per vedere se la Web App risponde.");
-    }
-  }
-
-  // === SYNC DOWN: Google -> CRM ===
-  async function syncDown() {
-    try {
-      const a = await gsCall("getAll", { table: "clients" });
-      const c = await gsCall("getAll", { table: "contracts" });
-      const d = await gsCall("getAll", { table: "devices" });
-      const r = await gsCall("getAll", { table: "repairs" });
-
-      window.anagrafica = (a.rows || []);
-      window.contratti = (c.rows || []);
-      window.device = (d.rows || []);
-      window.riparazioni = (r.rows || []);
-
-      saveStore();
-      refreshAll();
-      toast("Dati scaricati da Google ✅", 1600);
-    } catch (e) {
-      alert("Errore sync DOWN: " + e.message + "\n\nControlla anche che le tab nel Foglio si chiamino: clients, contracts, devices, repairs.");
-    }
-  }
-</script>
 <!-- ========================================================================== -->
 
 </body></html>`;
@@ -1733,9 +1935,114 @@ function safeId(prefix="ID"){
   return prefix + "-" + Math.random().toString(36).slice(2,8).toUpperCase() + "-" + Date.now().toString().slice(-4);
 }
 function qs(sel){ return document.querySelector(sel); }
+function qsv(sel){ const el=qs(sel); return el? (el.value||"") : ""; }
 function qsa(sel){ return [...document.querySelectorAll(sel)]; }
 function setText(id, v){ const el=document.getElementById(id); if(el) el.textContent = v; }
 function todayISO(){ return new Date().toISOString().slice(0,10); }
+
+function addMonths(dateISO, months){
+  if(!dateISO || months===null || months===undefined || months==="" ) return "";
+  const m = parseInt(months,10);
+  if(isNaN(m) || m<=0) return "";
+  const d = new Date(dateISO+"T00:00:00");
+  const day = d.getDate();
+  d.setMonth(d.getMonth()+m);
+  // JS can roll over; try to keep same day if possible
+  if(d.getDate()!==day){
+    d.setDate(0); // last day of previous month
+  }
+  return d.toISOString().slice(0,10);
+}
+function addBusinessDays(dateISO, days){
+  if(!dateISO) return "";
+  let d = new Date(dateISO+"T00:00:00");
+  let remaining = parseInt(days,10);
+  if(isNaN(remaining) || remaining<=0) return dateISO;
+  while(remaining>0){
+    d.setDate(d.getDate()+1);
+    const dow = d.getDay(); // 0 Sun, 6 Sat
+    if(dow!==0 && dow!==6){ remaining--; }
+  }
+  return d.toISOString().slice(0,10);
+}
+function toggleConPhoneSection(){
+const hasPhone = upper(qs("#c_telefono_incluso").value)==="SI";
+const p = qs("#conPhonePanel");
+if(p) p.style.display = hasPhone ? "" : "none";
+
+if(!hasPhone){
+  ["c_imei","c_tel_marca","c_modello","c_tel_modalita_pagamento","c_mesi_vincolo_telefono","c_tel_costo_rate","c_data_fine_vincolo_telefono"]
+    .forEach(id=>{ const el=qs("#"+id); if(el) el.value=""; });
+} else {
+  try{ updateConVincoli(); }catch(e){ console.error(e); }
+}
+}
+function updateConPortabilita(){
+  const tipo = upper(qsv("#c_tipo_attivazione"));
+  const isMnp = (tipo === "MNP");
+
+  // aggiorna campo compatibile con sheet
+  const mnpCompat = qs("#c_mnp");
+  if(mnpCompat) mnpCompat.value = isMnp ? "SI" : "NO";
+
+  // toggle pannello
+  const p = qs("#conMnpPanel");
+  if(p) p.style.display = isMnp ? "" : "none";
+
+  const dAtt = qs("#c_data_attivazione").value;
+
+  if(isMnp){
+    // calcolo data portabilità: +3 giorni lavorativi dalla data attivazione (se presente)
+    const elPort = qs("#c_data_portabilita");
+    if(dAtt && elPort){
+      try{ if(!elPort.value) elPort.value = addBusinessDays(dAtt, 3); }catch(e){ console.error(e); }
+    }else if(elPort){
+      // se manca la data attivazione, NON svuotare gli altri campi MNP (utente può compilarli prima)
+      elPort.value = "";
+    }
+  }else{
+    // se NON è MNP, svuota i campi MNP
+    ["c_compagnia_provenienza","c_iccid_vecchio","c_iccid_nuovo","c_data_portabilita"].forEach(id=>{
+      const el = qs("#"+id); if(el) el.value = "";
+    });
+  }
+}
+function updateConVincoli(){
+  const act = qsv("#c_data_attivazione");
+  const mesiOff = (qs("#c_vincolo_offerta_mesi").value||"").trim();
+  const mesiTel = (qs("#c_mesi_vincolo_telefono").value||"").trim(); // durata rate
+  const fineOff = qs("#c_data_fine_vincolo_offerta");
+  const fineTel = qs("#c_data_fine_vincolo_telefono");
+  if(fineOff){
+    fineOff.value = (act && mesiOff) ? addMonths(act, mesiOff) : (fineOff.value||"");
+    fineOff.disabled = true;
+    fineOff.title = "Calcolata automaticamente (data attivazione + mesi vincolo offerta)";
+  }
+  if(fineTel){
+    fineTel.value = (act && mesiTel && upper(qs("#c_telefono_incluso").value)==="SI") ? addMonths(act, mesiTel) : (upper(qs("#c_telefono_incluso").value)!=="SI" ? "" : fineTel.value||"");
+    fineTel.disabled = true;
+    fineTel.title = "Calcolata automaticamente (data attivazione + durata rate)";
+  }
+}
+function setupContrattiUX(){
+  // MNP => calcola portabilità
+  ["#c_tipo_attivazione","#c_data_attivazione"].forEach(sel=>{
+    const el = qs(sel); if(el) el.addEventListener("change", ()=>{ updateConPortabilita(); updateConVincoli(); });
+  });
+  // Vincoli => calcola date fine
+  ["#c_vincolo_offerta_mesi","#c_mesi_vincolo_telefono"].forEach(sel=>{
+    const el = qs(sel); if(el) el.addEventListener("input", updateConVincoli);
+  });
+  // Telefono incluso => mostra/nasconde sezione
+  const tel = qs("#c_telefono_incluso");
+  if(tel) tel.addEventListener("change", toggleConPhoneSection);
+
+  // init
+  updateConPortabilita();
+  updateConVincoli();
+  toggleConPhoneSection();
+}
+
 
 /* =========================
    STORAGE
@@ -1756,7 +2063,7 @@ function loadStore(){
     if(!p) return false;
     anagrafica = Array.isArray(p.anagrafica) ? p.anagrafica : [];
     contratti = Array.isArray(p.contratti) ? p.contratti : [];
-    device = Array.isArray(p.device) ? p.device : [];
+    device = Array.isArray(p.device) ? p.device : (Array.isArray(p.devices) ? p.devices : []);
     riparazioni = Array.isArray(p.riparazioni) ? p.riparazioni : [];
     return true;
   }catch(e){ return false; }
@@ -1851,16 +2158,109 @@ function seedDemo(){
    NAV
 ========================= */
 const pageTitle = document.getElementById("pageTitle");
+
+function enforceSingleView(activeKey){
+  const activeId = "view-"+activeKey;
+  qsa(".view").forEach(v=>{
+    const isActive = (v.id === activeId);
+    if(!isActive){
+      v.classList.remove("active");
+      v.classList.add("is-hidden");
+      v.style.setProperty("display","none","important");
+      v.hidden = true;
+      v.setAttribute("aria-hidden","true");
+      v.style.pointerEvents = "none";
+    }else{
+      v.classList.add("active");
+      v.classList.remove("is-hidden");
+      v.style.setProperty("display","block","important");
+      v.hidden = false;
+      v.setAttribute("aria-hidden","false");
+      v.style.pointerEvents = "auto";
+    }
+  });
+}
+
+function showView(key){
+  // hide ALL views (ultra-failsafe)
+  qsa(".view").forEach(v=>{
+    v.classList.remove("active");
+    v.classList.add("is-hidden");
+    v.style.setProperty("display","none","important");
+    v.hidden = true;
+    v.setAttribute("aria-hidden","true");
+    v.style.pointerEvents = "none";
+  });
+
+  // sidebar active state
+  qsa("[data-view]").forEach(x=>x.classList.remove("active"));
+
+  const target = document.getElementById("view-"+key);
+  const btn = qs('[data-view="'+key+'"]');
+  if(btn) btn.classList.add("active");
+
+  if(target){
+    target.classList.add("active");
+    target.classList.remove("is-hidden");
+    target.style.setProperty("display","block","important");
+    target.hidden = false;
+    target.setAttribute("aria-hidden","false");
+    target.style.pointerEvents = "auto";
+  }
+
+  // EXTRA SAFETY: enforce single visible view (prevents Contratti from leaking into other tabs)
+  enforceSingleView(key);
+
+  // HARD ENFORCE: make sure ONLY this view is visible
+  try{ enforceSingleView(key); requestAnimationFrame(()=>enforceSingleView(key)); }catch(e){}
+
+
+
+  // HARD FIX: in alcuni browser/markup malformato, la tabella contratti puo finire fuori dalla section.
+  // Forziamo che la lista contratti (tblCon) sia visibile SOLO quando key === "contratti".
+  try{
+    const _tblCon = document.getElementById("tblCon");
+    if(_tblCon){
+      const _card = _tblCon.closest(".card");
+      if(_card){
+        _card.style.setProperty("display", (key==="contratti") ? "block" : "none", "important");
+      }
+    }
+  }catch(e){}
+
+  // update title + jump top
+  const title = (btn && btn.dataset.title) ? btn.dataset.title : (btn ? btn.textContent.trim() : "");
+  if(pageTitle) pageTitle.textContent = title || (key.charAt(0).toUpperCase()+key.slice(1));
+
+  // always jump to top
+  try{ window.scrollTo({top:0, left:0, behavior:"instant"}); }
+  catch(e){ window.scrollTo(0,0); }
+}
+
+// Global guard: if any script accidentally toggles views, we re-apply after clicks
+document.addEventListener('click', ()=>{
+  const btn = qs('[data-view].active');
+  const key = btn ? btn.dataset.view : 'dashboard';
+  enforceSingleView(key);
+}, true);
+
+// bind
 qsa("[data-view]").forEach(btn=>{
-  btn.addEventListener("click", ()=>{
-    qsa("[data-view]").forEach(x=>x.classList.remove("active"));
-    qsa(".view").forEach(v=>v.classList.remove("active"));
-    btn.classList.add("active");
-    document.getElementById("view-"+btn.dataset.view).classList.add("active");
-    pageTitle.textContent = btn.textContent.replace(/^.[^ ]* /,'').trim();
+  btn.addEventListener("click", (e)=>{
+    e.preventDefault();
+    showView(btn.dataset.view);
   });
 });
-document.getElementById("btnPrint").addEventListener("click", ()=>window.print());
+
+// enforce single view on load (even if some CSS/inline is weird)
+document.addEventListener("DOMContentLoaded", ()=>{
+  const activeBtn = qs('[data-view].active') || qs('[data-view="dashboard"]') || qs('[data-view]');
+  const key = activeBtn ? activeBtn.dataset.view : "dashboard";
+  showView(key);
+});
+
+
+
 
 /* =========================
    LOOKUP & VALIDATION
@@ -1884,18 +2284,18 @@ function mustHaveFK(cf){ return !!anagByCF(cf); }
    Contratti: cerca cliente prima di inserire
 ========================= */
 function conFindClient(){
-  const cf = upper(qs("#c_cf").value);
-  const status = qs("#c_cf_status");
-  if(!cf){ status.textContent = "Inserisci un CF."; status.style.color=""; return; }
+  const cf = upper(qsv("#c_cf"));
+  const status = qs("#conFkState");
+  if(!cf){ if(status){ status.textContent = "Inserisci un CF."; status.style.color=""; } return; }
 
   const a = anagByCF(cf);
   if(a){
-    status.innerHTML = `Cliente trovato: <b>${clienteNome(cf)}</b> • ${contattoStr(cf) || ""}`;
-    status.style.color = "#166534";
+    if(status) status.innerHTML = `Cliente trovato: <b>${clienteNome(cf)}</b> • ${contattoStr(cf) || ""}`;
+    if(status) status.style.color = "#166534";
     qs("#conQuickAnag").style.display = "none";
   }else{
-    status.innerHTML = `Cliente <b>NON trovato</b>. Inserisci l'anagrafica veloce qui sotto.`;
-    status.style.color = "#991b1b";
+    if(status) status.innerHTML = `Cliente <b>NON trovato</b>. Inserisci l'anagrafica veloce qui sotto.`;
+    if(status) status.style.color = "#991b1b";
     // prepara quick anag
     qs("#conQuickAnag").style.display = "block";
     qs("#qa_cf").value = cf;
@@ -1932,24 +2332,24 @@ function createClientFromQuick(){
 
 function cancelQuickClient(){
   qs("#conQuickAnag").style.display = "none";
-  qs("#c_cf_status").textContent = "Inserisci CF e premi “Cerca cliente”.";
-  qs("#c_cf_status").style.color = "";
+  qs("#conFkState").textContent = "Inserisci CF e premi “Cerca cliente”.";
+  qs("#conFkState").style.color = "";
 }
 
 
 function devFindClient(){
   const cf = upper(qs("#d_cf").value);
   const status = qs("#d_cf_status");
-  if(!cf){ status.textContent = "Inserisci un CF."; status.style.color=""; return; }
+  if(!cf){ if(status){ status.textContent = "Inserisci un CF."; status.style.color=""; } return; }
 
   const a = anagByCF(cf);
   if(a){
-    status.innerHTML = `Cliente trovato: <b>${clienteNome(cf)}</b> • ${contattoStr(cf) || ""}`;
-    status.style.color = "#166534";
+    if(status) status.innerHTML = `Cliente trovato: <b>${clienteNome(cf)}</b> • ${contattoStr(cf) || ""}`;
+    if(status) status.style.color = "#166534";
     qs("#devQuickAnag").style.display = "none";
   }else{
-    status.innerHTML = `Cliente <b>NON trovato</b>. Inserisci l'anagrafica veloce qui sotto.`;
-    status.style.color = "#991b1b";
+    if(status) status.innerHTML = `Cliente <b>NON trovato</b>. Inserisci l'anagrafica veloce qui sotto.`;
+    if(status) status.style.color = "#991b1b";
     qs("#devQuickAnag").style.display = "block";
     qs("#qd_cf").value = cf;
     qs("#qd_nome").value = "";
@@ -1966,16 +2366,16 @@ function devFindClient(){
 function ripFindClient(){
   const cf = upper(qs("#r_cf").value);
   const status = qs("#r_cf_status");
-  if(!cf){ status.textContent = "Inserisci un CF."; status.style.color=""; return; }
+  if(!cf){ if(status){ status.textContent = "Inserisci un CF."; status.style.color=""; } return; }
 
   const a = anagByCF(cf);
   if(a){
-    status.innerHTML = `Cliente trovato: <b>${clienteNome(cf)}</b> • ${contattoStr(cf) || ""}`;
-    status.style.color = "#166534";
+    if(status) status.innerHTML = `Cliente trovato: <b>${clienteNome(cf)}</b> • ${contattoStr(cf) || ""}`;
+    if(status) status.style.color = "#166534";
     qs("#ripQuickAnag").style.display = "none";
   }else{
-    status.innerHTML = `Cliente <b>NON trovato</b>. Inserisci l'anagrafica veloce qui sotto.`;
-    status.style.color = "#991b1b";
+    if(status) status.innerHTML = `Cliente <b>NON trovato</b>. Inserisci l'anagrafica veloce qui sotto.`;
+    if(status) status.style.color = "#991b1b";
     qs("#ripQuickAnag").style.display = "block";
     qs("#qr_cf").value = cf;
     qs("#qr_nome").value = "";
@@ -2012,9 +2412,8 @@ function createClientFromQuickDev(){
   renderAnag();
   toast("Cliente creato ✅ Ora puoi salvare il device");
   qs("#devQuickAnag").style.display = "none";
-  // aggiorna status
-  qs("#d_cf_status").innerHTML = `Cliente creato: <b>${clienteNome(cf)}</b>`;
-  qs("#d_cf_status").style.color = "#166534";
+  // aggiorna stato + collega campi
+  devFindClient();
 }
 
 function createClientFromQuickRip(){
@@ -2040,8 +2439,8 @@ function createClientFromQuickRip(){
   renderAnag();
   toast("Cliente creato ✅ Ora puoi salvare la riparazione");
   qs("#ripQuickAnag").style.display = "none";
-  qs("#r_cf_status").innerHTML = `Cliente creato: <b>${clienteNome(cf)}</b>`;
-  qs("#r_cf_status").style.color = "#166534";
+  // aggiorna stato + collega campi
+  ripFindClient();
 }
 
 function cancelQuickClientDev(){
@@ -2352,6 +2751,13 @@ function drawBarChart(ctx, w, h, items, title){
 }
 
 function drawPieChart(ctx, w, h, items, title){
+  // Guard: if the canvas is hidden or too small, skip drawing (prevents negative radius arc errors)
+  try{
+    const _w = (canvas && (canvas.clientWidth||canvas.width)) || 0;
+    const _h = (canvas && (canvas.clientHeight||canvas.height)) || 0;
+    if(!_w || !_h || _w < 20 || _h < 20) return;
+  }catch(_){ return; }
+
   ctx.clearRect(0,0,w,h);
 
   const cleaned = (items||[]).map(it=>({
@@ -2613,7 +3019,7 @@ function renderDev(){
         <a class="btn secondary small" target="_blank" href="${waLinkText(phoneByCF(d.cf), waDefaultMsg('dev', d))}">WhatsApp</a>
       </td>
     </tr>
-  `).join("") || `<tr><td colspan="10" class="muted">Nessun device.</td></tr>`;
+  `).join("") || `<tr><td colspan="12" class="muted">Nessun device.</td></tr>`;
 }
 
 function renderRip(){
@@ -2631,10 +3037,13 @@ function renderRip(){
       <td>${toDateISO(r.data_ingresso)}</td>
       <td class="mono">${r.cf}</td>
       <td>${clienteNome(r.cf)}</td>
+      <td>${r.marca||""}</td>
       <td>${r.modello||""}</td>
-      <td>${r.problema||""}</td>
+      <td class="mono">${r.imei||""}</td>
+      <td>${r.problematica||r.problema||""}</td>
       <td><span class="badge ${cls}">${r.stato||""}</span></td>
       <td>${toNum(r.costo)!=null ? moneyFmt(toNum(r.costo)) : "—"}</td>
+      <td>${(r.note||"")}</td>
       <td>
         <button class="btn secondary small" onclick="editRip('${r.id}')">Modifica</button>
         <button class="btn danger small" onclick="deleteRip('${r.id}')">Elimina</button>
@@ -2642,7 +3051,7 @@ function renderRip(){
         <a class="btn secondary small" target="_blank" href="${waLinkText(phoneByCF(r.cf), waDefaultMsg('rip', r))}">WhatsApp</a>
       </td>
     </tr>`;
-  }).join("") || `<tr><td colspan="10" class="muted">Nessuna riparazione.</td></tr>`;
+  }).join("") || `<tr><td colspan="12" class="muted">Nessuna riparazione.</td></tr>`;
 }
 
 /* =========================
@@ -2652,26 +3061,41 @@ function clearAnagForm(){
   ["a_cf","a_nome","a_cognome","a_tipo","a_telefono","a_email","a_citta","a_indirizzo","a_data_nascita"].forEach(id=>qs("#"+id).value="");
 }
 function saveAnag(){
-  const cf = upper(qs("#a_cf").value);
-  const nome = upper(qs("#a_nome").value);
-  const cognome = upper(qs("#a_cognome").value);
-  if(!cf || !nome || !cognome){ toast("CF, Nome, Cognome sono obbligatori"); return; }
+  try{
+    const cf = upper(qs("#a_cf").value);
+    const nome = upper(qs("#a_nome").value);
+    const cognome = upper(qs("#a_cognome").value);
+    if(!cf || !nome || !cognome){ toast("CF, Nome, Cognome sono obbligatori"); return; }
 
-  const rec = {
-    cf, nome, cognome,
-    tipo: upper(qs("#a_tipo").value),
-    telefono: (qs("#a_telefono").value||"").trim(),
-    email: (qs("#a_email").value||"").trim(),
-    citta: upper(qs("#a_citta").value),
-    indirizzo: upper(qs("#a_indirizzo").value),
-    data_nascita: qs("#a_data_nascita").value || ""
-  };
+    const rec = {
+      cf, nome, cognome,
+      tipo: upper(qs("#a_tipo").value),
+      telefono: (qs("#a_telefono").value||"").trim(),
+      email: (qs("#a_email").value||"").trim(),
+      citta: upper(qs("#a_citta").value),
+      indirizzo: upper(qs("#a_indirizzo").value),
+      data_nascita: qs("#a_data_nascita").value || ""
+    };
 
-  const idx = anagrafica.findIndex(x=>upper(x.cf)===cf);
-  if(idx>=0) anagrafica[idx] = rec; else anagrafica.push(rec);
+    const idx = anagrafica.findIndex(x=>upper(x.cf)===cf);
+    if(idx>=0) anagrafica[idx] = rec; else anagrafica.push(rec);
 
-  saveStore(); clearAnagForm(); refreshAll(); toast("Cliente salvato ✅");
+    saveStore();
+    clearAnagForm();
+    refreshAll();
+    toast("Cliente salvato ✅");
+
+    // se lo stesso CF è già inserito negli altri tab, ricollega subito gli ID
+    try{ if(upper(qs("#c_cf").value)===cf) conFindClient(); }catch(e){}
+    try{ if(upper(qs("#d_cf").value)===cf) devFindClient(); }catch(e){}
+    try{ if(upper(qs("#r_cf").value)===cf) ripFindClient(); }catch(e){}
+  }catch(err){
+    console.error(err);
+    toast("Errore salvataggio cliente: " + (err?.message||err));
+  }
 }
+
+
 function editAnag(cf){
   const a = anagByCF(cf);
   if(!a){ toast("Cliente non trovato"); return; }
@@ -2691,50 +3115,83 @@ function deleteAnag(cf){
 function clearConForm(){
   ["c_id","c_id_cliente","c_cf","c_data_contratto","c_tipo_cliente","c_tipo_attivazione","c_tecnologia","c_convergenza","c_mnp",
    "c_data_attivazione","c_data_portabilita","c_numero_lavorato","c_nome_offerta","c_costo_offerta","c_vincolo_offerta_mesi",
-   "c_telefono_incluso","c_imei","c_modello","c_tipo_pagamento","c_mesi_vincolo_telefono","c_data_fine_vincolo_offerta","c_data_fine_vincolo_telefono",
-   "c_compagnia","c_iccid_vecchio","c_iccid_nuovo","c_created_at","c_updated_at"].forEach(id=>qs("#"+id).value="");
+   "c_telefono_incluso","c_imei","c_modello","c_tel_marca","c_tel_costo_rate","c_tel_modalita_pagamento","c_tipo_pagamento","c_mesi_vincolo_telefono","c_data_fine_vincolo_offerta","c_data_fine_vincolo_telefono",
+   "c_compagnia","c_compagnia_provenienza","c_iccid_vecchio","c_iccid_nuovo","c_created_at","c_updated_at"].forEach(id=>qs("#"+id).value="");
   qs("#c_data_contratto").value = todayISO();
+  try{ updateConPortabilita(); updateConVincoli(); toggleConPhoneSection(); }catch(e){ console.error(e); }
 }
-function saveCon(){
-  const id = (qs("#c_id").value||"").trim() || safeId("C");
-  const cf = upper(qs("#c_cf").value);
+async function saveCon(){
+  const id = (qsv("#c_id")||"").trim() || safeId("C");
+  const cf = upper(qsv("#c_cf"));
   if(!cf){ toast("CF obbligatorio"); return; }
   if(!mustHaveFK(cf)){ toast("CF non presente in Anagrafica (FK)"); return; }
 
-  const rec = {
+  // Auto-calcoli
+  try{ updateConPortabilita(); updateConVincoli(); }catch(e){ console.error(e); }
+
+  
+  // Validazioni avanzate (Contratti)
+  const mnp = upper(qsv("#c_tipo_attivazione"))==="MNP";
+  const dataAtt = qsv("#c_data_attivazione") || "";
+  if(!dataAtt){ toast("Data attivazione obbligatoria"); return; }
+  const telInc = upper(qsv("#c_telefono_incluso"))==="SI";
+  if(mnp){
+    if(!qsv("#c_numero_lavorato").trim()){ toast("Con MNP: inserisci Numero lavorato"); return; }
+    if(!qsv("#c_compagnia_provenienza").trim()){ toast("Con MNP: inserisci Compagnia di provenienza"); return; }
+  }
+  if(telInc){
+    if(!upper(qsv("#c_tel_marca"))){ toast("Telefono incluso: Marca obbligatoria"); return; }
+    if(!upper(qsv("#c_modello"))){ toast("Telefono incluso: Modello obbligatorio"); return; }
+    if(!upper(qsv("#c_imei"))){ toast("Telefono incluso: IMEI obbligatorio"); return; }
+    if(!(qsv("#c_mesi_vincolo_telefono")||"").trim()){ toast("Telefono incluso: Durata rate (mesi) obbligatoria"); return; }
+  }
+const rec = {
     id,
-    id_cliente: upper(qs("#c_id_cliente").value),
+    id_cliente: upper(qsv("#c_id_cliente")),
     cf,
-    data_contratto: qs("#c_data_contratto").value || todayISO(),
-    tipo_cliente: upper(qs("#c_tipo_cliente").value),
-    tipo_attivazione: upper(qs("#c_tipo_attivazione").value),
-    tecnologia: upper(qs("#c_tecnologia").value),
-    convergenza: upper(qs("#c_convergenza").value),
-    mnp: upper(qs("#c_mnp").value),
-    data_attivazione: qs("#c_data_attivazione").value || "",
-    data_portabilita: qs("#c_data_portabilita").value || "",
-    numero_lavorato: (qs("#c_numero_lavorato").value||"").trim(),
-    nome_offerta: upper(qs("#c_nome_offerta").value),
-    costo_offerta: (qs("#c_costo_offerta").value||"").trim(),
-    vincolo_offerta_mesi: (qs("#c_vincolo_offerta_mesi").value||"").trim(),
-    telefono_incluso: upper(qs("#c_telefono_incluso").value),
-    imei: upper(qs("#c_imei").value),
-    modello: upper(qs("#c_modello").value),
-    tipo_pagamento: upper(qs("#c_tipo_pagamento").value),
-    mesi_vincolo_telefono: (qs("#c_mesi_vincolo_telefono").value||"").trim(),
-    data_fine_vincolo_offerta: qs("#c_data_fine_vincolo_offerta").value || "",
-    data_fine_vincolo_telefono: qs("#c_data_fine_vincolo_telefono").value || "",
-    compagnia: upper(qs("#c_compagnia").value),
-    iccid_vecchio: upper(qs("#c_iccid_vecchio").value),
-    iccid_nuovo: upper(qs("#c_iccid_nuovo").value),
-    created_at: (qs("#c_created_at").value||"").trim(),
-    updated_at: (qs("#c_updated_at").value||"").trim()
+    data_contratto: qsv("#c_data_contratto") || todayISO(),
+    tipo_cliente: upper(qsv("#c_tipo_cliente")),
+    tipo_attivazione: upper(qsv("#c_tipo_attivazione")),
+    tecnologia: upper(qsv("#c_tecnologia")),
+    convergenza: upper(qsv("#c_convergenza")),
+    mnp: upper(qsv("#c_mnp")),
+    data_attivazione: qsv("#c_data_attivazione") || "",
+    data_portabilita: qsv("#c_data_portabilita") || "",
+    numero_lavorato: (qsv("#c_numero_lavorato")||"").trim(),
+    nome_offerta: upper(qsv("#c_nome_offerta")),
+    costo_offerta: (qsv("#c_costo_offerta")||"").trim(),
+    vincolo_offerta_mesi: (qsv("#c_vincolo_offerta_mesi")||"").trim(),
+    telefono_incluso: upper(qsv("#c_telefono_incluso")),
+    imei: upper(qsv("#c_imei")),
+    modello: upper(qsv("#c_modello")),
+    tipo_pagamento: upper((qs("#c_tipo_pagamento")||qs("#c_tipo_pagamento")||{value:""}).value),
+    durata_rate_mesi: (qsv("#c_mesi_vincolo_telefono")||"").trim(),
+    tel_marca: upper(qsv("#c_tel_marca")),
+    tel_costo_rate: (qsv("#c_tel_costo_rate")||"").trim(),
+    tel_modalita_pagamento: upper(qsv("#c_tel_modalita_pagamento")),
+    data_fine_vincolo_offerta: qsv("#c_data_fine_vincolo_offerta") || "",
+    data_fine_vincolo_telefono: qsv("#c_data_fine_vincolo_telefono") || "",
+    compagnia: upper(qsv("#c_compagnia")),
+    compagnia_provenienza: upper(qsv("#c_compagnia_provenienza")),
+    iccid_vecchio: upper(qsv("#c_iccid_vecchio")),
+    iccid_nuovo: upper(qsv("#c_iccid_nuovo")),
+    created_at: (qsv("#c_created_at")||"").trim(),
+    updated_at: (qsv("#c_updated_at")||"").trim()
   };
 
   const idx = contratti.findIndex(x=>x.id===id);
   if(idx>=0) contratti[idx]=rec; else contratti.push(rec);
 
-  saveStore(); clearConForm(); refreshAll(); toast("Contratto salvato ✅");
+  saveStore();
+  // Google Sync
+  try{
+    await gsCall("upsert_contratto", { contratto: rec });
+  }catch(e){
+    console.error(e);
+    toast("⚠️ Salvato in locale ma NON su Google: " + e.message);
+  }
+
+  clearConForm(); refreshAll(); toast("Contratto salvato ✅");
 }
 function editCon(id){
   const c = contratti.find(x=>x.id===id);
@@ -2758,14 +3215,19 @@ function editCon(id){
   qs("#c_imei").value=c.imei||"";
   qs("#c_modello").value=c.modello||"";
   qs("#c_tipo_pagamento").value=c.tipo_pagamento||"";
-  qs("#c_mesi_vincolo_telefono").value=c.mesi_vincolo_telefono||"";
+  qs("#c_mesi_vincolo_telefono").value=c.durata_rate_mesi||c.mesi_vincolo_telefono||"";
+  if(qs("#c_tel_marca")) qs("#c_tel_marca").value=c.tel_marca||"";
+  if(qs("#c_tel_costo_rate")) qs("#c_tel_costo_rate").value=c.tel_costo_rate||"";
+  if(qs("#c_tel_modalita_pagamento")) qs("#c_tel_modalita_pagamento").value=c.tel_modalita_pagamento||"";
   qs("#c_data_fine_vincolo_offerta").value=toDateISO(c.data_fine_vincolo_offerta)||"";
   qs("#c_data_fine_vincolo_telefono").value=toDateISO(c.data_fine_vincolo_telefono)||"";
   qs("#c_compagnia").value=c.compagnia||"";
+  if(qs("#c_compagnia_provenienza")) qs("#c_compagnia_provenienza").value=c.compagnia_provenienza||"";
   qs("#c_iccid_vecchio").value=c.iccid_vecchio||"";
   qs("#c_iccid_nuovo").value=c.iccid_nuovo||"";
   qs("#c_created_at").value=c.created_at||"";
   qs("#c_updated_at").value=c.updated_at||"";
+  try{ updateConPortabilita(); updateConVincoli(); toggleConPhoneSection(); }catch(e){ console.error(e); }
   toast("Modifica contratto: " + id);
 }
 function deleteCon(id){
@@ -2774,24 +3236,104 @@ function deleteCon(id){
 }
 
 function clearDevForm(){
-  ["d_id","d_cf","d_data","d_modello","d_imei","d_prezzo","d_venditore","d_pagamento"].forEach(id=>qs("#"+id).value="");
-  qs("#d_data").value = todayISO();
+  ["d_id","d_cf","d_data","d_marca","d_modello","d_imei","d_prezzo","d_garanzia_mesi","d_fine_garanzia","d_venditore","d_pagamento","d_finanziaria","d_costo_rata","d_durata_rata_mesi","d_fine_pagamento"].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.value="";
+  });
+  const d=document.getElementById("d_data"); if(d) d.value=todayISO();
+  const card=document.getElementById("devFinanceCard"); if(card) card.style.display="none";
 }
+function updateDevFinance(){
+  const pay = upper((document.getElementById("d_pagamento")||{}).value||"");
+  const card = document.getElementById("devFinanceCard");
+  if(card) card.style.display = (pay==="FINANZIAMENTO") ? "block" : "none";
+
+  // Calcolo fine pagamento: data vendita + mesi durata
+  const dVend = (document.getElementById("d_data")||{}).value || "";
+  const mesi = parseInt((document.getElementById("d_durata_rata_mesi")||{}).value || "0", 10) || 0;
+  const out = document.getElementById("d_fine_pagamento");
+  if(out){
+    if(dVend && mesi>0){
+      out.value = addMonthsISO(dVend, mesi);
+    }else{
+      out.value = "";
+    }
+  }
+
+  try{ updateDevWarranty(); }catch(e){}
+
+  // Se NON finanziamento, pulisci i campi finance
+  if(pay!=="FINANZIAMENTO"){
+    ["d_finanziaria","d_costo_rata","d_durata_rata_mesi","d_fine_pagamento"].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el) el.value="";
+    });
+  }
+}
+
+function updateDevWarranty(){
+  const data=(document.getElementById("d_data")||{}).value||"";
+  const mesi=parseInt(((document.getElementById("d_garanzia_mesi")||{}).value||"0"),10)||0;
+  const out=document.getElementById("d_fine_garanzia");
+  if(!out) return;
+  out.value=(data&&mesi>0)?addMonthsISO(data, mesi):"";
+}
+
 function saveDev(){
-  const id = (qs("#d_id").value||"").trim() || safeId("D");
-  const cf = upper(qs("#d_cf").value);
-  const modello = upper(qs("#d_modello").value);
-  if(!cf || !modello){ toast("CF e Modello sono obbligatori"); return; }
-  if(!mustHaveFK(cf)){ toast("CF non presente in Anagrafica (FK): cerca o crea il cliente"); try{ devFindClient(); }catch(e){} return; }
+  const id = ((document.getElementById("d_id")||{}).value||"").trim() || safeId("D");
+  const cf = upper((document.getElementById("d_cf")||{}).value||"");
+  const data = (document.getElementById("d_data")||{}).value || todayISO();
+  const marca = upper((document.getElementById("d_marca")||{}).value||"");
+  const modello = upper((document.getElementById("d_modello")||{}).value||"");
+  const imei = upper((document.getElementById("d_imei")||{}).value||"");
+  const prezzo = ((document.getElementById("d_prezzo")||{}).value||"").trim();
+  const garanzia_mesi = ((document.getElementById("d_garanzia_mesi")||{}).value||"").trim();
+  let fine_garanzia = (document.getElementById("d_fine_garanzia")||{}).value||"";
+  const pagamento = upper((document.getElementById("d_pagamento")||{}).value||"");
+  const venditore = upper((document.getElementById("d_venditore")||{}).value||"");
+
+  if(!cf || !data || !marca || !modello || !imei || !prezzo || !pagamento || !garanzia_mesi){
+    toast("CF, Data vendita, Marca, Modello, IMEI, Prezzo, Pagamento e Mesi garanzia sono obbligatori");
+    return;
+  }
+  if(!mustHaveFK(cf)){
+    toast("CF non presente in Anagrafica (FK)...o crea il cliente");
+    try{ devFindClient(); }catch(e){}
+    return;
+  }
+
+  const gm = parseInt(garanzia_mesi,10)||0;
+  if(data && gm>0) fine_garanzia = addMonthsISO(data, gm);
+
+  // Finance (solo se FINANZIAMENTO)
+  const isFin = pagamento==="FINANZIAMENTO";
+  const finanziaria = upper((document.getElementById("d_finanziaria")||{}).value||"");
+  const costo_rata = ((document.getElementById("d_costo_rata")||{}).value||"").trim();
+  const durata_rata_mesi = ((document.getElementById("d_durata_rata_mesi")||{}).value||"").trim();
+  let fine_pagamento = (document.getElementById("d_fine_pagamento")||{}).value||"";
+
+  if(isFin){
+    if(!finanziaria || !costo_rata || !durata_rata_mesi){
+      toast("Per FINANZIAMENTO: Finanziaria, Costo rata e Durata (mesi) sono obbligatori");
+      return;
+    }
+    const mesi = parseInt(durata_rata_mesi,10)||0;
+    if(data && mesi>0) fine_pagamento = addMonthsISO(data, mesi);
+  }else{
+    fine_pagamento = "";
+  }
 
   const rec = {
-    id, cf,
-    data: qs("#d_data").value || todayISO(),
-    modello,
-    imei: upper(qs("#d_imei").value),
-    prezzo: (qs("#d_prezzo").value||"").trim(),
-    venditore: upper(qs("#d_venditore").value),
-    pagamento: upper(qs("#d_pagamento").value)
+    id, cf, data,
+    marca, modello, imei,
+    prezzo, pagamento,
+    garanzia_mesi,
+    fine_garanzia,
+    venditore,
+    finanziaria: isFin ? finanziaria : "",
+    costo_rata: isFin ? costo_rata : "",
+    durata_rata_mesi: isFin ? durata_rata_mesi : "",
+    fine_pagamento: isFin ? fine_pagamento : ""
   };
 
   const idx = device.findIndex(x=>x.id===id);
@@ -2801,9 +3343,12 @@ function saveDev(){
 function editDev(id){
   const d = device.find(x=>x.id===id);
   if(!d){ toast("Device non trovato"); return; }
-  qs("#d_id").value=d.id; qs("#d_cf").value=d.cf; qs("#d_data").value=toDateISO(d.data)||todayISO();
-  qs("#d_modello").value=d.modello||""; qs("#d_imei").value=d.imei||""; qs("#d_prezzo").value=d.prezzo||"";
-  qs("#d_venditore").value=d.venditore||""; qs("#d_pagamento").value=d.pagamento||"";
+  qs("#d_id").value=d.id||""; qs("#d_cf").value=d.cf||""; qs("#d_data").value=toDateISO(d.data)||todayISO();
+  qs("#d_marca").value=d.marca||""; qs("#d_modello").value=d.modello||""; qs("#d_imei").value=d.imei||"";
+  qs("#d_prezzo").value=d.prezzo||""; qs("#d_garanzia_mesi").value=d.garanzia_mesi||""; qs("#d_fine_garanzia").value=toDateISO(d.fine_garanzia)||""; qs("#d_venditore").value=d.venditore||""; qs("#d_pagamento").value=d.pagamento||"";
+  qs("#d_finanziaria").value=d.finanziaria||""; qs("#d_costo_rata").value=d.costo_rata||""; qs("#d_durata_rata_mesi").value=d.durata_rata_mesi||"";
+  qs("#d_fine_pagamento").value=toDateISO(d.fine_pagamento)||"";
+  try{ updateDevFinance(); }catch(e){}
   toast("Modifica device: " + id);
 }
 function deleteDev(id){
@@ -2812,24 +3357,30 @@ function deleteDev(id){
 }
 
 function clearRipForm(){
-  ["r_id","r_cf","r_ingresso","r_modello","r_imei","r_problema","r_stato","r_costo"].forEach(id=>qs("#"+id).value="");
+  ["r_id","r_cf","r_ingresso","r_marca","r_modello","r_imei","r_problema","r_stato","r_costo","r_note"].forEach(id=>qs("#"+id).value="");
   qs("#r_ingresso").value = todayISO();
 }
 function saveRip(){
   const id = (qs("#r_id").value||"").trim() || safeId("R");
   const cf = upper(qs("#r_cf").value);
+  const data = qs("#r_ingresso").value || todayISO();
+  const marca = upper(qs("#r_marca").value);
   const modello = upper(qs("#r_modello").value);
-  if(!cf || !modello){ toast("CF e Modello sono obbligatori"); return; }
-  if(!mustHaveFK(cf)){ toast("CF non presente in Anagrafica (FK): cerca o crea il cliente"); try{ ripFindClient(); }catch(e){} return; }
+  const stato = upper(qs("#r_stato").value);
+
+  if(!cf || !data || !marca || !modello || !stato){ toast("CF, Data, Marca, Modello e Stato sono obbligatori"); return; }
+  if(!mustHaveFK(cf)){ toast("CF non presente in Anagrafica (FK)...o crea il cliente"); try{ ripFindClient(); }catch(e){} return; }
 
   const rec = {
     id, cf,
-    data_ingresso: qs("#r_ingresso").value || todayISO(),
+    data_ingresso: data,
+    marca,
     modello,
     imei: upper(qs("#r_imei").value),
-    problema: upper(qs("#r_problema").value),
-    stato: upper(qs("#r_stato").value),
-    costo: (qs("#r_costo").value||"").trim()
+    problematica: upper(qs("#r_problema").value),
+    stato,
+    costo: (qs("#r_costo").value||"").trim(),
+    note: (qs("#r_note").value||"").trim()
   };
 
   const idx = riparazioni.findIndex(x=>x.id===id);
@@ -2840,8 +3391,9 @@ function editRip(id){
   const r = riparazioni.find(x=>x.id===id);
   if(!r){ toast("Riparazione non trovata"); return; }
   qs("#r_id").value=r.id; qs("#r_cf").value=r.cf; qs("#r_ingresso").value=toDateISO(r.data_ingresso)||todayISO();
-  qs("#r_modello").value=r.modello||""; qs("#r_imei").value=r.imei||""; qs("#r_problema").value=r.problema||"";
-  qs("#r_stato").value=r.stato||""; qs("#r_costo").value=r.costo||"";
+  qs("#r_marca").value=r.marca||"";
+  qs("#r_modello").value=r.modello||""; qs("#r_imei").value=r.imei||""; qs("#r_problema").value=r.problematica||r.problema||"";
+  qs("#r_stato").value=r.stato||""; qs("#r_costo").value=r.costo||""; qs("#r_note").value=r.note||"";
   toast("Modifica riparazione: " + id);
 }
 function deleteRip(id){
@@ -3265,7 +3817,7 @@ function runScadenze(){
       <td>${r.offerta||""}</td>
       <td>${phone ? `<a class="btn secondary small" href="${waLinkText(phone, msg)}" target="_blank" rel="noopener" style="text-decoration:none">💬</a>` : "—"}</td>
     </tr>`;
-  }).join("") || `<tr><td colspan="10" class="muted">Nessuna scadenza nel filtro.</td></tr>`;
+  }).join("") || `<tr><td colspan="12" class="muted">Nessuna scadenza nel filtro.</td></tr>`;
 
   window.__scadRows = out;
 }
@@ -3337,12 +3889,8 @@ function openTimeline(cf){
   const x = upper(cf||"");
   if(!x){ toast("Inserisci un CF"); return; }
   qs("#t_cf").value = x;
-  // vai alla vista timeline
-  qsa("[data-view]").forEach(b=>b.classList.remove("active"));
-  qsa(".view").forEach(v=>v.classList.remove("active"));
-  qs('[data-view="timeline"]').classList.add("active");
-  qs("#view-timeline").classList.add("active");
-  pageTitle.textContent = "Timeline Cliente";
+  // vai alla vista timeline (usa showView per evitare viste sovrapposte)
+  showView("timeline");
   loadTimeline();
   setTimeout(()=>qs("#timelineHeader").scrollIntoView({behavior:"smooth",block:"start"}), 50);
 }
@@ -3379,12 +3927,8 @@ function openClientSheet(cf){
 
   renderClientLists();
 
-  // porta l'utente nella vista Anagrafica e scrolla la scheda
-  qsa("[data-view]").forEach(x=>x.classList.remove("active"));
-  qsa(".view").forEach(v=>v.classList.remove("active"));
-  qs('[data-view="anagrafica"]').classList.add("active");
-  qs("#view-anagrafica").classList.add("active");
-  pageTitle.textContent = "Anagrafica (CRUD)";
+  // porta l'utente nella vista Anagrafica e scrolla la scheda (usa showView per evitare viste sovrapposte)
+  showView("anagrafica");
   setTimeout(()=>qs("#clientSheetCard").scrollIntoView({behavior:"smooth",block:"start"}), 50);
 }
 
@@ -3518,33 +4062,27 @@ function csSaveRip(){
 function csOpenFull(section){
   // prefill CF sul modulo completo e apri la vista
   if(!currentClientCF){ toast("Seleziona un cliente"); return; }
+  // IMPORTANT:
+  // usa la stessa logica di navigazione della sidebar (showView),
+  // altrimenti restano "accese" piu viste contemporaneamente (es. tab Device con report Contratti sopra).
   if(section==="contratti"){
-    qsa("[data-view]").forEach(x=>x.classList.remove("active"));
-    qsa(".view").forEach(v=>v.classList.remove("active"));
-    qs('[data-view="contratti"]').classList.add("active");
-    qs("#view-contratti").classList.add("active");
-    pageTitle.textContent = "Contratti (CRUD)";
+    showView("contratti");
     qs("#c_cf").value = currentClientCF;
     conFindClient();
     setTimeout(()=>qs("#c_cf").scrollIntoView({behavior:"smooth",block:"center"}), 50);
+    return;
   }
   if(section==="device"){
-    qsa("[data-view]").forEach(x=>x.classList.remove("active"));
-    qsa(".view").forEach(v=>v.classList.remove("active"));
-    qs('[data-view="device"]').classList.add("active");
-    qs("#view-device").classList.add("active");
-    pageTitle.textContent = "Device (CRUD)";
+    showView("device");
     qs("#d_cf").value = currentClientCF;
     setTimeout(()=>qs("#d_modello").focus(), 50);
+    return;
   }
   if(section==="riparazioni"){
-    qsa("[data-view]").forEach(x=>x.classList.remove("active"));
-    qsa(".view").forEach(v=>v.classList.remove("active"));
-    qs('[data-view="riparazioni"]').classList.add("active");
-    qs("#view-riparazioni").classList.add("active");
-    pageTitle.textContent = "Riparazioni (CRUD)";
+    showView("riparazioni");
     qs("#r_cf").value = currentClientCF;
     setTimeout(()=>qs("#r_modello").focus(), 50);
+    return;
   }
 }
 
@@ -3957,7 +4495,7 @@ rows.push({
         <td>${moneyFmt(r.value_est || 0)}</td>
         <td style="white-space:nowrap;display:flex;gap:6px;align-items:center">${waBtn}${viewBtn}</td>
       </tr>`;
-  }).join("") || `<tr><td colspan="10" class="muted">Nessun suggerimento con questi filtri.</td></tr>`;
+  }).join("") || `<tr><td colspan="12" class="muted">Nessun suggerimento con questi filtri.</td></tr>`;
 
   toast("Suggerimenti ricontatto aggiornati ✅");
 }
@@ -4030,7 +4568,7 @@ function renderCampaignLeads(){
   if(!tb) return;
   const camp = campaigns.find(c=>c.id===selectedCampaignId);
   if(!camp){
-    tb.innerHTML = `<tr><td colspan="10" class="muted">Seleziona o crea una campagna.</td></tr>`;
+    tb.innerHTML = `<tr><td colspan="12" class="muted">Seleziona o crea una campagna.</td></tr>`;
     return;
   }
   const leads = (camp.leads||[]).slice().sort((a,b)=>(b.score||0)-(a.score||0));
@@ -4066,7 +4604,7 @@ function renderCampaignLeads(){
         <td class="mono">${last}</td>
         <td style="white-space:nowrap;display:flex;gap:6px;align-items:center">${waBtn}${markBtn}${viewBtn}</td>
       </tr>`;
-  }).join("") || `<tr><td colspan="10" class="muted">Campagna vuota.</td></tr>`;
+  }).join("") || `<tr><td colspan="12" class="muted">Campagna vuota.</td></tr>`;
 }
 
 function bindCampaignUI(){
@@ -4223,8 +4761,8 @@ function exportPDFReport(){
       --warn:#f59e0b;
       --bad:#dc2626;
 
-      --shadow: 0 10px 25px rgba(15, 23, 42, .06);
-      --shadow-sm: 0 6px 16px rgba(15, 23, 42, .05);
+      --shadow: 0 14px 40px rgba(15, 23, 42, .14);
+      --shadow-sm: 0 10px 26px rgba(15, 23, 42, .12);
 
       --radius:16px;
       --radius-sm:12px;
@@ -4363,7 +4901,9 @@ function exportPDFReport(){
 
     /* Views */
     .view{display:none;padding:18px 0}
-    .view.active{display:block}
+.view.is-hidden{display:none !important}
+.view.active{display:block !important}
+    .view.active{display:block!important}
 
     /* Cards */
     .grid{display:grid;gap:14px}
@@ -4489,16 +5029,21 @@ function exportPDFReport(){
 
     /* Toast */
     .toast{
-      position:fixed;right:16px;bottom:16px;z-index:50;
+      position:fixed;
+      top:16px;left:50%;transform:translateX(-50%);
+      right:auto;bottom:auto;
+      z-index:9999;
       background:#0f172a;color:#fff;padding:10px 12px;border-radius:12px;
-      box-shadow:0 10px 24px rgba(0,0,0,.15);max-width:520px;display:none
+      box-shadow:0 10px 24px rgba(0,0,0,.15);
+      max-width:min(520px, calc(100vw - 32px));
+      display:none
     }
     .toast.show{display:block}
 
     /* Print */
     @media print{
       .sidebar,.topbar,.btn,.toolbar input[type="file"]{display:none!important}
-      .view{display:block!important}
+      .view{display:none!important}
       body{background:#fff}
       .card{box-shadow:none;border:1px solid #ddd}
       th{position:static}
@@ -4532,82 +5077,7 @@ function exportPDFReport(){
         ${htmlTable}
       </div>
     
-<!-- ================= GOOGLE SHEETS SYNC (Apps Script Web App) ================= -->
-<script>
-  // === CONFIG ===
-  const GS_URL = "https://script.google.com/macros/s/AKfycbzqjV_XrlTnfJ96ZvMdygNj53fco3u_lwk0OgQUc5YxqmScLntEr-uzoUmjl4T_rlBW/exec";
-  const GS_TOKEN = "VOLPEX2026"; // <- metti QUI lo stesso token dello script Google
 
-  async function gsCall(action, payload = {}) {
-    const res = await fetch(GS_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ token: GS_TOKEN, action, ...payload })
-    });
-    const data = await res.json();
-    if (!data.ok) throw new Error(data.error || "Google Sync error");
-    return data;
-  }
-
-  // === UI Buttons (fixed bottom-right) ===
-  document.addEventListener("DOMContentLoaded", () => {
-    const bar = document.createElement("div");
-    bar.style.cssText = "position:fixed;bottom:12px;right:12px;z-index:99999;display:flex;gap:8px;align-items:center";
-    bar.innerHTML = `
-      <button id="btnGsDown" class="btn secondary small" title="Scarica dati dal Foglio Google nel CRM">⬇️ Google → CRM</button>
-      <button id="btnGsUp" class="btn primary small" title="Invia dati dal CRM al Foglio Google">⬆️ CRM → Google</button>
-      <button id="btnGsPing" class="btn small" title="Test collegamento">🔌 Test</button>
-    `;
-    document.body.appendChild(bar);
-
-    document.getElementById("btnGsUp").addEventListener("click", syncUp);
-    document.getElementById("btnGsDown").addEventListener("click", syncDown);
-    document.getElementById("btnGsPing").addEventListener("click", async ()=>{
-      try{
-        const r = await gsCall("ping");
-        toast("Collegamento OK ✅ " + (r.ts||""), 1600);
-      }catch(e){
-        alert("Test fallito: " + e.message + "\n\nControlla: token, deploy Web App (Chiunque con link), e che stai usando l'URL /exec.");
-      }
-    });
-  });
-
-  // === SYNC UP: CRM -> Google ===
-  async function syncUp() {
-    try {
-      // Le variabili principali del CRM sono array: anagrafica, contratti, device, riparazioni
-      await gsCall("upsertMany", { table: "clients", rows: (window.anagrafica || []) });
-      await gsCall("upsertMany", { table: "contracts", rows: (window.contratti || []) });
-      await gsCall("upsertMany", { table: "devices", rows: (window.device || []) });
-      await gsCall("upsertMany", { table: "repairs", rows: (window.riparazioni || []) });
-
-      toast("Sincronizzato su Google ✅", 1600);
-    } catch (e) {
-      alert("Errore sync UP: " + e.message + "\n\nSuggerimento: apri '🔌 Test' per vedere se la Web App risponde.");
-    }
-  }
-
-  // === SYNC DOWN: Google -> CRM ===
-  async function syncDown() {
-    try {
-      const a = await gsCall("getAll", { table: "clients" });
-      const c = await gsCall("getAll", { table: "contracts" });
-      const d = await gsCall("getAll", { table: "devices" });
-      const r = await gsCall("getAll", { table: "repairs" });
-
-      window.anagrafica = (a.rows || []);
-      window.contratti = (c.rows || []);
-      window.device = (d.rows || []);
-      window.riparazioni = (r.rows || []);
-
-      saveStore();
-      refreshAll();
-      toast("Dati scaricati da Google ✅", 1600);
-    } catch (e) {
-      alert("Errore sync DOWN: " + e.message + "\n\nControlla anche che le tab nel Foglio si chiamino: clients, contracts, devices, repairs.");
-    }
-  }
-</script>
 <!-- ========================================================================== -->
 
 </body></html>
@@ -4649,8 +5119,8 @@ function exportPDFFull(){
       --warn:#f59e0b;
       --bad:#dc2626;
 
-      --shadow: 0 10px 25px rgba(15, 23, 42, .06);
-      --shadow-sm: 0 6px 16px rgba(15, 23, 42, .05);
+      --shadow: 0 14px 40px rgba(15, 23, 42, .14);
+      --shadow-sm: 0 10px 26px rgba(15, 23, 42, .12);
 
       --radius:16px;
       --radius-sm:12px;
@@ -4789,7 +5259,9 @@ function exportPDFFull(){
 
     /* Views */
     .view{display:none;padding:18px 0}
-    .view.active{display:block}
+.view.is-hidden{display:none !important}
+.view.active{display:block !important}
+    .view.active{display:block!important}
 
     /* Cards */
     .grid{display:grid;gap:14px}
@@ -4915,16 +5387,21 @@ function exportPDFFull(){
 
     /* Toast */
     .toast{
-      position:fixed;right:16px;bottom:16px;z-index:50;
+      position:fixed;
+      top:16px;left:50%;transform:translateX(-50%);
+      right:auto;bottom:auto;
+      z-index:9999;
       background:#0f172a;color:#fff;padding:10px 12px;border-radius:12px;
-      box-shadow:0 10px 24px rgba(0,0,0,.15);max-width:520px;display:none
+      box-shadow:0 10px 24px rgba(0,0,0,.15);
+      max-width:min(520px, calc(100vw - 32px));
+      display:none
     }
     .toast.show{display:block}
 
     /* Print */
     @media print{
       .sidebar,.topbar,.btn,.toolbar input[type="file"]{display:none!important}
-      .view{display:block!important}
+      .view{display:none!important}
       body{background:#fff}
       .card{box-shadow:none;border:1px solid #ddd}
       th{position:static}
@@ -4976,82 +5453,7 @@ function exportPDFFull(){
         ${buildTableHTML(["Ingresso","ID","CF","Cliente","Modello","Problema","Stato","Costo"], ripRows)}
       </div>
     
-<!-- ================= GOOGLE SHEETS SYNC (Apps Script Web App) ================= -->
-<script>
-  // === CONFIG ===
-  const GS_URL = "https://script.google.com/macros/s/AKfycbzqjV_XrlTnfJ96ZvMdygNj53fco3u_lwk0OgQUc5YxqmScLntEr-uzoUmjl4T_rlBW/exec";
-  const GS_TOKEN = "VOLPEX2026"; // <- metti QUI lo stesso token dello script Google
 
-  async function gsCall(action, payload = {}) {
-    const res = await fetch(GS_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ token: GS_TOKEN, action, ...payload })
-    });
-    const data = await res.json();
-    if (!data.ok) throw new Error(data.error || "Google Sync error");
-    return data;
-  }
-
-  // === UI Buttons (fixed bottom-right) ===
-  document.addEventListener("DOMContentLoaded", () => {
-    const bar = document.createElement("div");
-    bar.style.cssText = "position:fixed;bottom:12px;right:12px;z-index:99999;display:flex;gap:8px;align-items:center";
-    bar.innerHTML = `
-      <button id="btnGsDown" class="btn secondary small" title="Scarica dati dal Foglio Google nel CRM">⬇️ Google → CRM</button>
-      <button id="btnGsUp" class="btn primary small" title="Invia dati dal CRM al Foglio Google">⬆️ CRM → Google</button>
-      <button id="btnGsPing" class="btn small" title="Test collegamento">🔌 Test</button>
-    `;
-    document.body.appendChild(bar);
-
-    document.getElementById("btnGsUp").addEventListener("click", syncUp);
-    document.getElementById("btnGsDown").addEventListener("click", syncDown);
-    document.getElementById("btnGsPing").addEventListener("click", async ()=>{
-      try{
-        const r = await gsCall("ping");
-        toast("Collegamento OK ✅ " + (r.ts||""), 1600);
-      }catch(e){
-        alert("Test fallito: " + e.message + "\n\nControlla: token, deploy Web App (Chiunque con link), e che stai usando l'URL /exec.");
-      }
-    });
-  });
-
-  // === SYNC UP: CRM -> Google ===
-  async function syncUp() {
-    try {
-      // Le variabili principali del CRM sono array: anagrafica, contratti, device, riparazioni
-      await gsCall("upsertMany", { table: "clients", rows: (window.anagrafica || []) });
-      await gsCall("upsertMany", { table: "contracts", rows: (window.contratti || []) });
-      await gsCall("upsertMany", { table: "devices", rows: (window.device || []) });
-      await gsCall("upsertMany", { table: "repairs", rows: (window.riparazioni || []) });
-
-      toast("Sincronizzato su Google ✅", 1600);
-    } catch (e) {
-      alert("Errore sync UP: " + e.message + "\n\nSuggerimento: apri '🔌 Test' per vedere se la Web App risponde.");
-    }
-  }
-
-  // === SYNC DOWN: Google -> CRM ===
-  async function syncDown() {
-    try {
-      const a = await gsCall("getAll", { table: "clients" });
-      const c = await gsCall("getAll", { table: "contracts" });
-      const d = await gsCall("getAll", { table: "devices" });
-      const r = await gsCall("getAll", { table: "repairs" });
-
-      window.anagrafica = (a.rows || []);
-      window.contratti = (c.rows || []);
-      window.device = (d.rows || []);
-      window.riparazioni = (r.rows || []);
-
-      saveStore();
-      refreshAll();
-      toast("Dati scaricati da Google ✅", 1600);
-    } catch (e) {
-      alert("Errore sync DOWN: " + e.message + "\n\nControlla anche che le tab nel Foglio si chiamino: clients, contracts, devices, repairs.");
-    }
-  }
-</script>
 <!-- ========================================================================== -->
 
 </body></html>
@@ -5111,13 +5513,13 @@ document.getElementById("btnTplAnag").addEventListener("click", ()=>{
 });
 document.getElementById("btnTplCon").addEventListener("click", ()=>{
   downloadCSV("template_contratti.csv",
-    ["ID contratto","ID cliente","Codice fiscale","Data contratto","Tipo cliente","Tipo attivazione","Tecnologia","Convergenza","MNP","Data attivazione","Data portabilità","Numero lavorato","Nome offerta","Costo offerta","Vincolo offerta (mesi)","Telefono incluso","IMEI","Modello","Tipo pagamento","Mesi vincolo telefono","Data fine vincolo offerta","Data fine vincolo telefono","Compagnia","ICCID_vecchio","ICCID_nuovo","created_at","updated_at"],
+    ["ID contratto","ID cliente","Codice fiscale","Data contratto","Tipo cliente","Tipo attivazione","Tecnologia","Convergenza","MNP","Data attivazione","Data portabilità","Numero lavorato","Nome offerta","Costo offerta","Vincolo SIM (mesi)","Telefono incluso","IMEI","Modello","Tipo pagamento","Mesi vincolo telefono","Data fine vincolo SIM","Data fine vincolo telefono","Compagnia","ICCID_vecchio","ICCID_nuovo","created_at","updated_at"],
     [{
       "ID contratto":"C-0001","ID cliente":"C001","Codice fiscale":"RSSMRA80X01H501Z","Data contratto":todayISO(),
       "Tipo cliente":"PRIVATO","Tipo attivazione":"MNP","Tecnologia":"SIM","Convergenza":"NO","MNP":"SI",
       "Data attivazione":todayISO(),"Data portabilità":"","Numero lavorato":"333123456","Nome offerta":"OFFERTA X","Costo offerta":"9.99",
-      "Vincolo offerta (mesi)":"24","Telefono incluso":"SI","IMEI":"123456789012345","Modello":"IPHONE 13","Tipo pagamento":"CARTA",
-      "Mesi vincolo telefono":"24","Data fine vincolo offerta":"","Data fine vincolo telefono":"","Compagnia":"VODAFONE","ICCID_vecchio":"","ICCID_nuovo":"",
+      "Vincolo SIM (mesi)":"24","Telefono incluso":"SI","IMEI":"123456789012345","Modello":"IPHONE 13","Tipo pagamento":"CARTA",
+      "Mesi vincolo telefono":"24","Data fine vincolo SIM":"","Data fine vincolo telefono":"","Compagnia":"VODAFONE","ICCID_vecchio":"","ICCID_nuovo":"",
       "created_at":"","updated_at":""
     }]
   );
@@ -5211,7 +5613,15 @@ document.getElementById("btnQRCancel").addEventListener("click", cancelQuickClie
 qs("#c_cf").addEventListener("keydown", (e)=>{ if(e.key==="Enter"){ e.preventDefault(); conFindClient(); }});
 
 
+setupContrattiUX();
+
+
 document.getElementById("btnSaveDev").addEventListener("click", saveDev);
+document.getElementById("d_pagamento").addEventListener("change", updateDevFinance);
+document.getElementById("d_data").addEventListener("change", updateDevFinance);
+document.getElementById("d_durata_rata_mesi").addEventListener("input", updateDevFinance);
+document.getElementById("d_garanzia_mesi").addEventListener("input", updateDevWarranty);
+document.getElementById("d_data").addEventListener("change", ()=>{ try{ updateDevFinance(); }catch(e){} try{ updateDevWarranty(); }catch(e){} });
 document.getElementById("btnClearDev").addEventListener("click", clearDevForm);
 
 document.getElementById("btnSaveRip").addEventListener("click", saveRip);
@@ -5274,24 +5684,258 @@ document.getElementById("btnResetDemo").addEventListener("click", ()=>{
 <!-- ================= GOOGLE SHEETS SYNC (Apps Script Web App) ================= -->
 <script>
   // === CONFIG ===
-  const GS_URL = "https://script.google.com/macros/s/AKfycbzqjV_XrlTnfJ96ZvMdygNj53fco3u_lwk0OgQUc5YxqmScLntEr-uzoUmjl4T_rlBW/exec";
-  const GS_TOKEN = "VOLPEX2026"; // <- metti QUI lo stesso token dello script Google
+  
+  /* =========================
+     GOOGLE SYNC (Apps Script API)
+     - usa la tua Web App come "database" su Google Sheets
+  ========================= */
+  const GS_URL = "https://script.google.com/macros/s/AKfycby-G-sOJo-dElzkOyHzEnMflKLpWD3QUTnlv8cJYkCiSq_0EwmiQPaU8lib2TlCNI6Q/exec";
 
-  async function gsCall(action, payload = {}) {
-    const res = await fetch(GS_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ token: GS_TOKEN, action, ...payload })
-    });
+  function __pick(o, keys, def=""){
+    for(const k of keys){
+      if(o && o[k]!==undefined && o[k]!==null && String(o[k]).trim()!=="") return o[k];
+      // prova anche varianti minuscole/maiuscole
+      const k2 = String(k);
+      if(o && o[k2.toLowerCase()]!==undefined && o[k2.toLowerCase()]!==null && String(o[k2.toLowerCase()]).trim()!=="") return o[k2.toLowerCase()];
+      if(o && o[k2.toUpperCase()]!==undefined && o[k2.toUpperCase()]!==null && String(o[k2.toUpperCase()]).trim()!=="") return o[k2.toUpperCase()];
+    }
+    return def;
+  }
+
+  async function gsGet(params){
+    const url = new URL(GS_URL);
+    Object.entries(params||{}).forEach(([k,v])=>url.searchParams.set(k, v));
+    const res = await fetch(url.toString(), { method:"GET" });
     const data = await res.json();
-    if (!data.ok) throw new Error(data.error || "Google Sync error");
+    if(!data.ok) throw new Error(data.error || "Google API GET error");
     return data;
   }
 
-  // === UI Buttons (fixed bottom-right) ===
-  document.addEventListener("DOMContentLoaded", () => {
+  async function gsPost(params, bodyObj){
+    const url = new URL(GS_URL);
+    Object.entries(params||{}).forEach(([k,v])=>url.searchParams.set(k, v));
+    const res = await fetch(url.toString(), {
+      method:"POST",
+      body: JSON.stringify(bodyObj||{})
+    });
+    const data = await res.json();
+    if(!data.ok) throw new Error(data.error || "Google API POST error");
+    return data;
+  }
+
+  function mapAnagFromSheet(r){
+    return {
+      cf: upper(__pick(r, ["CODICE_FISCALE","cf","Codice Fiscale"], "")),
+      nome: upper(__pick(r, ["NOME","nome"], "")),
+      cognome: upper(__pick(r, ["COGNOME","cognome"], "")),
+      tipo: upper(__pick(r, ["TIPO_CLIENTE","TIPO","tipo"], "")),
+      telefono: (__pick(r, ["TELEFONO","telefono","CELLULARE","tel"], "") || "").toString().trim(),
+      email: (__pick(r, ["EMAIL","email","MAIL"], "") || "").toString().trim(),
+      citta: upper(__pick(r, ["CITTA","citta","CITTÀ","comune"], "")),
+      indirizzo: upper(__pick(r, ["INDIRIZZO","indirizzo","VIA"], "")),
+      data_nascita: (__pick(r, ["DATA_NASCITA","data_nascita","Data nascita"], "") || "").toString().trim()
+    };
+  }
+
+  function mapConFromSheet(r){
+    return {
+      id: (__pick(r, ["ID_CONTRATTO","id","ID"], "") || "").toString().trim(),
+      id_cliente: (__pick(r, ["ID_CLIENTE","id_cliente"], "") || "").toString().trim(),
+      cf: upper(__pick(r, ["CODICE_FISCALE","cf","CF"], "")),
+      data_contratto: (__pick(r, ["DATA_CONTRATTO","data_contratto"], "") || "").toString().trim(),
+      tipo_cliente: upper(__pick(r, ["TIPO_CLIENTE","tipo_cliente"], "")),
+      tipo_attivazione: upper(__pick(r, ["TIPO_ATTIVAZIONE","tipo_attivazione"], "")),
+      tecnologia: upper(__pick(r, ["TECNOLOGIA","tecnologia"], "")),
+      convergenza: upper(__pick(r, ["CONVERGENZA","convergenza"], "")),
+      mnp: upper(__pick(r, ["MNP","mnp"], "")),
+      data_attivazione: (__pick(r, ["DATA_ATTIVAZIONE","data_attivazione"], "") || "").toString().trim(),
+      data_portabilita: (__pick(r, ["DATA_PORTABILITA","data_portabilita"], "") || "").toString().trim(),
+      numero_lavorato: (__pick(r, ["NUMERO_LAVORATO","numero_lavorato"], "") || "").toString().trim(),
+      nome_offerta: (__pick(r, ["NOME_OFFERTA","nome_offerta"], "") || "").toString().trim(),
+      costo_offerta: (__pick(r, ["COSTO_OFFERTA","costo_offerta"], "") || "").toString().trim(),
+      vincolo_offerta_mesi: (__pick(r, ["VINCOLO_OFFERTA_MESI","vincolo_offerta_mesi"], "") || "").toString().trim(),
+      telefono_incluso: upper(__pick(r, ["TELEFONO_INCLUSO","telefono_incluso"], "")),
+      imei: (__pick(r, ["IMEI","imei"], "") || "").toString().trim(),
+      modello: upper(__pick(r, ["MODELLO","modello"], "")),
+      tipo_pagamento: upper(__pick(r, ["TIPO_PAGAMENTO","tipo_pagamento"], "")),
+      mesi_vincolo_telefono: (__pick(r, ["MESI_VINCOLO_TELEFONO","mesi_vincolo_telefono"], "") || "").toString().trim(),
+      data_fine_vincolo_offerta: (__pick(r, ["DATA_FINE_VINCOLO_OFFERTA","data_fine_vincolo_offerta"], "") || "").toString().trim(),
+      data_fine_vincolo_telefono: (__pick(r, ["DATA_FINE_VINCOLO_TELEFONO","data_fine_vincolo_telefono"], "") || "").toString().trim(),
+      compagnia: upper(__pick(r, ["COMPAGNIA","compagnia"], "")),
+      iccid_vecchio: (__pick(r, ["ICCID_VECCHIO","iccid_vecchio"], "") || "").toString().trim(),
+      iccid_nuovo: (__pick(r, ["ICCID_NUOVO","iccid_nuovo"], "") || "").toString().trim(),
+      created_at: (__pick(r, ["CREATED_AT","created_at"], "") || "").toString().trim(),
+      updated_at: (__pick(r, ["UPDATED_AT","updated_at"], "") || "").toString().trim()
+    };
+  }
+
+  function mapDevFromSheet(r){
+    return {
+      id: (__pick(r, ["ID_DEVICE","id","ID"], "") || "").toString().trim(),
+      cf: upper(__pick(r, ["CODICE_FISCALE","cf","CF"], "")),
+      data: (__pick(r, ["DATA_VENDITA","data","DATA"], "") || "").toString().trim(),
+      marca: upper(__pick(r, ["MARCA","marca"], "")),
+      modello: upper(__pick(r, ["MODELLO","modello"], "")),
+      imei: (__pick(r, ["IMEI","imei"], "") || "").toString().trim(),
+      prezzo: (__pick(r, ["PREZZO","prezzo"], "") || "").toString().trim(),
+      garanzia_mesi: (__pick(r, ["GARANZIA_MESI","garanzia_mesi"], "") || "").toString().trim(),
+      fine_garanzia: (__pick(r, ["FINE_GARANZIA","fine_garanzia"], "") || "").toString().trim(),
+      pagamento: upper(__pick(r, ["PAGAMENTO","pagamento","TIPO_PAGAMENTO"], "")),
+      venditore: upper(__pick(r, ["VENDITORE","venditore"], ""))
+    };
+  }
+
+  function mapRipFromSheet(r){
+    return {
+      id: (__pick(r, ["ID_RIPARAZIONE","id","ID"], "") || "").toString().trim(),
+      cf: upper(__pick(r, ["CODICE_FISCALE","cf","CF"], "")),
+      data_ingresso: (__pick(r, ["DATA_INGRESSO","data_ingresso","DATA"], "") || "").toString().trim(),
+      marca: upper(__pick(r, ["MARCA","marca"], "")),
+      modello: upper(__pick(r, ["MODELLO","modello"], "")),
+      imei: (__pick(r, ["IMEI","imei"], "") || "").toString().trim(),
+      problema: upper(__pick(r, ["PROBLEMA","problema","DESCRIZIONE_PROBLEMA"], "")),
+      stato: upper(__pick(r, ["STATO","stato"], "")),
+      costo: (__pick(r, ["COSTO","costo"], "") || "").toString().trim(),
+      note: (__pick(r, ["NOTE","note"], "") || "").toString().trim()
+    };
+  }
+
+  function mapAnagToSheet(a){
+    return {
+      CODICE_FISCALE: upper(a.cf),
+      NOME: upper(a.nome),
+      COGNOME: upper(a.cognome),
+      TIPO_CLIENTE: upper(a.tipo||""),
+      TELEFONO: (a.telefono||"").toString().trim(),
+      EMAIL: (a.email||"").toString().trim(),
+      CITTA: upper(a.citta||""),
+      INDIRIZZO: upper(a.indirizzo||""),
+      DATA_NASCITA: (a.data_nascita||"").toString().trim()
+    };
+  }
+  function mapConToSheet(c){
+    return {
+      ID_CONTRATTO: (c.id||"").toString().trim(),
+      ID_CLIENTE: (c.id_cliente||"").toString().trim(),
+      CODICE_FISCALE: upper(c.cf),
+      DATA_CONTRATTO: (c.data_contratto||"").toString().trim(),
+      TIPO_CLIENTE: upper(c.tipo_cliente||""),
+      TIPO_ATTIVAZIONE: upper(c.tipo_attivazione||""),
+      TECNOLOGIA: upper(c.tecnologia||""),
+      CONVERGENZA: upper(c.convergenza||""),
+      MNP: upper(c.mnp||""),
+      DATA_ATTIVAZIONE: (c.data_attivazione||"").toString().trim(),
+      DATA_PORTABILITA: (c.data_portabilita||"").toString().trim(),
+      NUMERO_LAVORATO: (c.numero_lavorato||"").toString().trim(),
+      NOME_OFFERTA: (c.nome_offerta||"").toString().trim(),
+      COSTO_OFFERTA: (c.costo_offerta||"").toString().trim(),
+      VINCOLO_OFFERTA_MESI: (c.vincolo_offerta_mesi||"").toString().trim(),
+      TELEFONO_INCLUSO: upper(c.telefono_incluso||""),
+      IMEI: (c.imei||"").toString().trim(),
+      MODELLO: upper(c.modello||""),
+      TIPO_PAGAMENTO: upper(c.tipo_pagamento||""),
+      MESI_VINCOLO_TELEFONO: (c.mesi_vincolo_telefono||"").toString().trim(),
+      DATA_FINE_VINCOLO_OFFERTA: (c.data_fine_vincolo_offerta||"").toString().trim(),
+      DATA_FINE_VINCOLO_TELEFONO: (c.data_fine_vincolo_telefono||"").toString().trim(),
+      COMPAGNIA: upper(c.compagnia||""),
+      ICCID_VECCHIO: (c.iccid_vecchio||"").toString().trim(),
+      ICCID_NUOVO: (c.iccid_nuovo||"").toString().trim(),
+      CREATED_AT: (c.created_at||"").toString().trim(),
+      UPDATED_AT: (c.updated_at||"").toString().trim()
+    };
+  }
+  function mapDevToSheet(d){
+    return {
+      ID_DEVICE: (d.id||"").toString().trim(),
+      CODICE_FISCALE: upper(d.cf),
+      DATA_VENDITA: (d.data||"").toString().trim(),
+      MARCA: upper(d.marca||""),
+      MODELLO: upper(d.modello||""),
+      IMEI: (d.imei||"").toString().trim(),
+      PREZZO: (d.prezzo||"").toString().trim(),
+      GARANZIA_MESI: (d.garanzia_mesi||"").toString().trim(),
+      FINE_GARANZIA: (d.fine_garanzia||"").toString().trim(),
+      PAGAMENTO: upper(d.pagamento||""),
+      VENDITORE: upper(d.venditore||"")
+    };
+  }
+  function mapRipToSheet(r){
+    return {
+      ID_RIPARAZIONE: (r.id||"").toString().trim(),
+      CODICE_FISCALE: upper(r.cf),
+      DATA_INGRESSO: (r.data_ingresso||"").toString().trim(),
+      MARCA: upper(r.marca||""),
+      MODELLO: upper(r.modello||""),
+      IMEI: (r.imei||"").toString().trim(),
+      PROBLEMA: upper(r.problema||""),
+      STATO: upper(r.stato||""),
+      COSTO: (r.costo||"").toString().trim(),
+      NOTE: (r.note||"").toString().trim()
+    };
+  }
+
+  async function pingGs(){
+    try {
+      // alcuni script rispondono anche senza parametri
+      try { await gsGet({ action:"ping" }); }
+      catch(_) { await gsGet({}); }
+      toast("Collegamento OK ✅", 1600);
+    } catch (e) {
+      alert("Errore collegamento: " + e.message);
+      console.error(e);
+    }
+  }
+
+  async function syncDown(){
+    try {
+      const a = await gsGet({ action:"list", entity:"ANAGRAFICHE" });
+      const c = await gsGet({ action:"list", entity:"CONTRATTI" });
+      const r = await gsGet({ action:"list", entity:"RIPARAZIONI" });
+      const d = await gsGet({ action:"list", entity:"DEVICE" });
+
+      anagrafica = (a.rows||[]).map(mapAnagFromSheet).filter(x=>x.cf);
+      contratti = (c.rows||[]).map(mapConFromSheet).filter(x=>x.cf);
+      riparazioni = (r.rows||[]).map(mapRipFromSheet).filter(x=>x.cf);
+      device = (d.rows||[]).map(mapDevFromSheet).filter(x=>x.cf);
+      saveStore(); refreshAll();
+      try{ saveStore(); }catch(_){}
+      try{ refreshAll(); }catch(_){}
+      setText("envMode", "GOOGLE SHEETS");
+      toast("Google → CRM ✅", 1600);
+    } catch (e) {
+      alert("Errore sync DOWN: " + e.message);
+      console.error(e);
+    }
+  }
+
+  async function __bulkUpsert(entity, rows){
+    for(const rec of (rows||[])){
+      await gsPost({ action:"upsert", entity }, { record: rec });
+    }
+  }
+
+  async function syncUp(){
+    try {
+      // invia i dati del CRM al foglio (upsert riga per riga)
+      await __bulkUpsert("ANAGRAFICHE", (anagrafica||[]).map(mapAnagToSheet));
+      await __bulkUpsert("CONTRATTI", (contratti||[]).map(mapConToSheet));
+      await __bulkUpsert("RIPARAZIONI", (riparazioni||[]).map(mapRipToSheet));
+      await __bulkUpsert("DEVICE", (device||[]).map(mapDevToSheet));
+
+      setText("envMode", "GOOGLE SHEETS");
+      toast("CRM → Google ✅", 1600);
+    } catch (e) {
+      alert("Errore sync UP: " + e.message);
+      console.error(e);
+    }
+  }
+
+  // Barra comandi (in alto a destra)
+  document.addEventListener("DOMContentLoaded", ()=>{
+    try{ setText("envMode", "GOOGLE SHEETS"); }catch(_){
+    }
     const bar = document.createElement("div");
-    bar.style.cssText = "position:fixed;bottom:12px;right:12px;z-index:99999;display:flex;gap:8px;align-items:center";
+    bar.style.cssText = "position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:8px;align-items:center";
     bar.innerHTML = `
       <button id="btnGsDown" class="btn secondary small" title="Scarica dati dal Foglio Google nel CRM">⬇️ Google → CRM</button>
       <button id="btnGsUp" class="btn primary small" title="Invia dati dal CRM al Foglio Google">⬆️ CRM → Google</button>
@@ -5301,51 +5945,45 @@ document.getElementById("btnResetDemo").addEventListener("click", ()=>{
 
     document.getElementById("btnGsUp").addEventListener("click", syncUp);
     document.getElementById("btnGsDown").addEventListener("click", syncDown);
-    document.getElementById("btnGsPing").addEventListener("click", async ()=>{
-      try{
-        const r = await gsCall("ping");
-        toast("Collegamento OK ✅ " + (r.ts||""), 1600);
-      }catch(e){
-        alert("Test fallito: " + e.message + "\n\nControlla: token, deploy Web App (Chiunque con link), e che stai usando l'URL /exec.");
-      }
-    });
+    document.getElementById("btnGsPing").addEventListener("click", pingGs);
   });
 
-  // === SYNC UP: CRM -> Google ===
-  async function syncUp() {
-    try {
-      // Le variabili principali del CRM sono array: anagrafica, contratti, device, riparazioni
-      await gsCall("upsertMany", { table: "clients", rows: (window.anagrafica || []) });
-      await gsCall("upsertMany", { table: "contracts", rows: (window.contratti || []) });
-      await gsCall("upsertMany", { table: "devices", rows: (window.device || []) });
-      await gsCall("upsertMany", { table: "repairs", rows: (window.riparazioni || []) });
 
-      toast("Sincronizzato su Google ✅", 1600);
-    } catch (e) {
-      alert("Errore sync UP: " + e.message + "\n\nSuggerimento: apri '🔌 Test' per vedere se la Web App risponde.");
-    }
+/* === Date helpers (added) === */
+function __pad2(n){ return String(n).padStart(2,'0'); }
+function __toISO(d){
+  if(!(d instanceof Date) || Number.isNaN(d.getTime())) return "";
+  return `${d.getFullYear()}-${__pad2(d.getMonth()+1)}-${__pad2(d.getDate())}`;
+}
+function __parseISO(s){
+  const x = (s||"").toString().trim();
+  // accept YYYY-MM-DD (input[type=date]) or DD/MM/YYYY
+  if(/^\d{4}-\d{2}-\d{2}$/.test(x)){
+    const d = new Date(x + "T00:00:00");
+    return Number.isNaN(d.getTime()) ? null : d;
   }
-
-  // === SYNC DOWN: Google -> CRM ===
-  async function syncDown() {
-    try {
-      const a = await gsCall("getAll", { table: "clients" });
-      const c = await gsCall("getAll", { table: "contracts" });
-      const d = await gsCall("getAll", { table: "devices" });
-      const r = await gsCall("getAll", { table: "repairs" });
-
-      window.anagrafica = (a.rows || []);
-      window.contratti = (c.rows || []);
-      window.device = (d.rows || []);
-      window.riparazioni = (r.rows || []);
-
-      saveStore();
-      refreshAll();
-      toast("Dati scaricati da Google ✅", 1600);
-    } catch (e) {
-      alert("Errore sync DOWN: " + e.message + "\n\nControlla anche che le tab nel Foglio si chiamino: clients, contracts, devices, repairs.");
-    }
+  const m = x.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if(m){
+    const dd = parseInt(m[1],10), mm = parseInt(m[2],10), yy = parseInt(m[3],10);
+    const d = new Date(yy, mm-1, dd);
+    return Number.isNaN(d.getTime()) ? null : d;
   }
+  return null;
+}
+function addMonthsISO(dateStr, months){
+  const base = __parseISO(dateStr);
+  const add = parseInt(months,10);
+  if(!base || Number.isNaN(add)) return "";
+  const d = new Date(base.getTime());
+  const day = d.getDate();
+  d.setDate(1);
+  d.setMonth(d.getMonth() + add);
+  const lastDay = new Date(d.getFullYear(), d.getMonth()+1, 0).getDate();
+  d.setDate(Math.min(day, lastDay));
+  return __toISO(d);
+}
+/* === End date helpers === */
+
 </script>
 <!-- ========================================================================== -->
 
