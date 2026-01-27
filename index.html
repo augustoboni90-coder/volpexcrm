@@ -167,7 +167,7 @@
 
     /* Cards */
     .grid{display:grid;gap:14px}
-    .grid-2{grid-template-columns:repeat(auto-fit,minmax(420px,1fr))}
+    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
     .grid-3{grid-template-columns:repeat(auto-fit,minmax(360px,1fr))}
     .grid-4{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
 
@@ -395,6 +395,19 @@ tbody tr:hover{background:rgba(37,99,235,.06)}
     .form-grid .field textarea{
       box-shadow:0 1px 0 rgba(17,24,39,.04);
     }
+
+/*grid-fix*/
+@media (max-width: 1100px){.grid-2{grid-template-columns:1fr}}
+
+/* --- Operazioni cliente: leggibilità (v53) --- */
+.tableWrap{overflow:auto;border:1px solid #e5e7eb;border-radius:12px;background:#fff}
+.tableWrap table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
+.tableWrap th{position:sticky;top:0;background:#f8fafc;color:#111827;text-align:left;
+  font-weight:800;font-size:12px;padding:10px 12px;border-bottom:1px solid #e5e7eb;z-index:2}
+.tableWrap td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#111827;white-space:nowrap}
+.tableWrap tr:nth-child(even) td{background:#fcfcfd}
+.tableWrap tbody tr:hover td{background:#eef2ff}
+.tableWrap{max-height:260px}
 </style>
 <style id="force-single-view">
 /* === FORCE SINGLE VIEW (failsafe) === */
@@ -2231,6 +2244,14 @@ function showView(key){
   // update title + jump top
   const title = (btn && btn.dataset.title) ? btn.dataset.title : (btn ? btn.textContent.trim() : "");
   if(pageTitle) pageTitle.textContent = title || (key.charAt(0).toUpperCase()+key.slice(1));
+
+  // (FIX) i canvas risultano 0px se disegnati quando la view è nascosta.
+  // Ridisegniamo i grafici dopo che la view è visibile.
+  if(key==="dashboard" || key==="console30"){
+    requestAnimationFrame(()=>{ try{ renderDashboardAndConsole(); }catch(e){} try{ drawAllCharts(); }catch(e){} });
+    setTimeout(()=>{ try{ drawAllCharts(); }catch(e){} }, 180);
+  }
+
 
   // always jump to top
   try{ window.scrollTo({top:0, left:0, behavior:"instant"}); }
@@ -4907,7 +4928,7 @@ function exportPDFReport(){
 
     /* Cards */
     .grid{display:grid;gap:14px}
-    .grid-2{grid-template-columns:repeat(auto-fit,minmax(420px,1fr))}
+    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
     .grid-3{grid-template-columns:repeat(auto-fit,minmax(360px,1fr))}
     .grid-4{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
 
@@ -5265,7 +5286,7 @@ function exportPDFFull(){
 
     /* Cards */
     .grid{display:grid;gap:14px}
-    .grid-2{grid-template-columns:repeat(auto-fit,minmax(420px,1fr))}
+    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
     .grid-3{grid-template-columns:repeat(auto-fit,minmax(360px,1fr))}
     .grid-4{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
 
@@ -5662,6 +5683,9 @@ document.getElementById("btnResetDemo").addEventListener("click", ()=>{
   seedDemo(); saveStore(); refreshAll(); toast("Demo ripristinata ✅");
 });
 
+
+// ridisegna grafici al resize
+window.addEventListener("resize", ()=>{ try{ drawAllCharts(); }catch(e){} });
 /* =========================
    BOOT
 ========================= */
@@ -5689,7 +5713,7 @@ document.getElementById("btnResetDemo").addEventListener("click", ()=>{
      GOOGLE SYNC (Apps Script API)
      - usa la tua Web App come "database" su Google Sheets
   ========================= */
-  const GS_URL = "https://script.google.com/macros/s/AKfycby-G-sOJo-dElzkOyHzEnMflKLpWD3QUTnlv8cJYkCiSq_0EwmiQPaU8lib2TlCNI6Q/exec";
+  const GS_URL = "https://script.google.com/macros/s/AKfycbw1DVtg7xM5NJWgGITE8RtYGjVaYqOkp5ME-6iWF-Mym_3o1l8EGIRagY3FcSSgtVxN/exec";
 
   function __pick(o, keys, def=""){
     for(const k of keys){
@@ -5701,6 +5725,16 @@ document.getElementById("btnResetDemo").addEventListener("click", ()=>{
     }
     return def;
   }
+  function __rowsToObjects(resp){
+    const headers = (resp && resp.headers) ? resp.headers : [];
+    const rows = (resp && resp.rows) ? resp.rows : [];
+    return rows.map(r=>{
+      const o = {};
+      headers.forEach((h,i)=>{ o[h]=r[i]; });
+      return o;
+    });
+  }
+
 
   async function gsGet(params){
     const url = new URL(GS_URL);
@@ -5893,10 +5927,10 @@ document.getElementById("btnResetDemo").addEventListener("click", ()=>{
       const r = await gsGet({ action:"list", entity:"RIPARAZIONI" });
       const d = await gsGet({ action:"list", entity:"DEVICE" });
 
-      anagrafica = (a.rows||[]).map(mapAnagFromSheet).filter(x=>x.cf);
-      contratti = (c.rows||[]).map(mapConFromSheet).filter(x=>x.cf);
-      riparazioni = (r.rows||[]).map(mapRipFromSheet).filter(x=>x.cf);
-      device = (d.rows||[]).map(mapDevFromSheet).filter(x=>x.cf);
+      anagrafica = __rowsToObjects(a).map(mapAnagFromSheet).filter(x=>x.cf);
+      contratti = __rowsToObjects(c).map(mapConFromSheet).filter(x=>x.cf);
+      riparazioni = __rowsToObjects(r).map(mapRipFromSheet).filter(x=>x.cf);
+      device = __rowsToObjects(d).map(mapDevFromSheet).filter(x=>x.cf);
       saveStore(); refreshAll();
       try{ saveStore(); }catch(_){}
       try{ refreshAll(); }catch(_){}
