@@ -93,6 +93,12 @@
       .topinner,.content{padding-left:14px;padding-right:14px}
       table{min-width:760px}
     }
+    .tablewrap table td{max-width:360px;overflow:hidden;text-overflow:ellipsis}
+    .danger-zone{border-color:#fecaca;background:linear-gradient(180deg,#fff,#fff7f7)}
+    .input-error{border-color:#ef4444 !important;box-shadow:0 0 0 3px rgba(239,68,68,.12) !important}
+    .data-quality{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:12px}
+    .data-quality .dq{border:1px solid var(--line);border-radius:14px;background:#fff;padding:10px}
+    .data-quality .dq b{display:block;font-size:18px;margin-top:4px}
     @media print{
       .sidebar,.topbar,.btn,.toolbar .actions{display:none !important}
       body{background:#fff}
@@ -160,6 +166,47 @@
     .timeline-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
     .timeline-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 
+
+
+    .postit-shell{display:grid;grid-template-columns:340px 1fr;gap:14px}
+    .postit-board{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;align-items:start}
+    .postit-note{position:relative;padding:14px 14px 12px;border-radius:18px;min-height:180px;box-shadow:0 14px 30px rgba(15,23,42,.14);border:1px solid rgba(15,23,42,.08);display:flex;flex-direction:column;gap:10px;transform:rotate(-1deg)}
+    .postit-note:nth-child(even){transform:rotate(1deg)}
+    .postit-note.yellow{background:#fef9c3;border-color:#fde68a}
+    .postit-note.blue{background:#dbeafe;border-color:#93c5fd}
+    .postit-note.green{background:#dcfce7;border-color:#86efac}
+    .postit-note.pink{background:#fce7f3;border-color:#f9a8d4}
+    .postit-note.orange{background:#ffedd5;border-color:#fdba74}
+    .postit-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+    .postit-title{font-weight:900;font-size:15px;line-height:1.2}
+    .postit-body{white-space:pre-wrap;line-height:1.45;font-size:13px;min-height:72px}
+    .postit-meta{margin-top:auto;font-size:11px;color:#475569;display:grid;gap:4px}
+    .postit-empty{padding:18px;border-radius:16px;border:1px dashed var(--line);background:#f8fafc;color:var(--muted)}
+    .postit-launcher{display:flex;align-items:center;gap:10px}
+    .postit-mascot{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#fef08a,#f9a8d4);box-shadow:0 10px 24px rgba(15,23,42,.16);font-size:22px;animation:postitWiggle 2.2s ease-in-out infinite;transform-origin:bottom center}
+    .postit-launcher h3{margin:0}
+    .postit-dash-card{background:linear-gradient(180deg,#fffdf7,#fff7ed);border:1px solid #fde68a}
+    .postit-dash-card .helper{background:#fff7ed;border-color:#fdba74;color:#9a3412}
+    @keyframes postitWiggle{0%,100%{transform:rotate(0deg) translateY(0)}20%{transform:rotate(-8deg) translateY(-2px)}40%{transform:rotate(6deg) translateY(0)}60%{transform:rotate(-4deg) translateY(-1px)}80%{transform:rotate(3deg) translateY(0)}}
+    @media (max-width:980px){.postit-shell{grid-template-columns:1fr}}
+
+
+    .login-locked .app{filter:blur(6px);pointer-events:none;user-select:none}
+    .login-locked .topbar,.login-locked .sidebar{pointer-events:none}
+    .auth-screen{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:24px;background:radial-gradient(circle at top left,rgba(37,99,235,.35),transparent 32%),linear-gradient(135deg,#0f172a,#1e3a8a 55%,#60a5fa);}
+    .auth-screen.show{display:flex}
+    .auth-card{width:min(460px,100%);background:rgba(255,255,255,.96);border:1px solid rgba(255,255,255,.65);border-radius:28px;box-shadow:0 30px 90px rgba(15,23,42,.34);padding:24px;backdrop-filter:blur(16px)}
+    .auth-logo{width:58px;height:58px;border-radius:22px;display:grid;place-items:center;background:linear-gradient(135deg,#1d4ed8,#60a5fa);color:#fff;font-weight:900;font-size:24px;box-shadow:0 14px 32px rgba(37,99,235,.32)}
+    .auth-title{font-size:28px;line-height:1.05;font-weight:950;letter-spacing:-1px;margin:14px 0 6px;color:#0f172a}
+    .auth-copy{color:#64748b;font-size:13px;margin-bottom:16px}
+    .auth-status{margin-top:12px;padding:11px 12px;border-radius:14px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;font-size:12px;font-weight:800}
+    .auth-status.bad{background:#fee2e2;border-color:#fecaca;color:#991b1b}
+    .auth-status.good{background:#dcfce7;border-color:#bbf7d0;color:#166534}
+    .auth-card .field{margin-top:10px}
+    .auth-card .btn{width:100%;margin-top:14px}
+    .auth-foot{display:flex;justify-content:space-between;gap:10px;margin-top:14px;color:#64748b;font-size:11px;flex-wrap:wrap}
+    .session-pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:800;color:#334155}
+
 </style>
 </head>
 <body>
@@ -204,6 +251,8 @@
           <div id="pageSubtitle" class="muted small">Controllo operativo completo</div>
         </div>
         <div class="actions">
+          <span class="session-pill" id="sessionStatus">🔒 Accesso richiesto</span>
+          <button class="btn secondary small" id="btnLogout">Esci</button>
           <button class="btn secondary small" id="btnPrint">Stampa / PDF</button>
           <button class="btn secondary small" id="btnRefresh">Refresh</button>
         </div>
@@ -322,12 +371,53 @@
           </div>
         </div>
 
+        <div class="card postit-dash-card" style="margin-top:14px">
+          <div class="toolbar">
+            <div>
+              <div class="postit-launcher"><div class="postit-mascot">🗒️</div><div><h3>Post-it veloci</h3><div class="muted small">Scrivili al volo dalla dashboard e assegnali dopo al cliente giusto.</div></div></div>
+              <div class="muted small">Prima scrivi il post-it qui dalla dashboard, anche senza codice fiscale. Quando poi apri il cliente in anagrafica puoi assegnarlo al CF corretto e ritrovarlo sempre salvato.</div>
+            </div>
+            <div class="actions">
+              <input id="postit_filter_cf" placeholder="Filtra per codice fiscale" style="min-width:240px" />
+              <button class="btn secondary small" id="btnPostitFilterCurrent">Usa CF attuale</button>
+              <button class="btn secondary small" id="btnPostitShowUnassigned">Vedi bozze</button>
+            </div>
+          </div>
+          <div class="hr"></div>
+          <div class="postit-shell">
+            <div class="card soft">
+              <div class="form-grid">
+                <div class="field"><label>Codice fiscale (facoltativo)</label><input id="postit_cf" placeholder="Puoi lasciarlo vuoto e assegnarlo dopo" /></div>
+                <div class="field"><label>Titolo</label><input id="postit_title" placeholder="Es. Da richiamare martedì" /></div>
+                <div class="field"><label>Colore</label><select id="postit_color"><option value="yellow">Giallo</option><option value="blue">Blu</option><option value="green">Verde</option><option value="pink">Rosa</option><option value="orange">Arancione</option></select></div>
+                <div class="field" style="grid-column:1/-1"><label>Nota</label><textarea id="postit_text" placeholder="Scrivi qui il tuo promemoria stile post-it"></textarea></div>
+              </div>
+              <div class="actions" style="margin-top:12px">
+                <button class="btn primary" id="btnSavePostit">Salva post-it</button>
+                <button class="btn secondary" id="btnAssignPostitToForm">Assegna al CF attuale</button>
+                <button class="btn secondary" id="btnClearPostit">Pulisci</button>
+              </div>
+            </div>
+            <div>
+              <div class="toolbar" style="margin-bottom:10px">
+                <div class="muted small" id="postitBoardTitle">Post-it salvati</div>
+              </div>
+              <div id="postitBoard" class="postit-board"></div>
+            </div>
+          </div>
+
+
         <div class="grid kpi" style="margin-top:14px">
           <div class="card soft"><div class="muted small">Clienti</div><div class="value" id="kpiClienti">0</div><div class="small muted">Anagrafica totale</div></div>
           <div class="card soft"><div class="muted small">Contratti 30gg</div><div class="value" id="kpiContratti">0</div><div class="small muted">Data contratto</div></div>
           <div class="card soft"><div class="muted small">Device 30gg</div><div class="value" id="kpiDevice">0</div><div class="small muted">Data vendita</div></div>
           <div class="card soft"><div class="muted small">Riparazioni 30gg</div><div class="value" id="kpiRip">0</div><div class="small muted">Data ingresso</div></div>
         </div>
+        <div class="card" style="margin-top:14px">
+          <div class="toolbar"><div><h3>Qualità dati</h3><div class="muted small">Controllo rapido di clienti, contatti e record collegati.</div></div><div class="actions"><button class="btn secondary small" onclick="backupLocalData('manuale')">Backup JSON</button></div></div>
+          <div class="data-quality" id="dataQualityBox"></div>
+        </div>
+
         <div class="grid two" style="margin-top:14px">
           <div class="card"><h3>Attività ultimi 30 giorni</h3><canvas id="chartTypes"></canvas></div>
           <div class="card"><h3>Top venditori</h3><canvas id="chartSellers"></canvas></div>
@@ -373,6 +463,7 @@
           <h3>Clienti</h3>
           <div class="tablewrap"><table id="tblAnag"><thead><tr><th>CF</th><th>Cliente</th><th>Tipo</th><th>Telefono</th><th>Email</th><th>Città</th><th>Azioni</th></tr></thead><tbody></tbody></table></div>
         </div>
+
       </section>
 
       
@@ -456,7 +547,7 @@
 
         <div class="card" style="margin-top:14px">
           <h3>Archivio contratti</h3>
-          <div class="tablewrap"><table id="tblCon"><thead><tr><th>ID</th><th>Data</th><th>CF</th><th>Cliente</th><th>Compagnia</th><th>Offerta</th><th>Tecnologia</th><th>MNP</th><th>Numero</th><th>Azioni</th></tr></thead><tbody></tbody></table></div>
+          <div class="tablewrap"><table id="tblCon"><thead><tr><th>ID</th><th>Data</th><th>CF</th><th>Cliente</th><th>Compagnia</th><th>Offerta</th><th>Tecnologia</th><th>Attivazione</th><th>MNP</th><th>Numero</th><th>Portabilità</th><th>ICCID</th><th>Pagamento</th><th>Telefono</th><th>Note</th><th>Azioni</th></tr></thead><tbody></tbody></table></div>
         </div>
       </section>
 
@@ -741,6 +832,7 @@
             <div class="field"><label>Foglio Contratti</label><input id="gs_sheet_contratti" value="CONTRATTI" /></div>
             <div class="field"><label>Foglio Device</label><input id="gs_sheet_device" value="DEVICE" /></div>
             <div class="field"><label>Foglio Riparazioni</label><input id="gs_sheet_riparazioni" value="RIPARAZIONI" /></div>
+            <div class="field"><label><input id="gs_auto_sync" type="checkbox" style="width:auto;margin-right:6px" /> Sync automatico dopo ogni salvataggio</label><div class="muted small">Attivo di default: dopo ogni salvataggio il CRM invia automaticamente i dati al foglio Google.</div></div>
           </div>
           <div class="actions" style="margin-top:12px">
             <button class="btn primary" id="btnSaveGs">Salva impostazioni</button>
@@ -775,15 +867,34 @@
 
 <div class="toast" id="toast"></div>
 
+<div class="auth-screen" id="authScreen" aria-modal="true" role="dialog">
+  <div class="auth-card">
+    <div class="auth-logo">S</div>
+    <div class="auth-title">Accesso amministratore</div>
+    <div class="auth-copy">Entra nel CRM SAGAM. Dopo il login il programma sincronizza automaticamente i dati dal foglio Google e si blocca dopo 30 minuti di inattività.</div>
+    <div class="field"><label>Utente</label><input id="loginUser" autocomplete="username" placeholder="amministratore" /></div>
+    <div class="field"><label>Password</label><input id="loginPass" type="password" autocomplete="current-password" placeholder="Password" /></div>
+    <button class="btn primary" id="btnLogin">Entra e sincronizza</button>
+    <div class="auth-status" id="loginStatus">Inserisci amministratore / sagam.</div>
+    <div class="auth-foot"><span>Sessione protetta da inattività</span><span>Timeout: 30 minuti</span></div>
+  </div>
+</div>
+
 <script>
 const STORE_KEY = 'SAGAMCRM_NEXT_V1';
 const GS_KEY = 'SAGAMCRM_NEXT_GS_V1';
 const AUTO_ACTIONS_KEY = 'SAGAMCRM_NEXT_AUTO_ACTIONS_V1';
+const AUTH_KEY = 'SAGAMCRM_AUTH_OK_V1';
+const AUTH_LAST_KEY = 'SAGAMCRM_AUTH_LAST_ACTIVITY_V1';
+const AUTH_USER = 'amministratore';
+const AUTH_PASS = 'sagam';
+const AUTH_IDLE_MS = 30 * 60 * 1000;
 let state = {
   anagrafica: [],
   contratti: [],
   device: [],
-  riparazioni: []
+  riparazioni: [],
+  postits: []
 };
 let reportRows = [];
 let pastePreview = {headers:[], rows:[]};
@@ -826,6 +937,135 @@ function requiredClient(cf){ return !!anagByCF(cf); }
 function waLink(phone, text=''){ const digits=String(phone||'').replace(/\D/g,''); if(!digits) return '#'; const base=`https://wa.me/${digits.startsWith('39')?digits:'39'+digits}`; return text ? `${base}?text=${encodeURIComponent(text)}` : base; }
 function emailLink(email, subject='', body=''){ const e=String(email||'').trim(); if(!e) return '#'; let url=`mailto:${e}`; const params=[]; if(subject) params.push(`subject=${encodeURIComponent(subject)}`); if(body) params.push(`body=${encodeURIComponent(body)}`); if(params.length) url += `?${params.join('&')}`; return url; }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function escAttr(s){ return esc(s).replace(/`/g,'&#96;'); }
+function normalizePhone(v){ return String(v||'').replace(/[^0-9+]/g,'').replace(/^00/,'+'); }
+function isValidEmail(v){ const e=String(v||'').trim(); return !e || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+function isValidItalianCF(v){ const cf=upper(v); return /^[A-Z0-9]{16}$/.test(cf); }
+function isValidIMEI(v){ const x=String(v||'').replace(/\D/g,''); if(!x) return true; if(x.length!==15) return false; let sum=0; for(let i=0;i<14;i++){ let n=Number(x[i]); if(i%2===1){ n*=2; if(n>9)n-=9; } sum+=n; } return ((10-(sum%10))%10)===Number(x[14]); }
+function nonNegativeNumber(v){ if(v===''||v==null) return true; const n=toNum(v); return n!==null && n>=0; }
+function markInvalid(ids=[]){ ids.forEach(id=>qs('#'+id)?.classList.add('input-error')); setTimeout(()=>ids.forEach(id=>qs('#'+id)?.classList.remove('input-error')),3500); }
+function failValidation(msg, ids=[]){ markInvalid(ids); toast(msg,4200); return false; }
+function currentBackupPayload(){ return { exported_at:new Date().toISOString(), app:'SAGAM CRM NEXT', state }; }
+function downloadText(filename, text, type='application/json;charset=utf-8'){
+  const blob=new Blob([text],{type}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; a.click(); URL.revokeObjectURL(url);
+}
+function backupLocalData(reason='backup'){
+  const stamp=new Date().toISOString().replace(/[:.]/g,'-').slice(0,19);
+  downloadText(`sagamcrm_${reason}_${stamp}.json`, JSON.stringify(currentBackupPayload(),null,2));
+}
+function assertValidClientRecord(rec, prefix='a'){
+  if(!rec.cf || !rec.nome || !rec.cognome) return failValidation('CF, nome e cognome sono obbligatori', [`${prefix}_cf`,`${prefix}_nome`,`${prefix}_cognome`]);
+  if(!isValidItalianCF(rec.cf)) return failValidation('Codice fiscale non valido: deve essere di 16 caratteri alfanumerici', [`${prefix}_cf`]);
+  if(!isValidEmail(rec.email)) return failValidation('Email non valida', [`${prefix}_email`]);
+  return true;
+}
+function assertValidContractRecord(rec){
+  const bad=[];
+  if(!isValidItalianCF(rec.cf)) bad.push('c_cf');
+  if(!nonNegativeNumber(rec.costo_offerta)) bad.push('c_costo_offerta');
+  if(upper(rec.tipo_attivazione)==='MNP' && (!rec.iccid_vecchio || !rec.iccid_nuovo)) bad.push('c_iccid_vecchio','c_iccid_nuovo');
+  if(upper(rec.telefono_incluso)==='SI' && rec.imei && !isValidIMEI(rec.imei)) bad.push('c_imei');
+  if(bad.length) return failValidation('Controlla CF, importi, ICCID MNP o IMEI: alcuni dati non sono coerenti.', bad);
+  return true;
+}
+function assertValidDeviceRecord(rec){
+  const bad=[];
+  if(!isValidItalianCF(rec.cf)) bad.push('d_cf');
+  if(!isValidIMEI(rec.imei)) bad.push('d_imei');
+  if(!nonNegativeNumber(rec.prezzo)) bad.push('d_prezzo');
+  if(upper(rec.pagamento)==='FINANZIAMENTO' && (!rec.finanziaria || !rec.durata_rata_mesi)) bad.push('d_finanziaria','d_durata_rata_mesi');
+  if(bad.length) return failValidation('Controlla CF, IMEI, prezzo e dati finanziamento.', bad);
+  return true;
+}
+function assertValidRepairRecord(rec){
+  const bad=[];
+  if(!isValidItalianCF(rec.cf)) bad.push('r_cf');
+  if(rec.imei && !isValidIMEI(rec.imei)) bad.push('r_imei');
+  if(!nonNegativeNumber(rec.costo)) bad.push('r_costo');
+  if(bad.length) return failValidation('Controlla CF, IMEI o costo riparazione.', bad);
+  return true;
+}
+function safeDeleteConfirm(message){ backupLocalData('prima_operazione_rischiosa'); return confirm(message+'\n\nHo appena creato un backup JSON prima di continuare.'); }
+
+
+function postitClientName(cf){ const a=anagByCF(cf); return a ? `${a.nome||''} ${a.cognome||''}`.trim() : ''; }
+function nowStamp(){ return new Date().toISOString(); }
+function formatDateTime(v){ if(!v) return '—'; const d=new Date(v); return Number.isNaN(d.getTime()) ? String(v) : d.toLocaleString('it-IT'); }
+function currentPostitFilter(){ return upper(qs('#postit_filter_cf')?.value || ''); }
+function clearPostitForm(){ ['postit_cf','postit_title','postit_text'].forEach(id=>{ const el=qs('#'+id); if(el) el.value=''; }); if(qs('#postit_color')) qs('#postit_color').value='yellow'; }
+function loadPostitIntoForm(id){ const n=(state.postits||[]).find(x=>x.id===id); if(!n) return; qs('#postit_cf').value=n.cf||''; qs('#postit_title').value=n.title||''; qs('#postit_text').value=n.text||''; qs('#postit_color').value=n.color||'yellow'; renderPostits(); toast('Post-it caricato nel form'); }
+function deletePostit(id){ state.postits = (state.postits||[]).filter(x=>x.id!==id); saveStore(); refreshAll(); toast('Post-it eliminato'); }
+function assignPostitToCF(id, cf){
+  const key = upper(cf||'');
+  if(!key){ toast('Apri o compila prima il codice fiscale in Anagrafica'); return; }
+  if(!requiredClient(key)){ toast('Salva prima il cliente in Anagrafica'); return; }
+  const note=(state.postits||[]).find(x=>x.id===id);
+  if(!note){ toast('Post-it non trovato'); return; }
+  note.cf=key; note.updated_at=nowStamp();
+  saveStore();
+  if(qs('#postit_filter_cf')) qs('#postit_filter_cf').value=key;
+  refreshAll();
+  toast('Post-it assegnato al cliente');
+}
+function assignLoadedPostitToFormCF(){
+  const key = upper(qs('#a_cf')?.value || qs('#postit_cf')?.value || '');
+  const title = (qs('#postit_title')?.value || '').trim();
+  const text = (qs('#postit_text')?.value || '').trim();
+  if(!text){ toast('Carica o scrivi prima un post-it'); return; }
+  if(!key){ toast('Apri o compila prima il cliente in Anagrafica'); return; }
+  if(!requiredClient(key)){ toast('Salva prima il cliente in Anagrafica'); return; }
+  const note=(state.postits||[]).find(x=>x.text===text && (x.title||'')===title && !upper(x.cf));
+  if(note){
+    note.cf=key; note.color=qs('#postit_color')?.value || note.color || 'yellow'; note.updated_at=nowStamp();
+    saveStore(); if(qs('#postit_filter_cf')) qs('#postit_filter_cf').value=key; refreshAll(); toast('Bozza assegnata al cliente'); return;
+  }
+  savePostit(key);
+}
+function savePostit(forcedCF=''){
+  const rawCF = upper(forcedCF || qs('#postit_cf')?.value || '');
+  const title = (qs('#postit_title')?.value || '').trim();
+  const text = (qs('#postit_text')?.value || '').trim();
+  const color = qs('#postit_color')?.value || 'yellow';
+  if(!text){ toast('Scrivi il contenuto del post-it'); return; }
+
+  let cf = rawCF;
+  let savedAsDraft = false;
+  if(cf && !requiredClient(cf)){
+    cf = '';
+    savedAsDraft = true;
+  }
+
+  const existing = (state.postits||[]).find(x=>upper(x.cf||'')===cf && x.text===text && (x.title||'')===title);
+  if(existing){
+    existing.color=color;
+    existing.updated_at=nowStamp();
+  } else {
+    (state.postits||(state.postits=[])).unshift({ id:safeId('P'), cf, title, text, color, created_at:nowStamp(), updated_at:nowStamp() });
+  }
+  saveStore();
+  if(qs('#postit_filter_cf') && cf) qs('#postit_filter_cf').value = cf;
+  clearPostitForm(); refreshAll();
+  if(savedAsDraft){
+    toast('CF non trovato: post-it salvato come bozza');
+  } else {
+    toast(cf ? 'Post-it salvato e collegato al cliente' : 'Post-it salvato come bozza');
+  }
+}
+function renderPostits(){
+  const board=qs('#postitBoard'); if(!board) return;
+  const filter=currentPostitFilter();
+  const rows=(state.postits||[])
+    .filter(x=>!filter || upper(x.cf)===filter || (!upper(x.cf) && filter==='BOZZE'))
+    .sort((a,b)=>String(b.updated_at||b.created_at||'').localeCompare(String(a.updated_at||a.created_at||'')));
+  const title=qs('#postitBoardTitle');
+  if(title) title.textContent = filter==='BOZZE' ? 'Bozze post-it da assegnare' : (filter ? `Post-it collegati a ${filter}${postitClientName(filter)?' • '+postitClientName(filter):''}` : 'Tutti i post-it salvati');
+  board.innerHTML = rows.map(n=>{
+    const assignBtn = !n.cf ? `<button class="btn primary small" onclick="assignPostitToCF('${n.id}', upper(qs('#a_cf')?.value || ''))">Assegna al CF del form</button>` : '';
+    const badgeText = n.cf ? (postitClientName(n.cf)||'Cliente') : 'Da assegnare';
+    const badgeClass = n.cf ? 'badge' : 'badge warn';
+    return `<div class="postit-note ${esc(n.color||'yellow')}"><div class="postit-top"><div><div class="postit-title">${esc(n.title||'Post-it cliente')}</div><div class="small muted mono">${esc(n.cf||'BOZZA NON ASSEGNATA')}</div></div><span class="${badgeClass}">${esc(badgeText)}</span></div><div class="postit-body">${esc(n.text||'')}</div><div class="postit-meta"><div>Creato: ${esc(formatDateTime(n.created_at))}</div><div>Aggiornato: ${esc(formatDateTime(n.updated_at||n.created_at))}</div><div class="actions"><button class="btn secondary small" onclick="loadPostitIntoForm('${n.id}')">Modifica</button>${assignBtn}<button class="btn bad small" onclick="deletePostit('${n.id}')">Elimina</button></div></div></div>`;
+  }).join('') || `<div class="postit-empty">Nessun post-it salvato${filter==='BOZZE' ? ' in bozza' : (filter ? ` per <b>${esc(filter)}</b>` : '')}. Ora puoi creare prima il post-it e assegnarlo dopo al cliente.</div>`;
+}
 
 function daysSince(dateStr){ const iso=toISO(dateStr); if(!iso) return null; return Math.floor((new Date(todayISO()) - new Date(iso))/86400000); }
 function loadAutoActionsConfig(){ try{ const raw=localStorage.getItem(AUTO_ACTIONS_KEY); const cfg=raw?JSON.parse(raw):{}; return { deviceDays: Number.isFinite(+cfg.deviceDays)?+cfg.deviceDays:3, repairDays: Number.isFinite(+cfg.repairDays)?+cfg.repairDays:2, birthdayDays: Number.isFinite(+cfg.birthdayDays)?+cfg.birthdayDays:7, deadlineDays: Number.isFinite(+cfg.deadlineDays)?+cfg.deadlineDays:30 }; }catch(e){ return {deviceDays:3,repairDays:2,birthdayDays:7,deadlineDays:30}; } }
@@ -1051,8 +1291,8 @@ window.insertCampaignVar = insertCampaignVar;
 function operationActionButtons(cf, subject=''){ const a=anagByCF(cf); if(!a) return ''; const parts=[]; if(a.telefono){ parts.push(`<a class="iconbtn wa" title="WhatsApp" aria-label="WhatsApp" href="${waLink(a.telefono, subject)}" target="_blank" rel="noopener">💬</a>`); } if(a.email){ parts.push(`<a class="iconbtn mail" title="Email" aria-label="Email" href="${emailLink(a.email, subject)}">✉️</a>`); } return `<span class="actionicons">${parts.join('')}</span>`; }
 
 function saveStore(){ localStorage.setItem(STORE_KEY, JSON.stringify(state)); localStorage.setItem('SAGAMCRM_NEXT_LASTSYNC', new Date().toLocaleString('it-IT')); syncSideInfo(); }
-function loadStore(){ try{ const raw=localStorage.getItem(STORE_KEY); if(!raw) return false; const data=JSON.parse(raw); state.anagrafica=Array.isArray(data.anagrafica)?data.anagrafica:[]; state.contratti=Array.isArray(data.contratti)?data.contratti:[]; state.device=Array.isArray(data.device)?data.device:[]; state.riparazioni=Array.isArray(data.riparazioni)?data.riparazioni:[]; return true; }catch(e){ return false; } }
-function resetStore(){ localStorage.removeItem(STORE_KEY); state={anagrafica:[],contratti:[],device:[],riparazioni:[]}; refreshAll(); }
+function loadStore(){ try{ const raw=localStorage.getItem(STORE_KEY); if(!raw) return false; const data=JSON.parse(raw); state.anagrafica=Array.isArray(data.anagrafica)?data.anagrafica:[]; state.contratti=Array.isArray(data.contratti)?data.contratti:[]; state.device=Array.isArray(data.device)?data.device:[]; state.riparazioni=Array.isArray(data.riparazioni)?data.riparazioni:[]; state.postits=Array.isArray(data.postits)?data.postits:[]; return true; }catch(e){ return false; } }
+function resetStore(){ backupLocalData('prima_reset'); localStorage.removeItem(STORE_KEY); state={anagrafica:[],contratti:[],device:[],riparazioni:[],postits:[]}; refreshAll(); }
 function gsConfig(){ try{return JSON.parse(localStorage.getItem(GS_KEY)||'{}')}catch(e){return {}} }
 function saveGsConfig(cfg){ localStorage.setItem(GS_KEY, JSON.stringify(cfg)); }
 
@@ -1071,6 +1311,7 @@ function seedDemo(){
     {id:'D-1001',cf:'RSSMRA80X01H501Z',data:daysAgo(9),marca:'APPLE',modello:'IPHONE 13',imei:'123456789012345',prezzo:'699',garanzia_mesi:'24',fine_garanzia:addMonths(daysAgo(9),24),pagamento:'ELETTRONICO',venditore:'AUGUSTO',finanziaria:'',costo_rata:'',durata_rata_mesi:'',fine_pagamento:''},
     {id:'D-1002',cf:'BNCLGU85T10F205X',data:daysAgo(22),marca:'SAMSUNG',modello:'A54',imei:'351111222233334',prezzo:'349',garanzia_mesi:'24',fine_garanzia:addMonths(daysAgo(22),24),pagamento:'FINANZIAMENTO',venditore:'AUGUSTO',finanziaria:'COMPASS',costo_rata:'19.90',durata_rata_mesi:'24',fine_pagamento:addMonths(daysAgo(22),24)}
   ];
+  state.postits = [];
   state.riparazioni = [
     {id:'R-9001',cf:'BNCLGU85T10F205X',data_ingresso:daysAgo(3),marca:'SAMSUNG',modello:'A52',imei:'351010101010101',problema:'DISPLAY ROTTO',stato:'PRONTA',costo:'59',note:'IN ATTESA RITIRO'},
     {id:'R-9002',cf:'RSSMRA80X01H501Z',data_ingresso:daysAgo(12),marca:'APPLE',modello:'IPHONE 13',imei:'123456789012345',problema:'BATTERIA',stato:'IN LAVORAZIONE',costo:'89',note:'ORDINATO RICAMBIO'}
@@ -1081,7 +1322,7 @@ function seedDemo(){
 
 function syncSideInfo(){
   qs('#lastSync').textContent = localStorage.getItem('SAGAMCRM_NEXT_LASTSYNC') || '—';
-  const total = state.anagrafica.length + state.contratti.length + state.device.length + state.riparazioni.length;
+  const total = state.anagrafica.length + state.contratti.length + state.device.length + state.riparazioni.length + state.postits.length;
   qs('#totalRecords').textContent = String(total);
 }
 
@@ -1099,33 +1340,35 @@ function showView(key){
 function renderAnag(){
   const q=upper(qs('#searchAnag').value);
   const rows = state.anagrafica.filter(x=>!q||containsBlob(x,q)).sort((a,b)=>`${a.cognome||''}${a.nome||''}`.localeCompare(`${b.cognome||''}${b.nome||''}`));
-  qs('#tblAnag tbody').innerHTML = rows.map(a=>`<tr>
-    <td class="mono">${a.cf||''}</td>
-    <td>${a.nome||''} ${a.cognome||''}</td>
-    <td>${a.tipo||''}</td>
-    <td>${a.telefono?`<a href="${waLink(a.telefono)}" target="_blank">${a.telefono}</a>`:'—'}</td>
-    <td>${a.email||''}</td>
-    <td>${a.citta||''}</td>
+  qs('#tblAnag tbody').innerHTML = rows.map(a=>{ const cf=escAttr(a.cf||''); const pc=(state.postits||[]).filter(n=>upper(n.cf)===upper(a.cf)).length; return `<tr>
+    <td class="mono">${esc(a.cf||'')}</td>
+    <td>${esc(`${a.nome||''} ${a.cognome||''}`.trim())}</td>
+    <td>${esc(a.tipo||'')}</td>
+    <td>${a.telefono?`<a href="${waLink(a.telefono)}" target="_blank">${esc(a.telefono)}</a>`:'—'}</td>
+    <td>${esc(a.email||'')}</td>
+    <td>${esc(a.citta||'')}</td>
     <td>
-      <button class="btn secondary small" onclick="editAnag('${a.cf}')">Modifica</button>
-      <button class="btn bad small" onclick="deleteAnag('${a.cf}')">Elimina</button>
-      <button class="btn secondary small" onclick="openTimelineCF('${a.cf}')">Timeline</button>
+      <button class="btn secondary small" onclick="editAnag('${cf}')">Modifica</button>
+      <button class="btn bad small" onclick="deleteAnag('${cf}')">Elimina</button>
+      <button class="btn secondary small" onclick="openTimelineCF('${cf}')">Timeline</button>
+      <button class="btn secondary small" onclick="openClientPostits('${cf}')">Post-it ${pc ? `(${pc})` : ''}</button>
       ${a.telefono?`<a class="iconbtn wa" title="WhatsApp" aria-label="WhatsApp" href="${waLink(a.telefono, `Ciao ${a.nome||''}, ti contatto da SAGAM CRM.`)}" target="_blank" rel="noopener">💬</a>`:''}
       ${a.email?`<a class="iconbtn mail" title="Email" aria-label="Email" href="${emailLink(a.email, `Contatto SAGAM CRM`, `Ciao ${a.nome||''},`)}">✉️</a>`:''}
     </td>
-  </tr>`).join('') || `<tr><td colspan="7" class="muted">Nessun cliente.</td></tr>`;
+  </tr>`; }).join('') || `<tr><td colspan="7" class="muted">Nessun cliente.</td></tr>`;
 }
-function clearAnagForm(){ ['a_cf','a_nome','a_cognome','a_tipo','a_telefono','a_email','a_citta','a_indirizzo','a_data_nascita'].forEach(id=>qs('#'+id).value=''); }
+function clearAnagForm(){ ['a_cf','a_nome','a_cognome','a_tipo','a_telefono','a_email','a_citta','a_indirizzo','a_data_nascita'].forEach(id=>qs('#'+id).value=''); if(qs('#postit_filter_cf')) qs('#postit_filter_cf').value=''; renderPostits(); }
 function saveAnag(){
-  const rec = {cf:upper(qs('#a_cf').value), nome:upper(qs('#a_nome').value), cognome:upper(qs('#a_cognome').value), tipo:upper(qs('#a_tipo').value), telefono:qs('#a_telefono').value.trim(), email:qs('#a_email').value.trim(), citta:upper(qs('#a_citta').value), indirizzo:upper(qs('#a_indirizzo').value), data_nascita:qs('#a_data_nascita').value||''};
-  if(!rec.cf || !rec.nome || !rec.cognome){ toast('CF, nome e cognome sono obbligatori'); return; }
+  const rec = {cf:upper(qs('#a_cf').value), nome:upper(qs('#a_nome').value), cognome:upper(qs('#a_cognome').value), tipo:upper(qs('#a_tipo').value), telefono:normalizePhone(qs('#a_telefono').value), email:qs('#a_email').value.trim().toLowerCase(), citta:upper(qs('#a_citta').value), indirizzo:upper(qs('#a_indirizzo').value), data_nascita:qs('#a_data_nascita').value||''};
+  if(!assertValidClientRecord(rec,'a')) return;
   const idx = state.anagrafica.findIndex(x=>upper(x.cf)===rec.cf);
   if(idx>=0) state.anagrafica[idx]=rec; else state.anagrafica.push(rec);
   quickActivityCF = rec.cf;
   saveStore(); clearAnagForm(); refreshAll(); scheduleAutoSync('Cliente salvato');
 }
-function editAnag(cf){ const a=anagByCF(cf); if(!a) return; Object.entries({a_cf:a.cf,a_nome:a.nome,a_cognome:a.cognome,a_tipo:a.tipo||'',a_telefono:a.telefono||'',a_email:a.email||'',a_citta:a.citta||'',a_indirizzo:a.indirizzo||'',a_data_nascita:a.data_nascita||''}).forEach(([k,v])=>qs('#'+k).value=v); showView('anagrafica'); }
-function deleteAnag(cf){ if(state.contratti.some(x=>upper(x.cf)===upper(cf)) || state.device.some(x=>upper(x.cf)===upper(cf)) || state.riparazioni.some(x=>upper(x.cf)===upper(cf))){ toast('Non puoi eliminare il cliente: esistono record collegati'); return; } state.anagrafica = state.anagrafica.filter(x=>upper(x.cf)!==upper(cf)); saveStore(); refreshAll(); toast('Cliente eliminato'); scheduleAutoSync('Cliente eliminato'); }
+function editAnag(cf){ const a=anagByCF(cf); if(!a) return; Object.entries({a_cf:a.cf,a_nome:a.nome,a_cognome:a.cognome,a_tipo:a.tipo||'',a_telefono:a.telefono||'',a_email:a.email||'',a_citta:a.citta||'',a_indirizzo:a.indirizzo||'',a_data_nascita:a.data_nascita||''}).forEach(([k,v])=>qs('#'+k).value=v); if(qs('#postit_filter_cf')) qs('#postit_filter_cf').value = a.cf||''; showView('anagrafica'); renderPostits(); }
+function deleteAnag(cf){ if(state.contratti.some(x=>upper(x.cf)===upper(cf)) || state.device.some(x=>upper(x.cf)===upper(cf)) || state.riparazioni.some(x=>upper(x.cf)===upper(cf))){ toast('Non puoi eliminare il cliente: esistono record collegati'); return; } state.anagrafica = state.anagrafica.filter(x=>upper(x.cf)!==upper(cf)); state.postits = (state.postits||[]).filter(x=>upper(x.cf)!==upper(cf)); saveStore(); refreshAll(); toast('Cliente eliminato'); scheduleAutoSync('Cliente eliminato'); }
+function openClientPostits(cf){ showView('dashboard'); if(qs('#postit_filter_cf')) qs('#postit_filter_cf').value = upper(cf); if(qs('#postit_cf')) qs('#postit_cf').value = upper(cf); if(qs('#a_cf')) qs('#a_cf').value = upper(cf); renderPostits(); setTimeout(()=>qs('#postit_text')?.focus(), 50); }
 
 function updateContractComputed(){
   const tipo=upper(qs('#c_tipo_attivazione').value); qs('#c_mnp').value = tipo==='MNP' ? 'SI' : 'NO';
@@ -1142,28 +1385,41 @@ function saveCon(){
     data_contratto:qs('#c_data_contratto').value||todayISO(), tipo_cliente:upper(qs('#c_tipo_cliente').value), compagnia:upper(qs('#c_compagnia').value), tecnologia:upper(qs('#c_tecnologia').value), tipo_attivazione:upper(qs('#c_tipo_attivazione').value), numero_lavorato:qs('#c_numero_lavorato').value.trim(), nome_offerta:upper(qs('#c_nome_offerta').value), costo_offerta:qs('#c_costo_offerta').value.trim(), tipo_pagamento:upper(qs('#c_tipo_pagamento').value), vincolo_offerta_mesi:qs('#c_vincolo_offerta_mesi').value.trim(), data_attivazione:qs('#c_data_attivazione').value||'', data_fine_vincolo_offerta:qs('#c_data_fine_vincolo_offerta').value||'', convergenza:upper(qs('#c_convergenza').value), telefono_incluso:upper(qs('#c_telefono_incluso').value), mnp:upper(qs('#c_mnp').value), compagnia_provenienza:upper(qs('#c_compagnia_provenienza').value), iccid_vecchio:upper(qs('#c_iccid_vecchio').value), iccid_nuovo:upper(qs('#c_iccid_nuovo').value), data_portabilita:qs('#c_data_portabilita').value||'', imei:upper(qs('#c_imei').value), tel_marca:upper(qs('#c_tel_marca').value), modello:upper(qs('#c_modello').value), tel_modalita_pagamento:upper(qs('#c_tel_modalita_pagamento').value), mesi_vincolo_telefono:qs('#c_mesi_vincolo_telefono').value.trim(), tel_costo_rate:qs('#c_tel_costo_rate').value.trim(), data_fine_vincolo_telefono:qs('#c_data_fine_vincolo_telefono').value||''
   };
   if(!rec.data_contratto){ toast('Data contratto obbligatoria'); return; }
+  if(!assertValidContractRecord(rec)) return;
   const idx=state.contratti.findIndex(x=>x.id===rec.id); if(idx>=0) state.contratti[idx]=rec; else state.contratti.push(rec);
   saveStore(); clearConForm(); refreshAll(); scheduleAutoSync('Contratto salvato');
 }
 function renderCon(){
   const q=upper(qs('#searchCon').value); const rows=state.contratti.filter(x=>!q||containsBlob(x,q)).sort((a,b)=>(toISO(b.data_contratto)||'').localeCompare(toISO(a.data_contratto)||''));
-  qs('#tblCon tbody').innerHTML = rows.map(c=>`<tr><td class="mono">${c.id}</td><td>${toISO(c.data_contratto)||''}</td><td class="mono">${c.cf}</td><td>${clientName(c.cf)}</td><td>${c.compagnia||''}</td><td>${c.nome_offerta||''}</td><td>${c.tecnologia||''}</td><td>${c.tipo_attivazione||''}</td><td><span class="badge ${upper(c.mnp)==='SI'?'good':'warn'}">${c.mnp||'—'}</span></td><td>${c.numero_lavorato||''}</td><td>${toISO(c.data_portabilita)||''}</td><td>${[c.iccid_vecchio,c.iccid_nuovo].filter(Boolean).join(' / ')}</td><td>${c.tipo_pagamento||''}</td><td>${[c.imei,c.modello].filter(Boolean).join(' / ')}</td><td>${c.note||''}</td><td>${operationActionButtons(c.cf, `SAGAM CRM - Contratto ${c.id||''}`)} <button class="btn secondary small" onclick="editCon('${c.id}')">Modifica</button> <button class="btn secondary small" onclick="printContractReceipt('${c.id}')">Ricevuta</button> <button class="btn bad small" onclick="deleteCon('${c.id}')">Elimina</button></td></tr>`).join('') || `<tr><td colspan="16" class="muted">Nessun contratto.</td></tr>`;
+  qs('#tblCon tbody').innerHTML = rows.map(c=>{ const id=escAttr(c.id||''); return `<tr><td class="mono">${esc(c.id||'')}</td><td>${esc(toISO(c.data_contratto)||'')}</td><td class="mono">${esc(c.cf||'')}</td><td>${esc(clientName(c.cf))}</td><td>${esc(c.compagnia||'')}</td><td>${esc(c.nome_offerta||'')}</td><td>${esc(c.tecnologia||'')}</td><td>${esc(c.tipo_attivazione||'')}</td><td><span class="badge ${upper(c.mnp)==='SI'?'good':'warn'}">${esc(c.mnp||'—')}</span></td><td>${esc(c.numero_lavorato||'')}</td><td>${esc(toISO(c.data_portabilita)||'')}</td><td>${esc([c.iccid_vecchio,c.iccid_nuovo].filter(Boolean).join(' / '))}</td><td>${esc(c.tipo_pagamento||'')}</td><td>${esc([c.imei,c.modello].filter(Boolean).join(' / '))}</td><td>${esc(c.note||'')}</td><td>${operationActionButtons(c.cf, `SAGAM CRM - Contratto ${c.id||''}`)} <button class="btn secondary small" onclick="editCon('${id}')">Modifica</button> <button class="btn secondary small" onclick="printContractReceipt('${id}')">Ricevuta</button> <button class="btn bad small" onclick="deleteCon('${id}')">Elimina</button></td></tr>`; }).join('') || `<tr><td colspan="16" class="muted">Nessun contratto.</td></tr>`;
 }
 function editCon(id){ const c=state.contratti.find(x=>x.id===id); if(!c) return; const map={c_id:c.id,c_id_cliente:c.id_cliente||'',c_cf:c.cf,c_data_contratto:toISO(c.data_contratto)||'',c_tipo_cliente:c.tipo_cliente||'',c_compagnia:c.compagnia||'',c_tecnologia:c.tecnologia||'',c_tipo_attivazione:c.tipo_attivazione||'',c_numero_lavorato:c.numero_lavorato||'',c_nome_offerta:c.nome_offerta||'',c_costo_offerta:c.costo_offerta||'',c_tipo_pagamento:c.tipo_pagamento||'',c_vincolo_offerta_mesi:c.vincolo_offerta_mesi||'',c_data_attivazione:toISO(c.data_attivazione)||'',c_data_fine_vincolo_offerta:toISO(c.data_fine_vincolo_offerta)||'',c_convergenza:c.convergenza||'',c_telefono_incluso:c.telefono_incluso||'',c_mnp:c.mnp||'',c_compagnia_provenienza:c.compagnia_provenienza||'',c_iccid_vecchio:c.iccid_vecchio||'',c_iccid_nuovo:c.iccid_nuovo||'',c_data_portabilita:toISO(c.data_portabilita)||'',c_imei:c.imei||'',c_tel_marca:c.tel_marca||'',c_modello:c.modello||'',c_tel_modalita_pagamento:c.tel_modalita_pagamento||'',c_mesi_vincolo_telefono:c.mesi_vincolo_telefono||'',c_tel_costo_rate:c.tel_costo_rate||'',c_data_fine_vincolo_telefono:toISO(c.data_fine_vincolo_telefono)||''}; Object.entries(map).forEach(([k,v])=>qs('#'+k).value=v); updateContractComputed(); showView('contratti'); }
 function deleteCon(id){ state.contratti=state.contratti.filter(x=>x.id!==id); saveStore(); refreshAll(); toast('Contratto eliminato'); scheduleAutoSync('Contratto eliminato'); }
 
 function updateDeviceComputed(){ const data=qs('#d_data').value; const g=qs('#d_garanzia_mesi').value; const r=qs('#d_durata_rata_mesi').value; qs('#d_fine_garanzia').value = data && g ? addMonths(data,g) : ''; qs('#d_fine_pagamento').value = data && r && upper(qs('#d_pagamento').value)==='FINANZIAMENTO' ? addMonths(data,r) : ''; }
 function clearDevForm(){ ['d_id','d_cf','d_data','d_marca','d_modello','d_imei','d_prezzo','d_garanzia_mesi','d_fine_garanzia','d_pagamento','d_venditore','d_finanziaria','d_costo_rata','d_durata_rata_mesi','d_fine_pagamento'].forEach(id=>qs('#'+id).value=''); qs('#d_data').value=todayISO(); qs('#d_garanzia_mesi').value='24'; updateDeviceComputed(); }
-function saveDev(){ const cf=upper(qs('#d_cf').value); if(!requiredClient(cf)){ toast('CF non presente in Anagrafica'); showView('anagrafica'); return; } const rec={id:(qs('#d_id').value||'').trim()||safeId('D'),cf,data:qs('#d_data').value||todayISO(),marca:upper(qs('#d_marca').value),modello:upper(qs('#d_modello').value),imei:upper(qs('#d_imei').value),prezzo:qs('#d_prezzo').value.trim(),garanzia_mesi:qs('#d_garanzia_mesi').value.trim(),fine_garanzia:qs('#d_fine_garanzia').value||'',pagamento:upper(qs('#d_pagamento').value),venditore:upper(qs('#d_venditore').value),finanziaria:upper(qs('#d_finanziaria').value),costo_rata:qs('#d_costo_rata').value.trim(),durata_rata_mesi:qs('#d_durata_rata_mesi').value.trim(),fine_pagamento:qs('#d_fine_pagamento').value||''}; if(!rec.marca||!rec.modello||!rec.imei||!rec.prezzo){ toast('Marca, modello, IMEI e prezzo sono obbligatori'); return; } const idx=state.device.findIndex(x=>x.id===rec.id); if(idx>=0) state.device[idx]=rec; else state.device.push(rec); saveStore(); clearDevForm(); refreshAll(); scheduleAutoSync('Device salvato'); toast('Device salvato • puoi inviare subito la ricevuta su WhatsApp dalla lista'); }
-function renderDev(){ const q=upper(qs('#searchDev').value); const rows=state.device.filter(x=>!q||containsBlob(x,q)).sort((a,b)=>(toISO(b.data)||'').localeCompare(toISO(a.data)||'')); qs('#tblDev tbody').innerHTML = rows.map(d=>`<tr><td class="mono">${d.id}</td><td>${toISO(d.data)}</td><td class="mono">${d.cf}</td><td>${clientName(d.cf)}</td><td>${d.marca||''}</td><td>${d.modello||''}</td><td class="mono">${d.imei||''}</td><td>${money(d.prezzo)}</td><td>${d.pagamento||''}</td><td>${toISO(d.fine_garanzia)||''}</td><td>${d.finanziaria||''}</td><td>${d.venditore||''}</td><td>${operationActionButtons(d.cf, `SAGAM CRM - Device ${d.id||''}`)} ${receiptWhatsappIcon('device', d.id)} <button class="btn secondary small" onclick="printDeviceReceipt('${d.id}')">Ricevuta</button> <button class="btn secondary small" onclick="editDev('${d.id}')">Modifica</button> <button class="btn bad small" onclick="deleteDev('${d.id}')">Elimina</button></td></tr>`).join('') || `<tr><td colspan="13" class="muted">Nessun device.</td></tr>`; }
+function saveDev(){ const cf=upper(qs('#d_cf').value); if(!requiredClient(cf)){ toast('CF non presente in Anagrafica'); showView('anagrafica'); return; } const rec={id:(qs('#d_id').value||'').trim()||safeId('D'),cf,data:qs('#d_data').value||todayISO(),marca:upper(qs('#d_marca').value),modello:upper(qs('#d_modello').value),imei:upper(qs('#d_imei').value),prezzo:qs('#d_prezzo').value.trim(),garanzia_mesi:qs('#d_garanzia_mesi').value.trim(),fine_garanzia:qs('#d_fine_garanzia').value||'',pagamento:upper(qs('#d_pagamento').value),venditore:upper(qs('#d_venditore').value),finanziaria:upper(qs('#d_finanziaria').value),costo_rata:qs('#d_costo_rata').value.trim(),durata_rata_mesi:qs('#d_durata_rata_mesi').value.trim(),fine_pagamento:qs('#d_fine_pagamento').value||''}; if(!rec.marca||!rec.modello||!rec.imei||!rec.prezzo){ toast('Marca, modello, IMEI e prezzo sono obbligatori'); return; } if(!assertValidDeviceRecord(rec)) return; const idx=state.device.findIndex(x=>x.id===rec.id); if(idx>=0) state.device[idx]=rec; else state.device.push(rec); saveStore(); clearDevForm(); refreshAll(); scheduleAutoSync('Device salvato'); toast('Device salvato • puoi inviare subito la ricevuta su WhatsApp dalla lista'); }
+function renderDev(){ const q=upper(qs('#searchDev').value); const rows=state.device.filter(x=>!q||containsBlob(x,q)).sort((a,b)=>(toISO(b.data)||'').localeCompare(toISO(a.data)||'')); qs('#tblDev tbody').innerHTML = rows.map(d=>{ const id=escAttr(d.id||''); return `<tr><td class="mono">${esc(d.id||'')}</td><td>${esc(toISO(d.data)||'')}</td><td class="mono">${esc(d.cf||'')}</td><td>${esc(clientName(d.cf))}</td><td>${esc(d.marca||'')}</td><td>${esc(d.modello||'')}</td><td class="mono">${esc(d.imei||'')}</td><td>${money(d.prezzo)}</td><td>${esc(d.pagamento||'')}</td><td>${esc(toISO(d.fine_garanzia)||'')}</td><td>${esc(d.finanziaria||'')}</td><td>${esc(d.venditore||'')}</td><td>${operationActionButtons(d.cf, `SAGAM CRM - Device ${d.id||''}`)} ${receiptWhatsappIcon('device', d.id)} <button class="btn secondary small" onclick="printDeviceReceipt('${id}')">Ricevuta</button> <button class="btn secondary small" onclick="editDev('${id}')">Modifica</button> <button class="btn bad small" onclick="deleteDev('${id}')">Elimina</button></td></tr>`; }).join('') || `<tr><td colspan="13" class="muted">Nessun device.</td></tr>`; }
 function editDev(id){ const d=state.device.find(x=>x.id===id); if(!d) return; const map={d_id:d.id,d_cf:d.cf,d_data:toISO(d.data)||'',d_marca:d.marca||'',d_modello:d.modello||'',d_imei:d.imei||'',d_prezzo:d.prezzo||'',d_garanzia_mesi:d.garanzia_mesi||'',d_fine_garanzia:toISO(d.fine_garanzia)||'',d_pagamento:d.pagamento||'',d_venditore:d.venditore||'',d_finanziaria:d.finanziaria||'',d_costo_rata:d.costo_rata||'',d_durata_rata_mesi:d.durata_rata_mesi||'',d_fine_pagamento:toISO(d.fine_pagamento)||''}; Object.entries(map).forEach(([k,v])=>qs('#'+k).value=v); updateDeviceComputed(); showView('device'); }
 function deleteDev(id){ state.device=state.device.filter(x=>x.id!==id); saveStore(); refreshAll(); toast('Device eliminato'); scheduleAutoSync('Device eliminato'); }
 
 function clearRipForm(){ ['r_id','r_cf','r_data_ingresso','r_marca','r_modello','r_imei','r_problema','r_stato','r_costo','r_note'].forEach(id=>qs('#'+id).value=''); qs('#r_data_ingresso').value=todayISO(); }
-function saveRip(){ const cf=upper(qs('#r_cf').value); if(!requiredClient(cf)){ toast('CF non presente in Anagrafica'); showView('anagrafica'); return; } const rec={id:(qs('#r_id').value||'').trim()||safeId('R'),cf,data_ingresso:qs('#r_data_ingresso').value||todayISO(),marca:upper(qs('#r_marca').value),modello:upper(qs('#r_modello').value),imei:upper(qs('#r_imei').value),problema:upper(qs('#r_problema').value),stato:upper(qs('#r_stato').value),costo:qs('#r_costo').value.trim(),note:qs('#r_note').value.trim()}; if(!rec.marca||!rec.modello||!rec.stato){ toast('Marca, modello e stato sono obbligatori'); return; } const idx=state.riparazioni.findIndex(x=>x.id===rec.id); if(idx>=0) state.riparazioni[idx]=rec; else state.riparazioni.push(rec); saveStore(); clearRipForm(); refreshAll(); scheduleAutoSync('Riparazione salvata'); toast('Riparazione salvata • puoi inviare subito la ricevuta su WhatsApp dalla lista'); }
-function renderRip(){ const q=upper(qs('#searchRip').value); const rows=state.riparazioni.filter(x=>!q||containsBlob(x,q)).sort((a,b)=>(toISO(b.data_ingresso)||'').localeCompare(toISO(a.data_ingresso)||'')); qs('#tblRip tbody').innerHTML = rows.map(r=>`<tr><td class="mono">${r.id}</td><td>${toISO(r.data_ingresso)}</td><td class="mono">${r.cf}</td><td>${clientName(r.cf)}</td><td>${r.marca||''}</td><td>${r.modello||''}</td><td>${r.imei||''}</td><td>${r.problema||''}</td><td><span class="badge ${r.stato==='PRONTA'||r.stato==='CONSEGNATA'?'good':r.stato==='APERTA'?'warn':''}">${r.stato||''}</span></td><td>${r.costo?money(r.costo):'—'}</td><td>${r.note||''}</td><td>${operationActionButtons(r.cf, `SAGAM CRM - Riparazione ${r.id||''}`)} ${receiptWhatsappIcon('riparazione', r.id)} <button class="btn secondary small" onclick="printRipReceipt('${r.id}')">Ricevuta</button> <button class="btn secondary small" onclick="editRip('${r.id}')">Modifica</button> <button class="btn bad small" onclick="deleteRip('${r.id}')">Elimina</button></td></tr>`).join('') || `<tr><td colspan="12" class="muted">Nessuna riparazione.</td></tr>`; }
+function saveRip(){ const cf=upper(qs('#r_cf').value); if(!requiredClient(cf)){ toast('CF non presente in Anagrafica'); showView('anagrafica'); return; } const rec={id:(qs('#r_id').value||'').trim()||safeId('R'),cf,data_ingresso:qs('#r_data_ingresso').value||todayISO(),marca:upper(qs('#r_marca').value),modello:upper(qs('#r_modello').value),imei:upper(qs('#r_imei').value),problema:upper(qs('#r_problema').value),stato:upper(qs('#r_stato').value),costo:qs('#r_costo').value.trim(),note:qs('#r_note').value.trim()}; if(!rec.marca||!rec.modello||!rec.stato){ toast('Marca, modello e stato sono obbligatori'); return; } if(!assertValidRepairRecord(rec)) return; const idx=state.riparazioni.findIndex(x=>x.id===rec.id); if(idx>=0) state.riparazioni[idx]=rec; else state.riparazioni.push(rec); saveStore(); clearRipForm(); refreshAll(); scheduleAutoSync('Riparazione salvata'); toast('Riparazione salvata • puoi inviare subito la ricevuta su WhatsApp dalla lista'); }
+function renderRip(){ const q=upper(qs('#searchRip').value); const rows=state.riparazioni.filter(x=>!q||containsBlob(x,q)).sort((a,b)=>(toISO(b.data_ingresso)||'').localeCompare(toISO(a.data_ingresso)||'')); qs('#tblRip tbody').innerHTML = rows.map(r=>{ const id=escAttr(r.id||''); return `<tr><td class="mono">${esc(r.id||'')}</td><td>${esc(toISO(r.data_ingresso)||'')}</td><td class="mono">${esc(r.cf||'')}</td><td>${esc(clientName(r.cf))}</td><td>${esc(r.marca||'')}</td><td>${esc(r.modello||'')}</td><td>${esc(r.imei||'')}</td><td>${esc(r.problema||'')}</td><td><span class="badge ${r.stato==='PRONTA'||r.stato==='CONSEGNATA'?'good':r.stato==='APERTA'?'warn':''}">${esc(r.stato||'')}</span></td><td>${r.costo?money(r.costo):'—'}</td><td>${esc(r.note||'')}</td><td>${operationActionButtons(r.cf, `SAGAM CRM - Riparazione ${r.id||''}`)} ${receiptWhatsappIcon('riparazione', r.id)} <button class="btn secondary small" onclick="printRipReceipt('${id}')">Ricevuta</button> <button class="btn secondary small" onclick="editRip('${id}')">Modifica</button> <button class="btn bad small" onclick="deleteRip('${id}')">Elimina</button></td></tr>`; }).join('') || `<tr><td colspan="12" class="muted">Nessuna riparazione.</td></tr>`; }
 function editRip(id){ const r=state.riparazioni.find(x=>x.id===id); if(!r) return; const map={r_id:r.id,r_cf:r.cf,r_data_ingresso:toISO(r.data_ingresso)||'',r_marca:r.marca||'',r_modello:r.modello||'',r_imei:r.imei||'',r_problema:r.problema||'',r_stato:r.stato||'',r_costo:r.costo||'',r_note:r.note||''}; Object.entries(map).forEach(([k,v])=>qs('#'+k).value=v); showView('riparazioni'); }
 function deleteRip(id){ state.riparazioni=state.riparazioni.filter(x=>x.id!==id); saveStore(); refreshAll(); toast('Riparazione eliminata'); scheduleAutoSync('Riparazione eliminata'); }
+
+function renderDataQuality(){
+  const box=qs('#dataQualityBox'); if(!box) return;
+  const clients=state.anagrafica.length;
+  const noPhone=state.anagrafica.filter(a=>!String(a.telefono||'').trim()).length;
+  const badEmail=state.anagrafica.filter(a=>!isValidEmail(a.email)).length;
+  const badCF=state.anagrafica.filter(a=>!isValidItalianCF(a.cf)).length;
+  const orphan=[...state.contratti.map(x=>x.cf),...state.device.map(x=>x.cf),...state.riparazioni.map(x=>x.cf)].filter(cf=>cf && !anagByCF(cf)).length;
+  const invalidImei=[...state.device.map(x=>x.imei),...state.riparazioni.map(x=>x.imei),...state.contratti.map(x=>x.imei)].filter(x=>x && !isValidIMEI(x)).length;
+  const items=[['Clienti',clients,'Totale anagrafica'],['Senza telefono',noPhone,'Da completare'],['Email errate',badEmail,'Formato non valido'],['CF errati',badCF,'16 caratteri richiesti'],['Record orfani',orphan,'CF senza anagrafica'],['IMEI errati',invalidImei,'Luhn 15 cifre']];
+  box.innerHTML=items.map(([k,v,d])=>`<div class="dq"><span class="muted small">${esc(k)}</span><b>${esc(v)}</b><div class="small muted">${esc(d)}</div></div>`).join('');
+}
 
 function compute30(){
   return {
@@ -1219,7 +1475,7 @@ function saveQuickClientEdits(){
     indirizzo: upper(qs('#qs_indirizzo')?.value || ''),
     data_nascita: qs('#qs_data_nascita')?.value || ''
   };
-  if(!rec.nome || !rec.cognome){ toast('Nome e cognome sono obbligatori'); return; }
+  if(!assertValidClientRecord(rec,'qs')) return;
   state.anagrafica[idx] = rec;
   quickActivityCF = cf;
   saveStore();
@@ -1259,13 +1515,13 @@ function saveQuickClientData(){
     tipo: upper(qs('#qs_tipo')?.value || ''),
     nome: upper(qs('#qs_nome')?.value || ''),
     cognome: upper(qs('#qs_cognome')?.value || ''),
-    telefono: qs('#qs_telefono')?.value.trim() || '',
-    email: qs('#qs_email')?.value.trim() || '',
+    telefono: normalizePhone(qs('#qs_telefono')?.value || ''),
+    email: (qs('#qs_email')?.value || '').trim().toLowerCase(),
     citta: upper(qs('#qs_citta')?.value || ''),
     indirizzo: upper(qs('#qs_indirizzo')?.value || ''),
     data_nascita: qs('#qs_data_nascita')?.value || ''
   };
-  if(!rec.nome || !rec.cognome){ toast('Nome e cognome sono obbligatori'); return; }
+  if(!assertValidClientRecord(rec,'qs')) return;
   state.anagrafica[idx] = rec;
   quickActivityCF = rec.cf;
   saveStore(); refreshAll(); startQuickActivity(); scheduleAutoSync('Cliente aggiornato');
@@ -1802,12 +2058,12 @@ function printCurrentRipReceipt(){
 function downloadCSV(filename, headers, rows){ const lines=[headers.join(';'), ...rows.map(r=>headers.map(h=>`"${String(r[h]??'').replaceAll('"','""')}"`).join(';'))]; const blob=new Blob([lines.join('\n')], {type:'text/csv;charset=utf-8'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; a.click(); URL.revokeObjectURL(url); }
 function exportTable(kind){ if(kind==='anagrafica') downloadCSV(`anagrafica_${todayISO()}.csv`, ['cf','nome','cognome','tipo','telefono','email','citta','indirizzo','data_nascita'], state.anagrafica); if(kind==='contratti') downloadCSV(`contratti_${todayISO()}.csv`, Object.keys(SCHEMAS.contratti), state.contratti); if(kind==='device') downloadCSV(`device_${todayISO()}.csv`, Object.keys(SCHEMAS.device), state.device); if(kind==='riparazioni') downloadCSV(`riparazioni_${todayISO()}.csv`, Object.keys(SCHEMAS.riparazioni), state.riparazioni); }
 function exportReportCSV(){ downloadCSV(`report_${todayISO()}.csv`, ['tipo','date','cf','cliente','contatto','citta','descr','extra'], reportRows); }
-function exportFullJSON(){ const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=`volpexcrm_backup_${todayISO()}.json`; a.click(); URL.revokeObjectURL(url); }
+function exportFullJSON(){ downloadText(`sagamcrm_backup_${todayISO()}.json`, JSON.stringify(currentBackupPayload(),null,2)); }
 
 async function fileToText(inputId){ const f=qs('#'+inputId).files?.[0]; if(!f) throw new Error('Seleziona un file'); return await f.text(); }
 
-function fillGsSettings(){ const cfg=gsConfig(); qs('#gs_endpoint').value = cfg.endpoint || 'https://script.google.com/macros/s/AKfycby7gPCGN3yWuPh-YsN_t3X3yQNgKdsIoo1U94f4dNBUnLgmJbyVNuiCs93URwuBIG7y/exec'; qs('#gs_sheet_anagrafica').value = cfg.sheet_anagrafica || 'ANAGRAFICHE'; qs('#gs_sheet_contratti').value = cfg.sheet_contratti || 'CONTRATTI'; qs('#gs_sheet_device').value = cfg.sheet_device || 'DEVICE'; qs('#gs_sheet_riparazioni').value = cfg.sheet_riparazioni || 'RIPARAZIONI'; }
-function readGsSettings(){ return { endpoint: qs('#gs_endpoint').value.trim()||'https://script.google.com/macros/s/AKfycby7gPCGN3yWuPh-YsN_t3X3yQNgKdsIoo1U94f4dNBUnLgmJbyVNuiCs93URwuBIG7y/exec', sheet_anagrafica: qs('#gs_sheet_anagrafica').value.trim()||'ANAGRAFICHE', sheet_contratti: qs('#gs_sheet_contratti').value.trim()||'CONTRATTI', sheet_device: qs('#gs_sheet_device').value.trim()||'DEVICE', sheet_riparazioni: qs('#gs_sheet_riparazioni').value.trim()||'RIPARAZIONI' }; }
+function fillGsSettings(){ const cfg=gsConfig(); qs('#gs_endpoint').value = cfg.endpoint || 'https://script.google.com/macros/s/AKfycby7gPCGN3yWuPh-YsN_t3X3yQNgKdsIoo1U94f4dNBUnLgmJbyVNuiCs93URwuBIG7y/exec'; qs('#gs_sheet_anagrafica').value = cfg.sheet_anagrafica || 'ANAGRAFICHE'; qs('#gs_sheet_contratti').value = cfg.sheet_contratti || 'CONTRATTI'; qs('#gs_sheet_device').value = cfg.sheet_device || 'DEVICE'; qs('#gs_sheet_riparazioni').value = cfg.sheet_riparazioni || 'RIPARAZIONI'; if(qs('#gs_auto_sync')) qs('#gs_auto_sync').checked = cfg.auto_sync !== false; }
+function readGsSettings(){ return { endpoint: qs('#gs_endpoint').value.trim()||'https://script.google.com/macros/s/AKfycby7gPCGN3yWuPh-YsN_t3X3yQNgKdsIoo1U94f4dNBUnLgmJbyVNuiCs93URwuBIG7y/exec', sheet_anagrafica: qs('#gs_sheet_anagrafica').value.trim()||'ANAGRAFICHE', sheet_contratti: qs('#gs_sheet_contratti').value.trim()||'CONTRATTI', sheet_device: qs('#gs_sheet_device').value.trim()||'DEVICE', sheet_riparazioni: qs('#gs_sheet_riparazioni').value.trim()||'RIPARAZIONI', auto_sync: !!qs('#gs_auto_sync')?.checked }; }
 async function gsFetchGet(params={}){ const cfg=readGsSettings(); if(!cfg.endpoint) throw new Error("Inserisci prima l'endpoint della Web App"); const url = new URL(cfg.endpoint); Object.entries(params).forEach(([k,v])=>url.searchParams.set(k, v)); const res = await fetch(url.toString(), {method:'GET'}); const txt = await res.text(); try{return JSON.parse(txt)}catch(e){ return {ok:false, raw:txt}; } }
 async function gsFetchPost(body={}){ const cfg=readGsSettings(); if(!cfg.endpoint) throw new Error("Inserisci prima l'endpoint della Web App"); const res=await fetch(cfg.endpoint,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)}); const txt=await res.text(); try{return JSON.parse(txt)}catch(e){ return {ok:false, raw:txt}; } }
 function mapAnagToSheet(r){ return { CODICE_FISCALE: upper(r.cf), NOME: upper(r.nome), COGNOME: upper(r.cognome), TIPO_CLIENTE: upper(r.tipo), TELEFONO: r.telefono||'', EMAIL: r.email||'', CITTA: upper(r.citta), INDIRIZZO: upper(r.indirizzo), DATA_NASCITA: toISO(r.data_nascita), NOTE: r.note||'' }; }
@@ -1826,6 +2082,10 @@ let autoSyncPending = false;
 function markSyncedNow(){ localStorage.setItem('SAGAMCRM_NEXT_LASTSYNC', new Date().toLocaleString('it-IT')); syncSideInfo(); }
 async function gsPushAll(showToast=true){
   try{
+    if(showToast){
+      const total = state.anagrafica.length + state.contratti.length + state.device.length + state.riparazioni.length;
+      if(!safeDeleteConfirm(`Stai per inviare ${total} record a Google Sheets usando replace_all. Vuoi continuare?`)) return false;
+    }
     const batches=[ ['ANAGRAFICHE', state.anagrafica.map(mapAnagToSheet)], ['CONTRATTI', state.contratti.map(mapConToSheet)], ['DEVICE', state.device.map(mapDevToSheet)], ['RIPARAZIONI', state.riparazioni.map(mapRipToSheet)] ];
     for(const [entity, rows] of batches){
       const out=await gsFetchPost({action:'replace_all', entity, rows});
@@ -1856,14 +2116,96 @@ async function performAutoSync(reason=''){
   }
 }
 function scheduleAutoSync(reason='Operazione salvata'){
+  const cfg=gsConfig();
+  if(cfg.auto_sync === false){ toast(`${reason} • salvato in locale. Usa CRM → Google per sincronizzare quando vuoi.`, 3200); return; }
   clearTimeout(autoSyncTimer);
   autoSyncTimer = setTimeout(()=>performAutoSync(reason), 500);
 }
-async function gsPullAll(){ try{ const a=await gsFetchGet({action:'list', entity:'ANAGRAFICHE'}); const c=await gsFetchGet({action:'list', entity:'CONTRATTI'}); const d=await gsFetchGet({action:'list', entity:'DEVICE'}); const r=await gsFetchGet({action:'list', entity:'RIPARAZIONI'}); for(const out of [a,c,d,r]){ if(out.ok===false) throw new Error(out.error||out.message||'pull fallita'); } state.anagrafica=(a.rows||[]).map(row=>mapSheetToAnag(rowToObj(a.headers||[], row))); state.contratti=(c.rows||[]).map(row=>mapSheetToCon(rowToObj(c.headers||[], row))); state.device=(d.rows||[]).map(row=>mapSheetToDev(rowToObj(d.headers||[], row))); state.riparazioni=(r.rows||[]).map(row=>mapSheetToRip(rowToObj(r.headers||[], row))); saveStore(); markSyncedNow(); refreshAll(); toast('Dati scaricati da Google Sheets'); } catch(e){ toast('Errore sync down: '+e.message); } }
+async function gsPullAll(showToast=true){
+  try{
+    const a=await gsFetchGet({action:'list', entity:'ANAGRAFICHE'});
+    const c=await gsFetchGet({action:'list', entity:'CONTRATTI'});
+    const d=await gsFetchGet({action:'list', entity:'DEVICE'});
+    const r=await gsFetchGet({action:'list', entity:'RIPARAZIONI'});
+    for(const out of [a,c,d,r]){
+      if(out.ok===false) throw new Error(out.error||out.message||'pull fallita');
+    }
+    state.anagrafica=(a.rows||[]).map(row=>mapSheetToAnag(rowToObj(a.headers||[], row)));
+    state.contratti=(c.rows||[]).map(row=>mapSheetToCon(rowToObj(c.headers||[], row)));
+    state.device=(d.rows||[]).map(row=>mapSheetToDev(rowToObj(d.headers||[], row)));
+    state.riparazioni=(r.rows||[]).map(row=>mapSheetToRip(rowToObj(r.headers||[], row)));
+    saveStore();
+    markSyncedNow();
+    refreshAll();
+    if(showToast) toast('Dati scaricati da Google Sheets');
+    return true;
+  } catch(e){
+    if(showToast) toast('Errore sync down: '+e.message);
+    throw e;
+  }
+}
 
-function refreshAll(){ syncSideInfo(); renderAnag(); renderCon(); renderDev(); renderRip(); renderDashboard(); runReport(); renderAutomationPage(); fillGsSettings(); }
+function refreshAll(){ syncSideInfo(); renderAnag(); renderCon(); renderDev(); renderRip(); renderDashboard(); renderDataQuality(); runReport(); renderAutomationPage(); renderPostits(); fillGsSettings(); }
 
-window.editAnag=editAnag; window.deleteAnag=deleteAnag; window.editCon=editCon; window.deleteCon=deleteCon; window.editDev=editDev; window.deleteDev=deleteDev; window.editRip=editRip; window.deleteRip=deleteRip; window.openTimelineCF=openTimelineCF; window.printContractReceipt=printContractReceipt; window.printDeviceReceipt=printDeviceReceipt; window.printRipReceipt=printRipReceipt; window.openTimelineRecord=openTimelineRecord; window.editTimelineRecord=editTimelineRecord; window.printTimelineReceipt=printTimelineReceipt;
+function setLoginStatus(msg, type=''){
+  const el=qs('#loginStatus');
+  if(!el) return;
+  el.textContent = msg;
+  el.className = 'auth-status' + (type ? ' '+type : '');
+}
+function updateSessionStatus(text){ const el=qs('#sessionStatus'); if(el) el.textContent=text; }
+function isSessionValid(){ const last=Number(sessionStorage.getItem(AUTH_LAST_KEY)||0); return sessionStorage.getItem(AUTH_KEY)==='1' && last && (Date.now()-last)<AUTH_IDLE_MS; }
+function touchSession(){ if(sessionStorage.getItem(AUTH_KEY)==='1') sessionStorage.setItem(AUTH_LAST_KEY, String(Date.now())); }
+let idleCheckTimer=null;
+function startIdleWatcher(){ clearTimeout(idleCheckTimer); idleCheckTimer=setInterval(()=>{ if(sessionStorage.getItem(AUTH_KEY)==='1' && !isSessionValid()) lockCRM('Sessione scaduta per inattività. Effettua di nuovo l’accesso.'); }, 15000); }
+function lockCRM(reason='Accesso richiesto'){
+  sessionStorage.removeItem(AUTH_KEY);
+  sessionStorage.removeItem(AUTH_LAST_KEY);
+  document.body.classList.add('login-locked');
+  qs('#authScreen')?.classList.add('show');
+  updateSessionStatus('🔒 Accesso richiesto');
+  setLoginStatus(reason);
+  setTimeout(()=>qs('#loginUser')?.focus(), 80);
+}
+function unlockCRM(){
+  sessionStorage.setItem(AUTH_KEY,'1');
+  touchSession();
+  document.body.classList.remove('login-locked');
+  qs('#authScreen')?.classList.remove('show');
+  updateSessionStatus('🟢 Amministratore');
+  startIdleWatcher();
+}
+async function loginAndSync(){
+  const user=upper(qs('#loginUser')?.value || '').toLowerCase();
+  const pass=qs('#loginPass')?.value || '';
+  if(!['amministratore','admin'].includes(user) || pass !== AUTH_PASS){
+    setLoginStatus('Credenziali non corrette. Usa amministratore / sagam.', 'bad');
+    qs('#loginPass')?.select();
+    return;
+  }
+  const cfg=gsConfig();
+  if(cfg.auto_sync === undefined){ cfg.auto_sync = true; saveGsConfig(cfg); fillGsSettings(); }
+  setLoginStatus('Accesso corretto. Sincronizzazione con Google Sheets in corso...', 'good');
+  unlockCRM();
+  try{
+    await gsPullAll(false);
+    markSyncedNow();
+    setLoginStatus('Sincronizzazione completata. CRM pronto.', 'good');
+    toast('Accesso amministratore • dati sincronizzati da Google Sheets');
+  }catch(e){
+    setLoginStatus('Accesso effettuato, ma sync Google non riuscita: '+e.message, 'bad');
+    toast('Accesso effettuato • sync Google fallita: '+e.message, 4200);
+  }
+}
+function setupAuth(){
+  ['mousemove','mousedown','keydown','touchstart','scroll','click'].forEach(ev=>document.addEventListener(ev, ()=>{ if(isSessionValid()) touchSession(); }, {passive:true}));
+  qs('#btnLogin')?.addEventListener('click', loginAndSync);
+  ['loginUser','loginPass'].forEach(id=>qs('#'+id)?.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); loginAndSync(); } }));
+  qs('#btnLogout')?.addEventListener('click', ()=>lockCRM('Sei uscito. Inserisci di nuovo le credenziali per rientrare.'));
+  if(isSessionValid()){ unlockCRM(); } else { lockCRM('Inserisci amministratore / sagam per entrare.'); }
+}
+
+window.editAnag=editAnag; window.deleteAnag=deleteAnag; window.openClientPostits=openClientPostits; window.loadPostitIntoForm=loadPostitIntoForm; window.deletePostit=deletePostit; window.editCon=editCon; window.deleteCon=deleteCon; window.editDev=editDev; window.deleteDev=deleteDev; window.editRip=editRip; window.deleteRip=deleteRip; window.openTimelineCF=openTimelineCF; window.printContractReceipt=printContractReceipt; window.printDeviceReceipt=printDeviceReceipt; window.printRipReceipt=printRipReceipt; window.openTimelineRecord=openTimelineRecord; window.editTimelineRecord=editTimelineRecord; window.printTimelineReceipt=printTimelineReceipt;
 
 qsa('.nav button').forEach(btn=>btn.addEventListener('click', ()=>showView(btn.dataset.view)));
 qs('#btnSeed').addEventListener('click', seedDemo);
@@ -1875,12 +2217,12 @@ qs('#quickStartCF')?.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.p
 qs('#btnQuickToContratto')?.addEventListener('click', ()=>routeQuickActivity('contratti'));
 qs('#btnQuickToDevice')?.addEventListener('click', ()=>routeQuickActivity('device'));
 qs('#btnQuickToRiparazione')?.addEventListener('click', ()=>routeQuickActivity('riparazioni'));
-qs('#btnQuickSaveClient')?.addEventListener('click', saveQuickClientEdits);
 qs('#btnQuickTimeline')?.addEventListener('click', ()=>{ const cf = upper(quickActivityCF || qs('#quickStartCF')?.value || ''); if(!cf || !anagByCF(cf)){ toast('Cliente non trovato in anagrafica'); return; } openTimelineCF(cf); });
 qs('#btnQuickSaveClient')?.addEventListener('click', saveQuickClientData);
 qs('#btnPrint').addEventListener('click', ()=>window.print());
 ['searchAnag','searchCon','searchDev','searchRip'].forEach(id=>qs('#'+id).addEventListener('input', refreshAll));
 qs('#btnSaveAnag').addEventListener('click', saveAnag); qs('#btnClearAnag').addEventListener('click', clearAnagForm);
+qs('#btnSavePostit')?.addEventListener('click', savePostit); qs('#btnClearPostit')?.addEventListener('click', clearPostitForm); qs('#postit_filter_cf')?.addEventListener('input', renderPostits); qs('#btnPostitFilterCurrent')?.addEventListener('click', ()=>{ const cf=upper(qs('#a_cf')?.value || qs('#quickStartCF')?.value || qs('#postit_cf')?.value || ''); if(qs('#postit_filter_cf')) qs('#postit_filter_cf').value=cf; if(qs('#postit_cf')) qs('#postit_cf').value=cf; renderPostits(); });
 ['c_tipo_attivazione','c_data_attivazione','c_vincolo_offerta_mesi','c_telefono_incluso','c_mesi_vincolo_telefono'].forEach(id=>qs('#'+id).addEventListener('input', updateContractComputed));
 qs('#btnSaveCon').addEventListener('click', saveCon); qs('#btnClearCon').addEventListener('click', clearConForm);
 ['d_data','d_garanzia_mesi','d_pagamento','d_durata_rata_mesi'].forEach(id=>qs('#'+id).addEventListener('input', updateDeviceComputed));
@@ -1909,7 +2251,7 @@ qs('#btnCampExportCsv')?.addEventListener('click', ()=>{ if(!campaignRows.length
 qs('#btnSaveGs').addEventListener('click', ()=>{ saveGsConfig(readGsSettings()); toast('Impostazioni Google salvate'); });
 qs('#btnGsPing').addEventListener('click', gsPing); qs('#btnGsUp').addEventListener('click', gsPushAll); qs('#btnGsDown').addEventListener('click', gsPullAll);
 
-(function init(){ fillAutoActionsConfig(); if(!loadStore()) seedDemo(); else { fillGsSettings(); syncSideInfo(); clearAnagForm(); clearConForm(); clearDevForm(); clearRipForm(); refreshAll(); } fillGsSettings(); clearAnagForm(); clearConForm(); clearDevForm(); clearRipForm(); refreshAll(); })();
+(function init(){ fillAutoActionsConfig(); fillGsSettings(); if(!loadStore()) seedDemo(); else { syncSideInfo(); clearAnagForm(); clearConForm(); clearDevForm(); clearRipForm(); refreshAll(); } fillGsSettings(); clearAnagForm(); clearConForm(); clearDevForm(); clearRipForm(); refreshAll(); setupAuth(); })();
 </script>
 
 <script>
